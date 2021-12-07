@@ -1,0 +1,546 @@
+package com.example.AdminMatic
+
+import android.os.Bundle
+import android.view.*
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.AdminMatic.R
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.fragment_work_order.*
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import java.util.*
+
+
+// TODO: Rename parameter arguments, choose names that match
+// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
+
+/**
+ * A simple [Fragment] subclass.
+ * Use the [workOrderFragment.newInstance] factory method to
+ * create an instance of this fragment.
+ */
+
+interface WoItemCellClickListener {
+    fun onWoItemCellClickListener(data:WoItem)
+}
+
+
+
+
+
+class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
+    // TODO: Rename and change types of parameters
+    private var param1: String? = null
+    private var param2: String? = null
+
+    private  var workOrder: WorkOrder? = null
+
+    lateinit  var globalVars:GlobalVars
+    lateinit var myView:View
+
+    lateinit var context: AppCompatActivity
+
+
+    lateinit var  pgsBar: ProgressBar
+
+    lateinit var  stackFragment: StackFragment
+
+    lateinit var statusBtn:ImageButton
+    lateinit var customerBtn:Button
+
+    lateinit var titleTxt:TextView
+    lateinit var scheduleTxt:TextView
+    lateinit var deptTxt:TextView
+    lateinit var crewTxt:TextView
+    lateinit var repTxt:TextView
+
+    lateinit var statusCustCL:ConstraintLayout
+    lateinit var dataCL:ConstraintLayout
+    lateinit var footerCL:ConstraintLayout
+
+    lateinit var itemRecyclerView:RecyclerView
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            workOrder = it.getParcelable<WorkOrder?>("workOrder")
+            param2 = it.getString(ARG_PARAM2)
+        }
+    }
+
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+
+        println("onCreateView")
+        globalVars = GlobalVars()
+
+
+
+
+        myView = inflater.inflate(R.layout.fragment_work_order, container, false)
+
+
+        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder"
+
+        // Inflate the layout for this fragment
+        return myView
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        println("WorkOrder View")
+
+
+        pgsBar = myView.findViewById(R.id.progress_bar)
+
+         stackFragment = StackFragment(2,workOrder!!.woID,this)
+
+        val ft = childFragmentManager.beginTransaction()
+        ft.add(R.id.work_order_cl, stackFragment, "stackFrag")
+        ft.commitAllowingStateLoss()
+
+        statusBtn = myView.findViewById(R.id.status_btn)
+        statusBtn.setOnClickListener{
+            println("status btn clicked")
+            showStatusMenu()
+
+        }
+
+        customerBtn = myView.findViewById(R.id.customer_btn)
+        customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
+        customerBtn.setOnClickListener{
+            println("customer btn clicked")
+
+
+            val customer:Customer = Customer(workOrder!!.customer!!)
+            val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer)
+            myView.findNavController().navigate(directions)
+
+
+        }
+
+        titleTxt = myView.findViewById(R.id.title_val_tv)
+        scheduleTxt = myView.findViewById(R.id.schedule_val_tv)
+        deptTxt = myView.findViewById(R.id.dept_val_tv)
+        crewTxt = myView.findViewById(R.id.crew_val_tv)
+        repTxt = myView.findViewById(R.id.rep_val_tv)
+
+        statusCustCL = myView.findViewById(R.id.status_cust_cl)
+        dataCL = myView.findViewById(R.id.work_order_data_cl)
+        footerCL = myView.findViewById(R.id.work_order_footer_cl)
+
+        itemRecyclerView = myView.findViewById(R.id.work_order_items_rv)
+
+
+
+        getWorkOrder()
+
+    }
+
+    fun getWorkOrder(){
+        println("getWorkOrder")
+
+
+        //if (firstLoad == false){
+            showProgressView()
+        //}
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/workOrder.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+
+
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = ${parentObject.toString()}")
+
+
+                    val gson = GsonBuilder().create()
+                    workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
+
+                    setStatus(workOrder!!.status)
+
+                    if(workOrder!!.title != null){
+                        titleTxt.text = workOrder!!.title!!
+                    }
+
+                    if(workOrder!!.dateNice != null){
+                        scheduleTxt.text = workOrder!!.dateNice!!
+                    }
+
+                    if(workOrder!!.department != null){
+                        deptTxt.text = workOrder!!.department!!
+                    }
+
+                    if(workOrder!!.crewName != null){
+                        crewTxt.text = workOrder!!.crewName!!
+                    }
+
+                    if(workOrder!!.salesRepName != null){
+                        repTxt.text = workOrder!!.salesRepName!!
+                    }
+
+                    var woItemJSON: JSONArray = parentObject.getJSONArray("items")
+                    val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
+
+                    work_order_items_rv.apply {
+                        layoutManager = LinearLayoutManager(activity)
+                        adapter = activity?.let {
+                            WoItemsAdapter(
+                                itemList,
+                                it, this@WorkOrderFragment
+                            )
+                        }
+
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        itemRecyclerView.addItemDecoration(itemDecoration)
+
+
+
+                        (adapter as WoItemsAdapter).notifyDataSetChanged()
+                    }
+
+                    workOrder!!.setEmps()
+
+
+                    hideProgressView()
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["woID"] = workOrder!!.woID
+
+                println("params = ${params.toString()}")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+
+    }
+
+    fun showStatusMenu(){
+        println("showStatusMenu")
+
+        var popUp:PopupMenu = PopupMenu(myView.context,statusBtn)
+
+
+        popUp.inflate(R.menu.task_status_menu)
+        // popUp.menu.getItem(0).subMenu.getItem(3).setVisible(false)
+        //popUp.menu.getItem(0).subMenu.getItem(4).setVisible(true)
+
+        //val d:Drawable? = resize(context.getDrawable(R.drawable.ic_in_progress)!!)
+
+
+        popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_not_started)!!,myView.context)!!, myView.context.getString(R.string.not_started)))
+        popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_in_progress)!!,myView.context)!!, myView.context.getString(R.string.in_progress)))
+        popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_done)!!,myView.context)!!, myView.context.getString(R.string.finished)))
+
+
+
+        popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+
+            workOrder!!.status = item!!.itemId.toString()
+
+            setStatus(workOrder!!.status)
+            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
+
+            /*
+
+            when (item!!.itemId) {
+                1 -> {
+                    Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
+                }
+                2 -> {
+                    Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
+                }
+                3 -> {
+                    Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
+                }
+
+            }
+*/
+
+
+
+
+
+            /*
+            var newItemStatus:String = "1"
+    var parameters:[String:String]
+    parameters = [
+        "taskID":_ID,
+        "status":_status,
+        "empID":(self.appDelegate.loggedInEmployee?.ID)!,
+        "woItemID":self.woItem.ID,
+        "woID":self.workOrder.ID,
+        "sessionKey": self.appDelegate.defaults.string(forKey: loggedInKeys.sessionKey)!,
+        "companyUnique": self.appDelegate.defaults.string(forKey: loggedInKeys.companyUnique)!
+
+    ]
+             */
+
+            showProgressView()
+
+            var urlString = "https://www.adminmatic.com/cp/app/functions/update/workOrderStatus.php"
+
+            val currentTimestamp = System.currentTimeMillis()
+            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+            urlString = "${"$urlString?cb=$currentTimestamp"}"
+            val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
+
+
+            val postRequest1: StringRequest = object : StringRequest(
+                Method.POST, urlString,
+                Response.Listener { response -> // response
+
+                    println("Response $response")
+
+                    //hideProgressView()
+
+
+                    try {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = ${parentObject.toString()}")
+                        // var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                        // println("payroll = ${payrollJSON.toString()}")
+                        // println("payroll count = ${payrollJSON.length()}")
+
+
+                        hideProgressView()
+
+
+                        /* Here 'response' is a String containing the response you received from the website... */
+                    } catch (e: JSONException) {
+                        println("JSONException")
+                        e.printStackTrace()
+                    }
+
+                },
+                Response.ErrorListener { // error
+
+                }
+            ) {
+                override fun getParams(): Map<String, String> {
+                    val params: MutableMap<String, String> = HashMap()
+                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                    params["status"] = workOrder!!.status
+                    params["woID"] = workOrder!!.woID
+                    params["empID"] = GlobalVars.loggedInEmployee!!.ID
+
+
+                    println("params = ${params.toString()}")
+                    return params
+                }
+            }
+            queue.add(postRequest1)
+
+
+
+
+            true
+        })
+
+
+
+
+        popUp.gravity = Gravity.LEFT
+        popUp.show()
+    }
+
+
+
+    //Stack delegates
+    override fun newLeadView(_lead: Lead) {
+        println("newLeadView ${_lead.ID}")
+
+        val directions = WorkOrderFragmentDirections.navigateWorkOrderToLead(_lead)
+        myView.findNavController().navigate(directions)
+    }
+
+    override fun newContractView(_contract: Contract) {
+        println("newContractView ${_contract.ID}")
+        val directions = WorkOrderFragmentDirections.navigateWorkOrderToContract(_contract)
+        myView.findNavController().navigate(directions)
+    }
+
+    override fun newWorkOrderView(_workOrder: WorkOrder) {
+        println("newWorkOrderView ${_workOrder}")
+        workOrder = _workOrder
+        getWorkOrder()
+    }
+
+    override fun newInvoiceView(_invoice: Invoice) {
+        println("newInvoiceView ${_invoice.ID}")
+        val directions = WorkOrderFragmentDirections.navigateWorkOrderToInvoice(_invoice)
+        myView.findNavController().navigate(directions)
+    }
+
+    override fun onWoItemCellClickListener(data:WoItem) {
+
+        println("Cell clicked with woItem: ${data.item}")
+
+
+        data?.let { data ->
+
+            var woItemFragment: WoItemFragment
+            val SIMPLE_FRAGMENT_TAG = "myfragmenttag"
+
+            //myView.findNavController().navigate()
+           // ft.add(R.id.container_all, frag as Fragment).commit()
+
+
+
+            val directions = WorkOrderFragmentDirections.navigateToWoItem(data,workOrder!!)
+
+           myView.findNavController().navigate(directions)
+
+
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+    private fun setStatus(status: String) {
+        println("setStatus")
+        when(status) {
+            "1" -> {
+                println("1")
+                statusBtn!!.setBackgroundResource(R.drawable.ic_not_started)
+
+            }
+            "2" -> {
+                println("2")
+                statusBtn!!.setBackgroundResource(R.drawable.ic_in_progress)
+
+            }
+            "3" -> {
+                println("3")
+                statusBtn!!.setBackgroundResource(R.drawable.ic_done)
+
+            }
+            "4" -> {
+                println("4")
+                statusBtn!!.setBackgroundResource(R.drawable.ic_canceled)
+
+            }
+            "5" -> {
+                println("5")
+                statusBtn!!.setBackgroundResource(R.drawable.ic_waiting)
+
+            }
+        }
+
+
+
+
+
+    }
+
+
+
+    fun showProgressView() {
+
+        println("showProgressView")
+
+        pgsBar.visibility = View.VISIBLE
+
+
+        statusCustCL.visibility = View.INVISIBLE
+        dataCL.visibility = View.INVISIBLE
+        footerCL.visibility = View.INVISIBLE
+        itemRecyclerView.visibility = View.INVISIBLE
+
+
+
+    }
+
+    fun hideProgressView() {
+        pgsBar.visibility = View.INVISIBLE
+
+
+        statusCustCL.visibility = View.VISIBLE
+        dataCL.visibility = View.VISIBLE
+        footerCL.visibility = View.VISIBLE
+        itemRecyclerView.visibility = View.VISIBLE
+
+    }
+
+fun test(){
+    println("test")
+}
+
+
+    companion object {
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param param1 Parameter 1.
+         * @param param2 Parameter 2.
+         * @return A new instance of fragment workOrderFragment.
+         */
+        // TODO: Rename and change types and number of parameters
+        @JvmStatic
+        fun newInstance(param1: String, param2: String) =
+            WorkOrderFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM2, param2)
+                }
+            }
+    }
+}

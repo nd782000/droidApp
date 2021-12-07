@@ -1,0 +1,144 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/stack_layout"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+
+    tools:context="com.example.AdminMatic.StackFragment">
+
+
+
+        <Spinner
+            android:id="@+id/lead_spinner"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/guideline1"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@null"
+            />
+
+
+        <TextView
+            android:id="@+id/lead_txt"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+
+            android:layout_marginLeft="6dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/guideline1"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/colorPrimary"
+            android:textAlignment="gravity"
+            android:textColor="@color/white"
+            android:layout_margin="3dp"/>
+
+
+
+
+
+        <Spinner
+            android:id="@+id/contract_spinner"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline1"
+            app:layout_constraintRight_toRightOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@null"/>
+
+        <TextView
+            android:id="@+id/contract_txt"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="6dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline1"
+            app:layout_constraintRight_toRightOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="parent"
+            android:gravity="center"
+
+            android:background="@color/colorPrimary"
+            android:textAlignment="gravity"
+            android:textColor="@color/white"
+            android:layout_margin="3dp"
+            />
+
+
+
+        <Spinner
+            android:id="@+id/work_order_spinner"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline2"
+            app:layout_constraintRight_toRightOf="@+id/guideline3"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@null"/>
+
+        <TextView
+            android:id="@+id/work_order_txt"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:layout_marginLeft="6dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline2"
+            app:layout_constraintRight_toRightOf="@+id/guideline3"
+            app:layout_constraintTop_toTopOf="parent"
+
+            android:background="@color/colorPrimary"
+            android:textAlignment="gravity"
+            android:textColor="@color/white"
+            android:layout_margin="3dp"/>
+
+
+
+        <Spinner
+            android:id="@+id/invoice_spinner"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline3"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@null"/>
+
+        <TextView
+            android:id="@+id/invoice_txt"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:layout_marginLeft="6dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline3"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            android:background="@color/colorPrimary"
+            android:textAlignment="gravity"
+            android:textColor="@color/white"
+            android:layout_margin="3dp"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintGuide_percent="0.25"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintGuide_percent="0.50"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintGuide_percent="0.75"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

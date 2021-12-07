@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:layout_gravity="center_horizontal"
+
+
+  >
+
+
+
+
+    <TextView
+        android:id="@+id/usage_vendor_tv"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="Vendor:"
+        android:paddingRight="6dp"
+        android:gravity="center"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guideline10"/>
+
+    <SearchView
+        android:id="@+id/usage_vendor_sv"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="Vendor:"
+        android:paddingRight="6dp"
+        android:gravity="center"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/guideline10"
+        app:layout_constraintRight_toLeftOf="@id/guideline12" />
+
+
+    <TextView
+        android:id="@+id/usage_quantity_tv"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="Quantity"
+        android:paddingRight="6dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/usage_vendor_tv"
+        app:layout_constraintRight_toLeftOf="@id/guideline10"/>
+
+    <EditText
+        android:id="@+id/usage_quantity_et"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:text="Name"
+        app:layout_constraintTop_toBottomOf="@id/usage_vendor_tv"
+        app:layout_constraintLeft_toRightOf="@id/guideline10"
+        app:layout_constraintRight_toLeftOf="@id/guideline11"/>
+
+    <TextView
+        android:id="@+id/usage_units_tv"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="Units"
+        android:paddingLeft="6dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/usage_vendor_tv"
+        app:layout_constraintLeft_toRightOf="@id/guideline11"
+        />
+
+
+    <TextView
+        android:id="@+id/usage_unit_cost_tv"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="Unit Cost $"
+        android:paddingRight="6dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/usage_quantity_tv"
+        app:layout_constraintRight_toLeftOf="@id/guideline10"
+        />
+
+    <EditText
+        android:id="@+id/usage_unit_cost_et"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:text="Name"
+        app:layout_constraintTop_toBottomOf="@id/usage_quantity_tv"
+        app:layout_constraintLeft_toRightOf="@id/guideline10"
+        app:layout_constraintRight_toLeftOf="@id/guideline11"/>
+
+    <TextView
+        android:id="@+id/usage_total_cost_tv"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="Total Cost $"
+        android:paddingRight="6dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/usage_unit_cost_tv"
+        app:layout_constraintRight_toLeftOf="@id/guideline10"/>
+
+    <EditText
+        android:id="@+id/usage_total_cost_et"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:text="Name"
+        app:layout_constraintTop_toBottomOf="@id/usage_unit_cost_et"
+        app:layout_constraintLeft_toRightOf="@id/guideline10"
+        app:layout_constraintRight_toLeftOf="@id/guideline11"/>
+
+    <TextView
+        android:id="@+id/usage_receipt_tv"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="Receipt"
+        android:paddingRight="6dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/usage_total_cost_tv"
+        app:layout_constraintRight_toLeftOf="@id/guideline10"/>
+
+    />
+    <ImageView
+        android:id="@+id/usage_receipt_iv"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:srcCompat="@drawable/ic_images"
+        app:layout_constraintTop_toBottomOf="@id/usage_total_cost_tv"
+        app:layout_constraintLeft_toRightOf="@id/guideline10"
+        app:layout_constraintRight_toLeftOf="@id/guideline11"/>
+    />
+
+
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".25"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".5"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".75"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+
+
+

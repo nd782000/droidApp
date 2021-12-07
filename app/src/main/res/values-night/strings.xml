@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="woItemEstLbl">Estimated:</string>
+    <string name="woItemQtyLbl">Qty:</string>
+    <string name="woItemTotalLbl">Total:</string>
+    <string name="assign_lead_tasks">Assign Lead Tasks</string>
+    <string name="add_usage">Add Usage</string>
+    <string name="woItemSubmitBtn">Submit</string>
+</resources>

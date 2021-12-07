@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/logInFragment">
+
+    <fragment
+        android:id="@+id/logInFragment"
+        android:name="com.example.AdminMatic.LogInFragment"
+        android:label="fragment_log_in"
+        tools:layout="@layout/fragment_log_in" >
+        <action
+            android:id="@+id/navigateToMainMenu"
+            app:destination="@id/mainMenuFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/customerListFragment"
+        android:name="com.example.AdminMatic.CustomerListFragment"
+        android:label="fragment_customer_list"
+        tools:layout="@layout/fragment_customer_list" >
+        <action
+            android:id="@+id/navigateToCustomer"
+            app:destination="@id/customerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainMenuFragment2"
+        android:name="com.example.AdminMatic.MainMenuFragment"
+        android:label="fragment_main_menu"
+        tools:layout="@layout/fragment_main_menu" >
+        <action
+            android:id="@+id/navigateToCustomerList"
+            app:destination="@id/customerListFragment" />
+        <action
+            android:id="@+id/navigateToEmployeeList"
+            app:destination="@id/employeeListFragment" />
+        <action
+            android:id="@+id/navigateToVendorList"
+            app:destination="@id/vendorListFragment" />
+        <action
+            android:id="@+id/navigateToItemList"
+            app:destination="@id/itemListFragment" />
+        <action
+            android:id="@+id/navigateToLeadList"
+            app:destination="@id/leadListFragment" />
+        <action
+            android:id="@+id/navigateToContractList"
+            app:destination="@id/contractListFragment" />
+        <action
+            android:id="@+id/navigateToWorkOrderList"
+            app:destination="@id/workOrderListFragment" />
+        <action
+            android:id="@+id/navigateToInvoiceList"
+            app:destination="@id/invoiceListFragment" />
+        <action
+            android:id="@+id/navigateToEquipmentList"
+            app:destination="@id/equipmentListFragment" />
+        <action
+            android:id="@+id/navigateToImageList"
+            app:destination="@id/imageListFragment" />
+        <action
+            android:id="@+id/navigateToLoggedInEmployee"
+            app:destination="@id/employeeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/employeeListFragment"
+        android:name="com.example.AdminMatic.EmployeeListFragment"
+        android:label="fragment_employee_list"
+        tools:layout="@layout/fragment_employee_list" >
+        <action
+            android:id="@+id/navigateToEmployee"
+            app:destination="@id/employeeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/vendorListFragment"
+        android:name="com.example.AdminMatic.VendorListFragment"
+        android:label="fragment_vendor_list"
+        tools:layout="@layout/fragment_vendor_list" >
+        <action
+            android:id="@+id/navigateToVendor"
+            app:destination="@id/vendorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemListFragment"
+        android:name="com.example.AdminMatic.ItemListFragment"
+        android:label="fragment_item_list"
+        tools:layout="@layout/fragment_item_list" >
+        <action
+            android:id="@+id/navigateToItem"
+            app:destination="@id/itemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/leadListFragment"
+        android:name="com.example.AdminMatic.LeadListFragment"
+        android:label="fragment_leads_list"
+        tools:layout="@layout/fragment_lead_list" >
+        <action
+            android:id="@+id/action_leadListFragment_self"
+            app:destination="@id/leadListFragment" />
+        <action
+            android:id="@+id/navigateToLead"
+            app:destination="@id/leadFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/contractListFragment"
+        android:name="com.example.AdminMatic.ContractListFragment"
+        android:label="fragment_contract_list"
+        tools:layout="@layout/fragment_contract_list" >
+        <action
+            android:id="@+id/navigateToContract"
+            app:destination="@id/contractFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/workOrderListFragment"
+        android:name="com.example.AdminMatic.WorkOrderListFragment"
+        android:label="fragment_work_order_list"
+        tools:layout="@layout/fragment_work_order_list" >
+        <action
+            android:id="@+id/navigateToWorkOrder"
+            app:destination="@id/workOrderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/invoiceListFragment"
+        android:name="com.example.AdminMatic.InvoiceListFragment"
+        android:label="fragment_invoice_list"
+        tools:layout="@layout/fragment_invoice_list" >
+        <action
+            android:id="@+id/navigateToInvoice"
+            app:destination="@id/invoiceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/equipmentListFragment"
+        android:name="com.example.AdminMatic.EquipmentListFragment"
+        android:label="fragment_equipment_list"
+        tools:layout="@layout/fragment_equipment_list" >
+        <action
+            android:id="@+id/navigateToEquipment"
+            app:destination="@id/equipmentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageListFragment"
+        android:name="com.example.AdminMatic.ImageListFragment"
+        android:label="fragment_image_list"
+        tools:layout="@layout/fragment_image_list" >
+        <action
+            android:id="@+id/navigateToImage"
+            app:destination="@id/imageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/employeeFragment"
+        android:name="com.example.AdminMatic.EmployeeFragment"
+        android:label="fragment_employee"
+        tools:layout="@layout/fragment_employee" >
+
+        <argument
+            android:name="employee"
+            app:argType="com.example.AdminMatic.Employee"
+            app:nullable="true" />
+        <action
+            android:id="@+id/navigateToPayroll"
+            app:destination="@id/payrollFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/payrollFragment"
+        android:name="com.example.AdminMatic.PayrollFragment"
+        android:label="fragment_payroll"
+        tools:layout="@layout/fragment_payroll" >
+        <argument
+            android:name="employee"
+            app:argType="com.example.AdminMatic.Employee"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/workOrderFragment"
+        android:name="com.example.AdminMatic.WorkOrderFragment"
+        android:label="fragment_work_order"
+        tools:layout="@layout/fragment_work_order" >
+        <argument
+            android:name="workOrder"
+            app:argType="com.example.AdminMatic.WorkOrder"
+            app:nullable="true" />
+        <action
+            android:id="@+id/navigateWorkOrderToLead"
+            app:destination="@id/leadFragment" />
+        <action
+            android:id="@+id/navigateWorkOrderToContract"
+            app:destination="@id/contractFragment" />
+        <action
+            android:id="@+id/navigateWorkOrderToInvoice"
+            app:destination="@id/invoiceFragment" />
+        <action
+            android:id="@+id/navigateWorkOrderToCustomer"
+            app:destination="@id/customerFragment" />
+        <action
+            android:id="@+id/navigateToWoItem"
+            app:destination="@id/woItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/customerFragment"
+        android:name="com.example.AdminMatic.CustomerFragment"
+        android:label="fragment_customer"
+        tools:layout="@layout/fragment_customer" >
+        <argument
+            android:name="customer"
+            app:argType="com.example.AdminMatic.Customer"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/vendorFragment"
+        android:name="com.example.AdminMatic.VendorFragment"
+        android:label="fragment_vendor"
+        tools:layout="@layout/fragment_vendor" >
+        <argument
+            android:name="vendor"
+            app:argType="com.example.AdminMatic.Vendor"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemFragment"
+        android:name="com.example.AdminMatic.ItemFragment"
+        android:label="fragment_item"
+        tools:layout="@layout/fragment_item" >
+        <argument
+            android:name="item"
+            app:argType="com.example.AdminMatic.Item"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/leadFragment"
+        android:name="com.example.AdminMatic.LeadFragment"
+        android:label="fragment_lead"
+        tools:layout="@layout/fragment_lead" >
+        <argument
+            android:name="lead"
+            app:argType="com.example.AdminMatic.Lead"
+            app:nullable="true" />
+        <action
+            android:id="@+id/navigateLeadToContract"
+            app:destination="@id/contractFragment" />
+        <action
+            android:id="@+id/navigateLeadToWorkOrder"
+            app:destination="@id/workOrderFragment" />
+        <action
+            android:id="@+id/navigateLeadToInvoice"
+            app:destination="@id/invoiceFragment" />
+        <action
+            android:id="@+id/navigateLeadToCustomer"
+            app:destination="@id/customerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/contractFragment"
+        android:name="com.example.AdminMatic.ContractFragment"
+        android:label="fragment_contract"
+        tools:layout="@layout/fragment_contract" >
+        <argument
+            android:name="contract"
+            app:argType="com.example.AdminMatic.Contract"
+            app:nullable="true" />
+        <action
+            android:id="@+id/navigateContractToLead"
+            app:destination="@id/leadFragment" />
+        <action
+            android:id="@+id/navigateContractToWorkOrder"
+            app:destination="@id/workOrderFragment" />
+        <action
+            android:id="@+id/navigateContractToInvoice"
+            app:destination="@id/invoiceFragment" />
+        <action
+            android:id="@+id/navigateContractToCustomer"
+            app:destination="@id/customerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/invoiceFragment"
+        android:name="com.example.AdminMatic.InvoiceFragment"
+        android:label="fragment_invoice"
+        tools:layout="@layout/fragment_invoice" >
+        <argument
+            android:name="invoice"
+            app:argType="com.example.AdminMatic.Invoice"
+            app:nullable="true" />
+        <action
+            android:id="@+id/navigateInvoiceToLead"
+            app:destination="@id/leadFragment" />
+        <action
+            android:id="@+id/navigateInvoiceToContract"
+            app:destination="@id/contractFragment" />
+        <action
+            android:id="@+id/navigateInvoiceToWorkOrder"
+            app:destination="@id/workOrderFragment" />
+        <action
+            android:id="@+id/navigateInvoiceToCustomer"
+            app:destination="@id/customerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="com.example.AdminMatic.ImageFragment"
+        android:label="fragment_image"
+        tools:layout="@layout/fragment_image" >
+        <argument
+            android:name="image"
+            app:argType="com.example.AdminMatic.Image"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/equipmentFragment"
+        android:name="com.example.AdminMatic.EquipmentFragment"
+        android:label="fragment_equipment"
+        tools:layout="@layout/fragment_equipment" >
+        <argument
+            android:name="equipment"
+            app:argType="com.example.AdminMatic.Equipment"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/woItemFragment"
+        android:name="com.example.AdminMatic.WoItemFragment"
+        android:label="fragment_wo_item"
+        tools:layout="@layout/fragment_wo_item" >
+        <argument
+            android:name="woItem"
+            app:argType="com.example.AdminMatic.WoItem"
+            app:nullable="true" />
+        <action
+            android:id="@+id/navigateToUsageEntry"
+            app:destination="@id/usageEntryFragment" />
+        <argument
+            android:name="workOrder"
+            app:argType="com.example.AdminMatic.WorkOrder" />
+    </fragment>
+    <fragment
+        android:id="@+id/usageEntryFragment"
+        android:name="com.example.AdminMatic.UsageEntryFragment"
+        android:label="fragment_usage_entry"
+        tools:layout="@layout/fragment_usage_entry" >
+        <argument
+            android:name="woItem"
+            app:argType="com.example.AdminMatic.WoItem" />
+        <argument
+            android:name="workOrder"
+            app:argType="com.example.AdminMatic.WorkOrder" />
+    </fragment>
+</navigation>
