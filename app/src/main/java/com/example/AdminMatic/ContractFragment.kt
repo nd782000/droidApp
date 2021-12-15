@@ -85,8 +85,8 @@ class ContractFragment : Fragment(), StackDelegate {
         println("newLeadView ${_lead.ID}")
 
 
-        val directions = ContractFragmentDirections.navigateContractToLead(_lead)
-        myView.findNavController().navigate(directions)
+       // val directions = ContractFragmentDirections.navigateContractToLead(_lead)
+      //  myView.findNavController().navigate(directions)
 
     }
 
@@ -102,16 +102,16 @@ class ContractFragment : Fragment(), StackDelegate {
     override fun newWorkOrderView(_workOrder: WorkOrder) {
         println("newWorkOrderView ${_workOrder}")
 
-        val directions = ContractFragmentDirections.navigateContractToWorkOrder(_workOrder)
-        myView.findNavController().navigate(directions)
+        //val directions = ContractFragmentDirections.navigateContractToWorkOrder(_workOrder)
+       // myView.findNavController().navigate(directions)
 
     }
 
     override fun newInvoiceView(_invoice: Invoice) {
         println("newInvoiceView ${_invoice.ID}")
 
-        val directions = ContractFragmentDirections.navigateContractToInvoice(_invoice)
-        myView.findNavController().navigate(directions)
+       // val directions = ContractFragmentDirections.navigateContractToInvoice(_invoice)
+       // myView.findNavController().navigate(directions)
     }
 
 

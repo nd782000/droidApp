@@ -223,7 +223,9 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
         }
         custPhoneBtnTxt = myView.findViewById(R.id.customer_phone_btn_tv)
 
-        custPhoneBtnTxt.text = customer!!.phone
+       // custPhoneBtnTxt.text = customer!!.phone
+
+        custPhoneBtnTxt.text = "No Phone Found"
 
         custEmailBtn = myView.findViewById(R.id.customer_email_btn_cl)
         custEmailBtn.setOnClickListener {
@@ -231,7 +233,46 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
         }
 
         custEmailBtnTxt = myView.findViewById(R.id.customer_email_btn_tv)
-        custEmailBtnTxt.text = customer!!.email
+
+        //custEmailBtnTxt.text = customer!!.email
+
+        custEmailBtnTxt.text = "No Email Found"
+
+        custAddressBtn = myView.findViewById(R.id.customer_address_btn_cl)
+        custAddressBtn.setOnClickListener {
+            println("email btn clicked ${customer!!.mainAddr}")
+        }
+
+        custAddressBtnTxt = myView.findViewById(R.id.customer_address_btn_tv)
+
+        //custEmailBtnTxt.text = customer!!.email
+
+        custAddressBtnTxt.text = "No Address Found"
+
+        if (customer!!.mainAddr != ""){
+            custAddressBtnTxt.text = customer!!.mainAddr
+        }
+
+
+        if (customer!!.contacts.count() > 0){
+            for (contact in customer!!.contacts) {
+                when(contact.type) {
+                    "1" -> {
+                        println("1")
+                        custPhoneBtnTxt.text = contact.value!!
+
+                    }
+                    "2" -> {
+                        println("2")
+                        custEmailBtnTxt.text = contact.value!!
+
+                    }
+
+
+
+                }
+            }
+        }
 
         contactsBtn = myView.findViewById((R.id.contacts_btn))
         contactsBtn.setOnClickListener{

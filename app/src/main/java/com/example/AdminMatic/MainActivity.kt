@@ -84,17 +84,90 @@ interface StackDelegate {
 @Parcelize
 data class Contact(
     var ID:String,
-    var empID: String,
+    var type: String,
 
-    var startTime: String? = "",
-    var stopTime: String? = "",
-    var status: String? = "",
-    var comment: String? = "",
-    var qty: String? = ""
+    var sort: String? = "",
+
+    var contactName: String? = "",
+    var value: String? = "",
+    var main: String? = "",
+    var name: String? = "",
+    var street1: String? = "",
+    var street2: String? = "",
+    var street3: String? = "",
+    var street4: String? = "",
+    var city: String? = "",
+    var state: String? = "",
+    var zip: String? = "",
+    var zone: String? = "",
+    var zoneName: String? = "",
+    var color: String? = "",
+    var lat: String? = "",
+    var lng: String? = "",
+    var fullAddress: String? = "",
+    var preferred: String? = ""
 
 ): Parcelable{
     override fun toString(): String {
         return  ID
+    }
+}
+
+
+@Parcelize
+data class Contract(var ID: String = "0",
+                    var status: String = "",
+                    var title:String = "Contract",
+                    var createdBy:String = "",
+                    var statusName:String? = "",
+                    var chargeType:String? = "",
+                    var customer:String? = "",
+                    var custName:String? = "",
+                    var allowImages:String? = "",
+                    var notes:String? = "",
+                    var salesRep:String? = "",
+                    var repName:String? = "",
+                    var addr:String? = "",
+                    var createDate:String? = "",
+                    var subTotal:String? = "",
+                    var taxTotal:String? = "",
+                    var total:String? = "",
+                    var paymentTermsID:String? = "",
+                    var termsDescription:String? = "",
+                    var daysAged:String? = "",
+                    var repSignature:String? = "",
+                    var customerSigned:String? = "",
+                    var repSignaturePath:String? = "",
+                    var customerSignaturePath:String? = "",
+                    var custNameAndID:String? = ""
+): Parcelable{
+    override fun toString(): String {
+        return title
+    }
+}
+
+
+
+@Parcelize
+data class Customer(var ID: String,
+                    var sysname: String = "",
+                    var mainAddr:String = "",
+                    var phone:String? = "",
+                    var email:String? = "",
+
+                    var contacts:Array<Contact> = arrayOf()
+): Parcelable{
+    override fun toString(): String {
+        return sysname
+    }
+}
+
+
+@Parcelize
+data class CustomerArray(var customers: Array<Customer>
+): Parcelable{
+    override fun toString(): String {
+        return customers.count().toString()
     }
 }
 
@@ -443,58 +516,6 @@ data class WoItem(var ID:String,
 }
 
 
-@Parcelize
-data class Customer(var ID: String,
-                    var sysname: String = "",
-                    var mainAddr:String = "",
-                    var phone:String = "",
-                    var email:String = ""
-): Parcelable{
-    override fun toString(): String {
-        return sysname
-    }
-}
-
-
-@Parcelize
-data class CustomerArray(var customers: Array<Customer>
-): Parcelable{
-    override fun toString(): String {
-        return customers.count().toString()
-    }
-}
-
-@Parcelize
-data class Contract(var ID: String = "0",
-                    var status: String = "",
-                    var title:String = "Contract",
-                    var createdBy:String = "",
-                    var statusName:String? = "",
-                    var chargeType:String? = "",
-                    var customer:String? = "",
-                    var custName:String? = "",
-                    var allowImages:String? = "",
-                    var notes:String? = "",
-                    var salesRep:String? = "",
-                    var repName:String? = "",
-                    var addr:String? = "",
-                    var createDate:String? = "",
-                    var subTotal:String? = "",
-                    var taxTotal:String? = "",
-                    var total:String? = "",
-                    var paymentTermsID:String? = "",
-                    var termsDescription:String? = "",
-                    var daysAged:String? = "",
-                    var repSignature:String? = "",
-                    var customerSigned:String? = "",
-                    var repSignaturePath:String? = "",
-                    var customerSignaturePath:String? = "",
-                    var custNameAndID:String? = ""
-): Parcelable{
-    override fun toString(): String {
-        return title
-    }
-}
 
 
 @Parcelize

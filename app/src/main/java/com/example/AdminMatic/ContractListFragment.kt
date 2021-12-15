@@ -267,8 +267,8 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data?.let { data ->
-            val directions = ContractListFragmentDirections.navigateToContract(data)
-            myView.findNavController().navigate(directions)
+           // val directions = ContractListFragmentDirections.navigateToContract(data)
+           // myView.findNavController().navigate(directions)
         }
 
     }
