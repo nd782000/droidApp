@@ -55,32 +55,6 @@ interface StackDelegate {
 //Data Classes
 
 
-
-/*
-
-  case ID
-        case sort
-        case value
-        case type
-        case contactName
-        case main
-        case name
-        case street1
-        case street2
-        case street3
-        case street4
-        case city
-        case state
-        case zip
-        case zone
-        case zoneName
-        case color
-        case lat
-        case lng
-        case fullAddress
-        case preferred
- */
-
 @Parcelize
 data class Contact(
     var ID:String,
@@ -149,214 +123,6 @@ data class Contract(var ID: String = "0",
 
 
 @Parcelize
-data class Customer(var ID: String,
-                    var sysname: String = "",
-                    var mainAddr:String = "",
-                    var phone:String? = "",
-                    var email:String? = "",
-
-                    var contacts:Array<Contact> = arrayOf()
-): Parcelable{
-    override fun toString(): String {
-        return sysname
-    }
-}
-
-
-@Parcelize
-data class CustomerArray(var customers: Array<Customer>
-): Parcelable{
-    override fun toString(): String {
-        return customers.count().toString()
-    }
-}
-
-
-
-
-
-
-@Parcelize
-data class Signature(
-    var contractId:String,
-    var type: String,
-    var path: String
-): Parcelable
-
-@Parcelize
-data class Shift(
-    var ID:String,
-    var empID: String,
-
-    var startTime: String? = "",
-    var stopTime: String? = "",
-    var status: String? = "",
-    var comment: String? = "",
-    var qty: String? = ""
-
-): Parcelable{
-    override fun toString(): String {
-        return  ID
-    }
-}
-
-@Parcelize
-data class Strike(
-    var ID:String,
-    var empID: String,
-
-    var empName: String? = "",
-    var hasSignature: String? = "",
-    var type: String? = "",
-    var note: String? = "",
-    var woID: String? = "",
-    var woTitle: String? = "",
-    var customerID: String? = "",
-    var custName: String? = "",
-    var created: String? = "",
-    var issuedByID: String? = "",
-    var occurenceDate: String? = "",
-    var occurenceDateNice: String? = "",
-    var signed: String? = "",
-    var signedDate: String? = "",
-    var signedDateNice: String? = "",
-
-    var images: Array<Image>? = null
-
-): Parcelable{
-    override fun toString(): String {
-        return  empName ?: ID
-    }
-}
-
-@Parcelize
-data class License(
-    var ID:String,
-    var licenceID: String,
-    var name: String,
-    var expiration: String? = "",
-    var number: String? = "",
-    var status: String? = "",
-    var issuer: String? = ""
-
-): Parcelable{
-    override fun toString(): String {
-        return  name
-    }
-}
-
-@Parcelize
-data class InspectionQuestion(
-    var ID:String,
-    var name: String,
-    var answer: String? = ""
-
-): Parcelable{
-    override fun toString(): String {
-        return  name
-    }
-}
-
-@Parcelize
-data class EquipmentService(
-    var ID:String,
-    var name: String,
-    var type: String,
-
-    var typeName: String? = "",
-    var addedBy: String? = "",
-    var status: String? = "",
-    var equipmentID: String? = "",
-    var frequency: String? = "",
-    var instruction: String? = "",
-    var createDate: String? = "",
-    var completionDate: String? = "",
-    var completionMileage: String? = "",
-    var completedBy: String? = "",
-    var notes: String? = "",
-    var currentValue: String? = "",
-    var nextValue: String? = "",
-    var serviceDue: Boolean? = false
-
-): Parcelable{
-    override fun toString(): String {
-        return  name
-    }
-}
-
-
-@Parcelize
-data class Login(var attempt:String,
-                 var lastAttempt: String?
-
-): Parcelable
-
-
-
-@Parcelize
-data class Template(var ID:String,
-                var name: String,
-                var description: String? = ""
-): Parcelable{
-    override fun toString(): String {
-        return  name
-    }
-}
-
-
-@Parcelize
-data class Crew(var ID:String,
-                var name: String,
-                var status: String? = "",
-                var color: String? = "",
-                var crewHead: String? = "",
-                var emps: Array<Employee>? = null
-): Parcelable{
-    override fun toString(): String {
-        return  name
-    }
-}
-
-@Parcelize
-data class Department(var ID:String,
-                       var name: String,
-                       var status: String? = "",
-                       var color: String? = "",
-                       var depHead: String? = "",
-                       var crews: Array<Crew>? = null,
-                       var emps: Array<Employee>? = null
-
-): Parcelable{
-    override fun toString(): String {
-        return  name
-    }
-}
-
-
-@Parcelize
-data class InvoiceItem(var ID:String,
-                       var item: String,
-                       var charge: String? = "",
-                       var act: String? = "",
-                       var invoiceID: String? = "",
-                       var price: String? = "",
-                       var servicedDate: String? = "",
-                       var itemID: String? = "",
-                       var totalImages: String? = "",
-                       var total: String? = "",
-                       var type: String? = "",
-                       var taxCode: String? = "",
-                       var hideUnits: String? = "",
-                       var custDesc: String? = ""
-
-
-): Parcelable{
-    override fun toString(): String {
-        return  item
-    }
-}
-
-@Parcelize
 data class ContractTask(var ID:String,
                         var contractItemID: String,
                         var createdBy: String? = "",
@@ -398,123 +164,65 @@ data class ContractItem(var ID:String,
 
 
 
+
 @Parcelize
-data class Usage(var ID:String,
-                 var woID: String,
-                 var woItemID: String,
-                 var type: String,
-                 var addedBy: String,
-                 var qty: String,
-
-                 var empID: String? = "",
-                 var depID: String? = "",
-                 var start: String? = null,
-                 var stop: String? = null,
-
-                 var lunch: String? = null,
-                 var empName: String? = "",
-                 var unitPrice: String? = "",
-                 var totalPrice: String? = "",
-                 var vendor: String? = "",
-                 var unitCost: String? = "",
-                 var totalCost: String? = "",
-                 var usageCharge: String? = "",
-                 var override: String? = "",
-                 var pic: String? = "",
-                 var del: String? = "",
-                 var custName: String? = "",
-                 var woStatus: String? = "",
-                 var hasReceipt: String? = "",
-
-
-                 var locked: Boolean? = false,
-                 var receipt:Image? = null
+data class Crew(var ID:String,
+                var name: String,
+                var status: String? = "",
+                var color: String? = "",
+                var crewHead: String? = "",
+                var emps: Array<Employee>? = null
 ): Parcelable{
     override fun toString(): String {
-        return  ID
+        return  name
     }
-
-
-     fun getTime(s: String): String? {
-
-         val formatter =
-             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-         val dateTime = LocalDateTime.parse(s, formatter)
-
-         val dtf: DateTimeFormatter =
-             DateTimeFormatterBuilder().appendPattern("h:mm a").toFormatter()
-
-
-        return dtf.format(dateTime.toLocalTime()).toString()
-
-     }
-
 }
 
 
 
 
 @Parcelize
-data class Task(var ID:String,
-                  var sort: String,
-                  var status: String,
+data class Customer(var ID: String,
+                    var sysname: String = "",
+                    var mainAddr:String = "",
+                    var phone:String? = "",
+                    var email:String? = "",
 
-                  var task: String? = "",
+                    var contacts:Array<Contact> = arrayOf(),
 
-                  var images: Array<Image>? = null
-
+                    var lng:String? = "",
+                    var lat:String? = "",
 ): Parcelable{
     override fun toString(): String {
-        return task ?: ID
+        return sysname
+    }
+}
+
+
+@Parcelize
+data class CustomerArray(var customers: Array<Customer>
+): Parcelable{
+    override fun toString(): String {
+        return customers.count().toString()
     }
 }
 
 
 
 @Parcelize
-data class WoItem(var ID:String,
-                  var item: String,
-                  var itemID: String,
-
-                  var type: String = "",
-                  var sort: String = "",
-                  var status: String = "",
-                  var charge: String = "",
-                  var total: String = "",
-                  var est: String = "",
-                  var empDesc: String = "",
-                  var chargeName: String = "",
-                  var act: String = "",
-                  var price: String = "",
-                  var totalCost: String = "",
-                  var usageQty: String = "",
-                  var remaining: String = "",
-                  var extraUsage: String = "",
-                  var unitName: String = "",
-                  var woID: String = "",
-                  var woTitle: String = "",
-                  var contractID: String = "",
-                  var contractTitle: String = "",
-                  var taxType: String = "",
-                  var hideUnits: String = "",
-                  var subcontractor: String = "",
-                  var locked: String = "",
-                  var printView: String = "",
-
-                  var tasks:Array<Task> = arrayOf(),
-                  var usage:Array<Usage> = arrayOf(),
-                  var vendors:Array<Vendor> = arrayOf()
-                          //usage
-                          //vendors
-
-
+data class Department(var ID:String,
+                      var name: String,
+                      var status: String? = "",
+                      var color: String? = "",
+                      var depHead: String? = "",
+                      var crews: Array<Crew>? = null,
+                      var emps: Array<Employee>? = null
 
 ): Parcelable{
     override fun toString(): String {
-        return item
+        return  name
     }
 }
-
 
 
 
@@ -548,6 +256,105 @@ data class Equipment(val ID: String,
         return name
     }
 }
+
+
+
+
+
+@Parcelize
+data class Employee(val ID: String,
+                    val name: String,
+                    val fName: String,
+                    val lName:String,
+                    val pic:String,
+                    val username: String,
+                    val level: String,
+                    val levelName: String,
+                    val hasSignature: String,
+                    val payRate: String,
+                    val phone: String,
+                    val mobile: String,
+                    val email: String,
+                    val appScore: String,
+                    val dep: String,
+                    val salesRep: String,
+                    var sessionKey: String,
+                    var companyUnique:String
+) : Parcelable{
+
+    override fun toString(): String {
+        return name
+    }
+}
+
+
+
+
+@Parcelize
+data class EquipmentService(
+    var ID:String,
+    var name: String,
+    var type: String,
+
+    var typeName: String? = "",
+    var addedBy: String? = "",
+    var status: String? = "",
+    var equipmentID: String? = "",
+    var frequency: String? = "",
+    var instruction: String? = "",
+    var createDate: String? = "",
+    var completionDate: String? = "",
+    var completionMileage: String? = "",
+    var completedBy: String? = "",
+    var notes: String? = "",
+    var currentValue: String? = "",
+    var nextValue: String? = "",
+    var serviceDue: Boolean? = false
+
+): Parcelable{
+    override fun toString(): String {
+        return  name
+    }
+}
+
+
+
+
+@Parcelize
+data class InvoiceItem(var ID:String,
+                       var item: String,
+                       var charge: String? = "",
+                       var act: String? = "",
+                       var invoiceID: String? = "",
+                       var price: String? = "",
+                       var servicedDate: String? = "",
+                       var itemID: String? = "",
+                       var totalImages: String? = "",
+                       var total: String? = "",
+                       var type: String? = "",
+                       var taxCode: String? = "",
+                       var hideUnits: String? = "",
+                       var custDesc: String? = ""
+
+
+): Parcelable{
+    override fun toString(): String {
+        return  item
+    }
+}
+
+@Parcelize
+data class InspectionQuestion(
+    var ID:String,
+    var name: String,
+    var answer: String? = ""
+
+): Parcelable{
+    override fun toString(): String {
+        return  name
+    }
+}
+
 
 @Parcelize
 data class Image(val ID: String,
@@ -621,6 +428,9 @@ data class Item(val ID: String,
 
 
 
+
+
+
 @Parcelize
 data class Lead(var ID: String = "0",
                 var statusID: String = "",
@@ -657,36 +467,31 @@ data class Lead(var ID: String = "0",
 
 
 @Parcelize
-data class Employee(val ID: String,
-                    val name: String,
-                    val fName: String,
-                    val lName:String,
-                    val pic:String,
-                    val username: String,
-                    val level: String,
-                    val levelName: String,
-                    val hasSignature: String,
-                    val payRate: String,
-                    val phone: String,
-                    val mobile: String,
-                    val email: String,
-                    val appScore: String,
-                    val dep: String,
-                    val salesRep: String,
-                    var sessionKey: String,
-                    var companyUnique:String
-) : Parcelable{
+data class License(
+    var ID:String,
+    var licenceID: String,
+    var name: String,
+    var expiration: String? = "",
+    var number: String? = "",
+    var status: String? = "",
+    var issuer: String? = ""
 
+): Parcelable{
     override fun toString(): String {
-        return name
+        return  name
     }
 }
 
-/*
+
+
 @Parcelize
-data class EmpsOnWo(val emps: Array<Employee>
-) : Parcelable
-*/
+data class Login(var attempt:String,
+                 var lastAttempt: String?
+
+): Parcelable
+
+
+
 
 
 
@@ -720,6 +525,152 @@ data class Payroll(var ID: String?,
 }
 
 
+
+@Parcelize
+data class Signature(
+    var contractId:String,
+    var type: String,
+    var path: String
+): Parcelable
+
+@Parcelize
+data class Shift(
+    var ID:String,
+    var empID: String,
+
+    var startTime: String? = "",
+    var stopTime: String? = "",
+    var status: String? = "",
+    var comment: String? = "",
+    var qty: String? = ""
+
+): Parcelable{
+    override fun toString(): String {
+        return  ID
+    }
+}
+
+
+
+@Parcelize
+data class Strike(
+    var ID:String,
+    var empID: String,
+
+    var empName: String? = "",
+    var hasSignature: String? = "",
+    var type: String? = "",
+    var note: String? = "",
+    var woID: String? = "",
+    var woTitle: String? = "",
+    var customerID: String? = "",
+    var custName: String? = "",
+    var created: String? = "",
+    var issuedByID: String? = "",
+    var occurenceDate: String? = "",
+    var occurenceDateNice: String? = "",
+    var signed: String? = "",
+    var signedDate: String? = "",
+    var signedDateNice: String? = "",
+
+    var images: Array<Image>? = null
+
+): Parcelable{
+    override fun toString(): String {
+        return  empName ?: ID
+    }
+}
+
+
+
+
+@Parcelize
+data class Task(var ID:String,
+                var sort: String,
+                var status: String,
+
+                var task: String? = "",
+
+                var images: Array<Image>? = null
+
+): Parcelable{
+    override fun toString(): String {
+        return task ?: ID
+    }
+}
+
+
+
+@Parcelize
+data class Template(var ID:String,
+                var name: String,
+                var description: String? = ""
+): Parcelable{
+    override fun toString(): String {
+        return  name
+    }
+}
+
+
+
+
+
+
+@Parcelize
+data class Usage(var ID:String,
+                 var woID: String,
+                 var woItemID: String,
+                 var type: String,
+                 var addedBy: String,
+                 var qty: String,
+
+                 var empID: String? = "",
+                 var depID: String? = "",
+                 var start: String? = null,
+                 var stop: String? = null,
+
+                 var lunch: String? = null,
+                 var empName: String? = "",
+                 var unitPrice: String? = "",
+                 var totalPrice: String? = "",
+                 var vendor: String? = "",
+                 var unitCost: String? = "",
+                 var totalCost: String? = "",
+                 var usageCharge: String? = "",
+                 var override: String? = "",
+                 var pic: String? = "",
+                 var del: String? = "",
+                 var custName: String? = "",
+                 var woStatus: String? = "",
+                 var hasReceipt: String? = "",
+
+
+                 var locked: Boolean? = false,
+                 var receipt:Image? = null
+): Parcelable{
+    override fun toString(): String {
+        return  ID
+    }
+
+
+     fun getTime(s: String): String? {
+
+         val formatter =
+             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+         val dateTime = LocalDateTime.parse(s, formatter)
+
+         val dtf: DateTimeFormatter =
+             DateTimeFormatterBuilder().appendPattern("h:mm a").toFormatter()
+
+
+        return dtf.format(dateTime.toLocalTime()).toString()
+
+     }
+
+}
+
+
+
 @Parcelize
 data class Vendor(val ID: String,
                   val name: String,
@@ -736,6 +687,53 @@ data class Vendor(val ID: String,
 ): Parcelable{
     override fun toString(): String {
         return name
+    }
+}
+
+
+
+
+@Parcelize
+data class WoItem(var ID:String,
+                  var item: String,
+                  var itemID: String,
+
+                  var type: String = "",
+                  var sort: String = "",
+                  var status: String = "",
+                  var charge: String = "",
+                  var total: String = "",
+                  var est: String = "",
+                  var empDesc: String = "",
+                  var chargeName: String = "",
+                  var act: String = "",
+                  var price: String = "",
+                  var totalCost: String = "",
+                  var usageQty: String = "",
+                  var remaining: String = "",
+                  var extraUsage: String = "",
+                  var unitName: String = "",
+                  var woID: String = "",
+                  var woTitle: String = "",
+                  var contractID: String = "",
+                  var contractTitle: String = "",
+                  var taxType: String = "",
+                  var hideUnits: String = "",
+                  var subcontractor: String = "",
+                  var locked: String = "",
+                  var printView: String = "",
+
+                  var tasks:Array<Task> = arrayOf(),
+                  var usage:Array<Usage> = arrayOf(),
+                  var vendors:Array<Vendor> = arrayOf()
+                          //usage
+                          //vendors
+
+
+
+): Parcelable{
+    override fun toString(): String {
+        return item
     }
 }
 

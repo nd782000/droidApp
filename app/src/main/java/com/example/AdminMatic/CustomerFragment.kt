@@ -3,16 +3,14 @@ package com.example.AdminMatic
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
@@ -20,12 +18,9 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_work_order.*
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.HashMap
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -215,12 +210,12 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
         custNameTextView.text = customer!!.sysname
 
         custPhoneBtn = myView.findViewById(R.id.customer_phone_btn_cl)
-        custPhoneBtn.setOnClickListener {
-            println("phone btn clicked ${customer!!.phone}")
+       // custPhoneBtn.setOnClickListener {
+          //  println("phone btn clicked ${customer!!.phone}")
 
-            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + customer!!.phone))
-            startActivity(intent)
-        }
+           // val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + customer!!.phone))
+           // startActivity(intent)
+        //}
         custPhoneBtnTxt = myView.findViewById(R.id.customer_phone_btn_tv)
 
        // custPhoneBtnTxt.text = customer!!.phone
@@ -228,9 +223,7 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
         custPhoneBtnTxt.text = "No Phone Found"
 
         custEmailBtn = myView.findViewById(R.id.customer_email_btn_cl)
-        custEmailBtn.setOnClickListener {
-            println("email btn clicked ${customer!!.email}")
-        }
+
 
         custEmailBtnTxt = myView.findViewById(R.id.customer_email_btn_tv)
 
@@ -240,7 +233,21 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
 
         custAddressBtn = myView.findViewById(R.id.customer_address_btn_cl)
         custAddressBtn.setOnClickListener {
-            println("email btn clicked ${customer!!.mainAddr}")
+            println("map btn clicked ${customer!!.mainAddr}")
+
+            var lng:String = ""
+            var lat:String = ""
+            if(customer!!.lng != null && customer!!.lat != null){
+                lng = customer!!.lng!!
+                lat = customer!!.lat!!
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("geo:0,0?q="+lng+","+lat+" (" + customer!!.sysname + ")")
+                )
+                startActivity(intent)
+            }
+
+
         }
 
         custAddressBtnTxt = myView.findViewById(R.id.customer_address_btn_tv)
@@ -260,11 +267,26 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
                     "1" -> {
                         println("1")
                         custPhoneBtnTxt.text = contact.value!!
+                        custEmailBtn.setOnClickListener {
+
+                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + contact.value!!))
+                            com.example.AdminMatic.myView.context.startActivity(intent)
+                        }
 
                     }
                     "2" -> {
                         println("2")
                         custEmailBtnTxt.text = contact.value!!
+                        custEmailBtn.setOnClickListener {
+                            println("email btn clicked ${contact.value!!}")
+                            val intent = Intent(Intent.ACTION_SENDTO)
+                            intent.data = Uri.parse("mailto:") // only email apps should handle this
+                            val emailArray = arrayOf<String>(contact.value!!)
+                            intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
+                            // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
+                            // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
+                            com.example.AdminMatic.myView.context.startActivity(intent)
+                        }
 
                     }
 
@@ -277,14 +299,22 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
         contactsBtn = myView.findViewById((R.id.contacts_btn))
         contactsBtn.setOnClickListener{
             println("contacts btn clicked")
-            //val directions = EmployeeListFragmentDirections.navigateToEmployee(data)
-            // val directions = EmployeeFragmentDirections.navigateToPayroll(employee)
-            // myView.findNavController().navigate(directions)
+
+            val directions = CustomerFragmentDirections.navigateToCustomerContacts(customer!!)
+
+
+            myView.findNavController().navigate(directions)
+
+
         }
 
         settingsBtn = myView.findViewById((R.id.customer_notes_btn))
         settingsBtn.setOnClickListener{
             println("notes btn clicked")
+
+            val directions = CustomerFragmentDirections.navigateToCustomerNotes(customer!!)
+
+            myView.findNavController().navigate(directions)
             //val directions = EmployeeListFragmentDirections.navigateToEmployee(data)
             // val directions = EmployeeFragmentDirections.navigateToPayroll(employee)
             // myView.findNavController().navigate(directions)

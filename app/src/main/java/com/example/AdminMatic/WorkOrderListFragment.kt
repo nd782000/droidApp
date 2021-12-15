@@ -385,6 +385,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
         data?.let { data ->
 
+
+
             val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(data)
             myView.findNavController().navigate(directions)
         }

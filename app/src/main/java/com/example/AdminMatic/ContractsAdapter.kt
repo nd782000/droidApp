@@ -19,7 +19,7 @@ import java.util.*
 
 
 
-class ContractsAdapter(private val list: MutableList<Contract>, private val context: Context,private val cellClickListener: ContractCellClickListener)
+class ContractsAdapter(private val list: MutableList<Contract>, private val context: Context, private val cellClickListener: ContractCellClickListener)
 
     : RecyclerView.Adapter<ContractViewHolder>(), Filterable {
 

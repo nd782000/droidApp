@@ -204,6 +204,12 @@
             android:name="customer"
             app:argType="com.example.AdminMatic.Customer"
             app:nullable="true" />
+        <action
+            android:id="@+id/navigateToCustomerContacts"
+            app:destination="@id/customerContactFragment" />
+        <action
+            android:id="@+id/navigateToCustomerNotes"
+            app:destination="@id/customerNotesFragment" />
     </fragment>
     <fragment
         android:id="@+id/vendorFragment"
@@ -338,5 +344,23 @@
         <argument
             android:name="workOrder"
             app:argType="com.example.AdminMatic.WorkOrder" />
+    </fragment>
+    <fragment
+        android:id="@+id/customerContactFragment"
+        android:name="com.example.AdminMatic.ContactsFragment"
+        android:label="customerContactFragment"
+        tools:layout="@layout/fragment_contact_list">
+        <argument
+            android:name="customer"
+            app:argType="com.example.AdminMatic.Customer" />
+    </fragment>
+    <fragment
+        android:id="@+id/customerNotesFragment"
+        android:name="com.example.AdminMatic.CustomerNotesFragment"
+        android:label="CustomerNotesFragment"
+        tools:layout="@layout/fragment_customer_notes">
+        <argument
+            android:name="customer"
+            app:argType="com.example.AdminMatic.Customer" />
     </fragment>
 </navigation>
