@@ -83,7 +83,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
 
-        swipeRefresh= view.findViewById(R.id.swipeContainer)
+        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
 
        //recyclerView.adapter = adapter
         layoutViews()

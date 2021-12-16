@@ -11,14 +11,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.fragment_employee_list.*
+import kotlinx.android.synthetic.main.fragment_lead_list.*
+import kotlinx.android.synthetic.main.fragment_lead_list.customerSwipeContainer
 import kotlinx.android.synthetic.main.fragment_work_order.*
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -32,7 +39,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CustomerFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CustomerFragment : Fragment(), ImageCellClickListener {
+class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickListener, WorkOrderCellClickListener, InvoiceCellClickListener, ImageCellClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -47,7 +54,13 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
 
 
     lateinit var leadsRecyclerView: RecyclerView
+    lateinit var contractsRecyclerView: RecyclerView
+    lateinit var workOrdersRecyclerView: RecyclerView
+    lateinit var invoicesRecyclerView: RecyclerView
+    lateinit var imagesRecyclerView: RecyclerView
     lateinit var  swipeRefresh: SwipeRefreshLayout
+
+
 
 
 
@@ -63,6 +76,8 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
     lateinit var contactsBtn: Button
     lateinit var settingsBtn: Button
 
+    lateinit var tabLayout:TabLayout
+
 
 
 
@@ -70,7 +85,9 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
     lateinit var adapter:ImagesAdapter
 
     lateinit var imageList: MutableList<Image>
+    private var imagesLoaded:Boolean = false
     lateinit var loadMoreImageList: MutableList<Image>
+    var refreshing = false
 
 
     lateinit var addBtn: Button
@@ -101,6 +118,9 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
 
 
 
+
+
+
         ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Customer"
 
         return myView
@@ -117,9 +137,13 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
         custUI = view.findViewById(R.id.customer_ui_cl)
 
 
+        leadsRecyclerView = myView.findViewById(R.id.customer_leads_rv)
+        contractsRecyclerView = myView.findViewById(R.id.customer_contracts_rv)
+        workOrdersRecyclerView = myView.findViewById(R.id.customer_wos_rv)
+        invoicesRecyclerView = myView.findViewById(R.id.customer_invoices_rv)
+        imagesRecyclerView = myView.findViewById(R.id.customer_images_rv)
 
-
-
+        tabLayout = myView.findViewById(R.id.customer_table_tl)
 
 
 
@@ -162,8 +186,9 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
 
                         customer = customerArray.customers[0]
 
-                        layoutViews()
 
+
+                        getLeads()
 
 
 
@@ -197,13 +222,467 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
     }
 
 
+
+
+
+    private fun getLeads(){
+        println("getLeads")
+
+
+        // println("pgsBar = $pgsBar")
+
+
+       //showProgressView()
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/leads.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                //Log.d("Response", response)
+
+                println("Response $response")
+
+                //hideProgressView()
+
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = ${parentObject.toString()}")
+                    var leads: JSONArray = parentObject.getJSONArray("leads")
+                    println("leads = ${leads.toString()}")
+                    println("leads count = ${leads.length()}")
+
+
+
+                    val gson = GsonBuilder().create()
+                    val leadsList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
+
+                    val leadAdapter = LeadsAdapter(leadsList,this.myView.context,this,true)
+
+                    leadsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    leadsRecyclerView.adapter = leadAdapter
+
+                    //layoutViews()
+                    getContracts()
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+
+                // var intent:Intent = Intent(applicationContext,MainActivity2::class.java)
+                // startActivity(intent)
+            },
+            Response.ErrorListener { // error
+
+
+                // Log.e("VOLLEY", error.toString())
+                // Log.d("Error.Response", error())
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["custID"] = customer!!.ID
+                println("params = ${params.toString()}")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
+
+
+
+
+    override fun onLeadCellClickListener(data:Lead) {
+        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
+
+        data?.let { data ->
+
+            val directions = CustomerFragmentDirections.navigateCustomerToLead(data)
+            myView.findNavController().navigate(directions)
+        }
+
+
+    }
+
+
+
+
+    private fun getContracts(){
+        println("getContracts")
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/contracts.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = ${parentObject.toString()}")
+                    var contracts: JSONArray = parentObject.getJSONArray("contracts")
+                    println("contracts = ${contracts.toString()}")
+                    println("contracts count = ${contracts.length()}")
+
+                    val gson = GsonBuilder().create()
+                    val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
+
+                    val contractAdapter = ContractsAdapter(contractsList,this.myView.context,this,true)
+
+                    contractsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    contractsRecyclerView.adapter = contractAdapter
+
+                    //layoutViews()
+                    getWorkOrders()
+
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["custID"] = customer!!.ID
+                println("params = ${params.toString()}")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
+
+    override fun onContractCellClickListener(data:Contract) {
+        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
+
+        data?.let { data ->
+
+            val directions = CustomerFragmentDirections.navigateCustomerToContract(data)
+            myView.findNavController().navigate(directions)
+        }
+
+
+    }
+
+
+
+    private fun getWorkOrders(){
+        println("getWorkOrders")
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/workOrders.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = ${parentObject.toString()}")
+                    var workOrders: JSONArray = parentObject.getJSONArray("workOrders")
+                    println("workOrders = ${workOrders.toString()}")
+                    println("workOrders count = ${workOrders.length()}")
+
+                    val gson = GsonBuilder().create()
+                    val workOrdersList = gson.fromJson(workOrders.toString() , Array<WorkOrder>::class.java).toMutableList()
+
+                    val workOrderAdapter = WorkOrdersAdapter(workOrdersList,this.myView.context,this,true)
+
+                    workOrdersRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    workOrdersRecyclerView.adapter = workOrderAdapter
+
+                    //layoutViews()
+                    getInvoices()
+
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+
+
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["custID"] = customer!!.ID
+                params["empID"] = ""
+                params["active"] = "1"
+                println("params = ${params.toString()}")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
+
+    override fun onWorkOrderCellClickListener(data:WorkOrder) {
+        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
+
+        data?.let { data ->
+
+            val directions = CustomerFragmentDirections.navigateCustomerToWorkOrder(data)
+            myView.findNavController().navigate(directions)
+        }
+
+
+    }
+
+
+    private fun getInvoices(){
+        println("getInvoices")
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/invoices.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = ${parentObject.toString()}")
+                    var invoices: JSONArray = parentObject.getJSONArray("invoices")
+                    println("invoices = ${invoices.toString()}")
+                    println("invoices count = ${invoices.length()}")
+
+                    val gson = GsonBuilder().create()
+                    val invoicesList = gson.fromJson(invoices.toString() , Array<Invoice>::class.java).toMutableList()
+
+                    val invoicesAdapter = InvoicesAdapter(invoicesList,this.myView.context,this,true)
+
+                    invoicesRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    invoicesRecyclerView.adapter = invoicesAdapter
+
+                    layoutViews()
+                   // getImages()
+
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+
+
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["custID"] = customer!!.ID
+                println("params = ${params.toString()}")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
+
+    override fun onInvoiceCellClickListener(data:Invoice) {
+        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
+
+        data?.let { data ->
+
+            val directions = CustomerFragmentDirections.navigateCustomerToInvoice(data)
+            myView.findNavController().navigate(directions)
+        }
+
+
+    }
+
+
+
+    private fun getImages(){
+        println("getImages")
+
+
+        // println("pgsBar = $pgsBar")
+
+
+        showProgressView()
+
+        //loadMoreItemsCells = mutableListOf<Image?>()
+
+        var offset = adapter.itemCount
+        if (refreshing){
+            offset = 0
+        }
+        refreshing = false
+
+        var limit = 200
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/images.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                //Log.d("Response", response)
+
+                println("Response $response")
+
+                hideProgressView()
+
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = ${parentObject.toString()}")
+                    var images:JSONArray = parentObject.getJSONArray("images")
+                    println("images = ${images.toString()}")
+                    println("images count = ${images.length()}")
+
+
+
+                    val gson = GsonBuilder().create()
+                    loadMoreImageList = gson.fromJson(images.toString() , Array<Image>::class.java).toMutableList()
+                    println("loadMoreImageList count = ${loadMoreImageList.count()}")
+                    imageList.addAll(loadMoreImageList)
+                    println("imageList count = ${imageList.count()}")
+
+                    // Now we call setRefreshing(false) to signal refresh has finished
+                    //customerSwipeContainer.isRefreshing = false;
+
+                    Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
+
+
+                    adapter.filterList = imageList
+
+                    (adapter as ImagesAdapter).notifyDataSetChanged();
+
+                    imagesLoaded = true
+
+                    imagesRecyclerView.adapter = adapter
+
+                    // recyclerView.apply {
+                    // layoutManager = GridLayoutManager(myView.context, 2)
+
+
+                    // }
+
+                    imagesRecyclerView.layoutManager = GridLayoutManager(myView.context, 2)
+
+
+
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["loginID"] = GlobalVars.loggedInEmployee!!.ID
+                params["limit"] = limit.toString()
+                params["offset"] = offset.toString()
+                params["customer"] = customer!!.ID
+
+
+                println("params = ${params.toString()}")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
+
+
+    fun RecyclerView.onScrollToEnd(
+        onScrollNearEnd: (Unit) -> Unit
+    ) = addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            if (!recyclerView.canScrollVertically(1)) {
+                onScrollNearEnd(Unit)
+            }
+        }
+    })
+
+
+
+
+
+
+
+
+
     fun layoutViews(){
         println("layoutViews")
 
         hideProgressView()
 
-        leadsRecyclerView = myView.findViewById(R.id.customer_leads_rv)
-        // swipeRefresh= view.findViewById(R.id.swipeContainer)
+
+       //  swipeRefresh= myView.findViewById(R.id.customerSwipeContainer)
 
 
         custNameTextView = myView.findViewById(R.id.customer_name_txt)
@@ -321,6 +800,77 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
         }
 
 
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+
+
+
+                when (tab!!.position) {
+                    0 -> {
+                        Toast.makeText(com.example.AdminMatic.myView.context, "Leads", Toast.LENGTH_SHORT).show()
+                        leadsRecyclerView.visibility = View.VISIBLE
+                        contractsRecyclerView.visibility = View.GONE
+                        workOrdersRecyclerView.visibility = View.GONE
+                        invoicesRecyclerView.visibility = View.GONE
+                        imagesRecyclerView.visibility = View.GONE
+                    }
+                    1 -> {
+                        Toast.makeText(com.example.AdminMatic.myView.context, "Contracts", Toast.LENGTH_SHORT).show()
+                        leadsRecyclerView.visibility = View.GONE
+                        contractsRecyclerView.visibility = View.VISIBLE
+                        workOrdersRecyclerView.visibility = View.GONE
+                        invoicesRecyclerView.visibility = View.GONE
+                        imagesRecyclerView.visibility = View.GONE
+                    }
+                    2 -> {
+                        Toast.makeText(com.example.AdminMatic.myView.context, "Work Orders", Toast.LENGTH_SHORT).show()
+                        leadsRecyclerView.visibility = View.GONE
+                        contractsRecyclerView.visibility = View.GONE
+                        workOrdersRecyclerView.visibility = View.VISIBLE
+                        invoicesRecyclerView.visibility = View.GONE
+                        imagesRecyclerView.visibility = View.GONE
+                    }
+                    3 -> {
+                        Toast.makeText(com.example.AdminMatic.myView.context, "Invoices", Toast.LENGTH_SHORT).show()
+                        leadsRecyclerView.visibility = View.GONE
+                        contractsRecyclerView.visibility = View.GONE
+                        workOrdersRecyclerView.visibility = View.GONE
+                        invoicesRecyclerView.visibility = View.VISIBLE
+                        imagesRecyclerView.visibility = View.GONE
+                    }
+                    4 -> {
+                        Toast.makeText(com.example.AdminMatic.myView.context, "Images", Toast.LENGTH_SHORT).show()
+
+                        if(imagesLoaded == false){
+                            getImages()
+                        }
+                        leadsRecyclerView.visibility = View.GONE
+                        contractsRecyclerView.visibility = View.GONE
+                        workOrdersRecyclerView.visibility = View.GONE
+                        invoicesRecyclerView.visibility = View.GONE
+                        imagesRecyclerView.visibility = View.VISIBLE
+                    }
+
+                }
+
+
+
+
+
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
+
+        tabLayout.getTabAt(2)!!.select()
+
+
+
         addBtn = myView.findViewById((R.id.customer_add_btn))
         addBtn.setOnClickListener{
             println("add btn clicked")
@@ -331,6 +881,10 @@ class CustomerFragment : Fragment(), ImageCellClickListener {
 
 
     }
+
+
+
+
 
     override fun onImageCellClickListener(data:Image) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()

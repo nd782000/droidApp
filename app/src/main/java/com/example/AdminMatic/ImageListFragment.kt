@@ -1,7 +1,6 @@
 package com.example.AdminMatic
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,7 @@ import com.google.gson.GsonBuilder
 import kotlinx.android.parcel.Parcelize
 
 import kotlinx.android.synthetic.main.fragment_image_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_image_list.swipeContainer
+import kotlinx.android.synthetic.main.fragment_image_list.customerSwipeContainer
 import kotlinx.android.synthetic.main.fragment_image_list.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -116,7 +115,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener {
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.images_search)
-        swipeRefresh= view.findViewById(R.id.swipeContainer)
+        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
 
 
         val itemDecoration: ItemDecoration =
@@ -271,7 +270,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener {
                     println("imageList count = ${imageList.count()}")
 
                     // Now we call setRefreshing(false) to signal refresh has finished
-                    swipeContainer.isRefreshing = false;
+                    customerSwipeContainer.isRefreshing = false;
 
                     Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 

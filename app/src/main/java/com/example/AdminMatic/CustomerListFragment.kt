@@ -81,7 +81,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.customers_search)
-        swipeRefresh= view.findViewById(R.id.swipeContainer)
+        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
 
         getCustomers()
 
@@ -148,7 +148,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                         // Remember to CLEAR OUT old items before appending in the new ones
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        swipeContainer.isRefreshing = false;
+                        customerSwipeContainer.isRefreshing = false;
 
                         Toast.makeText(activity,"${customersList.count()} Customers Loaded",Toast.LENGTH_SHORT).show()
 

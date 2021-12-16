@@ -20,7 +20,7 @@ import java.util.*
 
 
 
-class InvoicesAdapter(private val list: MutableList<Invoice>, private val context: Context,private val cellClickListener: InvoiceCellClickListener)
+class InvoicesAdapter(private val list: MutableList<Invoice>, private val context: Context,private val cellClickListener: InvoiceCellClickListener, private val customerView:Boolean = false)
 
     : RecyclerView.Adapter<InvoiceViewHolder>(), Filterable {
 

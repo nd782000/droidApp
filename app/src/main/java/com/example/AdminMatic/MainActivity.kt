@@ -120,8 +120,6 @@ data class Contract(var ID: String = "0",
     }
 }
 
-
-
 @Parcelize
 data class ContractTask(var ID:String,
                         var contractItemID: String,
@@ -163,8 +161,6 @@ data class ContractItem(var ID:String,
 }
 
 
-
-
 @Parcelize
 data class Crew(var ID:String,
                 var name: String,
@@ -177,8 +173,6 @@ data class Crew(var ID:String,
         return  name
     }
 }
-
-
 
 
 @Parcelize

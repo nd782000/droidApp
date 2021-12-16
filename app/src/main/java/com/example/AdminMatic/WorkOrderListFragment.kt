@@ -113,7 +113,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.work_orders_search)
-        swipeRefresh = view.findViewById(R.id.swipeContainer)
+        swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
         scheduleSpinner = view.findViewById(R.id.schedule_spinner)
         crewBtn = view.findViewById(R.id.crew_btn)
         mapBtn = view.findViewById(R.id.map_btn)
@@ -349,7 +349,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             // ...the data has come back, add new items to your adapter...
 
             // Now we call setRefreshing(false) to signal refresh has finished
-            swipeContainer.isRefreshing = false;
+            customerSwipeContainer.isRefreshing = false;
 
 
 

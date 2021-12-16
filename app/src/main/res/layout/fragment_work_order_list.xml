@@ -55,7 +55,7 @@
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeContainer"
+        android:id="@+id/customerSwipeContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/crew_btn"
@@ -99,7 +99,7 @@
         app:iconPadding="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/swipeContainer" />
+        app:layout_constraintTop_toBottomOf="@+id/customerSwipeContainer" />
 
 
     <ProgressBar

@@ -24,7 +24,7 @@ import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
 
 import kotlinx.android.synthetic.main.fragment_item_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_item_list.swipeContainer
+import kotlinx.android.synthetic.main.fragment_item_list.customerSwipeContainer
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -101,7 +101,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.items_search)
-        swipeRefresh= view.findViewById(R.id.swipeContainer)
+        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
 
         getItems()
 
@@ -203,7 +203,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
                         // ...the data has come back, add new items to your adapter...
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        swipeContainer.isRefreshing = false;
+                        customerSwipeContainer.isRefreshing = false;
 
                         Toast.makeText(activity,"${itemsList.count()} Items Loaded",Toast.LENGTH_SHORT).show()
 

@@ -19,7 +19,7 @@ import java.util.*
 
 
 
-class ContractsAdapter(private val list: MutableList<Contract>, private val context: Context, private val cellClickListener: ContractCellClickListener)
+class ContractsAdapter(private val list: MutableList<Contract>, private val context: Context, private val cellClickListener: ContractCellClickListener, private val customerView:Boolean = false)
 
     : RecyclerView.Adapter<ContractViewHolder>(), Filterable {
 
@@ -52,10 +52,10 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
         //text highlighting for first string
         if (queryText != null && !queryText.isEmpty() && queryText != "") {
 
-            val startPos1: Int = filterList[position].custName!!.toLowerCase().indexOf(queryText.toLowerCase())
+            val startPos1: Int = (filterList[position].custName!! + " - " + filterList[position].title).toLowerCase().indexOf(queryText.toLowerCase())
             val endPos1 = startPos1 + queryText.length
             if (startPos1 != -1) {
-                val spannable: Spannable = SpannableString(filterList[position].custName)
+                val spannable: Spannable = SpannableString(filterList[position].custName!! + " - " + filterList[position].title)
                 val colorStateList = ColorStateList(
                     arrayOf(intArrayOf()),
                     intArrayOf(Color.parseColor("#005100"))
@@ -70,10 +70,20 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
                 )
                 holder.itemView.list_name.text = spannable
             } else {
-                holder.itemView.list_name.text = filterList[position].custName!!
+                if(customerView == false) {
+                    holder.itemView.list_name.text =
+                        filterList[position].custName!! + " - " + filterList[position].title
+                }else{
+                    holder.itemView.list_name.text = filterList[position].title
+                }
             }
         } else {
-            holder.itemView.list_name.text = filterList[position].custName!!
+            if(customerView == false) {
+                holder.itemView.list_name.text =
+                    filterList[position].custName!! + " - " + filterList[position].title
+            }else{
+                holder.itemView.list_name.text = filterList[position].title
+            }
         }
 
 
@@ -83,42 +93,6 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
         }
 
 
-
-        //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
-            println("menu click")
-
-            var popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
-            popUp.inflate(R.menu.options_menu)
-            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
-
-                when (item!!.itemId) {
-                    R.id.menu1 -> {
-                        Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.menu2 -> {
-                        Toast.makeText(myView.context, data.ID, Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.menu3 -> {
-                        Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                true
-            })
-
-
-
-            popUp.show()
-
-            /*
-            fun onClick(view: View?) {
-                println("menu click")
-                //will show popup menu here
-            }*/
-
-
-        }
 
 
 

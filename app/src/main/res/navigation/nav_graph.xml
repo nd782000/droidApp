@@ -210,6 +210,18 @@
         <action
             android:id="@+id/navigateToCustomerNotes"
             app:destination="@id/customerNotesFragment" />
+        <action
+            android:id="@+id/navigateCustomerToLead"
+            app:destination="@id/leadFragment" />
+        <action
+            android:id="@+id/navigateCustomerToContract"
+            app:destination="@id/contractFragment" />
+        <action
+            android:id="@+id/navigateCustomerToWorkOrder"
+            app:destination="@id/workOrderFragment" />
+        <action
+            android:id="@+id/navigateCustomerToInvoice"
+            app:destination="@id/invoiceFragment" />
     </fragment>
     <fragment
         android:id="@+id/vendorFragment"

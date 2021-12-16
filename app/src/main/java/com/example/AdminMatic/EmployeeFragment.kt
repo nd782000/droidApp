@@ -73,10 +73,11 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
     lateinit var imageList: MutableList<Image>
     lateinit var loadMoreImageList: MutableList<Image>
+    var refreshing = false
 
     lateinit var logOutBtn:Button
 
-    var refreshing = false
+
 
 
 
@@ -151,7 +152,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         pgsBar = view.findViewById(R.id.progress_bar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
-        swipeRefresh= view.findViewById(R.id.swipeContainer)
+        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
         empViewTop = view.findViewById(R.id.emp_top_cl)
 
         empImageView = view.findViewById(R.id.emp_pic_iv)
@@ -316,7 +317,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                     println("imageList count = ${imageList.count()}")
 
                     // Now we call setRefreshing(false) to signal refresh has finished
-                    swipeContainer.isRefreshing = false;
+                    customerSwipeContainer.isRefreshing = false;
 
                     Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 
