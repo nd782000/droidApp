@@ -1,14 +1,19 @@
 package com.example.AdminMatic
 
+import android.opengl.Visibility
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.AdminMatic.R
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_image_upload.view.*
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,7 +35,14 @@ class ImageFragment : Fragment() {
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
+    lateinit var pgsBar: ProgressBar
+    lateinit var imageView:ImageView
+    lateinit var likeView:ImageView
+    lateinit var likesTextView:TextView
+    lateinit var custNameTextView:TextView
+    lateinit var detailsTextView:TextView
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +61,7 @@ class ImageFragment : Fragment() {
         myView = inflater.inflate(R.layout.fragment_image, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Image"
+        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = image!!.name
 
         return myView
     }
@@ -61,6 +73,33 @@ class ImageFragment : Fragment() {
 
 
         pgsBar = view.findViewById(R.id.progress_bar)
+
+        imageView = myView.findViewById(R.id.image_details_iv)
+
+
+        println("image path = ${GlobalVars.mediumBase + image!!.fileName}")
+        Picasso.with(context)
+            .load("${GlobalVars.mediumBase + image!!.fileName}")
+            //.resize(imgWidth, imgHeight)         //optional
+            //.centerCrop()                        //optional
+            .into(imageView)                        //Your image view object.
+
+        likeView  = myView.findViewById(R.id.like_iv)
+        println("image.likes = ${image!!.likes}")
+        if (image!!.likes!! != "0"){
+            likeView.visibility = View.VISIBLE
+           // val likeIcon = resources.getDrawable(R.drawable.ic_liked,null)
+            //likeView.background = likeIcon
+        }
+
+        likesTextView  = myView.findViewById(R.id.likes_tv)
+        likesTextView.text = "x${image!!.likes} Likes"
+
+        custNameTextView  = myView.findViewById(R.id.image_customer_tv)
+        custNameTextView.text = image!!.customerName
+
+        detailsTextView  = myView.findViewById(R.id.image_details_tv)
+        detailsTextView.text = image!!.description
 
     }
 

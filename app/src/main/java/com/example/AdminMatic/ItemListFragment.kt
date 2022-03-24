@@ -205,7 +205,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
                         // Now we call setRefreshing(false) to signal refresh has finished
                         customerSwipeContainer.isRefreshing = false;
 
-                        Toast.makeText(activity,"${itemsList.count()} Items Loaded",Toast.LENGTH_SHORT).show()
+                       // Toast.makeText(activity,"${itemsList.count()} Items Loaded",Toast.LENGTH_SHORT).show()
 
 
 

@@ -206,7 +206,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
                         // Now we call setRefreshing(false) to signal refresh has finished
                         customerSwipeContainer.isRefreshing = false;
 
-                        Toast.makeText(activity,"${equipmentList.count()} Equipment Loaded",Toast.LENGTH_SHORT).show()
+                      //  Toast.makeText(activity,"${equipmentList.count()} Equipment Loaded",Toast.LENGTH_SHORT).show()
 
 
 

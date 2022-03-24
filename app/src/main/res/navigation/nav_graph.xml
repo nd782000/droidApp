@@ -21,7 +21,8 @@
         tools:layout="@layout/fragment_customer_list" >
         <action
             android:id="@+id/navigateToCustomer"
-            app:destination="@id/customerFragment" />
+            app:destination="@id/customerFragment"
+            />
     </fragment>
     <fragment
         android:id="@+id/mainMenuFragment2"
@@ -145,6 +146,13 @@
         <action
             android:id="@+id/navigateToImage"
             app:destination="@id/imageFragment" />
+        <action
+            android:id="@+id/navigateToGalleryImageUpload"
+            app:destination="@id/imageUpload" />
+        <argument
+            android:name="refresh"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/employeeFragment"
@@ -159,6 +167,9 @@
         <action
             android:id="@+id/navigateToPayroll"
             app:destination="@id/payrollFragment" />
+        <action
+            android:id="@+id/navigateEmployeeToImage"
+            app:destination="@id/imageFragment" />
     </fragment>
     <fragment
         android:id="@+id/payrollFragment"
@@ -200,10 +211,6 @@
         android:name="com.example.AdminMatic.CustomerFragment"
         android:label="fragment_customer"
         tools:layout="@layout/fragment_customer" >
-        <argument
-            android:name="customer"
-            app:argType="com.example.AdminMatic.Customer"
-            app:nullable="true" />
         <action
             android:id="@+id/navigateToCustomerContacts"
             app:destination="@id/customerContactFragment" />
@@ -222,6 +229,15 @@
         <action
             android:id="@+id/navigateCustomerToInvoice"
             app:destination="@id/invoiceFragment" />
+        <action
+            android:id="@+id/navigateCustomerToImageUpload"
+            app:destination="@id/imageUpload" />
+        <argument
+            android:name="customerID"
+            app:argType="string" />
+        <action
+            android:id="@+id/navigateCustomerToImage"
+            app:destination="@id/imageFragment" />
     </fragment>
     <fragment
         android:id="@+id/vendorFragment"
@@ -264,6 +280,9 @@
         <action
             android:id="@+id/navigateLeadToCustomer"
             app:destination="@id/customerFragment" />
+        <action
+            android:id="@+id/navigateLeadToImageUpload"
+            app:destination="@id/imageUpload" />
     </fragment>
     <fragment
         android:id="@+id/contractFragment"
@@ -344,6 +363,9 @@
         <argument
             android:name="workOrder"
             app:argType="com.example.AdminMatic.WorkOrder" />
+        <action
+            android:id="@+id/navigateWoItemToImageUpload"
+            app:destination="@id/imageUpload" />
     </fragment>
     <fragment
         android:id="@+id/usageEntryFragment"
@@ -374,5 +396,61 @@
         <argument
             android:name="customer"
             app:argType="com.example.AdminMatic.Customer" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageUpload"
+        android:name="com.example.AdminMatic.ImageUploadFragment"
+        android:label="fragment_image_upload"
+        tools:layout="@layout/fragment_image_upload" >
+        <argument
+            android:name="mode"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="images"
+            app:argType="com.example.AdminMatic.Image[]"
+            app:nullable="true" />
+        <argument
+            android:name="customerID"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="customerName"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="woID"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="woItemID"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="leadID"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="taskID"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="taskDescription"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="employeeID"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="equipmentID"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/navigateUploadToImageListFragment"
+            app:destination="@id/imageListFragment" />
+
+
+
     </fragment>
 </navigation>

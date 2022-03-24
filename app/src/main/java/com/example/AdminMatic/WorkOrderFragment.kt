@@ -48,7 +48,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
     private  var workOrder: WorkOrder? = null
 
-    lateinit  var globalVars:GlobalVars
+    lateinit var globalVars:GlobalVars
     lateinit var myView:View
 
     lateinit var context: AppCompatActivity
@@ -99,7 +99,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         myView = inflater.inflate(R.layout.fragment_work_order, container, false)
 
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder"
+        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder #${workOrder!!.woID}"
 
         // Inflate the layout for this fragment
         return myView
@@ -133,7 +133,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
             val customer:Customer = Customer(workOrder!!.customer!!)
-            val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer)
+            val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer.ID)
             myView.findNavController().navigate(directions)
 
 
@@ -159,60 +159,39 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
     fun getWorkOrder(){
         println("getWorkOrder")
-
-
-        //if (firstLoad == false){
-            showProgressView()
-        //}
-
-
+        showProgressView()
         var urlString = "https://www.adminmatic.com/cp/app/functions/get/workOrder.php"
-
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "${"$urlString?cb=$currentTimestamp"}"
         val queue = Volley.newRequestQueue(myView.context)
-
-
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
             Response.Listener { response -> // response
-
                 println("Response $response")
-
-
-
-
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
-
 
                     val gson = GsonBuilder().create()
                     workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
 
                     setStatus(workOrder!!.status)
-
                     if(workOrder!!.title != null){
                         titleTxt.text = workOrder!!.title!!
                     }
-
                     if(workOrder!!.dateNice != null){
                         scheduleTxt.text = workOrder!!.dateNice!!
                     }
-
                     if(workOrder!!.department != null){
                         deptTxt.text = workOrder!!.department!!
                     }
-
                     if(workOrder!!.crewName != null){
                         crewTxt.text = workOrder!!.crewName!!
                     }
-
                     if(workOrder!!.salesRepName != null){
                         repTxt.text = workOrder!!.salesRepName!!
                     }
-
                     var woItemJSON: JSONArray = parentObject.getJSONArray("items")
                     val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
 
@@ -228,25 +207,18 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         val itemDecoration: RecyclerView.ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
                         itemRecyclerView.addItemDecoration(itemDecoration)
-
-
-
                         (adapter as WoItemsAdapter).notifyDataSetChanged()
                     }
 
                     workOrder!!.setEmps()
-
-
                     hideProgressView()
 
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
                 }
-
             },
             Response.ErrorListener { // error
-
             }
         ) {
             override fun getParams(): Map<String, String> {
@@ -254,75 +226,27 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["woID"] = workOrder!!.woID
-
                 println("params = ${params.toString()}")
                 return params
             }
         }
         queue.add(postRequest1)
-
     }
 
     fun showStatusMenu(){
         println("showStatusMenu")
 
         var popUp:PopupMenu = PopupMenu(myView.context,statusBtn)
-
-
         popUp.inflate(R.menu.task_status_menu)
-        // popUp.menu.getItem(0).subMenu.getItem(3).setVisible(false)
-        //popUp.menu.getItem(0).subMenu.getItem(4).setVisible(true)
-
-        //val d:Drawable? = resize(context.getDrawable(R.drawable.ic_in_progress)!!)
-
-
         popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_not_started)!!,myView.context)!!, myView.context.getString(R.string.not_started)))
         popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_in_progress)!!,myView.context)!!, myView.context.getString(R.string.in_progress)))
         popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_done)!!,myView.context)!!, myView.context.getString(R.string.finished)))
-
-
-
         popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
 
             workOrder!!.status = item!!.itemId.toString()
 
             setStatus(workOrder!!.status)
             Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
-
-            /*
-
-            when (item!!.itemId) {
-                1 -> {
-                    Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
-                }
-                2 -> {
-                    Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
-                }
-                3 -> {
-                    Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
-                }
-
-            }
-*/
-
-
-
-
-
-            /*
-            var newItemStatus:String = "1"
-    var parameters:[String:String]
-    parameters = [
-        "taskID":_ID,
-        "status":_status,
-        "empID":(self.appDelegate.loggedInEmployee?.ID)!,
-        "woItemID":self.woItem.ID,
-        "woID":self.workOrder.ID,
-        "sessionKey": self.appDelegate.defaults.string(forKey: loggedInKeys.sessionKey)!,
-        "companyUnique": self.appDelegate.defaults.string(forKey: loggedInKeys.companyUnique)!
-
-    ]
-             */
 
             showProgressView()
 
@@ -340,26 +264,17 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                     println("Response $response")
 
-                    //hideProgressView()
-
-
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = ${parentObject.toString()}")
-                        // var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                        // println("payroll = ${payrollJSON.toString()}")
-                        // println("payroll count = ${payrollJSON.length()}")
-
 
                         hideProgressView()
-
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {
                         println("JSONException")
                         e.printStackTrace()
                     }
-
                 },
                 Response.ErrorListener { // error
 
@@ -372,23 +287,13 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     params["status"] = workOrder!!.status
                     params["woID"] = workOrder!!.woID
                     params["empID"] = GlobalVars.loggedInEmployee!!.ID
-
-
                     println("params = ${params.toString()}")
                     return params
                 }
             }
             queue.add(postRequest1)
-
-
-
-
             true
         })
-
-
-
-
         popUp.gravity = Gravity.LEFT
         popUp.show()
     }
@@ -460,34 +365,24 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             "1" -> {
                 println("1")
                 statusBtn!!.setBackgroundResource(R.drawable.ic_not_started)
-
             }
             "2" -> {
                 println("2")
                 statusBtn!!.setBackgroundResource(R.drawable.ic_in_progress)
-
             }
             "3" -> {
                 println("3")
                 statusBtn!!.setBackgroundResource(R.drawable.ic_done)
-
             }
             "4" -> {
                 println("4")
                 statusBtn!!.setBackgroundResource(R.drawable.ic_canceled)
-
             }
             "5" -> {
                 println("5")
                 statusBtn!!.setBackgroundResource(R.drawable.ic_waiting)
-
             }
         }
-
-
-
-
-
     }
 
 
@@ -495,33 +390,20 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     fun showProgressView() {
 
         println("showProgressView")
-
         pgsBar.visibility = View.VISIBLE
-
-
         statusCustCL.visibility = View.INVISIBLE
         dataCL.visibility = View.INVISIBLE
         footerCL.visibility = View.INVISIBLE
         itemRecyclerView.visibility = View.INVISIBLE
-
-
-
     }
 
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
-
-
         statusCustCL.visibility = View.VISIBLE
         dataCL.visibility = View.VISIBLE
         footerCL.visibility = View.VISIBLE
         itemRecyclerView.visibility = View.VISIBLE
-
     }
-
-fun test(){
-    println("test")
-}
 
 
     companion object {

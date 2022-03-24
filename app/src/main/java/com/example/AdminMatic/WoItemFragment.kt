@@ -39,6 +39,7 @@ interface TaskCellClickListener {
     fun onTaskCellClickListener(data:Task)
     fun showProgressView()
     fun getWoItem()
+    fun uploadImage(_task:Task)
 
 }
 
@@ -306,17 +307,35 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
     }
 
+    override fun uploadImage(_task:Task){
+
+        var images:Array<Image>
+        if(_task.images == null){
+            images = arrayOf()
+        }else{
+            images = _task.images!!
+        }
+
+        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"","${_task.ID}","${_task.task}","","")
+        myView.findNavController().navigate(directions)
+    }
+
 
     override fun onTaskCellClickListener(data:Task) {
 
         println("Cell clicked with task: ${data.task}")
-
+        var images:Array<Image>
+        if(data.images == null){
+            images = arrayOf()
+        }else{
+            images = data.images!!
+        }
 
         data?.let { data ->
 
-            //val directions = WorkOrderFragmentDirections.navigateToWoItem(data)
+            val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"","${data.ID}","${data.task}","","")
 
-           // myView.findNavController().navigate(directions)
+           myView.findNavController().navigate(directions)
         }
 
 

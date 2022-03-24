@@ -206,7 +206,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                         // Now we call setRefreshing(false) to signal refresh has finished
                         customerSwipeContainer.isRefreshing = false;
 
-                        Toast.makeText(activity,"${leadsList.count()} Leads Loaded",Toast.LENGTH_SHORT).show()
+                       // Toast.makeText(activity,"${leadsList.count()} Leads Loaded",Toast.LENGTH_SHORT).show()
 
 
 
@@ -266,7 +266,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
     override fun onLeadCellClickListener(data:Lead) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
+        //Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data?.let { data ->
             val directions = LeadListFragmentDirections.navigateToLead(data)

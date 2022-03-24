@@ -205,7 +205,7 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
                         // Now we call setRefreshing(false) to signal refresh has finished
                         customerSwipeContainer.isRefreshing = false;
 
-                        Toast.makeText(activity,"${vendorsList.count()} Vendors Loaded",Toast.LENGTH_SHORT).show()
+                      //  Toast.makeText(activity,"${vendorsList.count()} Vendors Loaded",Toast.LENGTH_SHORT).show()
 
 
 

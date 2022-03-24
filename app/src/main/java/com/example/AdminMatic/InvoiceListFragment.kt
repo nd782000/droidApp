@@ -207,7 +207,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
                         // Now we call setRefreshing(false) to signal refresh has finished
                         customerSwipeContainer.isRefreshing = false;
 
-                        Toast.makeText(activity,"${invoicesList.count()} Invoices Loaded",Toast.LENGTH_SHORT).show()
+                      //  Toast.makeText(activity,"${invoicesList.count()} Invoices Loaded",Toast.LENGTH_SHORT).show()
 
 
 

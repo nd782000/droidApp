@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import android.widget.Spinner
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.AdminMatic.R
@@ -17,12 +18,13 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_customer_list.*
 import org.json.JSONException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.util.*
-import kotlin.collections.HashMap
 
 
 interface  LogOut{
@@ -31,6 +33,7 @@ interface  LogOut{
 
 interface Callbacks{
     fun refreshWorkOrder()
+    fun refreshImages()
 }
 
 interface StackDelegate {
@@ -176,16 +179,17 @@ data class Crew(var ID:String,
 
 
 @Parcelize
-data class Customer(var ID: String,
-                    var sysname: String = "",
-                    var mainAddr:String = "",
-                    var phone:String? = "",
-                    var email:String? = "",
+data class Customer(
+    var ID: String,
+    var sysname: String = "",
+    var mainAddr: String = "",
+    var phone: String? = "",
+    var email: String? = "",
 
-                    var contacts:Array<Contact> = arrayOf(),
+    var contacts: Array<Contact> = arrayOf(),
 
-                    var lng:String? = "",
-                    var lat:String? = "",
+    var lng: String? = "",
+    var lat: String? = "",
 ): Parcelable{
     override fun toString(): String {
         return sysname
@@ -451,7 +455,9 @@ data class Lead(var ID: String = "0",
                 var custNameAndID:String? = "",
                 var custNameAndZone:String? = "",
                 var lng:Double? = 0.00,
-                var lat:Double? = 0.00
+                var lat:Double? = 0.00,
+
+                var tasks:Array<Task>? = null
 ): Parcelable{
     override fun toString(): String {
         return description ?: ID
@@ -781,6 +787,13 @@ data class WorkOrder(var woID: String = "0",
         return title
     }
 
+
+
+
+
+
+
+
     fun setEmps(){
         println("setEmps")
         if (this.crews != null){
@@ -850,6 +863,7 @@ class SpinnerInteractionListener : AdapterView.OnItemSelectedListener, View.OnTo
 class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
     lateinit var  pgsBar: ProgressBar
+     var imageListFragment: ImageListFragment? = null
     //lateinit var  hostFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -900,11 +914,8 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
     fun back(){
         println("back")
-
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-
-
         navController.navigateUp()
     }
 
@@ -1000,6 +1011,14 @@ override fun logOut(view: View){
     }
 
 
+
+
+
+
+
+
+
+
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE
     }
@@ -1020,11 +1039,88 @@ override fun logOut(view: View){
        // navHostFragment!!.childFragmentManager.fragments[0]
 
         val workOrderFragment = navHostFragment!!.childFragmentManager.fragments[0] as WorkOrderFragment
-        workOrderFragment.test()
+        //workOrderFragment.test()
 
        // var navController = Navigation.findNavController(view)
         //var workOrderFragment = navController
         //navController.popBackStack(R.id.logInFragment, false)
+    }
+
+    fun setImageList(_imageListFragment:ImageListFragment?){
+        println("setImageList")
+        this.imageListFragment = _imageListFragment!!
+    }
+
+    override fun refreshImages() {
+        println("refresh images")
+
+      //  val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        //val navHostFragment: NavHostFragment? =
+       // supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+        //navHostFragment
+
+        //Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container)
+       // val fragments1 = supportFragmentManager.fragments[0].childFragmentManager.fragments
+
+
+        //println("fragments1 = $fragments1")
+
+        //supportFragmentManager.fragments[0].childFragmentManager.popBackStack()
+
+       // val fragments2 = supportFragmentManager.fragments[0].childFragmentManager.fragments
+
+
+        //println("fragments2 = $fragments2")
+
+        //fragmentDemo.doSomething("some param")
+
+         // val imageListFragment: ImageListFragment? = supportFragmentManager.findFragmentById(R.id.imageListFragment) as ImageListFragment?
+
+       // val imageListFragment: ImageListFragment = supportFragmentManager.fragments[0].childFragmentManager.fragments[0] as ImageListFragment
+        //firstFragment.MyMethod()
+
+        if(imageListFragment != null){
+            println("fragments not null ")
+            imageListFragment!!.refreshImages()
+        }
+
+
+
+        //navHostFragment.navController.popBackStack()
+        //val imageListFragment = navHostFragment!!..fragments[0] as ImageListFragment
+        //imageListFragment.getImages()
+
+       // val imageUploadFragment = navHostFragment!!.childFragmentManager.fragments[0] as ImageUploadFragment
+       // navHostFragment.navController.
+        //imageListFragment.getImages()
+
+        //val imageListFragment = navHostFragment!!.childFragmentManager.findFragmentById(R.id.imageListFragment) as ImageListFragment
+        //imageListFragment.getImages()
+
+
+       // val fm: FragmentManager = supportFragmentManager
+
+//if you added fragment via layout xml
+
+//if you added fragment via layout xml
+       // val fragment: ImageListFragment =
+           // fm.findFragmentById(R.id.imageListFragment) as ImageListFragment
+
+       // val fragment: ImageListFragment? =
+
+            //supportFragmentManager.findFragmentById(imageListFragment) as ImageListFragment?
+        //fragment.specific_function_name()
+        //fragment!!.getImages()
+
+
+        //val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        //val navHostFragment: NavHostFragment? =
+       // supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+        // navHostFragment!!.childFragmentManager.fragments[0]
+
+        //val imageListFragment = navHostFragment!!.childFragmentManager.fragments[1] as ImageListFragment
+        //val imageListFragment = navHostFragment!!.parentFragment as ImageListFragment
+        //imageListFragment.getImages()
     }
 
 

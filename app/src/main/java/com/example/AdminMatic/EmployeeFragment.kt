@@ -163,6 +163,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
             //.centerCrop()                        //optional
             .into(empImageView)                       //Your image view object.
 
+
         empNameTextView = view.findViewById(R.id.emp_name_txt)
         empNameTextView.text = employee!!.name
 
@@ -389,10 +390,10 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     }
 
     override fun onImageCellClickListener(data:Image) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
-
-        println("Cell clicked with image: ${data.name}")
+        data?.let { data ->
+            val directions = EmployeeFragmentDirections.navigateEmployeeToImage(data)
+            myView.findNavController().navigate(directions)
+        }
     }
 
     fun showProgressView() {

@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import android.widget.SearchView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -43,17 +40,24 @@ interface ImageCellClickListener {
     fun onImageCellClickListener(data:Image)
 }
 
+//interface ImageUploadInterface {
+    //fun onUploadComplete()
+//}
 
-class ImageListFragment : Fragment(), ImageCellClickListener {
+
+class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInterface {
 
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
+    var imagesLoaded:Boolean = false
 
     lateinit var  pgsBar: ProgressBar
     lateinit var recyclerView: RecyclerView
     lateinit var searchView:androidx.appcompat.widget.SearchView
     lateinit var  swipeRefresh:SwipeRefreshLayout
+
+    lateinit var addImagesBtn: Button
 
 
     // lateinit var  btn: Button
@@ -82,28 +86,34 @@ class ImageListFragment : Fragment(), ImageCellClickListener {
 
 
         println("onCreateView")
-        globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_image_list, container, false)
+
+        if (!imagesLoaded){
+
+            println("myView = null")
+            globalVars = GlobalVars()
+            myView = inflater.inflate(R.layout.fragment_image_list, container, false)
 
 
-        //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
-        // progBar.alpha = 0.2f
+            //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
+            // progBar.alpha = 0.2f
 
-         imageList = mutableListOf()
+            imageList = mutableListOf()
 
-        adapter = ImagesAdapter(imageList,myView.context, this)
-
-
-
-
-
-        //(activity as AppCompatActivity).supportActionBar?.title = "Image List"
-
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Image List"
+            adapter = ImagesAdapter(imageList,myView!!.context, this)
 
 
 
-        // Inflate the layout for this fragment
+
+
+            //(activity as AppCompatActivity).supportActionBar?.title = "Image List"
+
+            ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Image List"
+
+
+
+            // Inflate the layout for this fragment
+        }
+
         return myView
     }
 
@@ -112,111 +122,145 @@ class ImageListFragment : Fragment(), ImageCellClickListener {
 
         //need to wait for this function to initialize views
         println("onViewCreated")
-        pgsBar = view.findViewById(R.id.progressBar)
-        recyclerView = view.findViewById(R.id.list_recycler_view)
-        searchView = view.findViewById(R.id.images_search)
-        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
+
+        (activity as MainActivity?)!!.setImageList(this)
+
+        if(!imagesLoaded){
+            pgsBar = view.findViewById(R.id.progressBar)
+            recyclerView = view.findViewById(R.id.list_recycler_view)
+            searchView = view.findViewById(R.id.images_search)
+            swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
 
 
-        val itemDecoration: ItemDecoration =
-            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-        recyclerView.addItemDecoration(itemDecoration)
+            addImagesBtn = view.findViewById((R.id.add_images_btn))
+            addImagesBtn.setOnClickListener{
+                println("add images btn clicked")
 
-        recyclerView.onScrollToEnd { if(!searching){
-            getImages()}
-        }
-
-        recyclerView.adapter = adapter
-
-       // recyclerView.apply {
-           // layoutManager = GridLayoutManager(myView.context, 2)
-
-
-       // }
-
-        recyclerView.layoutManager = GridLayoutManager(myView.context, 2)
-
-
-        recyclerView.apply {
-
-
-
-            // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
-            // Setup refresh listener which triggers new data loading
-            // Setup refresh listener which triggers new data loading
-            swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-                //fetchTimelineAsync(0)
-                searchView.setQuery("", false);
-                searchView.clearFocus();
-                //clear list
-                imageList = mutableListOf()
-                refreshing = true
-
-
-
-                getImages()
+                val directions = ImageListFragmentDirections.navigateToGalleryImageUpload("GALLERY",
+                    arrayOf(),"","","","","","","","","")
+                myView.findNavController().navigate(directions)
             }
-            // Configure the refreshing colors
-            // Configure the refreshing colors
-            swipeRefresh.setColorSchemeResources(
-                R.color.button,
-                R.color.black,
-                R.color.colorAccent,
-                R.color.colorPrimaryDark
-            )
-
-
-
-            //(adapter as ImagesAdapter).notifyDataSetChanged();
-
-
-            //Change the boolean isLoading to false
-            //  scrollListener.setLoaded()
 
 
 
 
+            val itemDecoration: ItemDecoration =
+                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+            recyclerView.addItemDecoration(itemDecoration)
+
+            recyclerView.onScrollToEnd { if(!searching){
+                getImages()}
+            }
+
+            recyclerView.adapter = adapter
+
+            // recyclerView.apply {
+            // layoutManager = GridLayoutManager(myView.context, 2)
+
+
+            // }
+
+            recyclerView.layoutManager = GridLayoutManager(myView.context, 2)
+
+
+            recyclerView.apply {
 
 
 
+                // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+                // Setup refresh listener which triggers new data loading
+                // Setup refresh listener which triggers new data loading
+                swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+                    //fetchTimelineAsync(0)
 
-            //search listener
-            images_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                    /*
+                    searchView.setQuery("", false);
+                    searchView.clearFocus();
+                    //clear list
+                    imageList = mutableListOf()
+                    refreshing = true
 
 
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    searching = true
-                    return false
+
+                    getImages()
+                    */
+                    refreshImages()
+
                 }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    println("onQueryTextChange = $newText")
-                    searching = true
-                    (adapter as ImagesAdapter).filter.filter(newText)
-                    return false
-                }
-
-            })
-
+                // Configure the refreshing colors
+                // Configure the refreshing colors
+                swipeRefresh.setColorSchemeResources(
+                    R.color.button,
+                    R.color.black,
+                    R.color.colorAccent,
+                    R.color.colorPrimaryDark
+                )
 
 
 
+                //(adapter as ImagesAdapter).notifyDataSetChanged();
 
+
+                //Change the boolean isLoading to false
+                //  scrollListener.setLoaded()
+
+
+
+
+
+
+
+
+                //search listener
+                images_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+                    androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        searching = true
+                        return false
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        println("onQueryTextChange = $newText")
+                        searching = true
+                        (adapter as ImagesAdapter).filter.filter(newText)
+                        return false
+                    }
+
+                })
+
+
+
+
+
+            }
+
+
+
+
+            getImages()
         }
 
-
-
-
-        getImages()
 
 
     }
 
+    fun refreshImages(){
+        searchView.setQuery("", false);
+        searchView.clearFocus();
+        //clear list
+        imageList = mutableListOf()
+        refreshing = true
 
-    private fun getImages(){
+
+
+        getImages()
+    }
+
+    fun getImages(){
         println("getImages")
 
 
@@ -272,12 +316,14 @@ class ImageListFragment : Fragment(), ImageCellClickListener {
                     // Now we call setRefreshing(false) to signal refresh has finished
                     customerSwipeContainer.isRefreshing = false;
 
-                    Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
+                   // Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 
 
                     adapter.filterList = imageList
 
                     (adapter as ImagesAdapter).notifyDataSetChanged();
+
+                    imagesLoaded = true
 
 
 
@@ -323,14 +369,22 @@ class ImageListFragment : Fragment(), ImageCellClickListener {
 
 
     override fun onImageCellClickListener(data:Image) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
-
         data?.let { data ->
             val directions = ImageListFragmentDirections.navigateToImage(data)
             myView.findNavController().navigate(directions)
         }
     }
+
+    /*
+     fun onUploadComplete() {
+        println("Upload Complete")
+        myView.findNavController().popBackStack()
+         imageList = mutableListOf()
+         getImages()
+    }
+*/
+
+
 
 
 

@@ -44,7 +44,10 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
     private var param1: String? = null
     private var param2: String? = null
 
-    private  var customer: Customer? = null
+
+    lateinit  var customerID: String
+
+    lateinit  var customer: Customer
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
@@ -77,6 +80,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
     lateinit var settingsBtn: Button
 
     lateinit var tabLayout:TabLayout
+    lateinit var tableMode:String
 
 
 
@@ -95,9 +99,11 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("customer onCreate")
         arguments?.let {
-            customer = it.getParcelable<Customer?>("customer")
-            param2 = it.getString(ARG_PARAM2)
+            println("cust frag onCreate")
+           // customer = it.getParcelable<Customer?>("customer")!!
+            customerID = it.getString("customerID")!!
         }
     }
 
@@ -129,7 +135,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        println("customer = ${customer!!.ID}")
+       // println("customer = ${customer!!.ID}")
 
 
         pgsBar = view.findViewById(R.id.progress_bar)
@@ -154,7 +160,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
     }
 
     fun getCustomer(){
-        println("getCustomer = ${customer!!.ID}")
+       // println("getCustomer = ${customer!!.ID}")
         showProgressView()
 
 
@@ -206,7 +212,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["ID"] = customer!!.ID
+                //params["ID"] = customer!!.ID
+                params["ID"] = customerID
 
                 println("params = ${params.toString()}")
                 return params
@@ -689,25 +696,11 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         custNameTextView.text = customer!!.sysname
 
         custPhoneBtn = myView.findViewById(R.id.customer_phone_btn_cl)
-       // custPhoneBtn.setOnClickListener {
-          //  println("phone btn clicked ${customer!!.phone}")
-
-           // val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + customer!!.phone))
-           // startActivity(intent)
-        //}
         custPhoneBtnTxt = myView.findViewById(R.id.customer_phone_btn_tv)
-
-       // custPhoneBtnTxt.text = customer!!.phone
-
         custPhoneBtnTxt.text = "No Phone Found"
 
         custEmailBtn = myView.findViewById(R.id.customer_email_btn_cl)
-
-
         custEmailBtnTxt = myView.findViewById(R.id.customer_email_btn_tv)
-
-        //custEmailBtnTxt.text = customer!!.email
-
         custEmailBtnTxt.text = "No Email Found"
 
         custAddressBtn = myView.findViewById(R.id.customer_address_btn_cl)
@@ -725,18 +718,13 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 )
                 startActivity(intent)
             }
-
-
         }
 
         custAddressBtnTxt = myView.findViewById(R.id.customer_address_btn_tv)
-
-        //custEmailBtnTxt.text = customer!!.email
-
         custAddressBtnTxt.text = "No Address Found"
 
         if (customer!!.mainAddr != ""){
-            custAddressBtnTxt.text = customer!!.mainAddr
+            custAddressBtnTxt.text = customer!!.mainAddr!!
         }
 
 
@@ -746,7 +734,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     "1" -> {
                         println("1")
                         custPhoneBtnTxt.text = contact.value!!
-                        custEmailBtn.setOnClickListener {
+                        custPhoneBtnTxt.setOnClickListener {
 
                             val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + contact.value!!))
                             com.example.AdminMatic.myView.context.startActivity(intent)
@@ -779,7 +767,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         contactsBtn.setOnClickListener{
             println("contacts btn clicked")
 
-            val directions = CustomerFragmentDirections.navigateToCustomerContacts(customer!!)
+            val directions = CustomerFragmentDirections.navigateToCustomerContacts(customer)
 
 
             myView.findNavController().navigate(directions)
@@ -791,7 +779,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         settingsBtn.setOnClickListener{
             println("notes btn clicked")
 
-            val directions = CustomerFragmentDirections.navigateToCustomerNotes(customer!!)
+            val directions = CustomerFragmentDirections.navigateToCustomerNotes(customer)
 
             myView.findNavController().navigate(directions)
             //val directions = EmployeeListFragmentDirections.navigateToEmployee(data)
@@ -799,7 +787,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
             // myView.findNavController().navigate(directions)
         }
 
-
+        addBtn = myView.findViewById((R.id.customer_add_btn))
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
 
@@ -807,7 +795,10 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                 when (tab!!.position) {
                     0 -> {
-                        Toast.makeText(com.example.AdminMatic.myView.context, "Leads", Toast.LENGTH_SHORT).show()
+
+                        tableMode = "LEADS"
+                        addBtn.text = "Add Lead"
+                       // Toast.makeText(com.example.AdminMatic.myView.context, "Leads", Toast.LENGTH_SHORT).show()
                         leadsRecyclerView.visibility = View.VISIBLE
                         contractsRecyclerView.visibility = View.GONE
                         workOrdersRecyclerView.visibility = View.GONE
@@ -815,7 +806,9 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         imagesRecyclerView.visibility = View.GONE
                     }
                     1 -> {
-                        Toast.makeText(com.example.AdminMatic.myView.context, "Contracts", Toast.LENGTH_SHORT).show()
+                        tableMode = "CONTRACTS"
+                        addBtn.text = "Add Contract"
+                        //Toast.makeText(com.example.AdminMatic.myView.context, "Contracts", Toast.LENGTH_SHORT).show()
                         leadsRecyclerView.visibility = View.GONE
                         contractsRecyclerView.visibility = View.VISIBLE
                         workOrdersRecyclerView.visibility = View.GONE
@@ -823,7 +816,9 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         imagesRecyclerView.visibility = View.GONE
                     }
                     2 -> {
-                        Toast.makeText(com.example.AdminMatic.myView.context, "Work Orders", Toast.LENGTH_SHORT).show()
+                        tableMode = "WOS"
+                        addBtn.text = "Add Work Order"
+                        //Toast.makeText(com.example.AdminMatic.myView.context, "Work Orders", Toast.LENGTH_SHORT).show()
                         leadsRecyclerView.visibility = View.GONE
                         contractsRecyclerView.visibility = View.GONE
                         workOrdersRecyclerView.visibility = View.VISIBLE
@@ -831,7 +826,9 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         imagesRecyclerView.visibility = View.GONE
                     }
                     3 -> {
-                        Toast.makeText(com.example.AdminMatic.myView.context, "Invoices", Toast.LENGTH_SHORT).show()
+                        tableMode = "INVOICES"
+                        addBtn.text = "Add Invoice"
+                        //Toast.makeText(com.example.AdminMatic.myView.context, "Invoices", Toast.LENGTH_SHORT).show()
                         leadsRecyclerView.visibility = View.GONE
                         contractsRecyclerView.visibility = View.GONE
                         workOrdersRecyclerView.visibility = View.GONE
@@ -839,6 +836,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         imagesRecyclerView.visibility = View.GONE
                     }
                     4 -> {
+                        tableMode = "IMAGES"
+                        addBtn.text = "Add Image"
                         Toast.makeText(com.example.AdminMatic.myView.context, "Images", Toast.LENGTH_SHORT).show()
 
                         if(imagesLoaded == false){
@@ -867,13 +866,43 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
             }
         })
 
+        tableMode = "WOS"
+        addBtn.text = "Add Work Order"
         tabLayout.getTabAt(2)!!.select()
 
 
 
-        addBtn = myView.findViewById((R.id.customer_add_btn))
+
         addBtn.setOnClickListener{
             println("add btn clicked")
+
+
+            when (tableMode) {
+                "LEADS" -> {
+
+                }
+                "CONTRACTS" -> {
+
+                }
+                "WOS" -> {
+
+                }
+                "INVOICES" -> {
+
+                }
+                "IMAGES" -> {
+
+                    customer.let { customer ->
+                        val directions = CustomerFragmentDirections.navigateCustomerToImageUpload("Customer",
+                            arrayOf(),customerID,customer.sysname,"","","","","","","")
+                        myView.findNavController().navigate(directions)
+                    }
+
+
+                }
+
+            }
+
             //val directions = EmployeeListFragmentDirections.navigateToEmployee(data)
             // val directions = EmployeeFragmentDirections.navigateToPayroll(employee)
             // myView.findNavController().navigate(directions)
@@ -887,10 +916,10 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
     override fun onImageCellClickListener(data:Image) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.name} Clicked", Toast.LENGTH_SHORT).show()
-
-        println("Cell clicked with image: ${data.name}")
+        data?.let { data ->
+            val directions = CustomerFragmentDirections.navigateCustomerToImage(data)
+            myView.findNavController().navigate(directions)
+        }
     }
 
     fun showProgressView() {

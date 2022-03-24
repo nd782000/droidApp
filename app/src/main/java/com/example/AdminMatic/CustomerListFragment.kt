@@ -83,9 +83,87 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
         searchView = view.findViewById(R.id.customers_search)
         swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
 
-        getCustomers()
+        //getCustomers()
+
+        showCustomers()
 
     }
+
+
+    fun showCustomers(){
+        println("showCustomers")
+        list_recycler_view.apply {
+            layoutManager = LinearLayoutManager(activity)
+
+            hideProgressView()
+
+
+            if(GlobalVars.customerList != null) {
+                adapter = activity?.let {
+
+
+                    CustomersAdapter(
+                        GlobalVars.customerList!!,
+                        it, this@CustomerListFragment
+                    )
+
+
+                }
+
+                val itemDecoration: ItemDecoration =
+                    DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                recyclerView.addItemDecoration(itemDecoration)
+
+
+                // Setup refresh listener which triggers new data loading
+                swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+                    searchView.setQuery("", false);
+                    searchView.clearFocus();
+                    getCustomers()
+                }
+                // Configure the refreshing colors
+                swipeRefresh.setColorSchemeResources(
+                    R.color.button,
+                    R.color.black,
+                    R.color.colorAccent,
+                    R.color.colorPrimaryDark
+                )
+                (adapter as CustomersAdapter).notifyDataSetChanged();
+
+                // Remember to CLEAR OUT old items before appending in the new ones
+
+                // Now we call setRefreshing(false) to signal refresh has finished
+                customerSwipeContainer.isRefreshing = false;
+/*
+
+                Toast.makeText(
+                    activity,
+                    "${GlobalVars.customerList!!.count()} Customers Loaded",
+                    Toast.LENGTH_SHORT
+                ).show()
+*/
+
+                //search listener
+                customers_search.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+                    androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        return false
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        println("onQueryTextChange = $newText")
+                        (adapter as CustomersAdapter).filter.filter(newText)
+                        return false
+                    }
+
+                })
+            }
+        }
+    }
+
 
 
     private fun getCustomers(){
@@ -116,6 +194,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                     val gson = GsonBuilder().create()
                     val customersList = gson.fromJson(customers.toString() , Array<Customer>::class.java).toMutableList()
 
+                    /*
                     list_recycler_view.apply {
                         layoutManager = LinearLayoutManager(activity)
                         adapter = activity?.let {
@@ -168,6 +247,12 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
                         })
                     }
+
+                     */
+
+                    showCustomers()
+
+
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -189,18 +274,18 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
         queue.add(postRequest1)
     }
 
+
+
+
+
+
     override fun onCustomerCellClickListener(data:Customer) {
-        Toast.makeText(activity,"${data.sysname} Clicked",Toast.LENGTH_SHORT).show()
-
         println("Cell clicked with customer: ${data.sysname}")
-
         data?.let { data ->
-            val directions = CustomerListFragmentDirections.navigateToCustomer(data)
+           // val directions = CustomerListFragmentDirections.navigateToCustomer(data)
+            val directions = CustomerListFragmentDirections.navigateToCustomer(data.ID)
             myView.findNavController().navigate(directions)
         }
-
-
-
     }
 
     fun showProgressView() {

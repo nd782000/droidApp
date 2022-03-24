@@ -253,11 +253,13 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
                         layoutViews()
 
+                        /*
                         Toast.makeText(
                             activity,
                             "${globalWorkOrdersList!!.count()} WorkOrders Loaded",
                             Toast.LENGTH_SHORT
                         ).show()
+*/
 
 
 

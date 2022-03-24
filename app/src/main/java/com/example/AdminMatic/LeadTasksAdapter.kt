@@ -1,3 +1,150 @@
+/*package com.example.AdminMatic
+
+import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.TextAppearanceSpan
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.ViewGroup
+import android.widget.*
+import androidx.recyclerview.widget.RecyclerView
+import com.AdminMatic.R
+import kotlinx.android.synthetic.main.customer_list_item.view.*
+import kotlinx.android.synthetic.main.lead_task_list_item.view.*
+import java.util.*
+
+
+
+class LeadTasksAdapter(private val list: MutableList<Task>, private val context: Context,private val cellClickListener: LeadTaskCellClickListener)
+
+    : RecyclerView.Adapter<LeadTaskViewHolder>() {
+
+    //var onItemClick: ((Customer) -> Unit)? = null
+
+    var filterList:MutableList<Task> = emptyList<Task>().toMutableList()
+
+
+    var queryText = ""
+
+    init {
+
+        filterList = list
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeadTaskViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return LeadTaskViewHolder(inflater, parent)
+    }
+
+    private var listener: LogOut? = null
+
+
+
+
+
+    override fun onBindViewHolder(holder: LeadTaskViewHolder, position: Int) {
+
+
+
+
+        val leadTask: Task = filterList[position]
+        holder.bind(leadTask)
+        println("queryText = $queryText")
+        //text highlighting for first string
+
+
+        holder.itemView.lead_task_name.text = filterList[position].task
+
+
+
+
+        val data = filterList[position]
+        holder.itemView.setOnClickListener {
+            cellClickListener.onLeadTaskCellClickListener(data)
+        }
+
+
+
+        //options btn click
+        holder.itemView.findViewById<TextView>(R.id.lead_task_textViewOptions).setOnClickListener(){
+            println("menu click")
+
+            var popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+            popUp.inflate(R.menu.options_menu)
+            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+
+                when (item!!.itemId) {
+                    R.id.menu1 -> {
+                        Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
+                    }
+                    R.id.menu2 -> {
+                        Toast.makeText(myView.context, data.ID, Toast.LENGTH_SHORT).show()
+                    }
+                    R.id.menu3 -> {
+                        Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                true
+            })
+
+
+
+            popUp.show()
+
+            /*
+            fun onClick(view: View?) {
+                println("menu click")
+                //will show popup menu here
+            }*/
+
+
+        }
+
+
+
+    }
+
+    override fun getItemCount(): Int{
+
+        print("getItemCount = ${filterList.size}")
+        return filterList.size
+
+    }
+
+
+
+
+
+}
+
+class LeadTaskViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.lead_task_list_item, parent, false)) {
+    private var mNameView: TextView? = null
+
+
+
+    init {
+        mNameView = itemView.findViewById(R.id.lead_task_name)
+
+    }
+
+    fun bind(task: Task) {
+        mNameView?.text = task.task
+
+    }
+
+
+
+}
+*/
+
+
 package com.example.AdminMatic
 
 import android.app.AlertDialog
@@ -32,7 +179,7 @@ import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 
 
 
-class TasksAdapter(private val list: MutableList<Task>, private val context: Context,private val cellClickListener: TaskCellClickListener, private val woItem:WoItem)
+class LeadTasksAdapter(private val list: MutableList<Task>, private val context: Context,private val cellClickListener: LeadTaskCellClickListener, private val lead:Lead)
 
     : RecyclerView.Adapter<TaskViewHolder>() {
 
@@ -87,11 +234,13 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
 
 
-
+/*
         val data = list[position]
         holder.itemView.setOnClickListener {
-            cellClickListener.onTaskCellClickListener(data)
+            cellClickListener.onLeadTaskCellClickListener(data)
         }
+        */
+
 
 
 
@@ -101,7 +250,7 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
             var popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.task_status_menu)
-           // popUp.menu.getItem(0).subMenu.getItem(3).setVisible(false)
+            // popUp.menu.getItem(0).subMenu.getItem(3).setVisible(false)
             //popUp.menu.getItem(0).subMenu.getItem(4).setVisible(true)
 
             //val d:Drawable? = resize(context.getDrawable(R.drawable.ic_in_progress)!!)
@@ -111,7 +260,7 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
             popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_done)!!,context)!!, context.getString(R.string.finished)))
             popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context)!!, context.getString(R.string.cancelled)))
 
-           // menu.add(0, 1, 1, menuIconWithText(getResources().getDrawable(R.mipmap.user_2), getResources().getString(R.string.action_profile)));
+            // menu.add(0, 1, 1, menuIconWithText(getResources().getDrawable(R.mipmap.user_2), getResources().getString(R.string.action_profile)));
 
 
 
@@ -207,14 +356,14 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
                         try {
                             val parentObject = JSONObject(response)
                             println("parentObject = ${parentObject.toString()}")
-                           // var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                           // println("payroll = ${payrollJSON.toString()}")
-                           // println("payroll count = ${payrollJSON.length()}")
+                            // var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                            // println("payroll = ${payrollJSON.toString()}")
+                            // println("payroll count = ${payrollJSON.length()}")
 
 
-                           // getPayroll()
+                            // getPayroll()
 
-                            cellClickListener.getWoItem()
+                            cellClickListener.getLead()
 
 
                             /* Here 'response' is a String containing the response you received from the website... */
@@ -234,10 +383,9 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
                         params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                         params["taskID"] = task.ID
                         params["status"] = task.status
-                        params["woItemID"] = woItem.ID
-                        params["woID"] = woItem.woID
-                        params["empID"] = loggedInEmployee!!.ID
 
+                        params["leadID"] = lead.ID
+                        params["empID"] = loggedInEmployee!!.ID
 
                         println("params = ${params.toString()}")
                         return params
@@ -308,6 +456,8 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
 }
 
+
+/*
 class TaskViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.task_list_item, parent, false)) {
     private var mNameView: TextView? = null
@@ -357,8 +507,8 @@ class TaskViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
             }
             "5" -> {
-            println("5")
-            statusView!!.setBackgroundResource(R.drawable.ic_waiting)
+                println("5")
+                statusView!!.setBackgroundResource(R.drawable.ic_waiting)
 
             }
         }
@@ -370,4 +520,7 @@ class TaskViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
 
+
 }
+*/
+

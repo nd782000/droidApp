@@ -8,20 +8,42 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.5432291666666667" />
         <entry key="app/src/main/res/layout/abs_layout.xml" value="0.12047101449275362" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.12047101449275362" />
         <entry key="app/src/main/res/layout/contact_list_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/contract_list_item.xml" value="0.34375" />
         <entry key="app/src/main/res/layout/employee_list_item.xml" value="0.18072916666666666" />
         <entry key="app/src/main/res/layout/fragment_contact_list.xml" value="0.32065217391304346" />
-        <entry key="app/src/main/res/layout/fragment_customer.xml" value="0.12047101449275362" />
+        <entry key="app/src/main/res/layout/fragment_contract.xml" value="0.5166666666666667" />
+        <entry key="app/src/main/res/layout/fragment_customer.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_customer_list.xml" value="0.2755208333333333" />
         <entry key="app/src/main/res/layout/fragment_customer_notes.xml" value="0.18072916666666666" />
         <entry key="app/src/main/res/layout/fragment_employee.xml" value="0.34375" />
+        <entry key="app/src/main/res/layout/fragment_employee_list.xml" value="0.5194746376811594" />
+        <entry key="app/src/main/res/layout/fragment_image.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_image_list.xml" value="0.34375" />
+        <entry key="app/src/main/res/layout/fragment_image_upload.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/fragment_image_upload_prep.xml" value="0.5194746376811594" />
+        <entry key="app/src/main/res/layout/fragment_item.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_lead.xml" value="0.23541666666666666" />
         <entry key="app/src/main/res/layout/fragment_lead_list.xml" value="0.3786231884057971" />
+        <entry key="app/src/main/res/layout/fragment_log_in.xml" value="0.29375" />
         <entry key="app/src/main/res/layout/fragment_main_menu.xml" value="0.12047101449275362" />
+        <entry key="app/src/main/res/layout/fragment_payroll.xml" value="0.5194746376811594" />
+        <entry key="app/src/main/res/layout/fragment_vendor.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/fragment_wo_item.xml" value="0.23541666666666666" />
+        <entry key="app/src/main/res/layout/fragment_work_order.xml" value="0.23541666666666666" />
+        <entry key="app/src/main/res/layout/image_list_item.xml" value="0.3109375" />
+        <entry key="app/src/main/res/layout/image_upload_image_list_item.xml" value="0.3109375" />
+        <entry key="app/src/main/res/layout/image_upload_item.xml" value="1.0" />
+        <entry key="app/src/main/res/layout/invoice_list_item.xml" value="0.31302083333333336" />
         <entry key="app/src/main/res/layout/lead_list_item.xml" value="0.3786231884057971" />
+        <entry key="app/src/main/res/layout/lead_task_list_item.xml" value="0.23541666666666666" />
         <entry key="app/src/main/res/layout/wo_item_list_item.xml" value="0.34375" />
+        <entry key="app/src/main/res/layout/work_order_list_item.xml" value="0.20104166666666667" />
+        <entry key="app/src/main/res/menu/menu.xml" value="0.5166666666666667" />
+        <entry key="app/src/main/res/menu/options_menu.xml" value="0.5166666666666667" />
       </map>
     </option>
   </component>
