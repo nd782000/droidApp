@@ -26,6 +26,12 @@
     <string name="employee_ph_number">(401)863.2121</string>
     <string name="employee_email">john@atlantic...den.com</string>
 
+    <string name="equipment_name">Equipment Name</string>
+    <string name="equipment_type">Equipment Type</string>
+    <string name="equipment_crew">Equipment Crew</string>
+    <string name="current_service_check">Current Service Check:</string>
+    <string name="add_service">Add Service</string>
+
     <string name="customer_name">Customer Name</string>
     <string name="customer_ph_number">(401)863.2121</string>
     <string name="customer_email">john@atlantic...den.com</string>

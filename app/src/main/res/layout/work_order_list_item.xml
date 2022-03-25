@@ -45,7 +45,7 @@
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/list_name" />
+        app:layout_constraintTop_toTopOf="@+id/list_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

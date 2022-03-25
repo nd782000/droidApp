@@ -81,16 +81,10 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
 
 
-
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             employee = it.getParcelable<Employee?>("employee")
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
