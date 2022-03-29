@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
+import com.squareup.picasso.Picasso
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -50,6 +52,11 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
     lateinit var  pgsBar: ProgressBar
     lateinit var recyclerView: RecyclerView
+
+    lateinit var equipmentImageView: ImageView
+    lateinit var nameTxt:TextView
+    lateinit var typeTxt:TextView
+    lateinit var crewTxt:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +92,31 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
         pgsBar = view.findViewById(R.id.progress_bar)
         recyclerView = view.findViewById(R.id.service_recycler_view)
+        nameTxt = myView.findViewById(R.id.equipment_name_txt)
+        typeTxt = myView.findViewById(R.id.equipment_type_txt)
+        crewTxt = myView.findViewById(R.id.equipment_crew_txt)
+        equipmentImageView = myView.findViewById(R.id.equipment_pic_iv)
+
+        println("AAAAAAA" + equipment!!.pic)
+
+        Picasso.with(context)
+            .load("${GlobalVars.thumbBase + equipment!!.image!!.fileName}")
+            .placeholder(R.drawable.ic_images) //optional
+            //.resize(imgWidth, imgHeight)         //optional
+            //.centerCrop()                        //optional
+            .into(equipmentImageView)                       //Your image view object.
+
+        if(equipment!!.name != null){
+            nameTxt.text = equipment!!.name
+        }
+
+        if(equipment!!.typeName != null){
+            typeTxt.text = equipment!!.typeName
+        }
+
+        if(equipment!!.crewName != null){
+            crewTxt.text = "Crew: " + equipment!!.crewName
+        }
 
 
         getServices()
@@ -122,6 +154,9 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     val gson = GsonBuilder().create()
                     val servicesList = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
                     println("ServiceCount = ${servicesList.count()}")
+
+
+
 
 
                     recyclerView.apply {
