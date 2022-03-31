@@ -347,6 +347,19 @@
             android:name="equipment"
             app:argType="com.example.AdminMatic.Equipment"
             app:nullable="true" />
+        <action
+            android:id="@+id/navigateToEquipmentDetails"
+            app:destination="@id/equipmentDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/equipmentDetailsFragment"
+        android:name="com.example.AdminMatic.EquipmentDetailsFragment"
+        android:label="fragment_equipment_details"
+        tools:layout="@layout/fragment_equipment_details" >
+        <argument
+            android:name="equipment"
+            app:argType="com.example.AdminMatic.Equipment"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/woItemFragment"

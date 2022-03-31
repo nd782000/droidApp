@@ -29,6 +29,7 @@
     <string name="equipment_name">Equipment Name</string>
     <string name="equipment_type">Equipment Type</string>
     <string name="equipment_crew">Equipment Crew</string>
+    <string name="equipment_detail">Equipment Detail</string>
     <string name="current_service_check">Current Service Check:</string>
     <string name="add_service">Add Service</string>
 

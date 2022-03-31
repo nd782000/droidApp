@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -57,6 +59,8 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     lateinit var nameTxt:TextView
     lateinit var typeTxt:TextView
     lateinit var crewTxt:TextView
+    lateinit var detailsBtn:Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +100,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         typeTxt = myView.findViewById(R.id.equipment_type_txt)
         crewTxt = myView.findViewById(R.id.equipment_crew_txt)
         equipmentImageView = myView.findViewById(R.id.equipment_pic_iv)
+        detailsBtn = view.findViewById(R.id.equipment_details_btn)
 
         println("AAAAAAA" + equipment!!.pic)
 
@@ -118,6 +123,11 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             crewTxt.text = "Crew: " + equipment!!.crewName
         }
 
+        detailsBtn.setOnClickListener{
+            println("details btn clicked")
+            val directions = EquipmentFragmentDirections.navigateToEquipmentDetails(equipment)
+            myView.findNavController().navigate(directions)
+        }
 
         getServices()
 

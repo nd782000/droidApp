@@ -277,6 +277,9 @@ class EquipmentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         if(equipment.typeName != null){
             mTypeView?.text = equipment.typeName!!
         }
+        if(equipment.typeName != null){
+            mTypeView?.text = equipment.typeName!!
+        }
 
 
     }
