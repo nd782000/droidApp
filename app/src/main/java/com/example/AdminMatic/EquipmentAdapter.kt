@@ -116,7 +116,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
         var equipmentImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.equipment_item_image_view)
         var imagePath:String = "drawable://" + R.drawable.ic_images
         if (filterList[position].image != null){
-           imagePath = GlobalVars.thumbBase + filterList[position].image!!.fileName
+            imagePath = GlobalVars.thumbBase + filterList[position].image!!.fileName
         }
         Picasso.with(context)
             .load(imagePath)
@@ -125,7 +125,22 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
             //.centerCrop()                        //optional
             .into(equipmentImageView)                       //Your image view object.
 
+        var equipmentStatusImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.list_status_icon_image_view)
 
+        when (equipment.status) {
+            "0"->Picasso.with(context)
+                .load(R.drawable.ic_online)
+                .into(equipmentStatusImageView)
+            "1"->Picasso.with(context)
+                .load(R.drawable.ic_needs_repair)
+                .into(equipmentStatusImageView)
+            "2"->Picasso.with(context)
+                .load(R.drawable.ic_broken)
+                .into(equipmentStatusImageView)
+            "3"->Picasso.with(context)
+                .load(R.drawable.ic_winterized)
+                .into(equipmentStatusImageView)
+        }
 
         val data = filterList[position]
         holder.itemView.setOnClickListener {
@@ -198,7 +213,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
                     var resultList:MutableList<Equipment> = mutableListOf()
                     for (row in list) {
                         //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
-                       // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
+                        // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
                         if (row.typeName == null){
                             if (row.name.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))) {
 
@@ -225,7 +240,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
                 val filterResults = FilterResults()
                 filterResults.values = filterList
 
-               println("filterResults = ${filterResults.values}")
+                println("filterResults = ${filterResults.values}")
                 return filterResults
             }
 
@@ -263,12 +278,16 @@ class EquipmentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.equipment_list_item, parent, false)) {
     private var mNameView: TextView? = null
     private var mTypeView: TextView? = null
+    private var mCrewView: TextView? = null
+    private var mStatusIconView: ImageView? = null
 
 
 
     init {
         mNameView = itemView.findViewById(R.id.list_name)
         mTypeView = itemView.findViewById(R.id.list_type)
+        mCrewView = itemView.findViewById(R.id.list_crew)
+        mStatusIconView = itemView.findViewById(R.id.list_status_icon_image_view)
 
     }
 
@@ -277,8 +296,32 @@ class EquipmentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         if(equipment.typeName != null){
             mTypeView?.text = equipment.typeName!!
         }
-        if(equipment.typeName != null){
-            mTypeView?.text = equipment.typeName!!
+        if(equipment.crewName != null){
+            mCrewView?.text = equipment.crewName!!
+        }
+        if(equipment.status != null){
+            println(equipment.name + equipment.status)
+            /*
+            when (equipment.status) {
+                "0"->Picasso.with(context)
+                    .load(R.drawable.ic_images)
+                    .into(mStatusIconView)
+            }
+
+            if(equipment.status == "0") {
+
+            }
+            else if (equipment.status == "1") {
+
+            }
+            else if (equipment.status == "2") {
+
+            }
+            else if (equipment.status == "3") {
+
+            }
+            */
+            //mCrewView?.text = equipment.crewName!!
         }
 
 

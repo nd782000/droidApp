@@ -28,11 +28,11 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-/*
-interface EquipmentDetailsCellClickListener {
-    fun onEquipmentCellClickListener(data:Equipment)
+
+interface EquipmentDetailCellClickListener {
+    fun onEquipmentDetailCellClickListener(data:Equipment)
 }
-*/
+
 
 class EquipmentDetailsFragment : Fragment(), EquipmentCellClickListener {
 
@@ -144,7 +144,6 @@ class EquipmentDetailsFragment : Fragment(), EquipmentCellClickListener {
                     var details:JSONArray = parentObject.getJSONArray("services")
                     println("equipment details = ${details.toString()}")
                     println("equipment details count = ${details.length()}")
-                    println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
 
 
@@ -157,7 +156,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentCellClickListener {
 
 
                         adapter = activity?.let {
-                            EquipmentAdapter(equipmentList,
+                            EquipmentDetailAdapter(equipmentList,
                                 it, this@EquipmentDetailsFragment)
                         }
 
@@ -174,7 +173,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentCellClickListener {
 
 
 
-                        (adapter as EquipmentAdapter).notifyDataSetChanged();
+                        (adapter as EquipmentDetailAdapter).notifyDataSetChanged();
 
                         // Remember to CLEAR OUT old items before appending in the new ones
 

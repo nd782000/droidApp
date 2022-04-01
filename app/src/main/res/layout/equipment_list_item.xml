@@ -27,9 +27,8 @@
         android:text="@string/equipment"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/list_type"
-        app:layout_constraintStart_toEndOf="@id/equipment_item_image_view"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/equipment_item_image_view"
         />
 
 
@@ -37,12 +36,13 @@
         android:id="@+id/list_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:paddingLeft="16dp"
-        android:text="@string/equipment"
+        android:text="@string/equipment_type"
 
-        android:translationX="12dp"
+
         app:layout_constraintStart_toStartOf="@+id/list_name"
-        app:layout_constraintTop_toBottomOf="@+id/list_name" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 
@@ -58,6 +58,30 @@
         android:textStyle="bold"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/list_name" />
+
+
+    <ImageView
+        android:id="@+id/list_status_icon_image_view"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_images"
+        app:layout_constraintRight_toLeftOf="@+id/textViewOptions"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/list_crew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:paddingRight="16dp"
+        android:gravity="right"
+        android:text="@string/equipment_crew"
+
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
