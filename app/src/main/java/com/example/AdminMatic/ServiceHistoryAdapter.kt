@@ -21,7 +21,7 @@ import java.util.*
 
 
 
-class ServiceAdapter(private val list: MutableList<EquipmentService>, private val context: Context,private val cellClickListener: ServiceCellClickListener)
+class ServiceHistoryAdapter(private val list: MutableList<EquipmentService>, private val context: Context,private val cellClickListener: ServiceCellClickListener)
 
     : RecyclerView.Adapter<ServiceViewHolder>() {
 
@@ -92,7 +92,7 @@ class ServiceAdapter(private val list: MutableList<EquipmentService>, private va
 
 }
 
-class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
+class ServiceHistoryViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.service_list_item, parent, false)) {
     private var mNameView: TextView? = null
     private var mByView: TextView? = null
@@ -108,8 +108,8 @@ class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     fun bind(service: EquipmentService) {
         mNameView?.text = service.name
-        mByView?.text = "By: ${service.addedBy}"
-        mDateView?.text = service.frequency
+        mByView?.text = "By: ${service.completedBy}"
+        mDateView?.text = service.completionDate
     }
 
 

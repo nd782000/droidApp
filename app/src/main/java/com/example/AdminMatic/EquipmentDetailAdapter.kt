@@ -15,19 +15,19 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import kotlinx.android.synthetic.main.customer_list_item.view.*
-import kotlinx.android.synthetic.main.service_list_item.view.*
+import kotlinx.android.synthetic.main.equipment_detail_list_item.view.*
 import kotlinx.android.synthetic.main.wo_item_list_item.view.*
 import java.util.*
 
 
 
-class EquipmentDetailAdapter(private val list: MutableList<Equipment>, private val context: Context,private val cellClickListener: EquipmentCellClickListener)
+class EquipmentDetailAdapter(private val list: MutableList<String>, private val context: Context,private val cellClickListener: EquipmentDetailCellClickListener)
 
     : RecyclerView.Adapter<EquipmentDetailViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
-    var filterList:MutableList<Equipment> = emptyList<Equipment>().toMutableList()
+    var filterList:MutableList<String> = emptyList<String>().toMutableList()
 
 
     var queryText = ""
@@ -53,13 +53,13 @@ class EquipmentDetailAdapter(private val list: MutableList<Equipment>, private v
 
 
 
-        val service: Equipment = filterList[position]
-        holder.bind(service)
+        val detail: String = filterList[position]
+        holder.bind(detail)
         println("queryText = $queryText")
         //text highlighting for first string
 
         //if (filterList[position].name != null){
-        holder.itemView.list_service_name.text = filterList[position].name
+        holder.itemView.list_detail_name.text = filterList[position]
         //}
 
 
@@ -68,7 +68,7 @@ class EquipmentDetailAdapter(private val list: MutableList<Equipment>, private v
 
         val data = filterList[position]
         holder.itemView.setOnClickListener {
-            cellClickListener.onEquipmentCellClickListener(data)
+            cellClickListener.onEquipmentDetailCellClickListener(data)
         }
 
 
@@ -93,21 +93,17 @@ class EquipmentDetailAdapter(private val list: MutableList<Equipment>, private v
 }
 
 class EquipmentDetailViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-    RecyclerView.ViewHolder(inflater.inflate(R.layout.service_list_item, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.equipment_detail_list_item, parent, false)) {
     private var mNameView: TextView? = null
 
 
 
     init {
-        mNameView = itemView.findViewById(R.id.list_service_name)
+        mNameView = itemView.findViewById(R.id.list_detail_name)
 
     }
 
-    fun bind(service: Equipment) {
-        mNameView?.text = service.name
-
+    fun bind(detail: String) {
+        mNameView?.text = detail
     }
-
-
-
 }

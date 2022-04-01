@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:paddingRight="16dp"
-        android:text="@string/frequency"
+        android:text="@string/completedDate"
         android:textSize="12sp"
         android:textStyle="bold"
 

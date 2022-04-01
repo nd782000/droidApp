@@ -97,6 +97,9 @@
 
     <string name="id">ID</string>
     <string name="sysname">sysName</string>
+    <string name="addedBy">By:</string>
+    <string name="frequency">Frequency</string>
+    <string name="completedDate">On:</string>
     <string name="mainAddr">mainAddr</string>
     <string name="woItemEstLbl">Estimated:</string>
     <string name="woItemChargeLbl">Charge:</string>

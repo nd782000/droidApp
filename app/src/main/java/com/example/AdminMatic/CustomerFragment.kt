@@ -872,7 +872,6 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
 
-
         addBtn.setOnClickListener{
             println("add btn clicked")
 

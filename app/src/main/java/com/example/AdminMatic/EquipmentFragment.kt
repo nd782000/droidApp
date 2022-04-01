@@ -6,12 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -19,6 +17,7 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONArray
@@ -53,13 +52,16 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     lateinit var myView:View
 
     lateinit var  pgsBar: ProgressBar
-    lateinit var recyclerView: RecyclerView
+    lateinit var currentRecyclerView: RecyclerView
+    lateinit var historyRecyclerView: RecyclerView
 
     lateinit var equipmentImageView: ImageView
     lateinit var nameTxt:TextView
     lateinit var typeTxt:TextView
     lateinit var crewTxt:TextView
     lateinit var detailsBtn:Button
+
+    lateinit var tabLayout: TabLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,14 +97,14 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
 
         pgsBar = view.findViewById(R.id.progress_bar)
-        recyclerView = view.findViewById(R.id.service_recycler_view)
+        currentRecyclerView = view.findViewById(R.id.service_recycler_view)
+        historyRecyclerView = view.findViewById(R.id.service_history_recycler_view)
         nameTxt = myView.findViewById(R.id.equipment_name_txt)
         typeTxt = myView.findViewById(R.id.equipment_type_txt)
         crewTxt = myView.findViewById(R.id.equipment_crew_txt)
         equipmentImageView = myView.findViewById(R.id.equipment_pic_iv)
         detailsBtn = view.findViewById(R.id.equipment_details_btn)
-
-        println("AAAAAAA" + equipment!!.pic)
+        tabLayout = myView.findViewById(R.id.equipment_table_tl)
 
         Picasso.with(context)
             .load("${GlobalVars.thumbBase + equipment!!.image!!.fileName}")
@@ -129,14 +131,40 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             myView.findNavController().navigate(directions)
         }
 
-        getServices()
+
+
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab!!.position) {
+                    0 -> {
+                        //tableMode = "LEADS"
+                        // Toast.makeText(com.example.AdminMatic.myView.context, "Leads", Toast.LENGTH_SHORT).show()
+                        currentRecyclerView.visibility = View.VISIBLE
+                        historyRecyclerView.visibility = View.GONE
+                    }
+                    1 -> {
+                        //tableMode = "CONTRACTS"
+                        //Toast.makeText(com.example.AdminMatic.myView.context, "Contracts", Toast.LENGTH_SHORT).show()
+                        currentRecyclerView.visibility = View.GONE
+                        historyRecyclerView.visibility = View.VISIBLE
+                    }
+                }
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
+
+        getServicesCurrent()
 
     }
 
 
-    fun getServices() {
+    fun getServicesCurrent() {
 
-        println("getServices")
+        println("getServicesCurrent")
 
         showProgressView()
 
@@ -157,88 +185,99 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     println("parentObject = ${parentObject.toString()}")
                     var services:JSONArray = parentObject.getJSONArray("services")
                     println("services = ${services.toString()}")
-                    println("serices count = ${services.length()}")
-
-
+                    println("services count = ${services.length()}")
 
                     val gson = GsonBuilder().create()
                     val servicesList = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
                     println("ServiceCount = ${servicesList.count()}")
 
+                    val currentServicesAdapter = ServiceAdapter(servicesList,this.myView.context,this)
 
+                    currentRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    currentRecyclerView.adapter = currentServicesAdapter
 
+                    val itemDecoration: RecyclerView.ItemDecoration =
+                        DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                    currentRecyclerView.addItemDecoration(itemDecoration)
 
-
-                    recyclerView.apply {
+                    /*
+                    currentRecyclerView.apply {
                         layoutManager = LinearLayoutManager(activity)
                         adapter = activity?.let {
                             ServiceAdapter(servicesList,
                                 it, this@EquipmentFragment)
                         }
-
-                       /* val itemDecoration: ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        recyclerView.addItemDecoration(itemDecoration)
-
-
-
-                        // Setup refresh listener which triggers new data loading
-                        swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
-                            // Make sure you call swipeContainer.setRefreshing(false)
-                            // once the network request has completed successfully.
-                            searchView.setQuery("", false);
-                            searchView.clearFocus();
-                            getCustomers()
-                        }
-
-                        */
-
-                        // Configure the refreshing colors
-                        /*
-                        swipeRefresh.setColorSchemeResources(
-                            R.color.button,
-                            R.color.black,
-                            R.color.colorAccent,
-                            R.color.colorPrimaryDark
-                        )
-                        */
-
                         (adapter as ServiceAdapter).notifyDataSetChanged();
-
-                        // Remember to CLEAR OUT old items before appending in the new ones
-
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                       //customerSwipeContainer.isRefreshing = false;
-
-                        //Toast.makeText(activity,"${customersList.count()} Customers Loaded",Toast.LENGTH_SHORT).show()
-
-
-                        /*
-                        //search listener
-                        customers_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-                            override fun onQueryTextSubmit(query: String?): Boolean {
-                                return false
-                            }
-
-                            override fun onQueryTextChange(newText: String?): Boolean {
-                                println("onQueryTextChange = $newText")
-                                (adapter as CustomersAdapter).filter.filter(newText)
-                                return false
-                            }
-
-                        })
-
-                        */
-
-
                     }
 
+                     */
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+
+                    getServicesHistory()
 
 
-                    // showCustomers()
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+                //Log.e("VOLLEY", error.toString())
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                if (equipment != null){
+                    params["equipmentID"] = equipment!!.ID
+                }
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                println("params = ${params.toString()}")
+                return params
+            }
+        }
+        queue.add(postRequest1)
 
+    }
+
+    fun getServicesHistory() {
+
+        println("getServicesHistory")
+
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/equipment.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        val queue = Volley.newRequestQueue(myView.context)
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                println("Response $response")
+                hideProgressView()
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = ${parentObject.toString()}")
+                    var services:JSONArray = parentObject.getJSONArray("serviceHistory")
+                    println("services = ${services.toString()}")
+                    println("services count = ${services.length()}")
+
+                    val gson = GsonBuilder().create()
+                    val servicesList = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
+                    println("ServiceCount = ${servicesList.count()}")
+
+                    val historyServicesAdapter = ServiceHistoryAdapter(servicesList,this.myView.context,this)
+
+                    historyRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    historyRecyclerView.adapter = historyServicesAdapter
+
+                    val itemDecoration: RecyclerView.ItemDecoration =
+                        DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                    historyRecyclerView.addItemDecoration(itemDecoration)
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -264,18 +303,21 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         queue.add(postRequest1)
     }
 
+
     override fun onServiceCellClickListener(data:EquipmentService){
         println("onServiceCellClickListener ${data.ID}")
     }
 
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE
-        recyclerView.visibility = View.INVISIBLE
+        currentRecyclerView.visibility = View.INVISIBLE
+        historyRecyclerView.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
-        recyclerView.visibility = View.VISIBLE
+        currentRecyclerView.visibility = View.VISIBLE
+        historyRecyclerView.visibility = View.VISIBLE
     }
 
     companion object {

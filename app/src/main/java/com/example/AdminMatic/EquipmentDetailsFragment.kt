@@ -30,12 +30,13 @@ import org.json.JSONObject
 
 
 interface EquipmentDetailCellClickListener {
-    fun onEquipmentDetailCellClickListener(data:Equipment)
+    fun onEquipmentDetailCellClickListener(data:String)
 }
 
 
-class EquipmentDetailsFragment : Fragment(), EquipmentCellClickListener {
+class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
+    private  var equipment: Equipment? = null
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
@@ -45,15 +46,15 @@ class EquipmentDetailsFragment : Fragment(), EquipmentCellClickListener {
 
     // lateinit var  btn: Button
 
-    lateinit var adapter:EquipmentAdapter
+    lateinit var adapter:EquipmentDetailAdapter
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-
+        arguments?.let {
+            equipment = it.getParcelable<Equipment?>("equipment")
+        }
     }
 
     override fun onCreateView(
@@ -70,9 +71,9 @@ class EquipmentDetailsFragment : Fragment(), EquipmentCellClickListener {
         //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
         // progBar.alpha = 0.2f
 
-        var emptyList:MutableList<Equipment> = mutableListOf()
+        var emptyList:MutableList<String> = mutableListOf()
 
-        adapter = EquipmentAdapter(emptyList,myView.context, this)
+        adapter = EquipmentDetailAdapter(emptyList,myView.context, this)
 
 
 
@@ -97,146 +98,62 @@ class EquipmentDetailsFragment : Fragment(), EquipmentCellClickListener {
         recyclerView = view.findViewById(R.id.list_recycler_view)
 
 
+        val detailList = mutableListOf<String>()
 
-        getEquipmentDetails()
-
-
-    }
-
-
-    private fun getEquipmentDetails(){
-        println("getEquipmentDetails")
-
-
-        // println("pgsBar = $pgsBar")
-
-
-        showProgressView()
-
-
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/equipment.php"
-
-        val currentTimestamp = System.currentTimeMillis()
-        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
-        val queue = Volley.newRequestQueue(myView.context)
-
-
-        //val preferences =
-        //this.requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
-        // val session = preferences.getString("sessionKey","")
-        //val companyUnique = preferences.getString("companyUnique","")
-
-
-        val postRequest1: StringRequest = object : StringRequest(
-            Method.POST, urlString,
-            Response.Listener { response -> // response
-                //Log.d("Response", response)
-
-                println("Response $response")
-
-                hideProgressView()
-
-
-                try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
-                    var details:JSONArray = parentObject.getJSONArray("services")
-                    println("equipment details = ${details.toString()}")
-                    println("equipment details count = ${details.length()}")
-
-
-
-                    val gson = GsonBuilder().create()
-                    val equipmentList = gson.fromJson(details.toString() , Array<Equipment>::class.java).toMutableList()
-
-
-                    list_recycler_view.apply {
-                        layoutManager = LinearLayoutManager(activity)
-
-
-                        adapter = activity?.let {
-                            EquipmentDetailAdapter(equipmentList,
-                                it, this@EquipmentDetailsFragment)
-                        }
-
-                        val itemDecoration: ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        recyclerView.addItemDecoration(itemDecoration)
-
-                        //for item animations
-                        // recyclerView.itemAnimator = SlideInUpAnimator()
-
-
-
-
-
-
-
-                        (adapter as EquipmentDetailAdapter).notifyDataSetChanged();
-
-                        // Remember to CLEAR OUT old items before appending in the new ones
-
-                        // ...the data has come back, add new items to your adapter...
-
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false;
-
-                        //  Toast.makeText(activity,"${equipmentList.count()} Equipment Loaded",Toast.LENGTH_SHORT).show()
-
-
-
-                        //search listener
-
-
-
-
-
-
-                    }
-
-
-
-
-                    /* Here 'response' is a String containing the response you received from the website... */
-                } catch (e: JSONException) {
-                    println("JSONException")
-                    e.printStackTrace()
-                }
-
-
-                // var intent:Intent = Intent(applicationContext,MainActivity2::class.java)
-                // startActivity(intent)
-            },
-            Response.ErrorListener { // error
-
-
-                // Log.e("VOLLEY", error.toString())
-                // Log.d("Error.Response", error())
-            }
-        ) {
-            override fun getParams(): Map<String, String> {
-                val params: MutableMap<String, String> = HashMap()
-                params["companyUnique"] = loggedInEmployee!!.companyUnique
-                params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
-                return params
-            }
+        detailList.add(0, "Description: ${equipment!!.description}")
+        if (equipment!!.plannerShow == "0") {
+            detailList.add(0, "Show in Planners: NO")
         }
-        queue.add(postRequest1)
+        else {
+            detailList.add(0, "Show in Planners: YES")
+        }
+        detailList.add(0, "Vendor: ${equipment!!.dealerName}")
+        detailList.add(0, "Purchased: ${equipment!!.purchaseDate}")
+        detailList.add(0, "Engine: ${equipment!!.engineTypeName}")
+        detailList.add(0, "Fuel: ${equipment!!.fuelTypeName}")
+        detailList.add(0, "Serial/VIN: ${equipment!!.serial}")
+        detailList.add(0, "Model: ${equipment!!.model}")
+        detailList.add(0, "Make: ${equipment!!.make}")
+        detailList.add(0, "Crew: ${equipment!!.crewName}")
+        detailList.add(0, "Type: ${equipment!!.typeName}")
+        detailList.add(0, "Name: ${equipment!!.name}")
+
+        list_recycler_view.apply {
+            layoutManager = LinearLayoutManager(activity)
+
+            adapter = activity?.let {
+                EquipmentDetailAdapter(detailList,
+                    it, this@EquipmentDetailsFragment)
+            }
+
+            val itemDecoration: ItemDecoration =
+                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+            recyclerView.addItemDecoration(itemDecoration)
+
+            //for item animations
+            // recyclerView.itemAnimator = SlideInUpAnimator()
+
+            (adapter as EquipmentDetailAdapter).notifyDataSetChanged();
+
+            // Remember to CLEAR OUT old items before appending in the new ones
+
+            // ...the data has come back, add new items to your adapter...
+
+            // Now we call setRefreshing(false) to signal refresh has finished
+            //customerSwipeContainer.isRefreshing = false;
+
+            //  Toast.makeText(activity,"${equipmentList.count()} Equipment Loaded",Toast.LENGTH_SHORT).show(
+        }
+
+        hideProgressView()
+
     }
 
-    override fun onEquipmentCellClickListener(data:Equipment) {
+
+    override fun onEquipmentDetailCellClickListener(data:String) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
-
-        data?.let { data ->
-            val directions = EquipmentListFragmentDirections.navigateToEquipment(data)
-            myView.findNavController().navigate(directions)
-        }
+        Toast.makeText(activity,"${data} Clicked",Toast.LENGTH_SHORT).show()
     }
-
-
 
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE
