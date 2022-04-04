@@ -58,9 +58,6 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     lateinit var currentServicesAdapter:ServiceAdapter
     lateinit var historyServicesAdapter:ServiceAdapter
 
-    //lateinit var currentRecyclerView: RecyclerView
-    //lateinit var historyRecyclerView: RecyclerView
-
     lateinit var equipmentImageView: ImageView
     lateinit var nameTxt:TextView
     lateinit var typeTxt:TextView
@@ -107,9 +104,6 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
         serviceRecyclerView = view.findViewById(R.id.service_recycler_view)
 
-
-       // currentRecyclerView = view.findViewById(R.id.service_recycler_view)
-       // historyRecyclerView = view.findViewById(R.id.service_history_recycler_view)
         nameTxt = myView.findViewById(R.id.equipment_name_txt)
         typeTxt = myView.findViewById(R.id.equipment_type_txt)
         crewTxt = myView.findViewById(R.id.equipment_crew_txt)
@@ -152,20 +146,11 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                         tableMode = "CURRENT"
 
                         serviceRecyclerView.adapter = currentServicesAdapter
-                       // serviceRecyclerView
-                        //tableMode = "LEADS"
-                        // Toast.makeText(com.example.AdminMatic.myView.context, "Leads", Toast.LENGTH_SHORT).show()
-                        //currentRecyclerView.visibility = View.VISIBLE
-                       // historyRecyclerView.visibility = View.GONE
                     }
                     1 -> {
 
                         serviceRecyclerView.adapter = historyServicesAdapter
                         tableMode = "HISTORY"
-                        //tableMode = "CONTRACTS"
-                        //Toast.makeText(com.example.AdminMatic.myView.context, "Contracts", Toast.LENGTH_SHORT).show()
-                        //currentRecyclerView.visibility = View.GONE
-                        //historyRecyclerView.visibility = View.VISIBLE
                     }
                 }
             }
@@ -284,166 +269,18 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             }
         }
         queue.add(postRequest1)
-
-
-
     }
-
-
-    /*
-    fun getServicesCurrent() {
-
-        println("getServicesCurrent")
-
-        showProgressView()
-
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/equipment.php"
-
-        val currentTimestamp = System.currentTimeMillis()
-        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
-        val queue = Volley.newRequestQueue(myView.context)
-
-        val postRequest1: StringRequest = object : StringRequest(
-            Method.POST, urlString,
-            Response.Listener { response -> // response
-                println("Response $response")
-                hideProgressView()
-                try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
-                    var services:JSONArray = parentObject.getJSONArray("services")
-                    println("services = ${services.toString()}")
-                    println("services count = ${services.length()}")
-
-                    val gson = GsonBuilder().create()
-                    val servicesList = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
-                    println("ServiceCount = ${servicesList.count()}")
-
-                    val currentServicesAdapter = ServiceAdapter(servicesList,this.myView.context,this)
-
-                    currentRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    currentRecyclerView.adapter = currentServicesAdapter
-
-                    val itemDecoration: RecyclerView.ItemDecoration =
-                        DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                    currentRecyclerView.addItemDecoration(itemDecoration)
-
-                    /*
-                    currentRecyclerView.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            ServiceAdapter(servicesList,
-                                it, this@EquipmentFragment)
-                        }
-                        (adapter as ServiceAdapter).notifyDataSetChanged();
-                    }
-
-                     */
-
-                    /* Here 'response' is a String containing the response you received from the website... */
-
-                    getServicesHistory()
-
-
-                } catch (e: JSONException) {
-                    println("JSONException")
-                    e.printStackTrace()
-                }
-            },
-            Response.ErrorListener { // error
-                //Log.e("VOLLEY", error.toString())
-            }
-        ) {
-            override fun getParams(): Map<String, String> {
-                val params: MutableMap<String, String> = HashMap()
-                if (equipment != null){
-                    params["equipmentID"] = equipment!!.ID
-                }
-                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
-                return params
-            }
-        }
-        queue.add(postRequest1)
-
-    }
-
-    fun getServicesHistory() {
-
-        println("getServicesHistory")
-
-        showProgressView()
-
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/equipment.php"
-
-        val currentTimestamp = System.currentTimeMillis()
-        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
-        val queue = Volley.newRequestQueue(myView.context)
-
-        val postRequest1: StringRequest = object : StringRequest(
-            Method.POST, urlString,
-            Response.Listener { response -> // response
-                println("Response $response")
-                hideProgressView()
-                try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
-                    var services:JSONArray = parentObject.getJSONArray("serviceHistory")
-                    println("services = ${services.toString()}")
-                    println("services count = ${services.length()}")
-
-                    val gson = GsonBuilder().create()
-                    val servicesList = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
-                    println("ServiceCount = ${servicesList.count()}")
-
-                    val historyServicesAdapter = ServiceHistoryAdapter(servicesList,this.myView.context,this)
-
-                    historyRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    historyRecyclerView.adapter = historyServicesAdapter
-
-                    val itemDecoration: RecyclerView.ItemDecoration =
-                        DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                    historyRecyclerView.addItemDecoration(itemDecoration)
-
-                    /* Here 'response' is a String containing the response you received from the website... */
-                } catch (e: JSONException) {
-                    println("JSONException")
-                    e.printStackTrace()
-                }
-            },
-            Response.ErrorListener { // error
-                //Log.e("VOLLEY", error.toString())
-            }
-        ) {
-            override fun getParams(): Map<String, String> {
-                val params: MutableMap<String, String> = HashMap()
-                if (equipment != null){
-                    params["equipmentID"] = equipment!!.ID
-                }
-                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
-                return params
-            }
-        }
-        queue.add(postRequest1)
-    }
-*/
-
 
     override fun onServiceCellClickListener(data:EquipmentService){
         println("onServiceCellClickListener ${data.ID}")
         if (tableMode == "CURRENT"){
             println("Show service in current mode")
+            val directions = EquipmentFragmentDirections.navigateToService(data)
+            myView.findNavController().navigate(directions)
         }else{
             println("Show service in history mode")
         }
     }
-
-
 
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE

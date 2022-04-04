@@ -9,6 +9,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.5432291666666667" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/contract_list_item.xml" value="0.1" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/equipment_detail_list_item.xml" value="0.25815217391304346" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/equipment_list_item.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_customer.xml" value="0.1" />
@@ -16,6 +17,7 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_equipment.xml" value="0.22" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_equipment_details.xml" value="0.25815217391304346" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_equipment_list.xml" value="0.33" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_service.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/service_history_list_item.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/service_list_item.xml" value="0.25815217391304346" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/options_menu.xml" value="0.25" />

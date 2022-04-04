@@ -116,8 +116,12 @@
     <string name="finished">Finished</string>
     <string name="cancelled">Cancelled</string>
     <string name="delete">Delete</string>
+    <string name="current_date">Current Date:</string>
+    <string name="next_date">Next:</string>
+    <string name="completion_notes">Completion Notes:</string>
 
-
+    <string name="service_name">Service Name</string>
+    <string name="instructions">Instructions:</string>
 
 
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>

@@ -350,7 +350,24 @@
         <action
             android:id="@+id/navigateToEquipmentDetails"
             app:destination="@id/equipmentDetailsFragment" />
+        <action
+            android:id="@+id/navigateToService"
+            app:destination="@id/serviceFragment" />
+
+
     </fragment>
+    <fragment
+        android:id="@+id/serviceFragment"
+        android:name="com.example.AdminMatic.ServiceFragment"
+        android:label="fragment_service"
+        tools:layout="@layout/fragment_service" >
+        <argument
+            android:name="service"
+            app:argType="com.example.AdminMatic.EquipmentService"
+            app:nullable="true" />
+    </fragment>
+
+
     <fragment
         android:id="@+id/equipmentDetailsFragment"
         android:name="com.example.AdminMatic.EquipmentDetailsFragment"
@@ -466,4 +483,5 @@
 
 
     </fragment>
+
 </navigation>
