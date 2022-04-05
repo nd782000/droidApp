@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.customer_list_item.view.*
 import kotlinx.android.synthetic.main.service_list_item.view.*
 import kotlinx.android.synthetic.main.wo_item_list_item.view.*
@@ -63,7 +64,22 @@ class ServiceAdapter(private val list: MutableList<EquipmentService>, private va
     //}
 
 
+        var serviceStatusImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.list_service_status_icon_image_view)
 
+        when (service.status) {
+            "0"-> Picasso.with(context)
+                .load(R.drawable.ic_not_started)
+                .into(serviceStatusImageView)
+            "1"-> Picasso.with(context)
+                .load(R.drawable.ic_in_progress)
+                .into(serviceStatusImageView)
+            "2"-> Picasso.with(context)
+                .load(R.drawable.ic_done)
+                .into(serviceStatusImageView)
+            "3"-> Picasso.with(context)
+                .load(R.drawable.ic_canceled)
+                .into(serviceStatusImageView)
+        }
 
 
         val data = filterList[position]
@@ -103,7 +119,6 @@ class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         mNameView = itemView.findViewById(R.id.list_service_name)
         mByView = itemView.findViewById(R.id.list_service_by)
         mDateView = itemView.findViewById(R.id.list_service_on)
-
     }
 
     fun bind(service: EquipmentService) {

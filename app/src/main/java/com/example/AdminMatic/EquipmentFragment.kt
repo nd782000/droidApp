@@ -2,10 +2,8 @@ package com.example.AdminMatic
 
 import android.os.Bundle
 import android.provider.Settings
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -63,6 +61,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     lateinit var typeTxt:TextView
     lateinit var crewTxt:TextView
     lateinit var detailsBtn:Button
+    lateinit var statusBtn: ImageButton
 
     lateinit var tabLayout: TabLayout
     lateinit var tableMode:String
@@ -111,6 +110,12 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         detailsBtn = view.findViewById(R.id.equipment_details_btn)
         tabLayout = myView.findViewById(R.id.equipment_table_tl)
 
+        statusBtn = myView.findViewById(R.id.equipment_status_btn)
+        statusBtn.setOnClickListener{
+            println("status btn clicked")
+            showStatusMenu()
+        }
+
         Picasso.with(context)
             .load("${GlobalVars.thumbBase + equipment!!.image!!.fileName}")
             .placeholder(R.drawable.ic_images) //optional
@@ -135,6 +140,8 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             val directions = EquipmentFragmentDirections.navigateToEquipmentDetails(equipment)
             myView.findNavController().navigate(directions)
         }
+
+        setStatus(equipment!!.status)
 
 
 
@@ -279,6 +286,99 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             myView.findNavController().navigate(directions)
         }else{
             println("Show service in history mode")
+        }
+    }
+
+    fun showStatusMenu(){
+        println("showStatusMenu")
+
+        var popUp: PopupMenu = PopupMenu(myView.context,statusBtn)
+        popUp.inflate(R.menu.task_status_menu)
+        popUp.menu.add(0, 0, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_online)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_online)))
+        popUp.menu.add(0, 1, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_needs_repair)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_needs_repair)))
+        popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_broken)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_broken)))
+        popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_winterized)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_winterized)))
+        popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+
+            equipment!!.status = item!!.itemId.toString()
+
+            setStatus(equipment!!.status)
+            Toast.makeText(com.example.AdminMatic.myView.context, item!!.title, Toast.LENGTH_SHORT).show()
+
+
+            showProgressView()
+
+            var urlString = "https://www.adminmatic.com/cp/app/functions/update/equipmentStatus.php"
+
+            val currentTimestamp = System.currentTimeMillis()
+            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+            urlString = "${"$urlString?cb=$currentTimestamp"}"
+            val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
+
+
+            val postRequest1: StringRequest = object : StringRequest(
+                Method.POST, urlString,
+                Response.Listener { response -> // response
+
+                    println("Response $response")
+
+                    try {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = ${parentObject.toString()}")
+
+                        hideProgressView()
+
+                        /* Here 'response' is a String containing the response you received from the website... */
+                    } catch (e: JSONException) {
+                        println("JSONException")
+                        e.printStackTrace()
+                    }
+                },
+                Response.ErrorListener { // error
+
+                }
+            ) {
+                override fun getParams(): Map<String, String> {
+                    val params: MutableMap<String, String> = java.util.HashMap()
+                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                    params["status"] = equipment!!.status
+                    params["equipmentID"] = equipment!!.ID
+                    println("params = ${params.toString()}")
+                    return params
+                }
+            }
+            queue.add(postRequest1)
+
+
+            true
+
+
+        })
+
+        popUp.gravity = Gravity.LEFT
+        popUp.show()
+    }
+
+    private fun setStatus(status: String) {
+        println("setStatus")
+        when(status) {
+            "0" -> {
+                println("0")
+                statusBtn!!.setBackgroundResource(R.drawable.ic_online)
+            }
+            "1" -> {
+                println("1")
+                statusBtn!!.setBackgroundResource(R.drawable.ic_needs_repair)
+            }
+            "2" -> {
+                println("2")
+                statusBtn!!.setBackgroundResource(R.drawable.ic_broken)
+            }
+            "3" -> {
+                println("3")
+                statusBtn!!.setBackgroundResource(R.drawable.ic_winterized)
+            }
         }
     }
 

@@ -27,6 +27,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageButton
+            android:id="@+id/equipment_status_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/equipment_name_txt"
             android:layout_width="0dp"
@@ -41,8 +52,10 @@
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toRightOf="@+id/equipment_pic_iv"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/equipment_status_btn"
             app:layout_constraintTop_toTopOf="parent" />
+
+
 
 
 

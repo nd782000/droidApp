@@ -227,7 +227,7 @@ data class Department(var ID:String,
 @Parcelize
 data class Equipment(val ID: String,
                      val name: String,
-                     val status:String,
+                     var status:String,
                      val type:String,
 
                      val make:String?,

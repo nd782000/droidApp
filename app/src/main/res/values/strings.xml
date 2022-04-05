@@ -123,6 +123,13 @@
     <string name="service_name">Service Name</string>
     <string name="instructions">Instructions:</string>
 
+    <string name="equipment_status_online">Online</string>
+    <string name="equipment_status_needs_repair">Needs Service</string>
+    <string name="equipment_status_broken">Broken</string>
+    <string name="equipment_status_winterized">Winterized</string>
+
+
+
 
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
 
