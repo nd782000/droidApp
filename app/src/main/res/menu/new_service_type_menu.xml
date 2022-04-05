@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/new_service_type_menu_one_time"
+        android:title="@string/new_service_type_menu_one_time" />
+
+    <item
+        android:id="@+id/new_service_type_menu_date_based"
+        android:title="@string/new_service_type_menu_date_based" />
+
+    <item
+        android:id="@+id/new_service_type_menu_mile_km_based"
+        android:title="@string/new_service_type_menu_mile_km_based" />
+
+    <item
+        android:id="@+id/new_service_type_menu_engine_hour_based"
+        android:title="@string/new_service_type_menu_engine_hour_based" />
+
+    <item
+        android:id="@+id/new_service_type_menu_inspection"
+        android:title="@string/new_service_type_menu_inspection" />
+
+</menu>

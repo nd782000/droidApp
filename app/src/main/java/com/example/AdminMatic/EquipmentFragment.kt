@@ -2,6 +2,7 @@ package com.example.AdminMatic
 
 import android.os.Bundle
 import android.provider.Settings
+import android.text.InputType
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.*
@@ -61,7 +62,9 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     lateinit var typeTxt:TextView
     lateinit var crewTxt:TextView
     lateinit var detailsBtn:Button
+    lateinit var addServiceBtn: Button
     lateinit var statusBtn: ImageButton
+
 
     lateinit var tabLayout: TabLayout
     lateinit var tableMode:String
@@ -114,6 +117,13 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         statusBtn.setOnClickListener{
             println("status btn clicked")
             showStatusMenu()
+        }
+
+        addServiceBtn = myView.findViewById(R.id.add_service_btn)
+        addServiceBtn.setOnClickListener{
+            println("status btn clicked")
+            val directions = EquipmentFragmentDirections.navigateToNewService(equipment)
+            myView.findNavController().navigate(directions)
         }
 
         Picasso.with(context)
@@ -286,6 +296,8 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             myView.findNavController().navigate(directions)
         }else{
             println("Show service in history mode")
+            val directions = EquipmentFragmentDirections.navigateToService(data)
+            myView.findNavController().navigate(directions)
         }
     }
 

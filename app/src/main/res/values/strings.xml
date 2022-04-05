@@ -119,6 +119,20 @@
     <string name="current_date">Current Date:</string>
     <string name="next_date">Next:</string>
     <string name="completion_notes">Completion Notes:</string>
+    <string name="submit">Submit</string>
+
+    <string name="new_service_name">Name:</string>
+    <string name="new_service_type">Type:</string>
+    <string name="new_service_frequency">Frequency:</string>
+    <string name="new_service_current">Current:</string>
+    <string name="new_service_next">Next:</string>
+    <string name="new_service_instructions">Instructions:</string>
+
+    <string name="new_service_type_menu_one_time">One Time</string>
+    <string name="new_service_type_menu_date_based">Date Based</string>
+    <string name="new_service_type_menu_mile_km_based">Mile/Km. Based</string>
+    <string name="new_service_type_menu_engine_hour_based">Engine Hour Based</string>
+    <string name="new_service_type_menu_inspection">Inspection</string>
 
     <string name="service_name">Service Name</string>
     <string name="instructions">Instructions:</string>
