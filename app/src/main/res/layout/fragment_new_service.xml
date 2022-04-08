@@ -48,6 +48,21 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_service_name_editTxt" />
+    <TextView
+        android:id="@+id/new_service_type_txt"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="top"
+        android:textColor="?attr/editTextColor"
+        android:background="?attr/editTextBackground"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+
+        android:paddingHorizontal="4dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_service_type_title_txt"
+        />
+    <!--
     <EditText
         android:id="@+id/new_service_type_editTxt"
         android:layout_width="0dp"
@@ -59,6 +74,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_service_type_title_txt"/>
+        -->
 
     <TextView
         android:id="@+id/new_service_frequency_title_txt"
@@ -74,7 +90,7 @@
         android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_service_type_editTxt" />
+        app:layout_constraintTop_toBottomOf="@+id/new_service_type_txt" />
     <EditText
         android:id="@+id/new_service_frequency_editTxt"
         android:layout_width="0dp"

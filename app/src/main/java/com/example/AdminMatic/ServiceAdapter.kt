@@ -30,11 +30,10 @@ class ServiceAdapter(private val list: MutableList<EquipmentService>, private va
 
     var filterList:MutableList<EquipmentService> = emptyList<EquipmentService>().toMutableList()
 
-
+    var isHistoryMode:Boolean = false
     var queryText = ""
 
     init {
-
         filterList = list
     }
 
@@ -108,7 +107,7 @@ class ServiceAdapter(private val list: MutableList<EquipmentService>, private va
 
 }
 
-class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
+class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup, ) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.service_list_item, parent, false)) {
     private var mNameView: TextView? = null
     private var mByView: TextView? = null
@@ -123,7 +122,7 @@ class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     fun bind(service: EquipmentService) {
         mNameView?.text = service.name
-        mByView?.text = "By: ${service.addedBy}"
+        mByView?.text = "By: ${service.serviceDue}"
         mDateView?.text = service.frequency
     }
 

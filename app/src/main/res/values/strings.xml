@@ -121,18 +121,42 @@
     <string name="completion_notes">Completion Notes:</string>
     <string name="submit">Submit</string>
 
-    <string name="new_service_name">Name:</string>
-    <string name="new_service_type">Type:</string>
-    <string name="new_service_frequency">Frequency:</string>
+    <string name="service_type">Type: %1$s</string>
+    <string name="service_due">Due: %1$s %2$s</string>
+    <string name="service_frequency">Frequency: %1$s %2$s</string>
+    <string name="service_by">By: %1$s on %2$s</string>
+
+    <string name="na">N/A</string>
+    <string name="now">NOW</string>
+    <string name="mi_km">Mi./Km.</string>
+    <string name="days">Days</string>
+
+    <string name="new_service_name">Name: </string>
+    <string name="new_service_type">Type: </string>
+    <string name="new_service_frequency">Frequency: </string>
+    <string name="new_service_frequency_days">Frequency (Days): </string>
+    <string name="new_service_frequency_miles_km">Frequency (Miles/Km.): </string>
+    <string name="new_service_frequency_engine_hours">Frequency (Engine Hours): </string>
+
     <string name="new_service_current">Current:</string>
+    <string name="new_service_current_miles_km">Current (Miles/Km.):</string>
+    <string name="new_service_current_engine_hours">Current (Engine Hours):</string>
     <string name="new_service_next">Next:</string>
+    <string name="new_service_next_miles_km">Next (Miles/Km.):</string>
+    <string name="new_service_next_engine_hours">Next (Engine Hours):</string>
+
+
     <string name="new_service_instructions">Instructions:</string>
 
-    <string name="new_service_type_menu_one_time">One Time</string>
-    <string name="new_service_type_menu_date_based">Date Based</string>
-    <string name="new_service_type_menu_mile_km_based">Mile/Km. Based</string>
-    <string name="new_service_type_menu_engine_hour_based">Engine Hour Based</string>
-    <string name="new_service_type_menu_inspection">Inspection</string>
+    <string name="service_type_one_time">One Time</string>
+    <string name="service_type_date_based">Date Based</string>
+    <string name="service_type_mile_km_based">Mile/Km. Based</string>
+    <string name="service_type_engine_hour_based">Engine Hour Based</string>
+    <string name="service_type_inspection">Inspection</string>
+
+
+
+
 
     <string name="service_name">Service Name</string>
     <string name="instructions">Instructions:</string>

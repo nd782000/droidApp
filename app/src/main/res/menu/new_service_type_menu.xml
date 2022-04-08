@@ -3,22 +3,22 @@
 
     <item
         android:id="@+id/new_service_type_menu_one_time"
-        android:title="@string/new_service_type_menu_one_time" />
+        android:title="@string/service_type_one_time" />
 
     <item
         android:id="@+id/new_service_type_menu_date_based"
-        android:title="@string/new_service_type_menu_date_based" />
+        android:title="@string/service_type_date_based" />
 
     <item
         android:id="@+id/new_service_type_menu_mile_km_based"
-        android:title="@string/new_service_type_menu_mile_km_based" />
+        android:title="@string/service_type_mile_km_based" />
 
     <item
         android:id="@+id/new_service_type_menu_engine_hour_based"
-        android:title="@string/new_service_type_menu_engine_hour_based" />
+        android:title="@string/service_type_engine_hour_based" />
 
     <item
         android:id="@+id/new_service_type_menu_inspection"
-        android:title="@string/new_service_type_menu_inspection" />
+        android:title="@string/service_type_inspection" />
 
 </menu>

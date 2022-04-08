@@ -126,12 +126,17 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             myView.findNavController().navigate(directions)
         }
 
-        Picasso.with(context)
-            .load("${GlobalVars.thumbBase + equipment!!.image!!.fileName}")
-            .placeholder(R.drawable.ic_images) //optional
-            //.resize(imgWidth, imgHeight)         //optional
-            //.centerCrop()                        //optional
-            .into(equipmentImageView)                       //Your image view object.
+        if (equipment!!.image != null) {
+            Picasso.with(context)
+                .load(GlobalVars.thumbBase + equipment!!.image!!.fileName)
+                .placeholder(R.drawable.ic_images) //optional
+                //.resize(imgWidth, imgHeight)         //optional
+                //.centerCrop()                        //optional
+                .into(equipmentImageView)                       //Your image view object.
+        }
+
+
+
 
         if(equipment!!.name != null){
             nameTxt.text = equipment!!.name
@@ -186,7 +191,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
 
 
-    fun getServiceInfo(){
+    private fun getServiceInfo(){
         println("getServiceInfo")
 
 
@@ -196,7 +201,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -230,7 +235,10 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     val servicesListHistory = gson.fromJson(servicesHistory.toString() , Array<EquipmentService>::class.java).toMutableList()
                     println("ServiceHistoryCount = ${servicesListHistory.count()}")
 
+                    println(equipment!!.dealer)
+
                     historyServicesAdapter = ServiceAdapter(servicesListHistory,this.myView.context,this)
+                    historyServicesAdapter.isHistoryMode = true
 
 
                     serviceRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)

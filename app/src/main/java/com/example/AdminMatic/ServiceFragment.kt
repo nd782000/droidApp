@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,6 +28,9 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -53,8 +57,8 @@ class ServiceFragment : Fragment(), EquipmentDetailCellClickListener {
 
     lateinit var statusBtn: ImageButton
 
-    lateinit var currentDateEditTxt:EditText
-    lateinit var nextDateEditTxt:EditText
+    lateinit var currentEditTxt:EditText
+    lateinit var nextEditTxt:EditText
     lateinit var notesEditText: EditText
 
     // lateinit var  btn: Button
@@ -103,8 +107,8 @@ class ServiceFragment : Fragment(), EquipmentDetailCellClickListener {
         addedByTxt = myView.findViewById(R.id.service_added_by_txt)
         instructionsTxt = myView.findViewById(R.id.service_instructions_txt)
 
-        currentDateEditTxt = myView.findViewById(R.id.current_date_editTxt)
-        nextDateEditTxt = myView.findViewById(R.id.next_date_editTxt)
+        currentEditTxt = myView.findViewById(R.id.current_editTxt)
+        nextEditTxt = myView.findViewById(R.id.next_editTxt)
         notesEditText = myView.findViewById(R.id.service_notes_editTxt)
 
         notesEditText.addTextChangedListener(object : TextWatcher {
@@ -128,30 +132,63 @@ class ServiceFragment : Fragment(), EquipmentDetailCellClickListener {
             showStatusMenu()
         }
 
+        //Date stuff
+        val formatterFull = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") //format from the php
+        val formatter = DateTimeFormatter.ofPattern("MM/dd/yy") //format to display
+        println(service!!.createDate)
+        val createDate = LocalDate.parse(service!!.createDate, formatterFull)
+        val currentDate = LocalDate.now()
+        val nextDate = createDate.plusDays(service!!.frequency!!.toLong())
 
 
-        if(service!!.name != null){
-            nameTxt.text = service!!.name
-        }
-        if(service!!.type != null){
-            typeTxt.text = "Type: " + service!!.typeName
-        }
-        if(service!!.completionDate != null){
-            dueTxt.text = "Due: " + service!!.completionDate
-        }
-        if(service!!.frequency != null){
-            frequencyTxt.text = "Frequency: " + service!!.frequency
-        }
+        nameTxt.text = service!!.name
+        typeTxt.text = activity!!.getString(R.string.service_type, service!!.typeName)
         if(service!!.addedBy != null){
-            addedByTxt.text = "Added by: " + service!!.addedBy + " on " + service!!.createDate
+            addedByTxt.text = activity!!.getString(R.string.service_by, service!!.addedBy, createDate.format(formatter))
         }
         if(service!!.instruction != null){
-            addedByTxt.text = service!!.instruction
+            instructionsTxt.text = service!!.instruction
         }
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val currentDate = sdf.format(Date())
-        currentDateEditTxt.setText(currentDate)
-        nextDateEditTxt.setText(service!!.nextValue)
+
+
+        currentEditTxt.setText(formatter.format(currentDate))
+
+        //TODO: make due text red if it's overdue
+
+        when (service!!.type) {
+            "0" -> { //one time
+                typeTxt.text = getString(R.string.service_type, getString(R.string.service_type_one_time))
+                nextEditTxt.visibility = View.GONE
+                if(service!!.completionDate != null){
+                    dueTxt.text = activity!!.getString(R.string.service_due, activity!!.getString(R.string.now), "")
+                }
+                frequencyTxt.text = activity!!.getString(R.string.service_frequency, getString(R.string.na), "")
+            }
+            "1" -> { //date based
+                typeTxt.text = getString(R.string.service_type, getString(R.string.service_type_date_based))
+                nextEditTxt.setText(formatter.format(nextDate))
+                dueTxt.text = activity!!.getString(R.string.service_due, nextDate.format(formatter), "")
+                if (service!!.frequency != null) {
+                    frequencyTxt.text = activity!!.getString(R.string.service_frequency, service!!.frequency, activity!!.getString(R.string.days))
+                }
+            }
+            "2" -> { //mile/km. based
+                typeTxt.text = getString(R.string.service_type, getString(R.string.service_type_mile_km_based))
+                frequencyTxt.text = getString(R.string.service_frequency, service!!.frequency, getString(R.string.mi_km))
+                val nextValue = service!!.nextValue!!.toInt() + service!!.frequency!!.toInt()
+                currentEditTxt.text = null
+                nextEditTxt.setText(nextValue.toString())
+                dueTxt.text = activity!!.getString(R.string.service_due, nextValue.toString(), getString(R.string.mi_km))
+            }
+            "3" -> { //engine hour based
+                typeTxt.text = getString(R.string.service_type, getString(R.string.service_type_engine_hour_based))
+            }
+            "4" -> { //inspection
+                typeTxt.text = getString(R.string.service_type, getString(R.string.service_type_inspection))
+            }
+
+        }
+
 
         setStatus(service!!.status.toString())
 
