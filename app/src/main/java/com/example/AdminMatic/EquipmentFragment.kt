@@ -182,7 +182,6 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             }
         })
 
-        //getServicesCurrent()
 
         tableMode = "CURRENT"
         getServiceInfo()
@@ -298,15 +297,29 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
     override fun onServiceCellClickListener(data:EquipmentService){
         println("onServiceCellClickListener ${data.ID}")
+
+        if (data.type == "4") { // Go to the special inspection fragment if the service type is inspection
+            val directions = EquipmentFragmentDirections.navigateToServiceInspection(data)
+            myView.findNavController().navigate(directions)
+        }
+        else {
+            val directions = EquipmentFragmentDirections.navigateToService(data)
+            myView.findNavController().navigate(directions)
+        }
+
+
+
+
+        /*
         if (tableMode == "CURRENT"){
             println("Show service in current mode")
             val directions = EquipmentFragmentDirections.navigateToService(data)
             myView.findNavController().navigate(directions)
         }else{
             println("Show service in history mode")
-            val directions = EquipmentFragmentDirections.navigateToService(data)
-            myView.findNavController().navigate(directions)
+
         }
+        */
     }
 
     fun showStatusMenu(){

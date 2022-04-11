@@ -18,6 +18,8 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.AdminMatic.GlobalVars.Companion.dateFormatterPHP
+import com.example.AdminMatic.GlobalVars.Companion.dateFormatterShort
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
 
@@ -29,6 +31,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Period
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -133,25 +136,24 @@ class ServiceFragment : Fragment(), EquipmentDetailCellClickListener {
         }
 
         //Date stuff
-        val formatterFull = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") //format from the php
-        val formatter = DateTimeFormatter.ofPattern("MM/dd/yy") //format to display
+
         println(service!!.createDate)
-        val createDate = LocalDate.parse(service!!.createDate, formatterFull)
-        val currentDate = LocalDate.now()
+        val createDate = LocalDateTime.parse(service!!.createDate, dateFormatterPHP)
+        val currentDate = LocalDateTime.now()
         val nextDate = createDate.plusDays(service!!.frequency!!.toLong())
 
 
         nameTxt.text = service!!.name
         typeTxt.text = activity!!.getString(R.string.service_type, service!!.typeName)
         if(service!!.addedBy != null){
-            addedByTxt.text = activity!!.getString(R.string.service_by, service!!.addedBy, createDate.format(formatter))
+            addedByTxt.text = activity!!.getString(R.string.service_by, service!!.addedBy, createDate.format(dateFormatterShort))
         }
         if(service!!.instruction != null){
             instructionsTxt.text = service!!.instruction
         }
 
 
-        currentEditTxt.setText(formatter.format(currentDate))
+        currentEditTxt.setText(dateFormatterShort.format(currentDate))
 
         //TODO: make due text red if it's overdue
 
@@ -166,8 +168,8 @@ class ServiceFragment : Fragment(), EquipmentDetailCellClickListener {
             }
             "1" -> { //date based
                 typeTxt.text = getString(R.string.service_type, getString(R.string.service_type_date_based))
-                nextEditTxt.setText(formatter.format(nextDate))
-                dueTxt.text = activity!!.getString(R.string.service_due, nextDate.format(formatter), "")
+                nextEditTxt.setText(dateFormatterShort.format(nextDate))
+                dueTxt.text = activity!!.getString(R.string.service_due, nextDate.format(dateFormatterShort), "")
                 if (service!!.frequency != null) {
                     frequencyTxt.text = activity!!.getString(R.string.service_frequency, service!!.frequency, activity!!.getString(R.string.days))
                 }

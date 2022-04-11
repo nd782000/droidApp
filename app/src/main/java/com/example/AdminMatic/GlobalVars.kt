@@ -50,6 +50,9 @@ class GlobalVars: Application() {
         var deviceID:String? = null
 
         var customerList: MutableList<Customer>? = null
+
+        val dateFormatterPHP: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") //format from the php
+        val dateFormatterShort: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yy") //format to display
     }
 
 

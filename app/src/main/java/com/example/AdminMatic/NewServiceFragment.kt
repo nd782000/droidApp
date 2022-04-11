@@ -32,6 +32,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -45,8 +46,13 @@ interface EquipmentDetailCellClickListener {
 
 class NewServiceFragment : Fragment() {
 
-    private  var equipment: Equipment? = null
-    private  var newService: EquipmentService? = null
+    private var equipment: Equipment? = null
+    private var newService: EquipmentService? = null
+
+
+    private var currentDate = LocalDateTime.now()
+    private var nextDate = currentDate
+
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
@@ -113,19 +119,6 @@ class NewServiceFragment : Fragment() {
         //typeEditTxt.isFocusable = false
         //typeEditTxt.isFocusableInTouchMode = false
 
-
-        //TODO: figure out why this requires two taps and fix, alternatively change to just TextView instead of EditText (TextView was only chosen for visual consistency)
-        typeTxt.setOnClickListener{
-            showTypeMenu()
-            hideKeyboard()
-        }
-        /*
-        typeEditTxt.setOnFocusChangeListener {
-
-        }
-
-         */
-
         frequencyEditTxt = view.findViewById(R.id.new_service_frequency_editTxt)
         currentEditTxt = view.findViewById(R.id.new_service_current_editTxt)
         nextEditTxt = view.findViewById(R.id.new_service_next_editTxt)
@@ -169,21 +162,51 @@ class NewServiceFragment : Fragment() {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                newService!!.frequency = s.toString()
+
+                if (s.isNotBlank()) {
+                    newService!!.frequency = s.toString()
+                    when (newService!!.type) {
+                        "1" -> { // date based
+                            if (newService!!.frequency != null) {
+                                nextDate = currentDate.plusDays(newService!!.frequency!!.toLong())
+                            }
+                            nextEditTxt.setText(GlobalVars.dateFormatterShort.format(nextDate))
+                            newService!!.nextValue = GlobalVars.dateFormatterPHP.format(nextDate)
+                        }
+                        "2" -> { // mile/km based
+                            var tempNext =
+                                newService!!.currentValue!!.toInt() + newService!!.frequency!!.toInt()
+                            newService!!.nextValue = tempNext.toString()
+                            nextEditTxt.setText(tempNext.toString())
+                        }
+                        "3" -> { // engine hour based
+                            nextDate = currentDate.plusDays(newService!!.frequency!!.toLong())
+                            var tempNext = newService!!.currentValue!!.toInt() + newService!!.frequency!!.toInt()
+                            newService!!.nextValue = tempNext.toString()
+                            nextEditTxt.setText(tempNext.toString())
+                        }
+                    }
+                }
             }
+
         })
         currentEditTxt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                newService!!.currentValue = s.toString()
+                if (newService!!.type != "1") { // Only change if not in date mode, in date mode it changes itself
+                    newService!!.currentValue = s.toString()
+                }
             }
         })
         nextEditTxt.addTextChangedListener(object : TextWatcher {
+
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                newService!!.nextValue = s.toString()
+                if (newService!!.type != "1") {
+                    newService!!.nextValue = s.toString()
+                }
             }
         })
         instructionsEditTxt.addTextChangedListener(object : TextWatcher {
@@ -194,9 +217,58 @@ class NewServiceFragment : Fragment() {
             }
         })
 
+        typeTxt.setOnClickListener{
+            showTypeMenu()
+            hideKeyboard()
+        }
+
+        val dateSetListenerCurrent =
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                currentDate = LocalDateTime.of(year, monthOfYear, dayOfMonth, 0, 0)
+                currentEditTxt.setText(GlobalVars.dateFormatterShort.format(currentDate))
+                newService!!.currentValue = GlobalVars.dateFormatterPHP.format(currentDate)
+            }
+
+        val dateSetListenerNext =
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                nextDate = LocalDateTime.of(year, monthOfYear, dayOfMonth, 0, 0)
+                nextEditTxt.setText(GlobalVars.dateFormatterShort.format(nextDate))
+                newService!!.nextValue = GlobalVars.dateFormatterPHP.format(nextDate)
+            }
+
+        currentEditTxt.setOnClickListener {
+            context?.let { it1 ->
+                if(newService!!.type == "1") {
+                    DatePickerDialog(
+                        it1,
+                        dateSetListenerCurrent,
+                        // set DatePickerDialog to point to today's date when it loads up
+                        nextDate.year,
+                        nextDate.monthValue,
+                        nextDate.dayOfYear
+                    ).show()
+                }
+            }
+        }
+
+        nextEditTxt.setOnClickListener {
+            context?.let { it1 ->
+                if(newService!!.type == "1") {
+                    DatePickerDialog(
+                        it1,
+                        dateSetListenerCurrent,
+                        // set DatePickerDialog to point to today's date when it loads up
+                        currentDate.year,
+                        currentDate.monthValue,
+                        currentDate.dayOfYear
+                    ).show()
+                }
+            }
+        }
 
         //Set up the elements to start in "one time" mode
         //nameEditTxt.setText(R.string.new_service_name)
+        typeTxt.setText(R.string.service_type_one_time)
         frequencyEditTxt.isFocusable = false
         frequencyEditTxt.isFocusableInTouchMode = false
         currentEditTxt.isFocusable = false
@@ -244,19 +316,21 @@ class NewServiceFragment : Fragment() {
                     currentTxt.setText(R.string.new_service_current)
                     nextTxt.setText(R.string.new_service_next)
                     frequencyEditTxt.isFocusable = true
-                    currentEditTxt.isFocusable = true
-                    nextEditTxt.isFocusable = true
+                    currentEditTxt.isFocusable = false
+                    nextEditTxt.isFocusable = false
                     frequencyEditTxt.isFocusableInTouchMode = true
-                    currentEditTxt.isFocusableInTouchMode = true
-                    nextEditTxt.isFocusableInTouchMode = true
+                    currentEditTxt.isFocusableInTouchMode = false
+                    nextEditTxt.isFocusableInTouchMode = false
                     frequencyEditTxt.text = null
                     currentEditTxt.text = null
                     nextEditTxt.text = null
                     currentEditTxt.inputType = InputType.TYPE_CLASS_DATETIME
                     nextEditTxt.inputType = InputType.TYPE_CLASS_DATETIME
-                    newService!!.frequency = null
-                    newService!!.currentValue = null
-                    newService!!.nextValue = null
+                    newService!!.frequency = "0"
+                    currentEditTxt.setText(GlobalVars.dateFormatterShort.format(currentDate))
+                    nextEditTxt.setText(GlobalVars.dateFormatterShort.format(nextDate))
+                    newService!!.currentValue = GlobalVars.dateFormatterPHP.format(currentDate)
+                    newService!!.nextValue = GlobalVars.dateFormatterPHP.format(nextDate)
                 }
                 R.id.new_service_type_menu_mile_km_based -> {
                     newService!!.type = "2"
@@ -272,13 +346,13 @@ class NewServiceFragment : Fragment() {
                     currentEditTxt.isFocusableInTouchMode = true
                     nextEditTxt.isFocusableInTouchMode = true
                     frequencyEditTxt.text = null
-                    currentEditTxt.text = null
-                    nextEditTxt.text = null
+                    currentEditTxt.setText("0")
+                    nextEditTxt.setText("0")
                     currentEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
                     nextEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
-                    newService!!.frequency = null
-                    newService!!.currentValue = null
-                    newService!!.nextValue = null
+                    newService!!.frequency = "0"
+                    newService!!.currentValue = "0"
+                    newService!!.nextValue = "0"
                 }
                 R.id.new_service_type_menu_engine_hour_based -> {
                     newService!!.type = "3"
@@ -294,13 +368,13 @@ class NewServiceFragment : Fragment() {
                     currentEditTxt.isFocusableInTouchMode = true
                     nextEditTxt.isFocusableInTouchMode = true
                     frequencyEditTxt.text = null
-                    currentEditTxt.text = null
-                    nextEditTxt.text = null
+                    currentEditTxt.setText("0")
+                    nextEditTxt.setText("0")
                     currentEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
                     nextEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
-                    newService!!.frequency = null
-                    newService!!.currentValue = null
-                    newService!!.nextValue = null
+                    newService!!.frequency = "0"
+                    newService!!.currentValue = "0"
+                    newService!!.nextValue = "0"
                 }
                 R.id.new_service_type_menu_inspection -> {
                     newService!!.type = "4"

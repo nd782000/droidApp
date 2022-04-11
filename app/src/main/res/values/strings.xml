@@ -154,6 +154,12 @@
     <string name="service_type_engine_hour_based">Engine Hour Based</string>
     <string name="service_type_inspection">Inspection</string>
 
+    <string name="inspection_name">Item Name</string>
+    <string name="inspection_good">Good</string>
+    <string name="inspection_bad">Bad</string>
+    <string name="inspection_na">N/A</string>
+    <string name="inspection_notes">Inspection Notes:</string>
+    <string name="inspection_page_title">%1$s Inspection</string>
 
 
 
