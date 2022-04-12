@@ -138,9 +138,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
 
 
-        if(equipment!!.name != null){
-            nameTxt.text = equipment!!.name
-        }
+        nameTxt.text = equipment!!.name
 
         if(equipment!!.typeName != null){
             typeTxt.text = equipment!!.typeName
@@ -224,7 +222,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     val servicesListCurrent = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
                     println("ServiceCount = ${servicesListCurrent.count()}")
 
-                    currentServicesAdapter = ServiceAdapter(servicesListCurrent,this.myView.context,this)
+                    currentServicesAdapter = ServiceAdapter(servicesListCurrent,this.myView.context, false,this)
 
                     //history adapter
                     var servicesHistory:JSONArray = parentObject.getJSONArray("serviceHistory")
@@ -236,8 +234,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
                     println(equipment!!.dealer)
 
-                    historyServicesAdapter = ServiceAdapter(servicesListHistory,this.myView.context,this)
-                    historyServicesAdapter.isHistoryMode = true
+                    historyServicesAdapter = ServiceAdapter(servicesListHistory,this.myView.context, true,this)
 
 
                     serviceRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)

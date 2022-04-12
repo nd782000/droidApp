@@ -343,13 +343,19 @@ data class InvoiceItem(var ID:String,
 
 @Parcelize
 data class InspectionQuestion(
+    /*
     var ID:String,
     var name: String,
     var answer: String? = ""
 
+     */
+    var questionID:String,
+    var answer:String,
+    var questionText:String
+
 ): Parcelable{
     override fun toString(): String {
-        return  name
+        return  questionText
     }
 }
 

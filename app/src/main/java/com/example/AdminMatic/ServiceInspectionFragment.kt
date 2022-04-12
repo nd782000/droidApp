@@ -44,9 +44,12 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
     lateinit var recyclerView: RecyclerView
 
-    // lateinit var  btn: Button
+    lateinit var  submitBtn: Button
 
     lateinit var adapter:ServiceInspectionAdapter
+
+    // The list is declared here so the recycler can be passed a reference to it and the radio buttons can edit it
+    var questionsList:MutableList<InspectionQuestion> = emptyList<InspectionQuestion>().toMutableList()
 
 
 
@@ -91,11 +94,13 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
         //println(recyclerView)
         recyclerView = view.findViewById(R.id.service_inspection_recycler_view)
 
-        println(recyclerView)
-
-
         pgsBar = view.findViewById(R.id.progressBar)
-
+        submitBtn = view.findViewById(R.id.service_inspection_submit_btn)
+        submitBtn.setOnClickListener{
+            println(questionsList[0].answer)
+            val gson = GsonBuilder().disableHtmlEscaping().create()
+            println("questions = " + gson.toJson(questionsList))
+        }
 
         getInspectionItems()
 
@@ -127,23 +132,19 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
                     println("parentObject = ${parentObject.toString()}")
                     var questions:JSONArray = parentObject.getJSONArray("questions")
                     println("questions = ${questions.toString()}")
-                    println("questions count = ${questions.length()}")
-
+                    //println("questions count = ${questions.length()}")
 
                     val gson = GsonBuilder().create()
-                    val questionsList = gson.fromJson(questions.toString() , Array<InspectionQuestion>::class.java).toMutableList()
-
-
-
+                    questionsList = gson.fromJson(questions.toString(), Array<InspectionQuestion>::class.java).toMutableList()
 
                     service_inspection_recycler_view.apply {
                         layoutManager = LinearLayoutManager(activity)
-
 
                         adapter = activity?.let {
                             ServiceInspectionAdapter(questionsList,
                                 it, this@ServiceInspectionFragment)
                         }
+
 
                         val itemDecoration: ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
@@ -153,9 +154,14 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
                         // recyclerView.itemAnimator = SlideInUpAnimator()
 
 
+
+
                         (adapter as ServiceInspectionAdapter).notifyDataSetChanged();
+                        println(adapter!!.itemCount)
 
                     }
+
+
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -179,6 +185,66 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
                 params["ID"] = service!!.ID
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
+                println("params = ${params.toString()}")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
+
+    private fun submitInspection() {
+
+        //Todo: check for status here, line 395 at https://github.com/nd782000/adminMatic.ios/blob/master/AdminMatic/Equipment/EquipmentInspectionViewController.swift
+
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/update/equipmentServiceComplete.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = ${parentObject.toString()}")
+
+                    hideProgressView()
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+
+                val gson = GsonBuilder().disableHtmlEscaping().create()
+                gson.toJson(questionsList)
+
+                val params: MutableMap<String, String> = java.util.HashMap()
+                params["ID"] = service!!.ID
+                params["completeValue"] = service!!.completionMileage.toString()
+                params["completedBy"] = GlobalVars.loggedInEmployee!!.ID
+                params["completionNotes"] = service!!.notes.toString()
+                params["nextValue"] = service!!.nextValue.toString()
+                params["questions"] = gson.toJson(questionsList)
+                params["status"] = service!!.status.toString()
+                params["type"] = service!!.type
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+
                 println("params = ${params.toString()}")
                 return params
             }

@@ -204,7 +204,7 @@ class ServiceFragment : Fragment(), EquipmentDetailCellClickListener {
         Toast.makeText(activity,"${data} Clicked",Toast.LENGTH_SHORT).show()
     }
 
-    fun showStatusMenu(){
+    private fun showStatusMenu(){
         println("showStatusMenu")
 
         var popUp: PopupMenu = PopupMenu(myView.context,statusBtn)
@@ -227,7 +227,7 @@ class ServiceFragment : Fragment(), EquipmentDetailCellClickListener {
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-            urlString = "${"$urlString?cb=$currentTimestamp"}"
+            urlString = "$urlString?cb=$currentTimestamp"
             val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
 
 

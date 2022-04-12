@@ -21,7 +21,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
-
+    <!--
     <LinearLayout
         android:id="@+id/current_next_layout"
         android:layout_width="0dp"
@@ -86,6 +86,40 @@
 
 
     </LinearLayout>
+   -->
+    <RadioGroup
+        android:id="@+id/service_inspection_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/service_inspection_item_name_txt"
+        android:weightSum="3">
+        <RadioButton
+            android:id="@+id/service_inspection_good_radio"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/inspection_good"
+            android:buttonTint="@color/colorPrimary"/>
+        <RadioButton
+            android:id="@+id/service_inspection_bad_radio"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/inspection_bad"
+            android:buttonTint="@color/colorPrimary"/>
+        <RadioButton
+            android:id="@+id/service_inspection_na_radio"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/inspection_na"
+            android:buttonTint="@color/colorPrimary"/>
+    </RadioGroup>
+
 
 
 
