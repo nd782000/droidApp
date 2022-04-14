@@ -205,6 +205,13 @@ data class CustomerArray(var customers: Array<Customer>
     }
 }
 
+@Parcelize
+data class VendorArray(var vendors: Array<Vendor>
+): Parcelable{
+    override fun toString(): String {
+        return vendors.count().toString()
+    }
+}
 
 
 @Parcelize

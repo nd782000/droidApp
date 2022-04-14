@@ -63,7 +63,7 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         println("onCreateView")
@@ -71,7 +71,7 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
         myView = inflater.inflate(R.layout.fragment_service_inspection, container, false)
 
 
-        var emptyList:MutableList<InspectionQuestion> = mutableListOf()
+        val emptyList:MutableList<InspectionQuestion> = mutableListOf()
 
         adapter = ServiceInspectionAdapter(emptyList,myView.context, this)
 

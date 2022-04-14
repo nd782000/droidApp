@@ -30,7 +30,7 @@ import org.json.JSONObject
 
 
 interface EquipmentDetailCellClickListener {
-    fun onEquipmentDetailCellClickListener(data:String)
+    fun onEquipmentDetailCellClickListener(data:Int)
 }
 
 
@@ -81,7 +81,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Equipment List"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Equipment Details"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = "Equipment Details"
 
 
 
@@ -149,10 +149,15 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
     }
 
-
-    override fun onEquipmentDetailCellClickListener(data:String) {
+    //Todo: add link to Vendor (may need to change the data on this listener to include cell ID)
+    override fun onEquipmentDetailCellClickListener(data:Int) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data} Clicked",Toast.LENGTH_SHORT).show()
+        if (data == 9) { //vendor cell
+            Toast.makeText(activity, "Vendor Clicked ${equipment!!.dealer}", Toast.LENGTH_SHORT)
+                .show()
+            val directions = VendorListFragmentDirections.navigateToVendor(null, equipment!!.dealer)
+            myView.findNavController().navigate(directions)
+        }
     }
 
     fun showProgressView() {

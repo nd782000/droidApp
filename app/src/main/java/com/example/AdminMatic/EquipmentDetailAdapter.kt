@@ -54,7 +54,7 @@ class EquipmentDetailAdapter(private val list: MutableList<String>, private val 
 
 
         val detail: String = filterList[position]
-        holder.bind(detail)
+        holder.bind(detail, position)
         println("queryText = $queryText")
         //text highlighting for first string
 
@@ -68,7 +68,7 @@ class EquipmentDetailAdapter(private val list: MutableList<String>, private val 
 
         val data = filterList[position]
         holder.itemView.setOnClickListener {
-            cellClickListener.onEquipmentDetailCellClickListener(data)
+            cellClickListener.onEquipmentDetailCellClickListener(position)
         }
 
 
@@ -103,7 +103,10 @@ class EquipmentDetailViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     }
 
-    fun bind(detail: String) {
+    fun bind(detail: String, position: Int) {
         mNameView?.text = detail
+        if (position == 9) { // vendor link
+            mNameView!!.setTextColor(mNameView!!.context.getColor(R.color.link));
+        }
     }
 }

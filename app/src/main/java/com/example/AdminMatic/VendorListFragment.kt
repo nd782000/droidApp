@@ -268,7 +268,7 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
         Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
 
         data?.let { data ->
-            val directions = VendorListFragmentDirections.navigateToVendor(data)
+            val directions = VendorListFragmentDirections.navigateToVendor(data, "")
             myView.findNavController().navigate(directions)
         }
     }

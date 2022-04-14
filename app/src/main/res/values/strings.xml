@@ -112,6 +112,7 @@
     <string name="add_usage">Add Usage</string>
     <string name="woItemSubmitBtn">Submit</string>
     <string name="not_started">Not Started</string>
+    <string name="woList">Work Order List</string>
     <string name="in_progress">In Progress</string>
     <string name="finished">Finished</string>
     <string name="cancelled">Cancelled</string>
@@ -120,6 +121,10 @@
     <string name="next_date">Next:</string>
     <string name="completion_notes">Completion Notes:</string>
     <string name="submit">Submit</string>
+
+    <string name="wo_charge_nc">No Charge</string>
+    <string name="wo_charge_fl">Flat %1$s</string>
+    <string name="wo_charge_tm">T&amp;M</string>
 
     <string name="service_type">Type: %1$s</string>
     <string name="service_due">Due: %1$s %2$s</string>

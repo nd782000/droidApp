@@ -229,6 +229,7 @@ class NewServiceFragment : Fragment() {
                 newService!!.currentValue = GlobalVars.dateFormatterPHP.format(currentDate)
             }
 
+        // Todo: Finish this (editing next date currently just applies to current date)
         val dateSetListenerNext =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 nextDate = LocalDateTime.of(year, monthOfYear, dayOfMonth, 0, 0)

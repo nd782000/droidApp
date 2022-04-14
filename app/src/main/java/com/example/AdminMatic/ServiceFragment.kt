@@ -37,13 +37,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 
-/*
-interface EquipmentDetailCellClickListener {
-    fun onEquipmentDetailCellClickListener(data:String)
-}
-*/
-
-class ServiceFragment : Fragment(), EquipmentDetailCellClickListener {
+class ServiceFragment : Fragment() {
 
     private  var service: EquipmentService? = null
 
@@ -196,12 +190,6 @@ class ServiceFragment : Fragment(), EquipmentDetailCellClickListener {
 
         hideProgressView()
 
-    }
-
-
-    override fun onEquipmentDetailCellClickListener(data:String) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data} Clicked",Toast.LENGTH_SHORT).show()
     }
 
     private fun showStatusMenu(){

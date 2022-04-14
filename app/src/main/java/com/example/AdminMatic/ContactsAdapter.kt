@@ -45,12 +45,12 @@ class ContactsAdapter(private val list: MutableList<Contact>, private val contex
 
 
 
-        var contactIconView:ImageView = holder.itemView.findViewById<ImageView>(R.id.contact_icon_view)
+        val contactIconView:ImageView = holder.itemView.findViewById<ImageView>(R.id.contact_icon_view)
 
 
 
 
-        var typeTxt:TextView = holder.itemView.findViewById<TextView>(R.id.contact_type_tv)
+        val typeTxt:TextView = holder.itemView.findViewById<TextView>(R.id.contact_type_tv)
         when (filterList[position].type) {
 
 

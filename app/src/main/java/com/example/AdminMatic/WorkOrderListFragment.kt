@@ -27,11 +27,10 @@ import kotlinx.android.synthetic.main.fragment_work_order_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.time.LocalDate
-import java.time.OffsetDateTime
-import java.time.OffsetTime
-import java.time.ZoneOffset
-
+import java.time.*
+import java.time.temporal.WeekFields
+import java.util.*
+import kotlin.collections.HashMap
 
 
 interface WorkOrderCellClickListener {
@@ -70,34 +69,29 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         "This Year (${loggedInEmployee!!.fName})",
         "This Year (Everyone)")
 
-        var startDateDB:String = ""
-        var endDateDB:String = ""
-        var empID:String = ""
-
-
+    var startDateDB:String = ""
+    var endDateDB:String = ""
+    var empID:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         println("onCreateView")
         myView = inflater.inflate(R.layout.fragment_work_order_list, container, false)
 
+        ((activity as AppCompatActivity).supportActionBar?.customView!!
+            .findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.woList)
 
     if (globalWorkOrdersList == null) {
-        var emptyList: MutableList<WorkOrder> = mutableListOf()
+        val emptyList: MutableList<WorkOrder> = mutableListOf()
 
         adapter = WorkOrdersAdapter(emptyList, myView.context, this)
-
-
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!
-            .findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder List"
     }
 
         return myView
@@ -135,12 +129,11 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             scheduleSpinner.setBackgroundResource(R.drawable.text_view_layout)
 
 
-            val adapter: ArrayAdapter<String>? = ArrayAdapter<String>(
+            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
                 myView.context,
                 android.R.layout.simple_spinner_dropdown_item, datesArray
-
             )
-            adapter!!.setDropDownViewResource(R.layout.spinner_right_aligned)
+            adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
             scheduleSpinner.adapter = adapter
 
@@ -385,16 +378,10 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     override fun onWorkOrderCellClickListener(data:WorkOrder) {
         println("Cell clicked with workOrder: ${data.woID}")
 
-        data?.let { data ->
-
-
-
+        data.let { data ->
             val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(data)
             myView.findNavController().navigate(directions)
         }
-
-
-
     }
 
     //spinner delegates
@@ -446,6 +433,11 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     empID = ""
                 }
                 4 -> {println("tomorrow personal")
+                    /* // timezone-ignoring version, seems to make it behave like iOS
+                    val today: LocalDate = LocalDate.now()
+                    val odtStart: LocalDateTime = today.atTime(0, 0).plusDays(1)
+                    val odtStop: LocalDateTime = today.plusDays(2).atTime(0, 0)
+                     */
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN).plusDays(1)
                     val odtStop: OffsetDateTime = today.plusDays(2).atTime(OffsetTime.MIN)
@@ -467,8 +459,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 }
                 6 -> {println("this week personal")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
+                    val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = odtStart.plusDays(7)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.toString()
@@ -476,24 +468,19 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     empID = loggedInEmployee!!.ID
                 }
                 7 -> {println("this week everyone")
-
-
-                  // var calender:Calender
-
-
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
+                    val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = odtStart.plusDays(7)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.toString()
                     endDateDB = odtStop.toString()
-                    empID = loggedInEmployee!!.ID
+                    empID = ""
                 }
                 8 -> {println("next week personal")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
+                    val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).plusDays(7).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = odtStart.plusDays(7)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.toString()
@@ -502,73 +489,71 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 }
                 9 -> {println("next week everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                    val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).plusDays(7).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = odtStart.plusDays(7)
+                    print("odtStart = $odtStart")
+                    print("odtStop = $odtStop")
+                    startDateDB = odtStart.toString()
+                    endDateDB = odtStop.toString()
+                    empID = ""
+                }
+                10 -> {println("next 14 days personal")
+                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = today.plusDays(14).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.toString()
                     endDateDB = odtStop.toString()
                     empID = loggedInEmployee!!.ID
                 }
-                10 -> {println("today personal")
+                11 -> {println("next 14 days everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = today.plusDays(14).atTime(OffsetTime.MIN)
+                    print("odtStart = $odtStart")
+                    print("odtStop = $odtStop")
+                    startDateDB = odtStart.toString()
+                    endDateDB = odtStop.toString()
+                    empID = ""
+                }
+                12 -> {println("next 30 days personal")
+                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = today.plusDays(30).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.toString()
                     endDateDB = odtStop.toString()
                     empID = loggedInEmployee!!.ID
                 }
-                11 -> {println("today personal")
+                13 -> {println("next 30 days everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = today.plusDays(30).atTime(OffsetTime.MIN)
+                    print("odtStart = $odtStart")
+                    print("odtStop = $odtStop")
+                    startDateDB = odtStart.toString()
+                    endDateDB = odtStop.toString()
+                    empID = ""
+                }
+                14 -> {println("this year personal")
+                    val odtStart: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year+1, 1).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.toString()
                     endDateDB = odtStop.toString()
                     empID = loggedInEmployee!!.ID
                 }
-                12 -> {println("today personal")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
+                15 -> {println("this year everyone")
+                    val odtStart: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year+1, 1).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.toString()
                     endDateDB = odtStop.toString()
-                    empID = loggedInEmployee!!.ID
-                }
-                13 -> {println("today personal")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
-                    empID = loggedInEmployee!!.ID
-                }
-                14 -> {println("today personal")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
-                    empID = loggedInEmployee!!.ID
-                }
-                15 -> {println("today personal")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
-                    empID = loggedInEmployee!!.ID
+                    empID = ""
                 }
 
 

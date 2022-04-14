@@ -37,10 +37,6 @@ interface WoItemCellClickListener {
     fun onWoItemCellClickListener(data:WoItem)
 }
 
-
-
-
-
 class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -65,6 +61,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     lateinit var scheduleTxt:TextView
     lateinit var deptTxt:TextView
     lateinit var crewTxt:TextView
+    lateinit var chargeTxt:TextView
     lateinit var repTxt:TextView
 
     lateinit var statusCustCL:ConstraintLayout
@@ -87,7 +84,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         println("onCreateView")
@@ -143,6 +140,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         scheduleTxt = myView.findViewById(R.id.schedule_val_tv)
         deptTxt = myView.findViewById(R.id.dept_val_tv)
         crewTxt = myView.findViewById(R.id.crew_val_tv)
+        chargeTxt = myView.findViewById(R.id.charge_val_tv)
         repTxt = myView.findViewById(R.id.rep_val_tv)
 
         statusCustCL = myView.findViewById(R.id.status_cust_cl)
@@ -155,15 +153,17 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
         getWorkOrder()
 
+        scheduleTxt.text = workOrder!!.dateNice
+
     }
 
-    fun getWorkOrder(){
+    private fun getWorkOrder(){
         println("getWorkOrder")
         showProgressView()
         var urlString = "https://www.adminmatic.com/cp/app/functions/get/workOrder.php"
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -175,24 +175,41 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                     val gson = GsonBuilder().create()
                     workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
+                    println(workOrder)
 
                     setStatus(workOrder!!.status)
-                    if(workOrder!!.title != null){
-                        titleTxt.text = workOrder!!.title!!
-                    }
-                    if(workOrder!!.dateNice != null){
-                        scheduleTxt.text = workOrder!!.dateNice!!
+                    titleTxt.text = workOrder!!.title
+                    if(workOrder!!.nextPlannedDate != null){
+                        scheduleTxt.text = workOrder!!.nextPlannedDate
                     }
                     if(workOrder!!.department != null){
                         deptTxt.text = workOrder!!.department!!
                     }
                     if(workOrder!!.crewName != null){
-                        crewTxt.text = workOrder!!.crewName!!
+                        crewTxt.text = workOrder!!.mainCrew!!
                     }
                     if(workOrder!!.salesRepName != null){
                         repTxt.text = workOrder!!.salesRepName!!
                     }
-                    var woItemJSON: JSONArray = parentObject.getJSONArray("items")
+
+                    println("Charge Name: ${workOrder!!.chargeName}")
+                    when (workOrder!!.charge) {
+                        "1" -> {
+                            workOrder!!.chargeName = getString(R.string.wo_charge_nc)
+                        }
+                        "2" -> {
+                            workOrder!!.chargeName = getString(R.string.wo_charge_fl, workOrder!!.totalPrice)
+                        }
+                        "3" -> {
+                            workOrder!!.chargeName = getString(R.string.wo_charge_tm)
+                        }
+                        else -> {
+                            workOrder!!.chargeName = ""
+                        }
+                    }
+                    chargeTxt.text = workOrder!!.chargeName
+
+                    val woItemJSON: JSONArray = parentObject.getJSONArray("items")
                     val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
 
                     work_order_items_rv.apply {
@@ -233,7 +250,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         queue.add(postRequest1)
     }
 
-    fun showStatusMenu(){
+    private fun showStatusMenu(){
         println("showStatusMenu")
 
         var popUp:PopupMenu = PopupMenu(myView.context,statusBtn)
@@ -254,7 +271,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-            urlString = "${"$urlString?cb=$currentTimestamp"}"
+            urlString = "$urlString?cb=$currentTimestamp"
             val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
 
 

@@ -98,7 +98,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         } else {
             throw ClassCastException(
                 context.toString()
-                    .toString() + " must implemenet LogOut"
+                    .toString() + " must implement LogOut"
             )
         }
     }

@@ -59,7 +59,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         globalVars = GlobalVars()
         myView = inflater.inflate(R.layout.fragment_contact_list, container, false)
@@ -70,7 +70,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
        // adapter = ContactsAdapter(customer!!.contacts.toMutableList(),myView.context,this)
         //(activity as AppCompatActivity).supportActionBar?.title = "Customer List"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Contact List"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = "Contact List"
 
         // Inflate the layout for this fragment
         return myView
@@ -94,7 +94,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
 
 
-    fun layoutViews(){
+    private fun layoutViews(){
         println("layoutViews")
 
         hideProgressView()
@@ -141,7 +141,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
         println("Cell clicked with contact: ${data.value}")
 
-        data?.let { data ->
+        data.let { data ->
 
             when (data.type) {
 
@@ -158,8 +158,8 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
                     intent.data = Uri.parse("mailto:") // only email apps should handle this
                     val emailArray = arrayOf<String>(data.value.toString())
                     intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
-                   // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
-                   // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
+                    // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
+                    // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
                     com.example.AdminMatic.myView.context.startActivity(intent)
 
 

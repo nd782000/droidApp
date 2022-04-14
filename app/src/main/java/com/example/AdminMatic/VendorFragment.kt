@@ -20,6 +20,9 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -29,7 +32,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-
+import com.google.gson.GsonBuilder
+import org.json.JSONException
+import org.json.JSONObject
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -49,16 +54,13 @@ private const val ARG_PARAM2 = "param2"
 
 
 class VendorFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
     private  var vendor: Vendor? = null
+    private  var vendorID: String? = null
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-   // lateinit var  pgsBar: ProgressBar
+    lateinit var  pgsBar: ProgressBar
 
 
     lateinit var vendorNameTextView:TextView
@@ -68,6 +70,7 @@ class VendorFragment : Fragment() {
     lateinit var vendorPhoneBtnTxt:TextView
     lateinit var vendorWebBtnTxt:TextView
     lateinit var vendorAddressBtnTxt:TextView
+    lateinit var vendorBodyCl:ConstraintLayout
 
 
 
@@ -76,7 +79,7 @@ class VendorFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             vendor = it.getParcelable<Vendor?>("vendor")
-            param2 = it.getString(ARG_PARAM2)
+            vendorID = it.getString("vendorString")
         }
     }
 
@@ -91,30 +94,31 @@ class VendorFragment : Fragment() {
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Vendor"
 
-
-
-
-
-
         return myView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        pgsBar = view.findViewById(R.id.progress_bar)
+        vendorBodyCl = view.findViewById(R.id.vendor_body_cl)
+        hideProgressView()
 
-        println("vendor = ${vendor!!.name}")
-
-
-       // pgsBar = view.findViewById(R.id.progress_bar)
+        getVendor()
 
 
 
+    }
+
+    private fun populateVendorView() {
         vendorNameTextView = myView.findViewById(R.id.vendor_name_txt)
         vendorNameTextView.text = vendor!!.name
 
         vendorPhoneBtn = myView.findViewById(R.id.vendor_phone_btn_cl)
         vendorPhoneBtnTxt = myView.findViewById(R.id.vendor_phone_btn_tv)
         vendorPhoneBtnTxt.text = "No Phone Found"
+
+
+
         if(vendor!!.mainPhone != null){
             vendorPhoneBtnTxt.text = vendor!!.mainPhone!!
 
@@ -208,28 +212,99 @@ class VendorFragment : Fragment() {
                     MarkerOptions()
                         .position(LatLng(vendor!!.lat!!.toDouble(), vendor!!.lng!!.toDouble()))
                         .title(vendor!!.name!!)
-                       // .snippet("His Talent : Plenty of money")
+                    // .snippet("His Talent : Plenty of money")
                 )
             }
-
-
-
-
-
         }
-
     }
 
+    private fun getVendor(){
+        // println("getCustomer = ${customer!!.ID}")
+        showProgressView()
 
-        private fun bitmapDescriptorFromVector(context: Context?, vectorResId: Int): BitmapDescriptor {
-            val vectorDrawable = ContextCompat.getDrawable(context!!, vectorResId)
-            vectorDrawable!!.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
-            val bitmap =
-                Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            vectorDrawable.draw(canvas)
-            return BitmapDescriptorFactory.fromBitmap(bitmap)
+
+        if (vendor == null) {
+            var urlString = "https://www.adminmatic.com/cp/app/functions/get/vendor.php"
+
+            val currentTimestamp = System.currentTimeMillis()
+            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+            println(vendorID)
+            urlString = "$urlString?cb=$currentTimestamp"
+            val queue = Volley.newRequestQueue(myView.context)
+
+
+            val postRequest1: StringRequest = object : StringRequest(
+                Method.POST, urlString,
+                Response.Listener { response -> // response
+
+                    println("Response $response")
+
+                    hideProgressView()
+
+
+                    //Todo: figure out why the vendor is coming in null
+                    try {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = ${parentObject.toString()}")
+
+
+                        val gson = GsonBuilder().create()
+
+                        val vendorArray = gson.fromJson(parentObject.toString() ,VendorArray::class.java)
+
+                        vendor = vendorArray.vendors[0]
+
+                        populateVendorView()
+
+
+                    } catch (e: JSONException) {
+                        println("JSONException")
+                        e.printStackTrace()
+                    }
+
+                },
+                Response.ErrorListener { // error
+                    println("ERROR")
+                }
+            ) {
+                override fun getParams(): Map<String, String> {
+                    val params: MutableMap<String, String> = HashMap()
+                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                    params["id"] = vendorID.toString()
+
+                    println("params = ${params.toString()}")
+                    return params
+                }
+            }
+            queue.add(postRequest1)
+
         }
+        else {
+            hideProgressView()
+            populateVendorView()
+        }
+    }
+
+    fun showProgressView() {
+        pgsBar.visibility = View.VISIBLE
+        vendorBodyCl.visibility = View.INVISIBLE
+    }
+
+    fun hideProgressView() {
+        pgsBar.visibility = View.INVISIBLE
+        vendorBodyCl.visibility = View.VISIBLE
+    }
+
+    private fun bitmapDescriptorFromVector(context: Context?, vectorResId: Int): BitmapDescriptor {
+        val vectorDrawable = ContextCompat.getDrawable(context!!, vectorResId)
+        vectorDrawable!!.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
+        val bitmap =
+            Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
 
 
 

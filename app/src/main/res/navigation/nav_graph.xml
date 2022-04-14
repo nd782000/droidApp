@@ -248,6 +248,10 @@
             android:name="vendor"
             app:argType="com.example.AdminMatic.Vendor"
             app:nullable="true" />
+        <argument
+            android:name="vendorString"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/itemFragment"
@@ -405,6 +409,9 @@
             android:name="equipment"
             app:argType="com.example.AdminMatic.Equipment"
             app:nullable="true" />
+        <action
+            android:id="@+id/navigateToVendor"
+            app:destination="@id/vendorFragment" />
     </fragment>
     <fragment
         android:id="@+id/woItemFragment"
