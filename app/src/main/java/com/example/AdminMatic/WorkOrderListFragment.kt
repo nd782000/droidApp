@@ -18,6 +18,8 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.AdminMatic.GlobalVars.Companion.dateFormatterShort
+import com.example.AdminMatic.GlobalVars.Companion.dateFormatterYYYYMMDD
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
 import com.example.AdminMatic.GlobalVars.Companion.scheduleSpinnerPosition
@@ -50,7 +52,9 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     lateinit var scheduleSpinner:Spinner
     lateinit var crewBtn:Button
     lateinit var mapBtn:Button
+    lateinit var countTextView: TextView
 
+    //update eq
     var datesArray:Array<String> = arrayOf(
         "All Dates (${loggedInEmployee!!.fName})",
         "All Dates (Everyone)",
@@ -111,6 +115,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         scheduleSpinner = view.findViewById(R.id.schedule_spinner)
         crewBtn = view.findViewById(R.id.crew_btn)
         mapBtn = view.findViewById(R.id.map_btn)
+        countTextView = view.findViewById(R.id.work_order_count_textview)
 
         if (globalWorkOrdersList == null) {
 
@@ -122,7 +127,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             }
 
             mapBtn.setOnClickListener{
-                println("go to mapView")
+                val directions = WorkOrderListFragmentDirections.navigateToMap(0)
+                myView.findNavController().navigate(directions)
             }
 
 
@@ -164,7 +170,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
 
 
-           getWorkOrders()
+            getWorkOrders()
 
         }else{
 
@@ -183,6 +189,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             adapter!!.setDropDownViewResource(R.layout.spinner_right_aligned)
 
             scheduleSpinner.adapter = adapter
+
 
 
             //skip get workOrders and go directly to layoutViews
@@ -244,6 +251,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                             gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
                                 .toMutableList()
 
+                        countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
                         layoutViews()
 
                         /*
@@ -418,8 +426,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
                 }
                 3 -> {println("today everyone")
@@ -428,8 +436,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
                 }
                 4 -> {println("tomorrow personal")
@@ -443,8 +451,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = today.plusDays(2).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
                 }
                 5 -> {println("tomorrow everyone")
@@ -453,8 +461,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = today.plusDays(2).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID =""
                 }
                 6 -> {println("this week personal")
@@ -463,8 +471,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = odtStart.plusDays(7)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
                 }
                 7 -> {println("this week everyone")
@@ -473,8 +481,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = odtStart.plusDays(7)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
                 }
                 8 -> {println("next week personal")
@@ -483,8 +491,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = odtStart.plusDays(7)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
                 }
                 9 -> {println("next week everyone")
@@ -493,8 +501,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = odtStart.plusDays(7)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
                 }
                 10 -> {println("next 14 days personal")
@@ -503,8 +511,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = today.plusDays(14).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
                 }
                 11 -> {println("next 14 days everyone")
@@ -513,8 +521,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = today.plusDays(14).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
                 }
                 12 -> {println("next 30 days personal")
@@ -523,8 +531,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = today.plusDays(30).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
                 }
                 13 -> {println("next 30 days everyone")
@@ -533,8 +541,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = today.plusDays(30).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
                 }
                 14 -> {println("this year personal")
@@ -542,8 +550,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year+1, 1).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
                 }
                 15 -> {println("this year everyone")
@@ -551,8 +559,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     val odtStop: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year+1, 1).atTime(OffsetTime.MIN)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
-                    startDateDB = odtStart.toString()
-                    endDateDB = odtStop.toString()
+                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
                 }
 

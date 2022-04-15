@@ -125,6 +125,7 @@
     <string name="wo_charge_nc">No Charge</string>
     <string name="wo_charge_fl">Flat %1$s</string>
     <string name="wo_charge_tm">T&amp;M</string>
+    <string name="wo_count">%1$s Scheduled Work Order(s)</string>
 
     <string name="service_type">Type: %1$s</string>
     <string name="service_due">Due: %1$s %2$s</string>

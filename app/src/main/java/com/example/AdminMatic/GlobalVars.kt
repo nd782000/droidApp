@@ -53,6 +53,7 @@ class GlobalVars: Application() {
 
         val dateFormatterPHP: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") //format from the php
         val dateFormatterShort: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yy") //format to display
+        val dateFormatterYYYYMMDD: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd") //format to display
     }
 
 
