@@ -44,7 +44,7 @@ interface LeadTaskCellClickListener {
 
 class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    //private var param1: String? = null
     private var param2: String? = null
 
     private  var lead: Lead? = null
@@ -54,14 +54,14 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
     lateinit var  pgsBar: ProgressBar
 
-    lateinit var  stackFragment: StackFragment
+    private lateinit var  stackFragment: StackFragment
 
 
-    lateinit var statusBtn: ImageButton
-    lateinit var customerBtn: Button
+    private lateinit var statusBtn: ImageButton
+    private lateinit var customerBtn: Button
 
-    lateinit var statusCustCL: ConstraintLayout
-    lateinit var dataCL: ConstraintLayout
+    private lateinit var statusCustCL: ConstraintLayout
+    private lateinit var dataCL: ConstraintLayout
     lateinit var scheduleTxt:TextView
     lateinit var deadlineTxt:TextView
     lateinit var salesRepTxt:TextView
@@ -70,14 +70,14 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
     lateinit var taskRecyclerView: RecyclerView
 
-    lateinit var addTasksBtn: Button
+    private lateinit var addTasksBtn: Button
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            lead = it.getParcelable<Lead?>("lead")
+            lead = it.getParcelable("lead")
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -85,13 +85,13 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
        // return inflater.inflate(R.layout.fragment_lead, container, false)
         myView = inflater.inflate(R.layout.fragment_lead, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Lead #${lead!!.ID}"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_number, lead!!.ID)
 
         return myView
     }
@@ -119,7 +119,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         }
 
         customerBtn = myView.findViewById(R.id.lead_customer_btn)
-        customerBtn.text = "${lead!!.custName} ${lead!!.address}"
+        customerBtn.text = getString(R.string.lead_customer_button_text, lead!!.custName, lead!!.address)
         customerBtn.setOnClickListener{
             println("customer btn clicked")
 
@@ -163,7 +163,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         var urlString = "https://www.adminmatic.com/cp/app/functions/get/lead.php"
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -177,7 +177,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                     //var leadJSONObject:JSONObject
                     //leadJSONObject = gson.fromJson(parentObject["leads"].toString() , JSONObject::class.java)
 
-                    var leadsArray:Array<Lead> = gson.fromJson(parentObject["leads"].toString() , Array<Lead>::class.java)
+                    val leadsArray:Array<Lead> = gson.fromJson(parentObject["leads"].toString() , Array<Lead>::class.java)
                     //var leadsArray:Array<Lead> = leadJSONObject["leads"] as Array<Lead>
                     //leadJSONObject = gson.fromJson(parentObject.toString(), )
                     lead = leadsArray[0]
@@ -263,7 +263,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["leadID"] = lead!!.ID
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -299,10 +299,10 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
     }
 
 
-    fun showStatusMenu(){
+    private fun showStatusMenu(){
         println("showStatusMenu")
 
-        var popUp: PopupMenu = PopupMenu(myView.context,statusBtn)
+        val popUp = PopupMenu(myView.context,statusBtn)
         popUp.inflate(R.menu.task_status_menu)
         popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_not_started)!!,myView.context)!!, myView.context.getString(R.string.not_started)))
         popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_in_progress)!!,myView.context)!!, myView.context.getString(R.string.in_progress)))
@@ -320,7 +320,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-            urlString = "${"$urlString?cb=$currentTimestamp"}"
+            urlString = "$urlString?cb=$currentTimestamp"
             val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
 
 
@@ -332,7 +332,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
                     try {
                         val parentObject = JSONObject(response)
-                        println("parentObject = ${parentObject.toString()}")
+                        println("parentObject = $parentObject")
 
                         hideProgressView()
 
@@ -353,21 +353,21 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                     params["status"] = lead!!.statusID
                     params["leadID"] = lead!!.ID
                     params["empID"] = GlobalVars.loggedInEmployee!!.ID
-                    println("params = ${params.toString()}")
+                    println("params = $params")
                     return params
                 }
             }
             queue.add(postRequest1)
             true
         })
-        popUp.gravity = Gravity.LEFT
+        popUp.gravity = Gravity.START
         popUp.show()
     }
 
 
     override fun uploadImage(_task:Task){
 
-        var images:Array<Image>
+        val images:Array<Image>
         if(_task.images == null){
             images = arrayOf()
         }else{
@@ -375,7 +375,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         }
 
 
-        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,"","","","",lead!!.ID,"${_task.ID}","${_task.task}","","")
+        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,"","","","",lead!!.ID, _task.ID,"${_task.task}","","")
         myView.findNavController().navigate(directions)
     }
 
@@ -387,23 +387,23 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         when(status) {
             "1" -> {
                 println("1")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_not_started)
+                statusBtn.setBackgroundResource(R.drawable.ic_not_started)
             }
             "2" -> {
                 println("2")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_in_progress)
+                statusBtn.setBackgroundResource(R.drawable.ic_in_progress)
             }
             "3" -> {
                 println("3")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_done)
+                statusBtn.setBackgroundResource(R.drawable.ic_done)
             }
             "4" -> {
                 println("4")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_canceled)
+                statusBtn.setBackgroundResource(R.drawable.ic_canceled)
             }
             "5" -> {
                 println("5")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_waiting)
+                statusBtn.setBackgroundResource(R.drawable.ic_waiting)
             }
         }
     }
@@ -447,7 +447,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
     }
 
     override fun newWorkOrderView(_workOrder: WorkOrder) {
-        println("newWorkOrderView ${_workOrder}")
+        println("newWorkOrderView $_workOrder")
         val directions = LeadFragmentDirections.navigateLeadToWorkOrder(_workOrder)
         myView.findNavController().navigate(directions)
     }

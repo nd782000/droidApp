@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import android.widget.SearchView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -49,7 +46,8 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
     lateinit var  swipeRefresh:SwipeRefreshLayout
 
 
-    // lateinit var  btn: Button
+    //lateinit var  newLeadBtn: Button
+    private lateinit var  mapBtn: Button
 
     lateinit var adapter:LeadsAdapter
 
@@ -65,7 +63,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         println("onCreateView")
@@ -76,7 +74,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
         // progBar.alpha = 0.2f
 
-        var emptyList:MutableList<Lead> = mutableListOf()
+        val emptyList:MutableList<Lead> = mutableListOf()
 
         adapter = LeadsAdapter(emptyList,myView.context, this)
 
@@ -86,7 +84,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Lead List"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Lead List"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_list)
 
 
 
@@ -102,7 +100,8 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.leads_search)
-        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
+        swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
+        mapBtn = view.findViewById((R.id.map_btn))
 
         getLeads()
 
@@ -124,7 +123,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -146,9 +145,9 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
-                    var leads:JSONArray = parentObject.getJSONArray("leads")
-                    println("leads = ${leads.toString()}")
+                    println("parentObject = $parentObject")
+                    val leads:JSONArray = parentObject.getJSONArray("leads")
+                    println("leads = $leads")
                     println("leads count = ${leads.length()}")
 
 
@@ -182,8 +181,8 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                             // Make sure you call swipeContainer.setRefreshing(false)
                             // once the network request has completed successfully.
                             //fetchTimelineAsync(0)
-                            searchView.setQuery("", false);
-                            searchView.clearFocus();
+                            searchView.setQuery("", false)
+                            searchView.clearFocus()
                             getLeads()
                         }
                         // Configure the refreshing colors
@@ -204,9 +203,9 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                         // ...the data has come back, add new items to your adapter...
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false;
+                        customerSwipeContainer.isRefreshing = false
 
-                       // Toast.makeText(activity,"${leadsList.count()} Leads Loaded",Toast.LENGTH_SHORT).show()
+                        // Toast.makeText(activity,"${leadsList.count()} Leads Loaded",Toast.LENGTH_SHORT).show()
 
 
 
@@ -257,7 +256,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -268,7 +267,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         //Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data?.let { data ->
+        data.let { data ->
             val directions = LeadListFragmentDirections.navigateToLead(data)
             myView.findNavController().navigate(directions)
         }

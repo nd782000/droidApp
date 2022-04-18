@@ -36,13 +36,13 @@ class CustomerNotesFragment : Fragment(){
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         globalVars = GlobalVars()
         myView = inflater.inflate(R.layout.fragment_customer_notes, container, false)
 
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Notes & Settings"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.customer_notes)
 
         // Inflate the layout for this fragment
         return myView

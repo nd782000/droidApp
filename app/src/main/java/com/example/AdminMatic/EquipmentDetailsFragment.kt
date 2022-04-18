@@ -60,7 +60,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         println("onCreateView")
@@ -71,7 +71,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
         //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
         // progBar.alpha = 0.2f
 
-        var emptyList:MutableList<String> = mutableListOf()
+        val emptyList:MutableList<String> = mutableListOf()
 
         adapter = EquipmentDetailAdapter(emptyList,myView.context, this)
 
@@ -81,7 +81,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Equipment List"
 
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = "Equipment Details"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment_details)
 
 
 

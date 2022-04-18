@@ -64,7 +64,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         println("onCreateView")
@@ -75,7 +75,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
         // progBar.alpha = 0.2f
 
-        var emptyList:MutableList<Contract> = mutableListOf()
+        val emptyList:MutableList<Contract> = mutableListOf()
 
         adapter = ContractsAdapter(emptyList,myView.context, this)
 
@@ -84,7 +84,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Contract List"
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Contract List"
+        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.get_contracts)
 
 
         // Inflate the layout for this fragment
@@ -121,7 +121,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -144,7 +144,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
-                    var contracts:JSONArray = parentObject.getJSONArray("contracts")
+                    val contracts:JSONArray = parentObject.getJSONArray("contracts")
                     println("contracts = ${contracts.toString()}")
                     println("contracts count = ${contracts.length()}")
 
@@ -265,9 +265,9 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data?.let { data ->
-           // val directions = ContractListFragmentDirections.navigateToContract(data)
-           // myView.findNavController().navigate(directions)
+        data.let { data ->
+            // val directions = ContractListFragmentDirections.navigateToContract(data)
+            // myView.findNavController().navigate(directions)
         }
 
     }

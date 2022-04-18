@@ -57,12 +57,12 @@ class ContactsAdapter(private val list: MutableList<Contact>, private val contex
             //Main Phone
             "1" -> {
                 contactIconView.setImageResource(R.drawable.ic_phone);
-                typeTxt.text = "Main Phone"
+                typeTxt.text = R.string.contacts_main_phone.toString()
             }
             //Main Email
             "2" -> {
                 contactIconView.setImageResource(R.drawable.ic_email);
-                typeTxt.text = "Main Email"
+                typeTxt.text = R.string.contacts_main_email.toString()
 
 
 
@@ -70,62 +70,62 @@ class ContactsAdapter(private val list: MutableList<Contact>, private val contex
             //Billing Address
             "3" -> {
                 contactIconView.setImageResource(R.drawable.ic_map);
-                typeTxt.text = "Billing Address"
+                typeTxt.text = R.string.contacts_billing_address.toString()
             }
             //Jobsite Address
             "4" -> {
                 contactIconView.setImageResource(R.drawable.ic_map);
-                typeTxt.text = "Jobsite Address"
+                typeTxt.text = R.string.contacts_jobsite_address.toString()
             }
             //Website
             "5" -> {
                 contactIconView.setImageResource(R.drawable.ic_web);
-                typeTxt.text = "Website"
+                typeTxt.text = R.string.contacts_website.toString()
             }
             //Alt Contact
             "6" -> {
                 contactIconView.setImageResource(R.drawable.ic_person);
-                typeTxt.text = "Alt Contact"
+                typeTxt.text = R.string.contacts_alt_contact.toString()
             }
             //Fax
             "7" -> {
                 contactIconView.setImageResource(R.drawable.ic_web);
-                typeTxt.text = "Fax"
+                typeTxt.text = R.string.contacts_fax.toString()
             }
             //Alt Phone
             "8" -> {
                 contactIconView.setImageResource(R.drawable.ic_phone);
-                typeTxt.text = "Alt Phone"
+                typeTxt.text = R.string.contacts_alt_phone.toString()
             }
             //Alt Email
             "9" -> {
                 contactIconView.setImageResource(R.drawable.ic_email);
-                typeTxt.text = "Alt Email"
+                typeTxt.text = R.string.contacts_alt_email.toString()
             }
             //Mobile
             "10" -> {
                 contactIconView.setImageResource(R.drawable.ic_phone);
-                typeTxt.text = "Mobile"
+                typeTxt.text = R.string.contacts_mobile.toString()
             }
             //Alt Mobile
             "11" -> {
                 contactIconView.setImageResource(R.drawable.ic_phone);
-                typeTxt.text = "Alt Mobile"
+                typeTxt.text = R.string.contacts_alt_mobile.toString()
             }
             //Home
             "12" -> {
                 contactIconView.setImageResource(R.drawable.ic_phone);
-                typeTxt.text = "Home Phone"
+                typeTxt.text = R.string.contacts_home_phone.toString()
             }
             //Alt Email
             "13" -> {
                 contactIconView.setImageResource(R.drawable.ic_email);
-                typeTxt.text = "Alt Email"
+                typeTxt.text = R.string.contacts_alt_email.toString()
             }
             //Invoice Address
             "14" -> {
                 contactIconView.setImageResource(R.drawable.ic_map);
-                typeTxt.text = "Invoice Address"
+                typeTxt.text = R.string.contacts_invoice_address.toString()
             }
 
         }

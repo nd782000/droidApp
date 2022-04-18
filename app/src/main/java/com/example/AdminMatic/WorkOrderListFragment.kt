@@ -117,19 +117,19 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         mapBtn = view.findViewById(R.id.map_btn)
         countTextView = view.findViewById(R.id.work_order_count_textview)
 
+        crewBtn.setOnClickListener {
+            println("Crew Click")
+        }
+
+        mapBtn.setOnClickListener{
+            println("Map button clicked!")
+            val directions = WorkOrderListFragmentDirections.navigateToMap(0)
+            myView.findNavController().navigate(directions)
+        }
+
         if (globalWorkOrdersList == null) {
 
             println("globalWorkOrdersList = null")
-
-
-            crewBtn.setOnClickListener {
-                println("Crew Click")
-            }
-
-            mapBtn.setOnClickListener{
-                val directions = WorkOrderListFragmentDirections.navigateToMap(0)
-                myView.findNavController().navigate(directions)
-            }
 
 
             scheduleSpinner.setBackgroundResource(R.drawable.text_view_layout)

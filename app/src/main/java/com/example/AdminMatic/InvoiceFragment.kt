@@ -23,7 +23,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class InvoiceFragment : Fragment(), StackDelegate {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    //private var param1: String? = null
     private var param2: String? = null
 
     private  var invoice: Invoice? = null
@@ -33,12 +33,12 @@ class InvoiceFragment : Fragment(), StackDelegate {
 
     lateinit var  pgsBar: ProgressBar
 
-    lateinit var  stackFragment: StackFragment
+    private lateinit var  stackFragment: StackFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            invoice = it.getParcelable<Invoice?>("invoice")
+            invoice = it.getParcelable("invoice")
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -46,13 +46,13 @@ class InvoiceFragment : Fragment(), StackDelegate {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
        // return inflater.inflate(R.layout.fragment_invoice, container, false)
         myView = inflater.inflate(R.layout.fragment_invoice, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Invoice"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.invoice)
 
         return myView
     }
@@ -91,7 +91,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
     }
 
     override fun newWorkOrderView(_workOrder: WorkOrder) {
-        println("newWorkOrderView ${_workOrder}")
+        println("newWorkOrderView $_workOrder")
         val directions = InvoiceFragmentDirections.navigateInvoiceToWorkOrder(_workOrder)
         myView.findNavController().navigate(directions)
     }

@@ -50,9 +50,12 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         println("queryText = $queryText")
         //text highlighting for first string
-        if (queryText != null && !queryText.isEmpty() && queryText != "") {
+        if (queryText.isNotEmpty() && queryText != "") {
 
-            val startPos1: Int = (filterList[position].custName!! + " - " + filterList[position].title).toLowerCase().indexOf(queryText.toLowerCase())
+            val startPos1: Int = (filterList[position].custName!! + " - " + filterList[position].title).lowercase(
+                Locale.getDefault()
+            )
+                .indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos1 = startPos1 + queryText.length
             if (startPos1 != -1) {
                 val spannable: Spannable = SpannableString(filterList[position].custName!! + " - " + filterList[position].title)
@@ -70,7 +73,7 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
                 )
                 holder.itemView.list_name.text = spannable
             } else {
-                if(customerView == false) {
+                if(!customerView) {
                     holder.itemView.list_name.text =
                         filterList[position].custName!! + " - " + filterList[position].title
                 }else{
@@ -119,11 +122,13 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
                     filterList = list
                 } else {
 
-                    var resultList:MutableList<Contract> = mutableListOf()
+                    val resultList:MutableList<Contract> = mutableListOf()
                     for (row in list) {
                         //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
                        // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
-                        if (row.custName!!.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))) {
+                        if (row.custName!!.lowercase(Locale.ROOT).contains(charSearch.lowercase(
+                                Locale.ROOT
+                            ))) {
 
                             println("add row")
 

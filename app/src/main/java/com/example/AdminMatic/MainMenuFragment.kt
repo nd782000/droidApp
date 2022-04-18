@@ -80,7 +80,7 @@ class MainMenuFragment : Fragment() {
 
 
         Picasso.with(context)
-            .load("${thumbBase + loggedInEmployee!!.pic}")
+            .load(thumbBase + loggedInEmployee!!.pic)
             .placeholder(R.drawable.user_placeholder) //optional
             //.resize(imgWidth, imgHeight)         //optional
             //.centerCrop()                        //optional

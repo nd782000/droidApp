@@ -23,7 +23,6 @@ private const val ARG_PARAM2 = "param2"
  */
 class ContractFragment : Fragment(), StackDelegate {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
     private var param2: String? = null
 
     private  var contract: Contract? = null
@@ -47,7 +46,7 @@ class ContractFragment : Fragment(), StackDelegate {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_contract, container, false)
         // employee = args
@@ -55,7 +54,7 @@ class ContractFragment : Fragment(), StackDelegate {
 
         globalVars = GlobalVars()
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Contract"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.contract)
 
 
         return myView

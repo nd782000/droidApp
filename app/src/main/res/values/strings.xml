@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">AdminMatic</string>
+    <string name="version">Version %1$s</string>
+
     <string name="Welcome">Welcome, User!</string>
     <string name="employeeList">Employees List</string>
     <string name="group_text_message">Group Text Message</string>
@@ -13,10 +15,13 @@
     <string name="customers">Customers</string>
     <string name="vendor">Vendor</string>
     <string name="item">Item</string>
+    <string name="item_list">Item List</string>
     <string name="leads">Leads</string>
     <string name="lead">Lead</string>
+    <string name="lead_list">Lead List</string>
     <string name="schedule">Work Orders</string>
     <string name="invoice">Invoice</string>
+    <string name="invoice_list">Invoice List</string>
     <string name="invoices">Invoices</string>
     <string name="performance">Performance</string>
     <string name="history">History</string>
@@ -30,6 +35,7 @@
     <string name="equipment_type">Equipment Type</string>
     <string name="equipment_crew">Equipment Crew</string>
     <string name="equipment_detail">Equipment Detail</string>
+    <string name="equipment_details">Equipment Details</string>
     <string name="current_service_check">Current Service Check:</string>
     <string name="add_service">Add Service</string>
 
@@ -39,6 +45,10 @@
     <string name="customer_address">123 Any Street</string>
     <string name="customer_contacts">All Contacts</string>
     <string name="customer_notes">Notes &amp; Settings</string>
+    <string name="customer_list">Customer List</string>
+
+    <string name="add_employee">Add Employee</string>
+    <string name="employee_list">Employee List</string>
 
     <string name="departments">Departments</string>
     <string name="crews">Crews</string>
@@ -77,6 +87,7 @@
     <string name="title_gizmos">gizmos</string>
     <string name="search_forEquipment">Search for Equipment</string>
     <string name="crew">Crew</string>
+
     <string name="type">Type</string>
     <string name="status">Status</string>
 
@@ -93,7 +104,34 @@
     <string name="contract">Contract</string>
     <string name="txt_equipment_dummy">No Description Provided</string>
     <string name="view_service_lists">View Service Lists</string>
+    <string name="get_contracts">Get Contracts</string>
+    <string name="equipment_crew_display">Crew: %1$s</string>
+    <string name="equipment_list">Equipment List</string>
 
+
+    <string name="contacts_list">Contacts List</string>
+    <string name="contacts_main_phone">Main Phone</string>
+    <string name="contacts_main_email">Main Email</string>
+    <string name="contacts_billing_address">Billing Address</string>
+    <string name="contacts_jobsite_address">Jobsite Address</string>
+    <string name="contacts_website">Website</string>
+    <string name="contacts_alt_contact">Alt Contact</string>
+    <string name="contacts_fax">Fax</string>
+    <string name="contacts_alt_phone">Alt Phone</string>
+    <string name="contacts_alt_email">Alt Email</string>
+    <string name="contacts_mobile">Mobile</string>
+    <string name="contacts_alt_mobile">Alt Mobile</string>
+    <string name="contacts_home_phone">Home Phone</string>
+    <string name="contacts_invoice_address">Invoice Address</string>
+
+    <string name="no_phone_found">No Phone Found</string>
+    <string name="no_email_found">No Email Found</string>
+    <string name="no_address_found">No Address Found</string>
+    <string name="add_lead">Add Lead</string>
+    <string name="add_contract">Add Contract</string>
+    <string name="add_work_order">Add Work Order</string>
+    <string name="add_invoice">Add Invoice</string>
+    <string name="add_image">Add Image</string>
 
     <string name="id">ID</string>
     <string name="sysname">sysName</string>
@@ -151,6 +189,8 @@
     <string name="new_service_next_miles_km">Next (Miles/Km.):</string>
     <string name="new_service_next_engine_hours">Next (Engine Hours):</string>
 
+    <string name="x_likes">x%1$s Likes</string>
+    <string name="image_list">Image List</string>
 
     <string name="new_service_instructions">Instructions:</string>
 
@@ -167,7 +207,8 @@
     <string name="inspection_notes">Inspection Notes:</string>
     <string name="inspection_page_title">%1$s Inspection</string>
 
-
+    <string name="pin_menu_go_to_work_order">Go to Work Order</string>
+    <string name="pin_menu_get_directions">Get Directions</string>
 
 
     <string name="service_name">Service Name</string>
@@ -178,6 +219,8 @@
     <string name="equipment_status_broken">Broken</string>
     <string name="equipment_status_winterized">Winterized</string>
 
+    <string name="lead_customer_button_text">%1$s %2$s</string>
+    <string name="lead_number">Lead #%1$s</string>
 
 
 

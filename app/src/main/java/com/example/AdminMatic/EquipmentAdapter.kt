@@ -51,9 +51,9 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         println("queryText = $queryText")
         //text highlighting for first string
-        if (queryText != null && !queryText.isEmpty() && queryText != "") {
+        if (queryText.isNotEmpty() && queryText != "") {
 
-            val startPos1: Int = filterList[position].name.toLowerCase().indexOf(queryText.toLowerCase())
+            val startPos1: Int = filterList[position].name.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos1 = startPos1 + queryText.length
             if (startPos1 != -1) {
                 val spannable: Spannable = SpannableString(filterList[position].name)
@@ -71,17 +71,17 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
                 )
                 holder.itemView.list_name.text = spannable
             } else {
-                holder.itemView.list_name.text = filterList[position].name!!
+                holder.itemView.list_name.text = filterList[position].name
             }
         } else {
-            holder.itemView.list_name.text = filterList[position].name!!
+            holder.itemView.list_name.text = filterList[position].name
         }
 
         //text highlighting for second string
-        if (queryText != null && !queryText.isEmpty() && queryText != "" && filterList[position].typeName != null) {
+        if (queryText.isNotEmpty() && queryText != "" && filterList[position].typeName != null) {
 
 
-            val startPos2: Int = filterList[position].typeName!!.toLowerCase().indexOf(queryText.toLowerCase())
+            val startPos2: Int = filterList[position].typeName!!.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos2 = startPos2 + queryText.length
             if (startPos2 != -1) {
                 val spannable: Spannable = SpannableString(filterList[position].typeName!!)
@@ -113,7 +113,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
         }
 
         //Image Loading
-        var equipmentImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.equipment_item_image_view)
+        val equipmentImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.equipment_item_image_view)
         var imagePath:String = "drawable://" + R.drawable.ic_images
         if (filterList[position].image != null){
             imagePath = GlobalVars.thumbBase + filterList[position].image!!.fileName
@@ -125,7 +125,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
             //.centerCrop()                        //optional
             .into(equipmentImageView)                       //Your image view object.
 
-        var equipmentStatusImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.list_status_icon_image_view)
+        val equipmentStatusImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.list_status_icon_image_view)
 
         when (equipment.status) {
             "0"->Picasso.with(context)
@@ -153,7 +153,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
         holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
             println("menu click")
 
-            var popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+            val popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.options_menu)
             popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
 
@@ -210,12 +210,12 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
                     filterList = list
                 } else {
 
-                    var resultList:MutableList<Equipment> = mutableListOf()
+                    val resultList:MutableList<Equipment> = mutableListOf()
                     for (row in list) {
                         //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
                         // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
                         if (row.typeName == null){
-                            if (row.name.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))) {
+                            if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
 
                                 println("add row")
 
@@ -224,7 +224,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
                                 println("resultList.count = ${resultList.count()}")
                             }
                         }else{
-                            if (row.name.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT)) || row.typeName!!.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))) {
+                            if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.typeName.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
 
                                 println("add row")
 
@@ -294,14 +294,13 @@ class EquipmentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     fun bind(equipment: Equipment) {
         mNameView?.text = equipment.name
         if(equipment.typeName != null){
-            mTypeView?.text = equipment.typeName!!
+            mTypeView?.text = equipment.typeName
         }
         if(equipment.crewName != null){
-            mCrewView?.text = equipment.crewName!!
+            mCrewView?.text = equipment.crewName
         }
-        if(equipment.status != null){
-            println(equipment.name + equipment.status)
-            /*
+        println(equipment.name + equipment.status)
+        /*
             when (equipment.status) {
                 "0"->Picasso.with(context)
                     .load(R.drawable.ic_images)
@@ -321,9 +320,7 @@ class EquipmentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
             }
             */
-            //mCrewView?.text = equipment.crewName!!
-        }
-
+        //mCrewView?.text = equipment.crewName!!
 
     }
 

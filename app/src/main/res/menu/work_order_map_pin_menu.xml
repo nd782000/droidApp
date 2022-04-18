@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/get_directions_item"
+        android:title="@string/pin_menu_get_directions"/>
+    <item
+        android:id="@+id/go_to_work_order_item"
+        android:title="@string/pin_menu_go_to_work_order"/>
+
+</menu>

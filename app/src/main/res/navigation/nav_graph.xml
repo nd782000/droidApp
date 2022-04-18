@@ -133,6 +133,9 @@
             android:name="mode"
             app:argType="integer"
             app:nullable="false" />
+        <action
+            android:id="@+id/navigateToWorkOrder"
+            app:destination="@id/workOrderFragment" />
     </fragment>
     <fragment
         android:id="@+id/invoiceListFragment"

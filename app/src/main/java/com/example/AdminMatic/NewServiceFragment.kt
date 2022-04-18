@@ -38,12 +38,6 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 
-/*
-interface EquipmentDetailCellClickListener {
-    fun onEquipmentDetailCellClickListener(data:String)
-}
-*/
-
 class NewServiceFragment : Fragment() {
 
     private var equipment: Equipment? = null

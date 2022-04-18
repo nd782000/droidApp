@@ -16,7 +16,6 @@
         app:layout_constraintLeft_toLeftOf="parent"/>
 
 
-
     <fragment
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/map_support_map_fragment"

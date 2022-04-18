@@ -70,8 +70,8 @@ private const val LOGGING_TAG = "AdminMatic"
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+//private const val ARG_PARAM1 = "param1"
+//private const val ARG_PARAM2 = "param2"
 
 private  var mode: String = "GALLERY"
 private  var images: Array<Image> = arrayOf()
@@ -93,8 +93,8 @@ private val mRetryPolicy: RetryPolicy = DefaultRetryPolicy(
 )
 
 
-val REQUEST_CODE = 200
-private val cameraRequest = 1888
+//val REQUEST_CODE = 200
+//private val cameraRequest = 1888
 
 
 /*
@@ -127,8 +127,8 @@ var equipmentID:String = ""
  */
 class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetImagePicker.OnImagesSelectedListener{
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    //private var param1: String? = null
+    //private var param2: String? = null
 
     //private var mode: String? = null
     //private var customer: Customer? = null
@@ -151,7 +151,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
    // private var imageData: ByteArray? = null
     private val postURL: String = "https://www.adminmatic.com/cp/app/functions/update/image.php"
    // private var selectedCustId: String? = null
-    var currentCameraUri :Uri? = null
+    //var currentCameraUri :Uri? = null
     var selectedUris: MutableList<Uri> = mutableListOf()
     var uploadedImageCount = 0
 
@@ -170,16 +170,16 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
    // private var callBack:ImageUploadInterface? = null
 
 
-    lateinit private var permissionsDelegate: PermissionsDelegate
-    lateinit private var cameraView: CameraView
+    private lateinit var permissionsDelegate: PermissionsDelegate
+    private lateinit var cameraView: CameraView
 
     private var permissionsGranted: Boolean = false
-    private var activeCamera: Camera = Camera()
+    //private var activeCamera: Camera = Camera()
 
     private lateinit var fotoapparat: Fotoapparat
-    private lateinit var cameraZoom: Zoom.VariableZoom
+    //private lateinit var cameraZoom: Zoom.VariableZoom
 
-    private var curZoom: Float = 0f
+    //private var curZoom: Float = 0f
 
     private lateinit var captureBtn: Button
 
@@ -211,7 +211,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
 
 
@@ -255,7 +255,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         println("onViewCreated mode = $mode")
-            var titleText:String = ""
+            var titleText = ""
         when (mode) {
             "GALLERY" -> {
                 titleText = "Upload to Gallery"
@@ -288,7 +288,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
         }
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = titleText
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = titleText
 
        // pgsBar = myView.findViewById(R.id.progress_bar)
        // hideProgressView()
@@ -525,7 +525,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         footer.visibility = View.VISIBLE
 
 
-        var tsLong = System.currentTimeMillis()/1000;
+        val tsLong = System.currentTimeMillis()/1000
 
 /*
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
@@ -598,7 +598,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
                 photo
                     ?.let {
                         Log.i(LOGGING_TAG, "New photo captured. Bitmap length: ${it.bitmap.byteCount}")
-                        var uri = File(
+                        val uri = File(
 
                             (activity as MainActivity?)!!.getExternalFilesDir("photos"),
                             "photo_$tsLong.jpg"
@@ -670,7 +670,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
 
-                        deleteBtn.setOnClickListener(){
+                        deleteBtn.setOnClickListener {
                             println("delete")
                             selectedUris.removeAt(selectedUris.count() - 1)
                             image_upload_prep_selected_images_ll.removeView(cl)
@@ -775,7 +775,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
 
-            deleteBtn.setOnClickListener(){
+            deleteBtn.setOnClickListener {
                 println("delete")
                 selectedUris.removeAt(selectedUris.count() - 1)
                 image_upload_prep_selected_images_ll.removeView(cl)
@@ -834,15 +834,15 @@ private  fun saveTask(){
     var urlString = "https://www.adminmatic.com/cp/app/functions/update/leadTask.php"
     val currentTimestamp = System.currentTimeMillis()
     println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-    urlString = "${"$urlString?cb=$currentTimestamp"}"
+    urlString = "$urlString?cb=$currentTimestamp"
     val queue = Volley.newRequestQueue(myView.context)
     val postRequest1: StringRequest = object : StringRequest(
-        Method.POST, urlString,
+        POST, urlString,
         Response.Listener { response -> // response
             println("Response $response")
             try {
                 val parentObject = JSONObject(response)
-                println("parentObject = ${parentObject.toString()}")
+                println("parentObject = $parentObject")
 
                 val gson = GsonBuilder().create()
 
@@ -869,7 +869,7 @@ private  fun saveTask(){
             params["taskID"] = taskID
             params["taskDescription"] = taskDescription
             params["createdBy"] = GlobalVars.loggedInEmployee!!.ID
-            println("params = ${params.toString()}")
+            println("params = $params")
             return params
         }
     }
@@ -931,7 +931,7 @@ private  fun saveTask(){
             ) {
                 override fun getByteData(): MutableMap<String, FileDataPart> {
                     println("getByteData")
-                    var params = HashMap<String, FileDataPart>()
+                    val params = HashMap<String, FileDataPart>()
                    // createImageData(uri)
                     params["pic"] = FileDataPart("droid_file.jpeg",  createImageData(uri)!!, "image/jpeg")
                     return params
@@ -939,7 +939,7 @@ private  fun saveTask(){
 
 
 
-                override fun getParams(): Map<String, String>? {
+                override fun getParams(): Map<String, String> {
                     println("getParams")
 
                     /*
@@ -966,15 +966,11 @@ private  fun saveTask(){
                     val params: MutableMap<String, String> = HashMap()
                     params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                     params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                    if(mode != null){
-                        params["name"] = mode!! + " Image"
-                    }else{
-                        params["name"] = "Gallery Image"
-                    }
+                    params["name"] = mode + " Image"
                     params["desc"] = taskDescription
                     params["tags"] = ""
                     if(customerID != ""){
-                        params["customer"] = customerID!!
+                        params["customer"] = customerID
                     }
                     params["createdBy"] = GlobalVars.loggedInEmployee!!.ID
 
@@ -1000,7 +996,7 @@ private  fun saveTask(){
                     //params["usageID"] = usageID
                     //params["vendorID"] = vendorID
                     //params["strikeID"] = strikeID
-                    println("params is: ${params}")
+                    println("params is: $params")
                     return params
                 }
 
@@ -1035,12 +1031,12 @@ private  fun saveTask(){
 
     override fun onCustomerCellClickListener(data:Customer) {
         println("Cell clicked with customer: ${data.sysname}")
-        data?.let { data ->
+        data.let { data ->
             // val directions = CustomerListFragmentDirections.navigateToCustomer(data)
 
 
             customerID = data.ID
-            customerSearchView.setQuery(data.sysname, false);
+            customerSearchView.setQuery(data.sysname, false)
             customerRecyclerView.visibility = View.GONE
 
             //val imm = (activity as MainActivity?).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -1053,12 +1049,12 @@ private  fun saveTask(){
         }
     }
 
-    fun hideSoftKeyboard(activity: Activity) {
-        if (activity.getCurrentFocus() == null){
+    private fun hideSoftKeyboard(activity: Activity) {
+        if (activity.currentFocus == null){
             return
         }
         val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus()!!.getWindowToken(), 0)
+        inputMethodManager.hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
     }
 
 
@@ -1069,7 +1065,7 @@ private  fun saveTask(){
 
         (activity as MainActivity?)!!.refreshImages()
 
-        getActivity()!!.getSupportFragmentManager().popBackStack();
+        activity!!.supportFragmentManager.popBackStack()
 
     }
 

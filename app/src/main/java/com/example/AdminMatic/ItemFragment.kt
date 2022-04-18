@@ -22,7 +22,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class ItemFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    //private var param1: String? = null
     private var param2: String? = null
 
     private  var item: Item? = null
@@ -35,7 +35,7 @@ class ItemFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            item = it.getParcelable<Item?>("item")
+            item = it.getParcelable("item")
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -43,13 +43,13 @@ class ItemFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
        // return inflater.inflate(R.layout.fragment_item, container, false)
         myView = inflater.inflate(R.layout.fragment_item, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Item"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.item)
 
         return myView
     }

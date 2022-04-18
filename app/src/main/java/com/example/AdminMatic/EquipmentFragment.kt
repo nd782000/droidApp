@@ -42,7 +42,7 @@ interface ServiceCellClickListener {
 
 class EquipmentFragment : Fragment(), ServiceCellClickListener {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    //private var param1: String? = null
     private var param2: String? = null
 
     private  var equipment: Equipment? = null
@@ -81,13 +81,13 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
        // return inflater.inflate(R.layout.fragment_equipment, container, false)
         myView = inflater.inflate(R.layout.fragment_equipment, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Equipment"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment)
 
 
 
@@ -145,7 +145,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         }
 
         if(equipment!!.crewName != null){
-            crewTxt.text = "Crew: " + equipment!!.crewName
+            crewTxt.text = getString(R.string.equipment_crew_display, equipment!!.crewName)
         }
 
         detailsBtn.setOnClickListener{
@@ -215,7 +215,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     println("parentObject = ${parentObject.toString()}")
 
                     //current adapter
-                    var services:JSONArray = parentObject.getJSONArray("services")
+                    val services:JSONArray = parentObject.getJSONArray("services")
                     println("services = ${services.toString()}")
                     println("services count = ${services.length()}")
 
@@ -225,7 +225,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     currentServicesAdapter = ServiceAdapter(servicesListCurrent,this.myView.context, false,this)
 
                     //history adapter
-                    var servicesHistory:JSONArray = parentObject.getJSONArray("serviceHistory")
+                    val servicesHistory:JSONArray = parentObject.getJSONArray("serviceHistory")
                     println("servicesHistory = ${servicesHistory.toString()}")
                     println("servicesHistory count = ${servicesHistory.length()}")
 
@@ -319,10 +319,10 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         */
     }
 
-    fun showStatusMenu(){
+    private fun showStatusMenu(){
         println("showStatusMenu")
 
-        var popUp: PopupMenu = PopupMenu(myView.context,statusBtn)
+        val popUp: PopupMenu = PopupMenu(myView.context,statusBtn)
         popUp.inflate(R.menu.task_status_menu)
         popUp.menu.add(0, 0, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_online)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_online)))
         popUp.menu.add(0, 1, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_needs_repair)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_needs_repair)))
@@ -333,7 +333,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             equipment!!.status = item!!.itemId.toString()
 
             setStatus(equipment!!.status)
-            Toast.makeText(com.example.AdminMatic.myView.context, item!!.title, Toast.LENGTH_SHORT).show()
+            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
 
 
             showProgressView()
@@ -342,7 +342,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-            urlString = "${"$urlString?cb=$currentTimestamp"}"
+            urlString = "$urlString?cb=$currentTimestamp"
             val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
 
 
@@ -386,7 +386,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
         })
 
-        popUp.gravity = Gravity.LEFT
+        popUp.gravity = Gravity.START
         popUp.show()
     }
 
@@ -395,19 +395,19 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         when(status) {
             "0" -> {
                 println("0")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_online)
+                statusBtn.setBackgroundResource(R.drawable.ic_online)
             }
             "1" -> {
                 println("1")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_needs_repair)
+                statusBtn.setBackgroundResource(R.drawable.ic_needs_repair)
             }
             "2" -> {
                 println("2")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_broken)
+                statusBtn.setBackgroundResource(R.drawable.ic_broken)
             }
             "3" -> {
                 println("3")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_winterized)
+                statusBtn.setBackgroundResource(R.drawable.ic_winterized)
             }
         }
     }

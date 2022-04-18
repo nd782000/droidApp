@@ -44,8 +44,8 @@ class EmpAdapter(context: Context, items: List<Employee>?) :
             16F
         )
 
-
-        view.setText("Add Employee")
+        //Todo: figure out how to get string from resource in an adapter
+        view.text = "Add Employee"
         //val spacing =
            // context.resources.getDimensionPixelSize(R.dimen.spacing_smaller)
        // view.setPadding(0, spacing, 0, spacing)
@@ -65,7 +65,7 @@ class EmpAdapter(context: Context, items: List<Employee>?) :
             if (convertView != null && convertView !is TextView) convertView else LayoutInflater.from(
                 context
             ).inflate(com.AdminMatic.R.layout.spinner_right_aligned, parent, false)
-        position = position - 1 // Adjust for initial selection item
+        position -= 1 // Adjust for initial selection item
         val employee: Employee? = getItem(position)
 
 

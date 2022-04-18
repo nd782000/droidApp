@@ -82,7 +82,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         println("onCreateView")
@@ -99,7 +99,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
             imageList = mutableListOf()
 
-            adapter = ImagesAdapter(imageList,myView!!.context, this)
+            adapter = ImagesAdapter(imageList,myView.context, this)
 
 
 
@@ -107,7 +107,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
             //(activity as AppCompatActivity).supportActionBar?.title = "Image List"
 
-            ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Image List"
+            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.image_list)
 
 
 
@@ -249,8 +249,8 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
     }
 
     fun refreshImages(){
-        searchView.setQuery("", false);
-        searchView.clearFocus();
+        searchView.setQuery("", false)
+        searchView.clearFocus()
         //clear list
         imageList = mutableListOf()
         refreshing = true
@@ -260,7 +260,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
         getImages()
     }
 
-    fun getImages(){
+    private fun getImages(){
         println("getImages")
 
 
@@ -277,13 +277,13 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
         }
         refreshing = false
 
-        var limit = 200
+        val limit = 200
 
         var urlString = "https://www.adminmatic.com/cp/app/functions/get/images.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -301,7 +301,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
-                    var images:JSONArray = parentObject.getJSONArray("images")
+                    val images:JSONArray = parentObject.getJSONArray("images")
                     println("images = ${images.toString()}")
                     println("images count = ${images.length()}")
 
@@ -355,7 +355,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
     }
 
 
-    fun RecyclerView.onScrollToEnd(
+    private fun RecyclerView.onScrollToEnd(
         onScrollNearEnd: (Unit) -> Unit
     ) = addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -369,7 +369,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
 
     override fun onImageCellClickListener(data:Image) {
-        data?.let { data ->
+        data.let { data ->
             val directions = ImageListFragmentDirections.navigateToImage(data)
             myView.findNavController().navigate(directions)
         }

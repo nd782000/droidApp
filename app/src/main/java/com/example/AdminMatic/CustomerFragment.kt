@@ -110,7 +110,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_customer, container, false)
         // employee = args
@@ -127,7 +127,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Customer"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.customer)
 
         return myView
     }
@@ -168,7 +168,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -246,7 +246,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -263,7 +263,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
-                    var leads: JSONArray = parentObject.getJSONArray("leads")
+                    val leads: JSONArray = parentObject.getJSONArray("leads")
                     println("leads = ${leads.toString()}")
                     println("leads count = ${leads.length()}")
 
@@ -301,7 +301,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["custID"] = customer!!.ID
+                params["custID"] = customer.ID
                 println("params = ${params.toString()}")
                 return params
             }
@@ -316,7 +316,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data?.let { data ->
+        data.let { data ->
 
             val directions = CustomerFragmentDirections.navigateCustomerToLead(data)
             myView.findNavController().navigate(directions)
@@ -336,7 +336,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -349,7 +349,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
-                    var contracts: JSONArray = parentObject.getJSONArray("contracts")
+                    val contracts: JSONArray = parentObject.getJSONArray("contracts")
                     println("contracts = ${contracts.toString()}")
                     println("contracts count = ${contracts.length()}")
 
@@ -380,7 +380,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["custID"] = customer!!.ID
+                params["custID"] = customer.ID
                 println("params = ${params.toString()}")
                 return params
             }
@@ -392,7 +392,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data?.let { data ->
+        data.let { data ->
 
             val directions = CustomerFragmentDirections.navigateCustomerToContract(data)
             myView.findNavController().navigate(directions)
@@ -411,7 +411,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -424,7 +424,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
-                    var workOrders: JSONArray = parentObject.getJSONArray("workOrders")
+                    val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
                     println("workOrders = ${workOrders.toString()}")
                     println("workOrders count = ${workOrders.length()}")
 
@@ -457,7 +457,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["custID"] = customer!!.ID
+                params["custID"] = customer.ID
                 params["empID"] = ""
                 params["active"] = "1"
                 println("params = ${params.toString()}")
@@ -471,7 +471,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data?.let { data ->
+        data.let { data ->
 
             val directions = CustomerFragmentDirections.navigateCustomerToWorkOrder(data)
             myView.findNavController().navigate(directions)
@@ -489,7 +489,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -502,7 +502,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
-                    var invoices: JSONArray = parentObject.getJSONArray("invoices")
+                    val invoices: JSONArray = parentObject.getJSONArray("invoices")
                     println("invoices = ${invoices.toString()}")
                     println("invoices count = ${invoices.length()}")
 
@@ -535,7 +535,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["custID"] = customer!!.ID
+                params["custID"] = customer.ID
                 println("params = ${params.toString()}")
                 return params
             }
@@ -547,7 +547,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data?.let { data ->
+        data.let { data ->
 
             val directions = CustomerFragmentDirections.navigateCustomerToInvoice(data)
             myView.findNavController().navigate(directions)
@@ -575,13 +575,13 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         }
         refreshing = false
 
-        var limit = 200
+        val limit = 200
 
         var urlString = "https://www.adminmatic.com/cp/app/functions/get/images.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -599,7 +599,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
-                    var images:JSONArray = parentObject.getJSONArray("images")
+                    val images:JSONArray = parentObject.getJSONArray("images")
                     println("images = ${images.toString()}")
                     println("images count = ${images.length()}")
 
@@ -654,7 +654,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["loginID"] = GlobalVars.loggedInEmployee!!.ID
                 params["limit"] = limit.toString()
                 params["offset"] = offset.toString()
-                params["customer"] = customer!!.ID
+                params["customer"] = customer.ID
 
 
                 println("params = ${params.toString()}")
@@ -693,43 +693,43 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
         custNameTextView = myView.findViewById(R.id.customer_name_txt)
-        custNameTextView.text = customer!!.sysname
+        custNameTextView.text = customer.sysname
 
         custPhoneBtn = myView.findViewById(R.id.customer_phone_btn_cl)
         custPhoneBtnTxt = myView.findViewById(R.id.customer_phone_btn_tv)
-        custPhoneBtnTxt.text = "No Phone Found"
+        custPhoneBtnTxt.text = getString(R.string.no_phone_found)
 
         custEmailBtn = myView.findViewById(R.id.customer_email_btn_cl)
         custEmailBtnTxt = myView.findViewById(R.id.customer_email_btn_tv)
-        custEmailBtnTxt.text = "No Email Found"
+        custEmailBtnTxt.text = getString(R.string.no_email_found)
 
         custAddressBtn = myView.findViewById(R.id.customer_address_btn_cl)
         custAddressBtn.setOnClickListener {
-            println("map btn clicked ${customer!!.mainAddr}")
+            println("map btn clicked ${customer.mainAddr}")
 
             var lng:String = ""
             var lat:String = ""
-            if(customer!!.lng != null && customer!!.lat != null){
-                lng = customer!!.lng!!
-                lat = customer!!.lat!!
+            if(customer.lng != null && customer.lat != null){
+                lng = customer.lng!!
+                lat = customer.lat!!
                 val intent = Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("geo:0,0?q="+lng+","+lat+" (" + customer!!.sysname + ")")
+                    Uri.parse("geo:0,0?q="+lng+","+lat+" (" + customer.sysname + ")")
                 )
                 startActivity(intent)
             }
         }
 
         custAddressBtnTxt = myView.findViewById(R.id.customer_address_btn_tv)
-        custAddressBtnTxt.text = "No Address Found"
+        custAddressBtnTxt.text = getString(R.string.no_address_found)
 
-        if (customer!!.mainAddr != ""){
-            custAddressBtnTxt.text = customer!!.mainAddr!!
+        if (customer.mainAddr != ""){
+            custAddressBtnTxt.text = customer.mainAddr
         }
 
 
-        if (customer!!.contacts.count() > 0){
-            for (contact in customer!!.contacts) {
+        if (customer.contacts.count() > 0){
+            for (contact in customer.contacts) {
                 when(contact.type) {
                     "1" -> {
                         println("1")
@@ -797,7 +797,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     0 -> {
 
                         tableMode = "LEADS"
-                        addBtn.text = "Add Lead"
+                        addBtn.text = getString(R.string.add_lead)
                        // Toast.makeText(com.example.AdminMatic.myView.context, "Leads", Toast.LENGTH_SHORT).show()
                         leadsRecyclerView.visibility = View.VISIBLE
                         contractsRecyclerView.visibility = View.GONE
@@ -807,7 +807,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     }
                     1 -> {
                         tableMode = "CONTRACTS"
-                        addBtn.text = "Add Contract"
+                        addBtn.text = getString(R.string.add_contract)
                         //Toast.makeText(com.example.AdminMatic.myView.context, "Contracts", Toast.LENGTH_SHORT).show()
                         leadsRecyclerView.visibility = View.GONE
                         contractsRecyclerView.visibility = View.VISIBLE
@@ -817,7 +817,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     }
                     2 -> {
                         tableMode = "WOS"
-                        addBtn.text = "Add Work Order"
+                        addBtn.text = getString(R.string.add_work_order)
                         //Toast.makeText(com.example.AdminMatic.myView.context, "Work Orders", Toast.LENGTH_SHORT).show()
                         leadsRecyclerView.visibility = View.GONE
                         contractsRecyclerView.visibility = View.GONE
@@ -827,7 +827,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     }
                     3 -> {
                         tableMode = "INVOICES"
-                        addBtn.text = "Add Invoice"
+                        addBtn.text = getString(R.string.add_invoice)
                         //Toast.makeText(com.example.AdminMatic.myView.context, "Invoices", Toast.LENGTH_SHORT).show()
                         leadsRecyclerView.visibility = View.GONE
                         contractsRecyclerView.visibility = View.GONE
@@ -837,10 +837,10 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     }
                     4 -> {
                         tableMode = "IMAGES"
-                        addBtn.text = "Add Image"
+                        addBtn.text = getString(R.string.add_images)
                         Toast.makeText(com.example.AdminMatic.myView.context, "Images", Toast.LENGTH_SHORT).show()
 
-                        if(imagesLoaded == false){
+                        if(!imagesLoaded){
                             getImages()
                         }
                         leadsRecyclerView.visibility = View.GONE
@@ -867,7 +867,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         })
 
         tableMode = "WOS"
-        addBtn.text = "Add Work Order"
+        addBtn.text = getString(R.string.add_work_order)
         tabLayout.getTabAt(2)!!.select()
 
 
@@ -915,7 +915,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
     override fun onImageCellClickListener(data:Image) {
-        data?.let { data ->
+        data.let { data ->
             val directions = CustomerFragmentDirections.navigateCustomerToImage(data)
             myView.findNavController().navigate(directions)
         }
