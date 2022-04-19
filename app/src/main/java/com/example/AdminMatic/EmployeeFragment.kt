@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -51,7 +50,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     lateinit var myView:View
 
     lateinit var  pgsBar: ProgressBar
-    lateinit var  empViewTop: ConstraintLayout
+    private lateinit var  empViewTop: ConstraintLayout
     //lateinit var  empViewMenu: ConstraintLayout
     //lateinit var  empViewContainer: ConstraintLayout
     //lateinit var  empViewFooter: ConstraintLayout
@@ -59,14 +58,14 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     lateinit var  swipeRefresh: SwipeRefreshLayout
 
 
-    lateinit var empImageView:ImageView
-    lateinit var empNameTextView:TextView
-    lateinit var empPhoneBtn:ConstraintLayout
-    lateinit var empEmaileBtn:ConstraintLayout
-    lateinit var empPhoneBtnTxt:TextView
-    lateinit var empEmaileBtnTxt:TextView
+    private lateinit var empImageView:ImageView
+    private lateinit var empNameTextView:TextView
+    private lateinit var empPhoneBtn:ConstraintLayout
+    private lateinit var empEmaileBtn:ConstraintLayout
+    private lateinit var empPhoneBtnTxt:TextView
+    private lateinit var empEmaileBtnTxt:TextView
 
-    lateinit var payrollBtn:Button
+    private lateinit var payrollBtn:Button
 
 
     lateinit var adapter:ImagesAdapter
@@ -75,7 +74,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     lateinit var loadMoreImageList: MutableList<Image>
     var refreshing = false
 
-    lateinit var logOutBtn:Button
+    private lateinit var logOutBtn:Button
 
 
 
@@ -84,7 +83,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            employee = it.getParcelable<Employee?>("employee")
+            employee = it.getParcelable("employee")
         }
     }
 
@@ -94,11 +93,10 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = if (context is LogOut) {
-            context as LogOut
+            context
         } else {
             throw ClassCastException(
-                context.toString()
-                    .toString() + " must implement LogOut"
+                "$context must implement LogOut"
             )
         }
     }
@@ -298,9 +296,9 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     val images:JSONArray = parentObject.getJSONArray("images")
-                    println("images = ${images.toString()}")
+                    println("images = $images")
                     println("images count = ${images.length()}")
 
 
@@ -312,7 +310,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                     println("imageList count = ${imageList.count()}")
 
                     // Now we call setRefreshing(false) to signal refresh has finished
-                    customerSwipeContainer.isRefreshing = false;
+                    customerSwipeContainer.isRefreshing = false
 
                     Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 
@@ -344,7 +342,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                 params["uploadedBy"] = employee!!.ID
 
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -384,8 +382,8 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     }
 
     override fun onImageCellClickListener(data:Image) {
-        data.let { data ->
-            val directions = EmployeeFragmentDirections.navigateEmployeeToImage(data)
+        data.let {
+            val directions = EmployeeFragmentDirections.navigateEmployeeToImage(it)
             myView.findNavController().navigate(directions)
         }
     }

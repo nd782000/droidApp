@@ -2,12 +2,6 @@ package com.example.AdminMatic
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ImageSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -21,15 +15,11 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wo_item_list_item.view.*
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.HashMap
-
-import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
-
 
 
 class TasksAdapter(private val list: MutableList<Task>, private val context: Context,private val cellClickListener: TaskCellClickListener, private val woItem:WoItem)
@@ -72,11 +62,11 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
         if (task.images != null){
             if (task.images!!.count() > 0){
-                var taskImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.task_thumb_iv)
+                val taskImageView:ImageView = holder.itemView.findViewById(R.id.task_thumb_iv)
 
 
                 Picasso.with(context)
-                    .load("${GlobalVars.thumbBase + task.images!![0].fileName}")
+                    .load(GlobalVars.thumbBase + task.images!![0].fileName)
                     .placeholder(R.drawable.ic_images) //optional
                     //.resize(imgWidth, imgHeight)         //optional
                     //.centerCrop()                        //optional
@@ -96,32 +86,32 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
 
         //options btn click
-        holder.itemView.findViewById<ImageView>(R.id.task_status_iv).setOnClickListener(){
+        holder.itemView.findViewById<ImageView>(R.id.task_status_iv).setOnClickListener {
             println("status click")
 
-            var popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+            val popUp = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.task_status_menu)
            // popUp.menu.getItem(0).subMenu.getItem(3).setVisible(false)
             //popUp.menu.getItem(0).subMenu.getItem(4).setVisible(true)
 
             //val d:Drawable? = resize(context.getDrawable(R.drawable.ic_in_progress)!!)
 
-            popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_not_started)!!,context)!!, context.getString(R.string.not_started)))
-            popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_in_progress)!!,context)!!, context.getString(R.string.in_progress)))
-            popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_done)!!,context)!!, context.getString(R.string.finished)))
-            popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context)!!, context.getString(R.string.cancelled)))
+            popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_not_started)!!,context), context.getString(R.string.not_started)))
+            popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_in_progress)!!,context), context.getString(R.string.in_progress)))
+            popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_done)!!,context), context.getString(R.string.finished)))
+            popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context), context.getString(R.string.cancelled)))
 
            // menu.add(0, 1, 1, menuIconWithText(getResources().getDrawable(R.mipmap.user_2), getResources().getString(R.string.action_profile)));
 
 
 
 
-            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 task.status = item!!.itemId.toString()
                 Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
 
-                if (item!!.itemId == 2 || item!!.itemId == 3){
+                if (item.itemId == 2 || item.itemId == 3) {
                     println("prompt for image upload")
 
                     val builder = AlertDialog.Builder(myView.context)
@@ -129,16 +119,20 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
                     builder.setMessage("Do you want to upload a task image now?")
 //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
-                    builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-                        Toast.makeText(myView.context,
-                            android.R.string.yes, Toast.LENGTH_SHORT).show()
+                    builder.setPositiveButton(android.R.string.yes) { _, _ ->
+                        Toast.makeText(
+                            myView.context,
+                            android.R.string.yes, Toast.LENGTH_SHORT
+                        ).show()
 
                         cellClickListener.uploadImage(task)
                     }
 
-                    builder.setNegativeButton(android.R.string.no) { dialog, which ->
-                        Toast.makeText(myView.context,
-                            android.R.string.no, Toast.LENGTH_SHORT).show()
+                    builder.setNegativeButton(android.R.string.no) { _, _ ->
+                        Toast.makeText(
+                            myView.context,
+                            android.R.string.no, Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     /*
@@ -169,7 +163,6 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 */
 
 
-
                 /*
                 var newItemStatus:String = "1"
         var parameters:[String:String]
@@ -191,7 +184,7 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
                 val currentTimestamp = System.currentTimeMillis()
                 println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-                urlString = "${"$urlString?cb=$currentTimestamp"}"
+                urlString = "$urlString?cb=$currentTimestamp"
                 val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -206,13 +199,13 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
                         try {
                             val parentObject = JSONObject(response)
-                            println("parentObject = ${parentObject.toString()}")
-                           // var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                           // println("payroll = ${payrollJSON.toString()}")
-                           // println("payroll count = ${payrollJSON.length()}")
+                            println("parentObject = $parentObject")
+                            // var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                            // println("payroll = ${payrollJSON.toString()}")
+                            // println("payroll count = ${payrollJSON.length()}")
 
 
-                           // getPayroll()
+                            // getPayroll()
 
                             cellClickListener.getWoItem()
 
@@ -230,8 +223,8 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
                 ) {
                     override fun getParams(): Map<String, String> {
                         val params: MutableMap<String, String> = HashMap()
-                        params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                        params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                        params["companyUnique"] = loggedInEmployee!!.companyUnique
+                        params["sessionKey"] = loggedInEmployee!!.sessionKey
                         params["taskID"] = task.ID
                         params["status"] = task.status
                         params["woItemID"] = woItem.ID
@@ -239,7 +232,7 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
                         params["empID"] = loggedInEmployee!!.ID
 
 
-                        println("params = ${params.toString()}")
+                        println("params = $params")
                         return params
                     }
                 }
@@ -249,12 +242,12 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
 
                 true
-            })
+            }
 
 
 
 
-            popUp.gravity = Gravity.LEFT
+            popUp.gravity = Gravity.START
             popUp.show()
 
 

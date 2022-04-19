@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -20,8 +18,6 @@ import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
 
-import kotlinx.android.synthetic.main.fragment_equipment_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_equipment_list.customerSwipeContainer
 import kotlinx.android.synthetic.main.fragment_equipment_list.*
 import kotlinx.android.synthetic.main.fragment_service_inspection.*
 import org.json.JSONArray
@@ -44,7 +40,7 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
     lateinit var recyclerView: RecyclerView
 
-    lateinit var  submitBtn: Button
+    private lateinit var  submitBtn: Button
 
     lateinit var adapter:ServiceInspectionAdapter
 
@@ -56,7 +52,7 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            service = it.getParcelable<EquipmentService?>("service")
+            service = it.getParcelable("service")
         }
     }
 
@@ -73,13 +69,13 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
         val emptyList:MutableList<InspectionQuestion> = mutableListOf()
 
-        adapter = ServiceInspectionAdapter(emptyList,myView.context, this)
+        adapter = ServiceInspectionAdapter(emptyList, this)
 
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Equipment List"
 
         //TODO: fetch equipment name here instead of just ID
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.inspection_page_title, service!!.equipmentID)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.inspection_page_title, service!!.equipmentID)
 
 
 
@@ -129,9 +125,9 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
-                    var questions:JSONArray = parentObject.getJSONArray("questions")
-                    println("questions = ${questions.toString()}")
+                    println("parentObject = $parentObject")
+                    val questions:JSONArray = parentObject.getJSONArray("questions")
+                    println("questions = $questions")
                     //println("questions count = ${questions.length()}")
 
                     val gson = GsonBuilder().create()
@@ -141,8 +137,10 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
                         layoutManager = LinearLayoutManager(activity)
 
                         adapter = activity?.let {
-                            ServiceInspectionAdapter(questionsList,
-                                it, this@ServiceInspectionFragment)
+                            ServiceInspectionAdapter(
+                                questionsList,
+                                this@ServiceInspectionFragment
+                            )
                         }
 
 
@@ -156,7 +154,7 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
 
 
-                        (adapter as ServiceInspectionAdapter).notifyDataSetChanged();
+                        (adapter as ServiceInspectionAdapter).notifyDataSetChanged()
                         println(adapter!!.itemCount)
 
                     }
@@ -185,7 +183,7 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
                 params["ID"] = service!!.ID
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -214,7 +212,7 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
 
                     hideProgressView()
 
@@ -236,16 +234,16 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
                 val params: MutableMap<String, String> = java.util.HashMap()
                 params["ID"] = service!!.ID
                 params["completeValue"] = service!!.completionMileage.toString()
-                params["completedBy"] = GlobalVars.loggedInEmployee!!.ID
+                params["completedBy"] = loggedInEmployee!!.ID
                 params["completionNotes"] = service!!.notes.toString()
                 params["nextValue"] = service!!.nextValue.toString()
                 params["questions"] = gson.toJson(questionsList)
                 params["status"] = service!!.status.toString()
                 params["type"] = service!!.type
-                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = loggedInEmployee!!.sessionKey
+                params["companyUnique"] = loggedInEmployee!!.companyUnique
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -264,25 +262,7 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
     override fun onServiceInspectionCellClickListener(data:InspectionQuestion) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data} Clicked",Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity,"$data Clicked",Toast.LENGTH_SHORT).show()
     }
 
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EquipmentListFragment().apply {
-
-            }
-    }
 }

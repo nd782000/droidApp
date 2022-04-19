@@ -18,7 +18,10 @@ import kotlinx.android.synthetic.main.vendor_list_item.view.*
 import java.util.*
 
 
-class VendorsAdapter(private val list: MutableList<Vendor>, private val context: Context,private val cellClickListener: VendorCellClickListener)
+class VendorsAdapter(
+    private val list: MutableList<Vendor>,
+    private val cellClickListener: VendorCellClickListener
+)
 
     : RecyclerView.Adapter<VendorViewHolder>(), Filterable {
 
@@ -49,9 +52,9 @@ class VendorsAdapter(private val list: MutableList<Vendor>, private val context:
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         println("queryText = $queryText")
         //text highlighting for first string
-        if (queryText != null && !queryText.isEmpty() && queryText != "") {
+        if (queryText.isNotEmpty() && queryText != "") {
 
-            val startPos1: Int = filterList[position].name.toLowerCase().indexOf(queryText.toLowerCase())
+            val startPos1: Int = filterList[position].name.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos1 = startPos1 + queryText.length
             if (startPos1 != -1) {
                 val spannable: Spannable = SpannableString(filterList[position].name)
@@ -76,10 +79,10 @@ class VendorsAdapter(private val list: MutableList<Vendor>, private val context:
         }
 
         //text highlighting for second string
-        if (queryText != null && !queryText.isEmpty() && queryText != "") {
+        if (queryText.isNotEmpty() && queryText != "") {
 
 
-            val startPos2: Int = filterList[position].itemString!!.toLowerCase().indexOf(queryText.toLowerCase())
+            val startPos2: Int = filterList[position].itemString!!.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos2 = startPos2 + queryText.length
             if (startPos2 != -1) {
                 val spannable: Spannable = SpannableString(filterList[position].itemString!!)
@@ -114,12 +117,12 @@ class VendorsAdapter(private val list: MutableList<Vendor>, private val context:
 
 
         //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
+        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
             println("menu click")
 
-            var popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+            val popUp = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.options_menu)
-            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
                     R.id.menu1 -> {
@@ -134,7 +137,7 @@ class VendorsAdapter(private val list: MutableList<Vendor>, private val context:
                 }
 
                 true
-            })
+            }
 
 
 
@@ -174,11 +177,11 @@ class VendorsAdapter(private val list: MutableList<Vendor>, private val context:
                     filterList = list
                 } else {
 
-                    var resultList:MutableList<Vendor> = mutableListOf()
+                    val resultList:MutableList<Vendor> = mutableListOf()
                     for (row in list) {
                         //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
                        // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
-                        if (row.name.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT)) || row.itemString!!.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))) {
+                        if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.itemString!!.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
 
                             println("add row")
 

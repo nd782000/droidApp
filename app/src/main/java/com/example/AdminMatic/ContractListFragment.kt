@@ -53,14 +53,6 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
     lateinit var adapter:ContractsAdapter
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -77,14 +69,14 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
         val emptyList:MutableList<Contract> = mutableListOf()
 
-        adapter = ContractsAdapter(emptyList,myView.context, this)
+        adapter = ContractsAdapter(emptyList, this)
 
 
 
 
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Contract List"
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.get_contracts)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.get_contracts)
 
 
         // Inflate the layout for this fragment
@@ -143,9 +135,9 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     val contracts:JSONArray = parentObject.getJSONArray("contracts")
-                    println("contracts = ${contracts.toString()}")
+                    println("contracts = $contracts")
                     println("contracts count = ${contracts.length()}")
 
 
@@ -159,8 +151,10 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
 
                         adapter = activity?.let {
-                            ContractsAdapter(contractsList,
-                                it, this@ContractListFragment)
+                            ContractsAdapter(
+                                contractsList,
+                                this@ContractListFragment
+                            )
                         }
 
                         val itemDecoration: ItemDecoration =
@@ -179,8 +173,8 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
                             // Make sure you call swipeContainer.setRefreshing(false)
                             // once the network request has completed successfully.
                             //fetchTimelineAsync(0)
-                            searchView.setQuery("", false);
-                            searchView.clearFocus();
+                            searchView.setQuery("", false)
+                            searchView.clearFocus()
                             getContracts()
                         }
                         // Configure the refreshing colors
@@ -201,9 +195,9 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
                         // ...the data has come back, add new items to your adapter...
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false;
+                        customerSwipeContainer.isRefreshing = false
 
-                       // Toast.makeText(activity,"${contractsList.count()} Contracts Loaded",Toast.LENGTH_SHORT).show()
+                        // Toast.makeText(activity,"${contractsList.count()} Contracts Loaded",Toast.LENGTH_SHORT).show()
 
 
 
@@ -254,7 +248,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -265,10 +259,13 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
+        /*
         data.let { data ->
             // val directions = ContractListFragmentDirections.navigateToContract(data)
             // myView.findNavController().navigate(directions)
         }
+
+         */
 
     }
 
@@ -288,20 +285,5 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
 
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ContractListFragment().apply {
 
-            }
-    }
 }

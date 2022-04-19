@@ -9,15 +9,16 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.image_list_item.view.*
 import java.util.*
-import com.squareup.picasso.Picasso
-
 
 
 class ImagesAdapter(private val list: MutableList<Image>, private val context: Context,private val cellClickListener: ImageCellClickListener)
@@ -88,7 +89,7 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
 
         }
 
-        val imageImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.image_item_image_view)
+        val imageImageView:ImageView = holder.itemView.findViewById(R.id.image_item_image_view)
 
 
         Picasso.with(context)

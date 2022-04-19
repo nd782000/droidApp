@@ -149,34 +149,23 @@ package com.example.AdminMatic
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ImageSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wo_item_list_item.view.*
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.HashMap
-
-import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
-
 
 
 class LeadTasksAdapter(private val list: MutableList<Task>, private val context: Context,private val cellClickListener: LeadTaskCellClickListener, private val lead:Lead)
@@ -219,11 +208,11 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 
         if (task.images != null){
             if (task.images!!.count() > 0){
-                var taskImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.task_thumb_iv)
+                val taskImageView:ImageView = holder.itemView.findViewById(R.id.task_thumb_iv)
 
 
                 Picasso.with(context)
-                    .load("${GlobalVars.thumbBase + task.images!![0].fileName}")
+                    .load(GlobalVars.thumbBase + task.images!![0].fileName)
                     .placeholder(R.drawable.ic_images) //optional
                     //.resize(imgWidth, imgHeight)         //optional
                     //.centerCrop()                        //optional
@@ -245,10 +234,10 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 
 
         //options btn click
-        holder.itemView.findViewById<ImageView>(R.id.task_status_iv).setOnClickListener(){
+        holder.itemView.findViewById<ImageView>(R.id.task_status_iv).setOnClickListener {
             println("status click")
 
-            var popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+            val popUp = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.task_status_menu)
             // popUp.menu.getItem(0).subMenu.getItem(3).setVisible(false)
             //popUp.menu.getItem(0).subMenu.getItem(4).setVisible(true)
@@ -265,12 +254,12 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 
 
 
-            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 task.status = item!!.itemId.toString()
                 Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
 
-                if (item!!.itemId == 2 || item!!.itemId == 3){
+                if (item.itemId == 2 || item.itemId == 3) {
                     println("prompt for image upload")
 
                     val builder = AlertDialog.Builder(myView.context)
@@ -278,16 +267,20 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
                     builder.setMessage("Do you want to upload a task image now?")
 //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
-                    builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-                        Toast.makeText(myView.context,
-                            android.R.string.yes, Toast.LENGTH_SHORT).show()
+                    builder.setPositiveButton(android.R.string.yes) { _, _ ->
+                        Toast.makeText(
+                            myView.context,
+                            android.R.string.yes, Toast.LENGTH_SHORT
+                        ).show()
 
                         cellClickListener.uploadImage(task)
                     }
 
-                    builder.setNegativeButton(android.R.string.no) { dialog, which ->
-                        Toast.makeText(myView.context,
-                            android.R.string.no, Toast.LENGTH_SHORT).show()
+                    builder.setNegativeButton(android.R.string.no) { _, _ ->
+                        Toast.makeText(
+                            myView.context,
+                            android.R.string.no, Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     /*
@@ -318,7 +311,6 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 */
 
 
-
                 /*
                 var newItemStatus:String = "1"
         var parameters:[String:String]
@@ -340,7 +332,7 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 
                 val currentTimestamp = System.currentTimeMillis()
                 println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-                urlString = "${"$urlString?cb=$currentTimestamp"}"
+                urlString = "$urlString?cb=$currentTimestamp"
                 val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -355,7 +347,7 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 
                         try {
                             val parentObject = JSONObject(response)
-                            println("parentObject = ${parentObject.toString()}")
+                            println("parentObject = $parentObject")
                             // var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
                             // println("payroll = ${payrollJSON.toString()}")
                             // println("payroll count = ${payrollJSON.length()}")
@@ -379,15 +371,15 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
                 ) {
                     override fun getParams(): Map<String, String> {
                         val params: MutableMap<String, String> = HashMap()
-                        params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                        params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                        params["companyUnique"] = loggedInEmployee!!.companyUnique
+                        params["sessionKey"] = loggedInEmployee!!.sessionKey
                         params["taskID"] = task.ID
                         params["status"] = task.status
 
                         params["leadID"] = lead.ID
                         params["empID"] = loggedInEmployee!!.ID
 
-                        println("params = ${params.toString()}")
+                        println("params = $params")
                         return params
                     }
                 }
@@ -397,12 +389,12 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 
 
                 true
-            })
+            }
 
 
 
 
-            popUp.gravity = Gravity.LEFT
+            popUp.gravity = Gravity.START
             popUp.show()
 
 

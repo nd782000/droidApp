@@ -23,16 +23,10 @@ import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_employee_list.*
 import kotlinx.android.synthetic.main.fragment_lead_list.*
-import kotlinx.android.synthetic.main.fragment_lead_list.customerSwipeContainer
 import kotlinx.android.synthetic.main.fragment_work_order.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -40,10 +34,6 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickListener, WorkOrderCellClickListener, InvoiceCellClickListener, ImageCellClickListener {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
 
     lateinit  var customerID: String
 
@@ -53,7 +43,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
     lateinit var myView:View
 
     lateinit var  pgsBar: ProgressBar
-    lateinit var custUI: ConstraintLayout
+    private lateinit var custUI: ConstraintLayout
 
 
     lateinit var leadsRecyclerView: RecyclerView
@@ -67,19 +57,19 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
 
-    lateinit var custNameTextView:TextView
-    lateinit var custPhoneBtn: ConstraintLayout
-    lateinit var custEmailBtn: ConstraintLayout
-    lateinit var custAddressBtn:ConstraintLayout
-    lateinit var custPhoneBtnTxt:TextView
-    lateinit var custEmailBtnTxt:TextView
-    lateinit var custAddressBtnTxt:TextView
+    private lateinit var custNameTextView:TextView
+    private lateinit var custPhoneBtn: ConstraintLayout
+    private lateinit var custEmailBtn: ConstraintLayout
+    private lateinit var custAddressBtn:ConstraintLayout
+    private lateinit var custPhoneBtnTxt:TextView
+    private lateinit var custEmailBtnTxt:TextView
+    private lateinit var custAddressBtnTxt:TextView
 
 
-    lateinit var contactsBtn: Button
-    lateinit var settingsBtn: Button
+    private lateinit var contactsBtn: Button
+    private lateinit var settingsBtn: Button
 
-    lateinit var tabLayout:TabLayout
+    private lateinit var tabLayout:TabLayout
     lateinit var tableMode:String
 
 
@@ -183,7 +173,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                     try {
                         val parentObject = JSONObject(response)
-                        println("parentObject = ${parentObject.toString()}")
+                        println("parentObject = $parentObject")
 
 
                         val gson = GsonBuilder().create()
@@ -215,7 +205,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 //params["ID"] = customer!!.ID
                 params["ID"] = customerID
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -262,9 +252,9 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     val leads: JSONArray = parentObject.getJSONArray("leads")
-                    println("leads = ${leads.toString()}")
+                    println("leads = $leads")
                     println("leads count = ${leads.length()}")
 
 
@@ -272,7 +262,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     val gson = GsonBuilder().create()
                     val leadsList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
 
-                    val leadAdapter = LeadsAdapter(leadsList,this.myView.context,this,true)
+                    val leadAdapter = LeadsAdapter(leadsList, this, true)
 
                     leadsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
                     leadsRecyclerView.adapter = leadAdapter
@@ -302,7 +292,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["custID"] = customer.ID
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -316,9 +306,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data.let { data ->
-
-            val directions = CustomerFragmentDirections.navigateCustomerToLead(data)
+        data.let {
+            val directions = CustomerFragmentDirections.navigateCustomerToLead(it)
             myView.findNavController().navigate(directions)
         }
 
@@ -348,15 +337,15 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     val contracts: JSONArray = parentObject.getJSONArray("contracts")
-                    println("contracts = ${contracts.toString()}")
+                    println("contracts = $contracts")
                     println("contracts count = ${contracts.length()}")
 
                     val gson = GsonBuilder().create()
                     val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
 
-                    val contractAdapter = ContractsAdapter(contractsList,this.myView.context,this,true)
+                    val contractAdapter = ContractsAdapter(contractsList, this, true)
 
                     contractsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
                     contractsRecyclerView.adapter = contractAdapter
@@ -381,7 +370,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["custID"] = customer.ID
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -392,9 +381,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data.let { data ->
-
-            val directions = CustomerFragmentDirections.navigateCustomerToContract(data)
+        data.let {
+            val directions = CustomerFragmentDirections.navigateCustomerToContract(it)
             myView.findNavController().navigate(directions)
         }
 
@@ -423,15 +411,15 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
-                    println("workOrders = ${workOrders.toString()}")
+                    println("workOrders = $workOrders")
                     println("workOrders count = ${workOrders.length()}")
 
                     val gson = GsonBuilder().create()
                     val workOrdersList = gson.fromJson(workOrders.toString() , Array<WorkOrder>::class.java).toMutableList()
 
-                    val workOrderAdapter = WorkOrdersAdapter(workOrdersList,this.myView.context,this,true)
+                    val workOrderAdapter = WorkOrdersAdapter(workOrdersList, this, true)
 
                     workOrdersRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
                     workOrdersRecyclerView.adapter = workOrderAdapter
@@ -460,7 +448,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["custID"] = customer.ID
                 params["empID"] = ""
                 params["active"] = "1"
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -471,13 +459,10 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data.let { data ->
-
-            val directions = CustomerFragmentDirections.navigateCustomerToWorkOrder(data)
+        data.let {
+            val directions = CustomerFragmentDirections.navigateCustomerToWorkOrder(it)
             myView.findNavController().navigate(directions)
         }
-
-
     }
 
 
@@ -501,15 +486,15 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     val invoices: JSONArray = parentObject.getJSONArray("invoices")
-                    println("invoices = ${invoices.toString()}")
+                    println("invoices = $invoices")
                     println("invoices count = ${invoices.length()}")
 
                     val gson = GsonBuilder().create()
                     val invoicesList = gson.fromJson(invoices.toString() , Array<Invoice>::class.java).toMutableList()
 
-                    val invoicesAdapter = InvoicesAdapter(invoicesList,this.myView.context,this,true)
+                    val invoicesAdapter = InvoicesAdapter(invoicesList, this)
 
                     invoicesRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
                     invoicesRecyclerView.adapter = invoicesAdapter
@@ -536,7 +521,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["custID"] = customer.ID
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -547,9 +532,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data.let { data ->
-
-            val directions = CustomerFragmentDirections.navigateCustomerToInvoice(data)
+        data.let {
+            val directions = CustomerFragmentDirections.navigateCustomerToInvoice(it)
             myView.findNavController().navigate(directions)
         }
 
@@ -598,9 +582,9 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     val images:JSONArray = parentObject.getJSONArray("images")
-                    println("images = ${images.toString()}")
+                    println("images = $images")
                     println("images count = ${images.length()}")
 
 
@@ -657,7 +641,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["customer"] = customer.ID
 
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -707,8 +691,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         custAddressBtn.setOnClickListener {
             println("map btn clicked ${customer.mainAddr}")
 
-            var lng:String = ""
-            var lat:String = ""
+            val lng: String
+            val lat: String
             if(customer.lng != null && customer.lat != null){
                 lng = customer.lng!!
                 lat = customer.lat!!
@@ -748,7 +732,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                             println("email btn clicked ${contact.value!!}")
                             val intent = Intent(Intent.ACTION_SENDTO)
                             intent.data = Uri.parse("mailto:") // only email apps should handle this
-                            val emailArray = arrayOf<String>(contact.value!!)
+                            val emailArray = arrayOf(contact.value!!)
                             intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
                             // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
                             // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
@@ -906,17 +890,12 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
             // val directions = EmployeeFragmentDirections.navigateToPayroll(employee)
             // myView.findNavController().navigate(directions)
         }
-
-
     }
 
 
-
-
-
     override fun onImageCellClickListener(data:Image) {
-        data.let { data ->
-            val directions = CustomerFragmentDirections.navigateCustomerToImage(data)
+        data.let { data_ ->
+            val directions = CustomerFragmentDirections.navigateCustomerToImage(data_)
             myView.findNavController().navigate(directions)
         }
     }
@@ -931,30 +910,4 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         custUI.visibility = View.VISIBLE
     }
 
-
-
-
-
-
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CustomerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

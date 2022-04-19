@@ -12,21 +12,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
-import com.google.gson.GsonBuilder
 
 import kotlinx.android.synthetic.main.fragment_equipment_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_equipment_list.customerSwipeContainer
-import kotlinx.android.synthetic.main.fragment_equipment_list.*
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-
 
 
 interface EquipmentDetailCellClickListener {
@@ -53,7 +41,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            equipment = it.getParcelable<Equipment?>("equipment")
+            equipment = it.getParcelable("equipment")
         }
     }
 
@@ -73,7 +61,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
         val emptyList:MutableList<String> = mutableListOf()
 
-        adapter = EquipmentDetailAdapter(emptyList,myView.context, this)
+        adapter = EquipmentDetailAdapter(emptyList, this)
 
 
 
@@ -122,8 +110,10 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
             layoutManager = LinearLayoutManager(activity)
 
             adapter = activity?.let {
-                EquipmentDetailAdapter(detailList,
-                    it, this@EquipmentDetailsFragment)
+                EquipmentDetailAdapter(
+                    detailList,
+                    this@EquipmentDetailsFragment
+                )
             }
 
             val itemDecoration: ItemDecoration =
@@ -133,7 +123,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
             //for item animations
             // recyclerView.itemAnimator = SlideInUpAnimator()
 
-            (adapter as EquipmentDetailAdapter).notifyDataSetChanged();
+            (adapter as EquipmentDetailAdapter).notifyDataSetChanged()
 
             // Remember to CLEAR OUT old items before appending in the new ones
 
@@ -149,7 +139,6 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
     }
 
-    //Todo: add link to Vendor (may need to change the data on this listener to include cell ID)
     override fun onEquipmentDetailCellClickListener(data:Int) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         if (data == 9) { //vendor cell
@@ -170,22 +159,4 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
         recyclerView.visibility = View.VISIBLE
     }
 
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EquipmentListFragment().apply {
-
-            }
-    }
 }

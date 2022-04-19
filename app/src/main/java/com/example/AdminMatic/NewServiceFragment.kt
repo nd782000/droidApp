@@ -53,38 +53,37 @@ class NewServiceFragment : Fragment() {
 
     lateinit var pgsBar: ProgressBar
 
-    lateinit var frequencyTxt:TextView
-    lateinit var currentTxt:TextView
-    lateinit var nextTxt:TextView
+    private lateinit var frequencyTxt:TextView
+    private lateinit var currentTxt:TextView
+    private lateinit var nextTxt:TextView
 
-    lateinit var nameEditTxt:EditText
-    lateinit var typeTxt:TextView
-    lateinit var frequencyEditTxt:EditText
-    lateinit var currentEditTxt:EditText
+    private lateinit var nameEditTxt:EditText
+    private lateinit var typeTxt:TextView
+    private lateinit var frequencyEditTxt:EditText
+    private lateinit var currentEditTxt:EditText
     lateinit var nextEditTxt:EditText
-    lateinit var instructionsEditTxt:EditText
-    lateinit var submitBtn:Button
+    private lateinit var instructionsEditTxt:EditText
+    private lateinit var submitBtn:Button
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            equipment = it.getParcelable<Equipment?>("equipment")
+            equipment = it.getParcelable("equipment")
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
+    ): View {
 
         println("onCreateView")
         globalVars = GlobalVars()
         myView = inflater.inflate(R.layout.fragment_new_service, container, false)
 
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "New Service"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.new_service)
 
 
 
@@ -169,14 +168,14 @@ class NewServiceFragment : Fragment() {
                             newService!!.nextValue = GlobalVars.dateFormatterPHP.format(nextDate)
                         }
                         "2" -> { // mile/km based
-                            var tempNext =
+                            val tempNext =
                                 newService!!.currentValue!!.toInt() + newService!!.frequency!!.toInt()
                             newService!!.nextValue = tempNext.toString()
                             nextEditTxt.setText(tempNext.toString())
                         }
                         "3" -> { // engine hour based
                             nextDate = currentDate.plusDays(newService!!.frequency!!.toLong())
-                            var tempNext = newService!!.currentValue!!.toInt() + newService!!.frequency!!.toInt()
+                            val tempNext = newService!!.currentValue!!.toInt() + newService!!.frequency!!.toInt()
                             newService!!.nextValue = tempNext.toString()
                             nextEditTxt.setText(tempNext.toString())
                         }
@@ -218,7 +217,7 @@ class NewServiceFragment : Fragment() {
         }
 
         val dateSetListenerCurrent =
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 currentDate = LocalDateTime.of(year, monthOfYear, dayOfMonth, 0, 0)
                 currentEditTxt.setText(GlobalVars.dateFormatterShort.format(currentDate))
                 newService!!.currentValue = GlobalVars.dateFormatterPHP.format(currentDate)
@@ -226,7 +225,7 @@ class NewServiceFragment : Fragment() {
 
         // Todo: Finish this (editing next date currently just applies to current date)
         val dateSetListenerNext =
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 nextDate = LocalDateTime.of(year, monthOfYear, dayOfMonth, 0, 0)
                 nextEditTxt.setText(GlobalVars.dateFormatterShort.format(nextDate))
                 newService!!.nextValue = GlobalVars.dateFormatterPHP.format(nextDate)
@@ -279,9 +278,9 @@ class NewServiceFragment : Fragment() {
     private fun showTypeMenu(){
         println("showTypeMenu")
 
-        var popUp = PopupMenu(com.example.AdminMatic.myView.context,new_service_type_txt)
+        val popUp = PopupMenu(com.example.AdminMatic.myView.context,new_service_type_txt)
         popUp.inflate(R.menu.new_service_type_menu)
-        popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+        popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
             when (item!!.itemId) {
                 R.id.new_service_type_menu_one_time -> {
@@ -395,11 +394,11 @@ class NewServiceFragment : Fragment() {
             }
 
             true
-        })
+        }
 
         popUp.show()
 
-        popUp.gravity = Gravity.LEFT
+        popUp.gravity = Gravity.START
         popUp.show()
     }
 
@@ -416,20 +415,4 @@ class NewServiceFragment : Fragment() {
         imm.hideSoftInputFromWindow(view!!.windowToken, 0)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EquipmentListFragment().apply {
-
-            }
-    }
 }

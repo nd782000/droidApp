@@ -5,12 +5,10 @@ package com.example.AdminMatic
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.os.StrictMode
 import android.provider.Settings
 import android.text.method.PasswordTransformationMethod
@@ -32,15 +30,14 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.AdminMatic.GlobalVars.Companion.deviceID
 import com.example.AdminMatic.GlobalVars.Companion.employeeList
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.mediumBase
 import com.example.AdminMatic.GlobalVars.Companion.rawBase
 import com.example.AdminMatic.GlobalVars.Companion.thumbBase
-import com.example.AdminMatic.GlobalVars.Companion.deviceID
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.android.parcel.Parcelize
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -80,7 +77,7 @@ class LogInFragment : Fragment() {
     private lateinit  var passEditText: EditText
     private lateinit  var rememberSwitch: Switch
     private lateinit  var submitBtn: Button
-    private lateinit  var tvDynamic: TextView
+    //private lateinit  var tvDynamic: TextView
 
     var rememberMe:String = "0"
 
@@ -125,11 +122,10 @@ class LogInFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = if (context is LogOut) {
-            context as LogOut
+            context
         } else {
             throw ClassCastException(
-                context.toString()
-                    .toString() + " must implemenet LogOut"
+                "$context must implement LogOut"
             )
         }
     }
@@ -147,7 +143,7 @@ class LogInFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
 
@@ -156,14 +152,14 @@ class LogInFragment : Fragment() {
          myView = inflater.inflate(R.layout.fragment_log_in, container, false)
 
         //set app bar
-        var colorDrawable =  ColorDrawable(Color.parseColor(resources.getString(R.color.button)))
+        val colorDrawable =  ColorDrawable(Color.parseColor(resources.getString(R.color.button)))
         //(activity as AppCompatActivity).supportActionBar?.title = "Log In to AdminMatic"
         (activity as AppCompatActivity).supportActionBar?.setBackgroundDrawable(colorDrawable)
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Log In to AdminMatic"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.login_to_adminmatic)
 
         //set up layout container
-        constraintLayout = myView.findViewById<ConstraintLayout>(R.id.loginLayout)
+        constraintLayout = myView.findViewById(R.id.loginLayout)
         constraintLayout.setBackgroundColor(Color.parseColor(resources.getString(R.color.background)))
 
 
@@ -183,7 +179,7 @@ class LogInFragment : Fragment() {
         return myView
     }
 
-    fun loginOrGetSessionUser(){
+    private fun loginOrGetSessionUser(){
         println("loginOrGetSessionUser")
 
 
@@ -201,7 +197,7 @@ class LogInFragment : Fragment() {
 
     }
 
-    fun createLogInView(){
+    private fun createLogInView(){
         println("createLogInView")
 
 
@@ -236,18 +232,18 @@ class LogInFragment : Fragment() {
         passEditText.setPadding(10,0,10,0)
         passEditText.setBackgroundResource(R.drawable.text_view_layout)
         passEditText.id = generateViewId()
-        passEditText.setTransformationMethod(PasswordTransformationMethod())
+        passEditText.transformationMethod = PasswordTransformationMethod()
         myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(passEditText)
 
         rememberSwitch = Switch(myView.context)
-        rememberSwitch.text = "Remember Me:"
+        rememberSwitch.text = getString(R.string.remember_me)
         rememberSwitch.id = generateViewId()
 
         rememberSwitch.setOnClickListener{
-            if (rememberSwitch.isChecked == true){
-                rememberMe = "1"
+            rememberMe = if (rememberSwitch.isChecked){
+                "1"
             }else{
-                rememberMe = "2"
+                "2"
             }
 
         }
@@ -256,7 +252,7 @@ class LogInFragment : Fragment() {
 
 
         submitBtn = Button(myView.context)
-        submitBtn.text = "Log In"
+        submitBtn.text = getString(R.string.login)
         submitBtn.id = generateViewId()
         submitBtn.setBackgroundResource(R.drawable.button_layout)
         submitBtn.setTextColor(Color.WHITE)
@@ -282,7 +278,7 @@ class LogInFragment : Fragment() {
             }
         }
 
-        var listOfViews:ArrayList<View> = ArrayList()
+        val listOfViews:ArrayList<View> = ArrayList()
         listOfViews.add(companyEditText)
         listOfViews.add(userEditText)
         listOfViews.add(passEditText)
@@ -290,7 +286,7 @@ class LogInFragment : Fragment() {
 
 
 
-        var listOfInts:IntArray = IntArray(4)
+        val listOfInts = IntArray(4)
         listOfInts[0] = companyEditText.id
         listOfInts[1] = userEditText.id
         listOfInts[2] = passEditText.id
@@ -300,14 +296,14 @@ class LogInFragment : Fragment() {
 
         println("companyEditText.id = ${companyEditText.id}")
         println("submitBtn.id = ${submitBtn.id}")
-        var constraintSet:ConstraintSet = ConstraintSet()
+        val constraintSet = ConstraintSet()
         constraintSet.clone(constraintLayout)
 
 
         var previousItem: View? =  null
         for (tv in listOfViews) {
             //val lastItem = listOfViews.indexOf(tv) === listOfViews.size() - 1
-            val lastItem = listOfViews.indexOf(tv) === listOfViews.size - 1
+            //val lastItem = listOfViews.indexOf(tv) === listOfViews.size - 1
             if (previousItem == null) {
 
 
@@ -358,7 +354,7 @@ class LogInFragment : Fragment() {
         constraintSet.applyTo(constraintLayout)
     }
 
-    fun getSessionUser(){
+    private fun getSessionUser(){
         println("getSessionEmp")
 
 
@@ -366,7 +362,7 @@ class LogInFragment : Fragment() {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(activity)
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -377,7 +373,7 @@ class LogInFragment : Fragment() {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
 
                     println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
 
@@ -412,7 +408,7 @@ class LogInFragment : Fragment() {
                 params["empID"] = loggedInEmpID!!
                 params["sessionKey"] = sessionKey!!
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -428,7 +424,7 @@ class LogInFragment : Fragment() {
             hideSoftKeyboard(requireActivity())
 
 
-            var allGood:Boolean = true
+            val allGood: Boolean
 
             val company: String = companyEditText.text.toString()
             //check if the EditText have values or not
@@ -445,16 +441,16 @@ class LogInFragment : Fragment() {
                     val pass: String = passEditText.text.toString()
                     //check if the EditText have values or not
                     println("pass = $pass")
-                    if(pass.trim().isNotEmpty() && pass != "") {
+                    allGood = if(pass.trim().isNotEmpty() && pass != "") {
                         //Toast.makeText(getActivity(),"Message : $pass",Toast.LENGTH_SHORT).show()
-                        allGood = true
+                        true
                     }else{
-                        Toast.makeText(getActivity(),"Please enter a Password.",Toast.LENGTH_SHORT).show()
-                        allGood =false
+                        Toast.makeText(activity,"Please enter a Password.",Toast.LENGTH_SHORT).show()
+                        false
                     }
                 }else{
 
-                    Toast.makeText(getActivity(),"Please enter a User Name.",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity,"Please enter a User Name.",Toast.LENGTH_SHORT).show()
 
                     allGood =false
                 }
@@ -487,7 +483,7 @@ class LogInFragment : Fragment() {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(activity)
 
 
@@ -503,7 +499,7 @@ class LogInFragment : Fragment() {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
 
 
 
@@ -511,7 +507,7 @@ class LogInFragment : Fragment() {
                     val errorArray:JSONArray = parentObject.getJSONArray("errorArray")
                     if (errorArray.length() > 0){
                         println("log in error ${errorArray[0]}")
-                        Toast.makeText(getActivity(),errorArray[0].toString(),Toast.LENGTH_LONG).show()
+                        Toast.makeText(activity,errorArray[0].toString(),Toast.LENGTH_LONG).show()
 
 
                         stopLoading()
@@ -572,7 +568,7 @@ class LogInFragment : Fragment() {
                 params["username"] = "${userEditText.text}"
                 params["password"] = "${passEditText.text}"
                 params["remember"] = rememberMe
-                params["device"] = globalVars.getDeviceName().toString()
+                params["device"] = globalVars.getDeviceName()
                 params["deviceToken"] = "345"
 
                 params["logins"] = logIns.toString()
@@ -580,7 +576,7 @@ class LogInFragment : Fragment() {
                 val id: String = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
                 params["deviceID"] = id
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -596,7 +592,7 @@ class LogInFragment : Fragment() {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(activity)
 
 
@@ -611,7 +607,7 @@ class LogInFragment : Fragment() {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
 
 
                     thumbBase = parentObject.getString("thumbBase")
@@ -641,7 +637,7 @@ class LogInFragment : Fragment() {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -658,7 +654,7 @@ class LogInFragment : Fragment() {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -671,13 +667,13 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     //println("parentObject = ${parentObject.toString()}")
-                    var employees:JSONArray = parentObject.getJSONArray("employees")
+                    //var employees:JSONArray = parentObject.getJSONArray("employees")
                    // println("employees = ${employees.toString()}")
                     //println("employees count = ${employees.length()}")
 
 
 
-                    var employeeJSONArray = parentObject.getJSONArray("employees")
+                    val employeeJSONArray = parentObject.getJSONArray("employees")
                     // employeeList = parentObject.getJSONArray("employees")
 
 
@@ -706,7 +702,7 @@ class LogInFragment : Fragment() {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -726,7 +722,7 @@ class LogInFragment : Fragment() {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -736,9 +732,9 @@ class LogInFragment : Fragment() {
                // hideProgressView()
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     //var customers: JSONObject = parentObject.getJSONObject("customers")
-                    var customers: JSONArray = parentObject.getJSONArray("customers")
+                    val customers: JSONArray = parentObject.getJSONArray("customers")
                     // println("customers = ${customers.toString()}")
                     // println("customers count = ${customers.length()}")
 
@@ -814,9 +810,9 @@ class LogInFragment : Fragment() {
         ) {
             override fun getParams(): Map<String, String> {
                 val params: MutableMap<String, String> = HashMap()
-                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                params["companyUnique"] = loggedInEmployee!!.companyUnique
+                params["sessionKey"] = loggedInEmployee!!.sessionKey
+                println("params = $params")
                 return params
             }
         }
@@ -851,7 +847,7 @@ class LogInFragment : Fragment() {
     }
 
 
-    fun hideSoftKeyboard(activity: Activity) {
+    private fun hideSoftKeyboard(activity: Activity) {
         if (activity.currentFocus == null) {
             return
         }

@@ -60,17 +60,17 @@ class VendorFragment : Fragment() {
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
+    private lateinit var  pgsBar: ProgressBar
 
 
-    lateinit var vendorNameTextView:TextView
-    lateinit var vendorPhoneBtn: ConstraintLayout
-    lateinit var vendorWebBtn: ConstraintLayout
-    lateinit var vendorAddressBtn: ConstraintLayout
-    lateinit var vendorPhoneBtnTxt:TextView
-    lateinit var vendorWebBtnTxt:TextView
-    lateinit var vendorAddressBtnTxt:TextView
-    lateinit var vendorBodyCl:ConstraintLayout
+    private lateinit var vendorNameTextView:TextView
+    private lateinit var vendorPhoneBtn: ConstraintLayout
+    private lateinit var vendorWebBtn: ConstraintLayout
+    private lateinit var vendorAddressBtn: ConstraintLayout
+    private lateinit var vendorPhoneBtnTxt:TextView
+    private lateinit var vendorWebBtnTxt:TextView
+    private lateinit var vendorAddressBtnTxt:TextView
+    private lateinit var vendorBodyCl:ConstraintLayout
 
 
 
@@ -78,7 +78,7 @@ class VendorFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            vendor = it.getParcelable<Vendor?>("vendor")
+            vendor = it.getParcelable("vendor")
             vendorID = it.getString("vendorString")
         }
     }
@@ -86,13 +86,13 @@ class VendorFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
        // return inflater.inflate(R.layout.fragment_vendor, container, false)
         myView = inflater.inflate(R.layout.fragment_vendor, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Vendor"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.vendor)
 
         return myView
     }
@@ -115,7 +115,7 @@ class VendorFragment : Fragment() {
 
         vendorPhoneBtn = myView.findViewById(R.id.vendor_phone_btn_cl)
         vendorPhoneBtnTxt = myView.findViewById(R.id.vendor_phone_btn_tv)
-        vendorPhoneBtnTxt.text = "No Phone Found"
+        vendorPhoneBtnTxt.text = getString(R.string.no_phone_found)
 
 
 
@@ -131,7 +131,7 @@ class VendorFragment : Fragment() {
 
         vendorWebBtn = myView.findViewById(R.id.vendor_web_btn_cl)
         vendorWebBtnTxt = myView.findViewById(R.id.vendor_web_btn_tv)
-        vendorWebBtnTxt.text = "No Website Found"
+        vendorWebBtnTxt.text = getString(R.string.no_website_found)
         if(vendor!!.website != null){
             vendorWebBtnTxt.text = vendor!!.website!!
 
@@ -163,7 +163,7 @@ class VendorFragment : Fragment() {
         }
 
         vendorAddressBtnTxt = myView.findViewById(R.id.vendor_address_btn_tv)
-        vendorAddressBtnTxt.text = "No Address Found"
+        vendorAddressBtnTxt.text = getString(R.string.no_address_found)
 
         if (vendor!!.mainAddr != ""){
             vendorAddressBtnTxt.text = vendor!!.mainAddr!!
@@ -211,7 +211,7 @@ class VendorFragment : Fragment() {
                 mMap.addMarker(
                     MarkerOptions()
                         .position(LatLng(vendor!!.lat!!.toDouble(), vendor!!.lng!!.toDouble()))
-                        .title(vendor!!.name!!)
+                        .title(vendor!!.name)
                     // .snippet("His Talent : Plenty of money")
                 )
             }
@@ -245,7 +245,7 @@ class VendorFragment : Fragment() {
                     //Todo: figure out why the vendor is coming in null
                     try {
                         val parentObject = JSONObject(response)
-                        println("parentObject = ${parentObject.toString()}")
+                        println("parentObject = $parentObject")
 
 
                         val gson = GsonBuilder().create()
@@ -273,7 +273,7 @@ class VendorFragment : Fragment() {
                     params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                     params["id"] = vendorID.toString()
 
-                    println("params = ${params.toString()}")
+                    println("params = $params")
                     return params
                 }
             }
@@ -308,26 +308,4 @@ class VendorFragment : Fragment() {
 
 
 
-
-
-
-        companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment VendorFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            VendorFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

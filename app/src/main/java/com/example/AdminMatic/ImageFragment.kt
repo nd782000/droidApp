@@ -37,17 +37,17 @@ class ImageFragment : Fragment() {
 
     lateinit var pgsBar: ProgressBar
     lateinit var imageView:ImageView
-    lateinit var likeView:ImageView
-    lateinit var likesTextView:TextView
-    lateinit var custNameTextView:TextView
-    lateinit var detailsTextView:TextView
+    private lateinit var likeView:ImageView
+    private lateinit var likesTextView:TextView
+    private lateinit var custNameTextView:TextView
+    private lateinit var detailsTextView:TextView
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            image = it.getParcelable<Image?>("image")
+            image = it.getParcelable("image")
             param2 = it.getString(ARG_PARAM2)
         }
     }

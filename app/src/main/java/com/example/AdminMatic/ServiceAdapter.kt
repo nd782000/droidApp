@@ -1,31 +1,18 @@
 package com.example.AdminMatic
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.*
-import androidx.core.content.res.TypedArrayUtils.getString
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.fragment.app.Fragment
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.customer_list_item.view.*
 import kotlinx.android.synthetic.main.service_list_item.view.*
-import kotlinx.android.synthetic.main.wo_item_list_item.view.*
 import java.time.LocalDateTime
-import java.util.*
-import kotlin.coroutines.coroutineContext
 
 
-class ServiceAdapter(private val list: MutableList<EquipmentService>, private val context: Context, private val isHistoryMode:Boolean, private val cellClickListener: ServiceCellClickListener)
+class ServiceAdapter(list: MutableList<EquipmentService>, private val context: Context, private val isHistoryMode:Boolean, private val cellClickListener: ServiceCellClickListener)
 
     : RecyclerView.Adapter<ServiceViewHolder>() {
 
@@ -65,7 +52,7 @@ class ServiceAdapter(private val list: MutableList<EquipmentService>, private va
     //}
 
 
-        var serviceStatusImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.list_service_status_icon_image_view)
+        val serviceStatusImageView:ImageView = holder.itemView.findViewById(R.id.list_service_status_icon_image_view)
 
         when (service.status) {
             "0"-> Picasso.with(context)
@@ -109,7 +96,7 @@ class ServiceAdapter(private val list: MutableList<EquipmentService>, private va
 
 }
 
-class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup, ) :
+class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.service_list_item, parent, false)) {
     private var mNameView: TextView? = null
     private var mLeftTxt: TextView? = null

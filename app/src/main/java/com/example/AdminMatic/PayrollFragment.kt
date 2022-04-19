@@ -53,7 +53,7 @@ private const val ARG_PARAM2 = "param2"
 
 class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    //private var param1: String? = null
     private var param2: String? = null
 
     lateinit  var globalVars:GlobalVars
@@ -62,25 +62,25 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
     lateinit var myView:View
     lateinit var  pgsBar: ProgressBar
-    lateinit var  empPickerCL: ConstraintLayout
-    lateinit var  startCL: ConstraintLayout
-    lateinit var  stopCL: ConstraintLayout
-    lateinit var  breakCL: ConstraintLayout
-    lateinit var  resetCL: ConstraintLayout
-    lateinit var  footerCL: ConstraintLayout
+    private lateinit var  empPickerCL: ConstraintLayout
+    private lateinit var  startCL: ConstraintLayout
+    private lateinit var  stopCL: ConstraintLayout
+    private lateinit var  breakCL: ConstraintLayout
+    private lateinit var  resetCL: ConstraintLayout
+    private lateinit var  footerCL: ConstraintLayout
 
-    lateinit var empSpinner:Spinner
-    lateinit var  startBtn: Button
-    lateinit var  stopBtn: Button
-    lateinit var  resetBtn: Button
+    private lateinit var empSpinner:Spinner
+    private lateinit var  startBtn: Button
+    private lateinit var  stopBtn: Button
+    private lateinit var  resetBtn: Button
 
     lateinit var  startTxt: EditText
     lateinit var  stopTxt: EditText
     lateinit var  breakTxt: EditText
 
-    lateinit var startLock:ConstraintLayout
-    lateinit var stopLock:ConstraintLayout
-    lateinit var breakLock:ConstraintLayout
+    private lateinit var startLock:ConstraintLayout
+    private lateinit var stopLock:ConstraintLayout
+    private lateinit var breakLock:ConstraintLayout
 
     lateinit var  totalTxt: TextView
     lateinit var  combinedTotalTxt: TextView
@@ -88,7 +88,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
     lateinit var  pendingTxt: TextView
     lateinit var  combinedPendingTxt: TextView
 
-    lateinit var timePicker: TimePickerHelper
+    private lateinit var timePicker: TimePickerHelper
 
     var firstLoad = false
 
@@ -96,7 +96,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            employee = it.getParcelable<Employee?>("employee")
+            employee = it.getParcelable("employee")
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -104,7 +104,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         println("onCreateView")
         globalVars = GlobalVars()
@@ -122,7 +122,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         println("employee = ${employee!!.name}")
 
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Enter Payroll"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.enter_payroll)
 
 
         pgsBar = myView.findViewById(R.id.progressBar)
@@ -138,35 +138,35 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         empSpinner.setBackgroundResource(R.drawable.text_view_layout)
 
         startBtn = myView.findViewById(R.id.start_btn)
-        startBtn.setOnClickListener({
+        startBtn.setOnClickListener {
             start()
-        })
+        }
         stopBtn = myView.findViewById(R.id.stop_btn)
-        stopBtn.setOnClickListener({
+        stopBtn.setOnClickListener {
             stop()
-        })
+        }
         resetBtn = myView.findViewById(R.id.reset_btn)
-        resetBtn.setOnClickListener({
+        resetBtn.setOnClickListener {
             reset()
-        })
+        }
 
 
         startTxt = myView.findViewById(R.id.start_edit_txt)
-        startTxt.setOnClickListener({
+        startTxt.setOnClickListener {
             editStart()
-        })
+        }
         startTxt.setBackgroundResource(R.drawable.text_view_layout)
         stopTxt = myView.findViewById(R.id.stop_edit_txt)
         //stopTxt.ed
-        stopTxt.setOnClickListener({
+        stopTxt.setOnClickListener {
             editStop()
-        })
+        }
         stopTxt.setBackgroundResource(R.drawable.text_view_layout)
 
 
         breakTxt = myView.findViewById(R.id.break_edit_txt)
         breakTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
-        breakTxt.setSelectAllOnFocus(true);
+        breakTxt.setSelectAllOnFocus(true)
         breakTxt.setBackgroundResource(R.drawable.text_view_layout)
 
         breakTxt.setOnEditorActionListener(object : TextView.OnEditorActionListener {
@@ -216,7 +216,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                     // make sure there is a stop time
                     if (currentPayroll.total  != null){
 
-                        val totalMins = currentPayroll!!.total!!.toFloat() * 60
+                        val totalMins = currentPayroll.total!!.toFloat() * 60
 
                         if (breakTxt.text.toString().toFloat() >= totalMins){
 
@@ -252,12 +252,12 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
         (activity as AppCompatActivity).supportActionBar?.title = "Payroll Entry"
 
-        val adapter: ArrayAdapter<Employee>? = ArrayAdapter<Employee>(
+        val adapter: ArrayAdapter<Employee> = ArrayAdapter<Employee>(
             myView.context,
             android.R.layout.simple_spinner_dropdown_item, employeeList!!
 
         )
-        adapter!!.setDropDownViewResource(R.layout.spinner_right_aligned)
+        adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
         empSpinner.adapter = adapter
 
@@ -287,7 +287,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
     private fun getPayroll(){
         println("getPayroll")
 
-        if (firstLoad == false){
+        if (!firstLoad){
             showProgressView()
         }
 
@@ -296,7 +296,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -311,15 +311,15 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
-                    var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                    println("payroll = ${payrollJSON.toString()}")
+                    println("parentObject = $parentObject")
+                    val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                    println("payroll = $payrollJSON")
                     println("payroll count = ${payrollJSON.length()}")
 
 
 
                     val gson = GsonBuilder().create()
-                    var payrollList = gson.fromJson(payrollJSON.toString() , Array<Payroll>::class.java).toMutableList()
+                    val payrollList = gson.fromJson(payrollJSON.toString() , Array<Payroll>::class.java).toMutableList()
 
                      currentPayroll = payrollList[payrollList.count() - 1]
 
@@ -327,15 +327,15 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                         println("currentPayroll.startTimeShort = ${currentPayroll.startTimeShort!!}")
 
 
-                       startTxt.setText(currentPayroll!!.startTimeShort!!)
+                       startTxt.setText(currentPayroll.startTimeShort!!)
                     }else{
-                        startTxt.setText("No Time")
+                        startTxt.setText(getString(R.string.no_time))
                     }
 
                     if (currentPayroll.stopTimeShort != null && currentPayroll.stopTimeShort != "No Time" && currentPayroll.stopTimeShort != "") {
                         stopTxt.setText(currentPayroll.stopTimeShort!!)
                     }else{
-                        stopTxt.setText("No Time")
+                        stopTxt.setText(getString(R.string.no_time))
                     }
                     if (currentPayroll.lunch != null) {
                         breakTxt.setText(currentPayroll.lunch!!)
@@ -346,14 +346,14 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                     if (currentPayroll.total != null) {
                         totalTxt.text = currentPayroll.total!!
                     }else{
-                        totalTxt.text = "0.00"
+                        totalTxt.text = getString(R.string.zero_hours)
                     }
-                    var combinedTotal: String? = parentObject.getString("combinedTotal")
+                    val combinedTotal: String? = parentObject.getString("combinedTotal")
                     println("payroll = $combinedTotal")
                     if (combinedTotal != null) {
-                        combinedTotalTxt.text = combinedTotal!!
+                        combinedTotalTxt.text = combinedTotal
                     }else{
-                        combinedTotalTxt.text = "0.00"
+                        combinedTotalTxt.text = getString(R.string.zero_hours)
                     }
 
                     //var pendingString: String =
@@ -401,7 +401,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["empID"] = employee!!.ID
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -433,7 +433,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
             globalVars.simpleAlert(myView.context,"Stop Time Error","Add start time before adding stop time.")
 
 
-            stopTxt.setText("No Time")
+            stopTxt.setText(getString(R.string.no_time))
 
         }else{
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -477,12 +477,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         val cal:Calendar
         val h:Int
         val m:Int
-        if (currentPayroll == null){
-            println("currentPayroll == null")
-            cal = Calendar.getInstance()
-            h = cal.get(Calendar.HOUR_OF_DAY)
-            m = cal.get(Calendar.MINUTE)
-        }else if (currentPayroll.startTime == null || currentPayroll.startTime == "No Time"){
+        if (currentPayroll.startTime == null || currentPayroll.startTime == "No Time"){
             println("currentPayroll.startTime == null || currentPayroll.startTime == No Time")
             cal = Calendar.getInstance()
             h = cal.get(Calendar.HOUR_OF_DAY)
@@ -522,11 +517,11 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                 println("Current Date and Time is: $current")
 
 
-                val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "${hourOfDay}"
-                val minuteStr = if (minute < 10) "0${minute}" else "${minute}"
+                val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "$hourOfDay"
+                val minuteStr = if (minute < 10) "0${minute}" else "$minute"
 
                 val startString = "$current $hourStr:$minuteStr:00"
-                println("startString is  "+startString)
+                println("startString is  $startString")
 
                 currentPayroll.startTime = startString
 
@@ -546,19 +541,14 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
             globalVars.simpleAlert(myView.context,"Stop Time Error","Add start time before adding stop time.")
 
-            stopTxt.setText("No Time")
+            stopTxt.setText(getString(R.string.no_time))
 
         }else {
 
             val cal: Calendar
             val h: Int
             val m: Int
-            if (currentPayroll == null) {
-                println("currentPayroll == null")
-                cal = Calendar.getInstance()
-                h = cal.get(Calendar.HOUR_OF_DAY)
-                m = cal.get(Calendar.MINUTE)
-            } else if (currentPayroll.stopTime == null || currentPayroll.stopTime == "No Time") {
+            if (currentPayroll.stopTime == null || currentPayroll.stopTime == "No Time") {
                 println("currentPayroll.stopTime == null || currentPayroll.stopTime == No Time")
                 cal = Calendar.getInstance()
                 h = cal.get(Calendar.HOUR_OF_DAY)
@@ -569,7 +559,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                 val sdf: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
                 cal = Calendar.getInstance()
 
-                cal.time = sdf.parse(currentPayroll!!.stopTime!!)
+                cal.time = sdf.parse(currentPayroll.stopTime!!)
                 h = cal.get(Calendar.HOUR_OF_DAY)
                 m = cal.get(Calendar.MINUTE)
             }
@@ -597,13 +587,13 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
 
 
-                    val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "${hourOfDay}"
-                    val minuteStr = if (minute < 10) "0${minute}" else "${minute}"
+                    val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "$hourOfDay"
+                    val minuteStr = if (minute < 10) "0${minute}" else "$minute"
 
 
                     val stopString = "$current $hourStr:$minuteStr:00"
 
-                    println("stopString is  " + stopString)
+                    println("stopString is  $stopString")
 
                     currentPayroll.stopTime = stopString
 
@@ -641,17 +631,17 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         val currentDate = sdf.format(Date())
 
 
-        var start:String = ""
+        var start = ""
         if (currentPayroll.startTime != null && currentPayroll.startTime != "No Time"){
             start  = currentPayroll.startTime.toString()
         }
 
-        var stop:String = ""
+        var stop = ""
         if (currentPayroll.stopTime != null && currentPayroll.stopTime != "No Time"){
             stop  = currentPayroll.stopTime.toString()
         }
 
-        var lunch:String = "0"
+        var lunch = "0"
         if (currentPayroll.lunch != null){
             lunch  = currentPayroll.lunch!!
         }
@@ -662,7 +652,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -677,9 +667,9 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
-                    var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                    println("payroll = ${payrollJSON.toString()}")
+                    println("parentObject = $parentObject")
+                    val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                    println("payroll = $payrollJSON")
                     println("payroll count = ${payrollJSON.length()}")
 
 
@@ -710,7 +700,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                 params["date"] = currentDate
                 params["del"] = del
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -739,8 +729,8 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
 
         startLock.visibility = View.VISIBLE
-        stopLock.setVisibility(View.VISIBLE)
-        breakLock.setVisibility(View.VISIBLE)
+        stopLock.visibility = View.VISIBLE
+        breakLock.visibility = View.VISIBLE
     }
 
     fun unlockInputs(){
@@ -763,9 +753,9 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         resetBtn.isClickable = true
 
 
-        startLock.setVisibility(View.GONE)
-        stopLock.setVisibility(View.GONE)
-        breakLock.setVisibility(View.GONE)
+        startLock.visibility = View.GONE
+        stopLock.visibility = View.GONE
+        breakLock.visibility = View.GONE
     }
 
 

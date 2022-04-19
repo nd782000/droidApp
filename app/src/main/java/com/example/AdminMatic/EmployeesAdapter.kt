@@ -14,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
@@ -79,7 +78,7 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
             holder.itemView.list_name.text = filterList[position].name
         }
 
-        val employeeImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.employee_item_image_view)
+        val employeeImageView:ImageView = holder.itemView.findViewById(R.id.employee_item_image_view)
 
 
         Picasso.with(context)
@@ -97,12 +96,12 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
 
 
         //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
+        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
             println("menu click")
 
-            val popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+            val popUp = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.emp_options_menu)
-            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
                     R.id.call -> {
@@ -115,11 +114,11 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
                     R.id.text -> {
 
 
-                       // val intent = Intent(Intent.ACTION_SEND, Uri.parse("tel:" + data.phone))
+                        // val intent = Intent(Intent.ACTION_SEND, Uri.parse("tel:" + data.phone))
                         //intent.putExtra("sms_body", "Here goes your message...")
-                       // myView.context.startActivity(intent)
-                       // val number =
-                           // "12346556" // The number on which you want to send SMS
+                        // myView.context.startActivity(intent)
+                        // val number =
+                        // "12346556" // The number on which you want to send SMS
 
                         myView.context.startActivity(
                             Intent(
@@ -129,15 +128,15 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
                         )
                         //startActivity(Intent.createChooser(intent, "Send Email Using: "));
 
-                       // Toast.makeText(myView.context, data.ID, Toast.LENGTH_SHORT).show()
-                       // val intent = Intent(Intent., Uri.parse("tel:" + employee!!.phone))
-                       // myView.context.startActivity(intent)
+                        // Toast.makeText(myView.context, data.ID, Toast.LENGTH_SHORT).show()
+                        // val intent = Intent(Intent., Uri.parse("tel:" + employee!!.phone))
+                        // myView.context.startActivity(intent)
                     }
 
                 }
 
                 true
-            })
+            }
 
 
 

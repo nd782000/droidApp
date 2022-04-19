@@ -113,7 +113,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
         }
 
         //Image Loading
-        val equipmentImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.equipment_item_image_view)
+        val equipmentImageView:ImageView = holder.itemView.findViewById(R.id.equipment_item_image_view)
         var imagePath:String = "drawable://" + R.drawable.ic_images
         if (filterList[position].image != null){
             imagePath = GlobalVars.thumbBase + filterList[position].image!!.fileName
@@ -125,7 +125,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
             //.centerCrop()                        //optional
             .into(equipmentImageView)                       //Your image view object.
 
-        val equipmentStatusImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.list_status_icon_image_view)
+        val equipmentStatusImageView:ImageView = holder.itemView.findViewById(R.id.list_status_icon_image_view)
 
         when (equipment.status) {
             "0"->Picasso.with(context)
@@ -150,12 +150,12 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
 
 
         //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
+        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
             println("menu click")
 
-            val popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+            val popUp = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.options_menu)
-            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
                     R.id.menu1 -> {
@@ -170,7 +170,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
                 }
 
                 true
-            })
+            }
 
 
 

@@ -52,14 +52,6 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
     lateinit var adapter:EquipmentAdapter
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -84,7 +76,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Equipment List"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment_list)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment_list)
 
 
 
@@ -144,9 +136,9 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     val equipment:JSONArray = parentObject.getJSONArray("equipment")
-                    println("equipment = ${equipment.toString()}")
+                    println("equipment = $equipment")
                     println("equipment count = ${equipment.length()}")
 
 
@@ -180,8 +172,8 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
                             // Make sure you call swipeContainer.setRefreshing(false)
                             // once the network request has completed successfully.
                             //fetchTimelineAsync(0)
-                            searchView.setQuery("", false);
-                            searchView.clearFocus();
+                            searchView.setQuery("", false)
+                            searchView.clearFocus()
                             getEquipment()
                         }
                         // Configure the refreshing colors
@@ -202,9 +194,9 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
                         // ...the data has come back, add new items to your adapter...
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false;
+                        customerSwipeContainer.isRefreshing = false
 
-                      //  Toast.makeText(activity,"${equipmentList.count()} Equipment Loaded",Toast.LENGTH_SHORT).show()
+                        //  Toast.makeText(activity,"${equipmentList.count()} Equipment Loaded",Toast.LENGTH_SHORT).show()
 
 
 
@@ -255,7 +247,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -266,8 +258,8 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
 
-        data.let { data ->
-            val directions = EquipmentListFragmentDirections.navigateToEquipment(data)
+        data.let {
+            val directions = EquipmentListFragmentDirections.navigateToEquipment(it)
             myView.findNavController().navigate(directions)
         }
     }
@@ -286,22 +278,4 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
         recyclerView.visibility = View.VISIBLE
     }
 
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EquipmentListFragment().apply {
-
-            }
-    }
 }

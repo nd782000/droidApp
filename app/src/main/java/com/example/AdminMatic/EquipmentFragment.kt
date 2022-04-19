@@ -1,17 +1,14 @@
 package com.example.AdminMatic
 
 import android.os.Bundle
-import android.provider.Settings
-import android.text.InputType
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -25,14 +22,8 @@ import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
+//private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [EquipmentFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 
 
 interface ServiceCellClickListener {
@@ -41,8 +32,6 @@ interface ServiceCellClickListener {
 
 
 class EquipmentFragment : Fragment(), ServiceCellClickListener {
-    // TODO: Rename and change types of parameters
-    //private var param1: String? = null
     private var param2: String? = null
 
     private  var equipment: Equipment? = null
@@ -57,23 +46,23 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     lateinit var currentServicesAdapter:ServiceAdapter
     lateinit var historyServicesAdapter:ServiceAdapter
 
-    lateinit var equipmentImageView: ImageView
-    lateinit var nameTxt:TextView
-    lateinit var typeTxt:TextView
-    lateinit var crewTxt:TextView
-    lateinit var detailsBtn:Button
-    lateinit var addServiceBtn: Button
-    lateinit var statusBtn: ImageButton
+    private lateinit var equipmentImageView: ImageView
+    private lateinit var nameTxt:TextView
+    private lateinit var typeTxt:TextView
+    private lateinit var crewTxt:TextView
+    private lateinit var detailsBtn:Button
+    private lateinit var addServiceBtn: Button
+    private lateinit var statusBtn: ImageButton
 
 
-    lateinit var tabLayout: TabLayout
+    private lateinit var tabLayout: TabLayout
     lateinit var tableMode:String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            equipment = it.getParcelable<Equipment?>("equipment")
+            equipment = it.getParcelable("equipment")
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -212,11 +201,11 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
 
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
 
                     //current adapter
                     val services:JSONArray = parentObject.getJSONArray("services")
-                    println("services = ${services.toString()}")
+                    println("services = $services")
                     println("services count = ${services.length()}")
 
                     val servicesListCurrent = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
@@ -226,7 +215,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
                     //history adapter
                     val servicesHistory:JSONArray = parentObject.getJSONArray("serviceHistory")
-                    println("servicesHistory = ${servicesHistory.toString()}")
+                    println("servicesHistory = $servicesHistory")
                     println("servicesHistory count = ${servicesHistory.length()}")
 
                     val servicesListHistory = gson.fromJson(servicesHistory.toString() , Array<EquipmentService>::class.java).toMutableList()
@@ -285,7 +274,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                 }
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -322,7 +311,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     private fun showStatusMenu(){
         println("showStatusMenu")
 
-        val popUp: PopupMenu = PopupMenu(myView.context,statusBtn)
+        val popUp = PopupMenu(myView.context,statusBtn)
         popUp.inflate(R.menu.task_status_menu)
         popUp.menu.add(0, 0, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_online)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_online)))
         popUp.menu.add(0, 1, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_needs_repair)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_needs_repair)))
@@ -354,7 +343,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
                     try {
                         val parentObject = JSONObject(response)
-                        println("parentObject = ${parentObject.toString()}")
+                        println("parentObject = $parentObject")
 
                         hideProgressView()
 
@@ -374,7 +363,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                     params["status"] = equipment!!.status
                     params["equipmentID"] = equipment!!.ID
-                    println("params = ${params.toString()}")
+                    println("params = $params")
                     return params
                 }
             }
@@ -426,23 +415,4 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
        // historyRecyclerView.visibility = View.VISIBLE
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment EquipmentFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EquipmentFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

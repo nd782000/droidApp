@@ -11,7 +11,6 @@ import android.widget.Spinner
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
-import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.AdminMatic.BuildConfig
@@ -20,8 +19,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_customer_list.*
 import org.json.JSONException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -668,7 +665,7 @@ data class Usage(var ID:String,
     }
 
 
-     fun getTime(s: String): String? {
+     fun getTime(s: String): String {
 
          val formatter =
              DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -878,7 +875,7 @@ class SpinnerInteractionListener : AdapterView.OnItemSelectedListener, View.OnTo
 class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
     lateinit var  pgsBar: ProgressBar
-     var imageListFragment: ImageListFragment? = null
+     private var imageListFragment: ImageListFragment? = null
     //lateinit var  hostFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -887,11 +884,10 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
         pgsBar = this.findViewById(R.id.progressBar)
         hideProgressView()
 
-        getSupportActionBar()!!.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar()!!.setCustomView(R.layout.abs_layout);
+        supportActionBar!!.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+        supportActionBar!!.setCustomView(R.layout.abs_layout)
 
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
-
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
 
     }
@@ -935,7 +931,7 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
         navController.navigateUp()
     }
 
-    fun home(){
+    private fun home(){
         println("home")
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -969,7 +965,7 @@ override fun logOut(view: View){
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         // val queue = Volley.newRequestQueue(myView.context)
         val queue = Volley.newRequestQueue(view.rootView.context)
 
@@ -988,7 +984,7 @@ override fun logOut(view: View){
 
                     GlobalVars.loggedInEmployee = null
                     hideProgressView()
-                    var navController = Navigation.findNavController(view)
+                    val navController = Navigation.findNavController(view)
 
                     navController.popBackStack(R.id.logInFragment, false)
 
@@ -1010,14 +1006,14 @@ override fun logOut(view: View){
 
                 params["deviceID"] = GlobalVars.deviceID!!
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
         queue.add(postRequest1)
     }else{
 
-        var navController = Navigation.findNavController(view)
+        val navController = Navigation.findNavController(view)
         navController.popBackStack(R.id.logInFragment, false)
     }
 
@@ -1054,7 +1050,7 @@ override fun logOut(view: View){
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
        // navHostFragment!!.childFragmentManager.fragments[0]
 
-        val workOrderFragment = navHostFragment!!.childFragmentManager.fragments[0] as WorkOrderFragment
+        val workOrderFragment = navHostFragment.childFragmentManager.fragments[0] as WorkOrderFragment
         //workOrderFragment.test()
 
        // var navController = Navigation.findNavController(view)

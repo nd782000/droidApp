@@ -18,12 +18,10 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.AdminMatic.GlobalVars.Companion.dateFormatterShort
 import com.example.AdminMatic.GlobalVars.Companion.dateFormatterYYYYMMDD
-import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
+import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.scheduleSpinnerPosition
-
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_work_order_list.*
 import org.json.JSONArray
@@ -32,7 +30,6 @@ import org.json.JSONObject
 import java.time.*
 import java.time.temporal.WeekFields
 import java.util.*
-import kotlin.collections.HashMap
 
 
 interface WorkOrderCellClickListener {
@@ -44,18 +41,18 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
 
     lateinit var myView:View
-    lateinit var  pgsBar: ProgressBar
-    lateinit var recyclerView: RecyclerView
-    lateinit var searchView:androidx.appcompat.widget.SearchView
-    lateinit var  swipeRefresh:SwipeRefreshLayout
-    lateinit var adapter:WorkOrdersAdapter
-    lateinit var scheduleSpinner:Spinner
-    lateinit var crewBtn:Button
-    lateinit var mapBtn:Button
-    lateinit var countTextView: TextView
+    private lateinit var  pgsBar: ProgressBar
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView:androidx.appcompat.widget.SearchView
+    private lateinit var  swipeRefresh:SwipeRefreshLayout
+    private lateinit var adapter:WorkOrdersAdapter
+    private lateinit var scheduleSpinner:Spinner
+    private lateinit var crewBtn:Button
+    private lateinit var mapBtn:Button
+    private lateinit var countTextView: TextView
 
     //update eq
-    var datesArray:Array<String> = arrayOf(
+    private var datesArray:Array<String> = arrayOf(
         "All Dates (${loggedInEmployee!!.fName})",
         "All Dates (Everyone)",
         "Today (${loggedInEmployee!!.fName})",
@@ -77,10 +74,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     var endDateDB:String = ""
     var empID:String = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -95,7 +88,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     if (globalWorkOrdersList == null) {
         val emptyList: MutableList<WorkOrder> = mutableListOf()
 
-        adapter = WorkOrdersAdapter(emptyList, myView.context, this)
+        adapter = WorkOrdersAdapter(emptyList, this)
     }
 
         return myView
@@ -181,12 +174,12 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
             scheduleSpinner.onItemSelectedListener = null
 
-            val adapter: ArrayAdapter<String>? = ArrayAdapter<String>(
+            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
                 myView.context,
                 android.R.layout.simple_spinner_dropdown_item, datesArray
 
             )
-            adapter!!.setDropDownViewResource(R.layout.spinner_right_aligned)
+            adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
             scheduleSpinner.adapter = adapter
 
@@ -221,7 +214,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-            urlString = "${"$urlString?cb=$currentTimestamp"}"
+            urlString = "$urlString?cb=$currentTimestamp"
             val queue = Volley.newRequestQueue(myView.context)
 
             val postRequest1: StringRequest = object : StringRequest(
@@ -235,9 +228,9 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
                     try {
                         val parentObject = JSONObject(response)
-                        println("parentObject = ${parentObject.toString()}")
-                        var workOrders: JSONArray = parentObject.getJSONArray("workOrders")
-                        println("workOrders = ${workOrders.toString()}")
+                        println("parentObject = $parentObject")
+                        val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
+                        println("workOrders = $workOrders")
                         println("workOrders count = ${workOrders.length()}")
 
                         if (globalWorkOrdersList != null) {
@@ -289,7 +282,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     params["custID"] = ""
 
 
-                    println("params = ${params.toString()}")
+                    println("params = $params")
                     return params
                 }
             }
@@ -311,7 +304,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             adapter = activity?.let {
                 WorkOrdersAdapter(
                     globalWorkOrdersList!!,
-                    it, this@WorkOrderListFragment
+                    this@WorkOrderListFragment
                 )
             }
 
@@ -330,8 +323,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 //fetchTimelineAsync(0)
-                searchView.setQuery("", false);
-                searchView.clearFocus();
+                searchView.setQuery("", false)
+                searchView.clearFocus()
                 getWorkOrders()
             }
             // Configure the refreshing colors
@@ -345,14 +338,14 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
 
 
-            (adapter as WorkOrdersAdapter).notifyDataSetChanged();
+            (adapter as WorkOrdersAdapter).notifyDataSetChanged()
 
             // Remember to CLEAR OUT old items before appending in the new ones
 
             // ...the data has come back, add new items to your adapter...
 
             // Now we call setRefreshing(false) to signal refresh has finished
-            customerSwipeContainer.isRefreshing = false;
+            customerSwipeContainer.isRefreshing = false
 
 
 
@@ -386,8 +379,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     override fun onWorkOrderCellClickListener(data:WorkOrder) {
         println("Cell clicked with workOrder: ${data.woID}")
 
-        data.let { data ->
-            val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(data)
+        data.let {
+            val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(it)
             myView.findNavController().navigate(directions)
         }
     }
@@ -423,7 +416,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 2 -> {println("today personal")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = odtStart
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
@@ -433,7 +426,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 3 -> {println("today everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(1).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = odtStart
+
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
@@ -448,7 +442,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                      */
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN).plusDays(1)
-                    val odtStop: OffsetDateTime = today.plusDays(2).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = odtStart
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
@@ -458,7 +452,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 5 -> {println("tomorrow everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN).plusDays(1)
-                    val odtStop: OffsetDateTime = today.plusDays(2).atTime(OffsetTime.MIN)
+                    val odtStop: OffsetDateTime = odtStart
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
@@ -468,7 +462,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 6 -> {println("this week personal")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = odtStart.plusDays(7)
+                    val odtStop: OffsetDateTime = odtStart.plusDays(6)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
@@ -478,7 +472,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 7 -> {println("this week everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = odtStart.plusDays(7)
+                    val odtStop: OffsetDateTime = odtStart.plusDays(6)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
@@ -488,7 +482,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 8 -> {println("next week personal")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).plusDays(7).atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = odtStart.plusDays(7)
+                    val odtStop: OffsetDateTime = odtStart.plusDays(6)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
@@ -498,7 +492,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 9 -> {println("next week everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
                     val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).plusDays(7).atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = odtStart.plusDays(7)
+                    val odtStop: OffsetDateTime = odtStart.plusDays(6)
                     print("odtStart = $odtStart")
                     print("odtStop = $odtStop")
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)

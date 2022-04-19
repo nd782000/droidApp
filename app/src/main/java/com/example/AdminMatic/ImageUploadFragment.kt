@@ -5,17 +5,10 @@ package com.example.AdminMatic
 //import com.yongchun.library.view.ImageSelectorActivity
 //import com.yongchun.library.view.ImageSelectorActivity.*
 
-import android.R.attr.data
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Camera
-import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -26,7 +19,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -48,7 +40,6 @@ import com.t2r2.volleyexample.VolleyFileUploadRequest
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.configuration.CameraConfiguration
 import io.fotoapparat.log.logcat
-import io.fotoapparat.parameter.Zoom
 import io.fotoapparat.result.transformer.scaled
 import io.fotoapparat.selector.*
 import io.fotoapparat.view.CameraView
@@ -59,11 +50,8 @@ import kotlinx.android.synthetic.main.fragment_payroll.view.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Collections.rotate
 
 
 private const val LOGGING_TAG = "AdminMatic"
@@ -139,10 +127,10 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
 
-    lateinit var footer:ConstraintLayout
-    lateinit var cameraBtn: Button
-    lateinit var galleryBtn: Button
-    lateinit var submitBtn: Button
+    private lateinit var footer:ConstraintLayout
+    private lateinit var cameraBtn: Button
+    private lateinit var galleryBtn: Button
+    private lateinit var submitBtn: Button
 
 
 
@@ -161,7 +149,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
     lateinit var customerRecyclerView: RecyclerView
-    lateinit var customerSearchView:androidx.appcompat.widget.SearchView
+    private lateinit var customerSearchView:androidx.appcompat.widget.SearchView
     lateinit var adapter:CustomersAdapter
 
 
@@ -225,7 +213,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
         customerSearchView.setQuery(customerName, false)
 
-        adapter = CustomersAdapter(GlobalVars.customerList!!,myView.context, this)
+        adapter = CustomersAdapter(GlobalVars.customerList!!, this)
 
 
 
@@ -326,7 +314,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
                     CustomersAdapter(
                         GlobalVars.customerList!!,
-                        it, this@ImageUploadFragment
+                        this@ImageUploadFragment
                     )
 
 
@@ -338,7 +326,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
 
-                (adapter as CustomersAdapter).notifyDataSetChanged();
+                (adapter as CustomersAdapter).notifyDataSetChanged()
 
                 // Remember to CLEAR OUT old items before appending in the new ones
 
@@ -453,10 +441,9 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         }
 
         //val lensPosition: LensPositionSelector
-        val configuration: CameraConfiguration
 
         //lensPosition = LensPosition.Back
-        configuration = CameraConfiguration(
+        val configuration = CameraConfiguration(
             previewResolution = firstAvailable(
                 wideRatio(highestResolution()),
                 standardRatio(highestResolution())
@@ -966,7 +953,7 @@ private  fun saveTask(){
                     val params: MutableMap<String, String> = HashMap()
                     params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                     params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                    params["name"] = mode + " Image"
+                    params["name"] = "$mode Image"
                     params["desc"] = taskDescription
                     params["tags"] = ""
                     if(customerID != ""){
@@ -1002,12 +989,10 @@ private  fun saveTask(){
 
             }
 
-            request.setRetryPolicy(
-                DefaultRetryPolicy(
-                    DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
-                    0,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-                )
+            request.retryPolicy = DefaultRetryPolicy(
+                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
             )
             //send request
             Volley.newRequestQueue(this.context).cache.clear()
@@ -1031,12 +1016,12 @@ private  fun saveTask(){
 
     override fun onCustomerCellClickListener(data:Customer) {
         println("Cell clicked with customer: ${data.sysname}")
-        data.let { data ->
+        data.let {
             // val directions = CustomerListFragmentDirections.navigateToCustomer(data)
 
 
-            customerID = data.ID
-            customerSearchView.setQuery(data.sysname, false)
+            customerID = it.ID
+            customerSearchView.setQuery(it.sysname, false)
             customerRecyclerView.visibility = View.GONE
 
             //val imm = (activity as MainActivity?).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -1044,7 +1029,7 @@ private  fun saveTask(){
             hideSoftKeyboard((activity as MainActivity?)!!)
 
 
-            println("selcted cust = ${data.ID}")
+            println("selcted cust = ${it.ID}")
 
         }
     }

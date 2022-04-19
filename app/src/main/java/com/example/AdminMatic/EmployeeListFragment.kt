@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -22,14 +21,10 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-
-import kotlinx.android.synthetic.main.fragment_employee_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_employee_list.customerSwipeContainer
 import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-
 
 
 interface EmployeeCellClickListener {
@@ -54,14 +49,6 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
 
     lateinit var adapter:EmployeesAdapter
 
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -179,8 +166,8 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
                             // Make sure you call swipeContainer.setRefreshing(false)
                             // once the network request has completed successfully.
                             //fetchTimelineAsync(0)
-                            searchView.setQuery("", false);
-                            searchView.clearFocus();
+                            searchView.setQuery("", false)
+                            searchView.clearFocus()
                             getEmployees()
                         }
                         // Configure the refreshing colors
@@ -194,16 +181,16 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
 
 
 
-                        (adapter as EmployeesAdapter).notifyDataSetChanged();
+                        (adapter as EmployeesAdapter).notifyDataSetChanged()
 
                         // Remember to CLEAR OUT old items before appending in the new ones
 
                         // ...the data has come back, add new items to your adapter...
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false;
+                        customerSwipeContainer.isRefreshing = false
 
-                       // Toast.makeText(activity,"${employeesList.count()} Employees Loaded",Toast.LENGTH_SHORT).show()
+                        // Toast.makeText(activity,"${employeesList.count()} Employees Loaded",Toast.LENGTH_SHORT).show()
 
 
 
@@ -254,7 +241,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -264,8 +251,8 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
     override fun onEmployeeCellClickListener(data:Employee) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         //Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
-        data.let { data ->
-            val directions = EmployeeListFragmentDirections.navigateToEmployee(data)
+        data.let {
+            val directions = EmployeeListFragmentDirections.navigateToEmployee(it)
             myView.findNavController().navigate(directions)
         }
         println("Cell clicked with employee: ${data.name}")
@@ -286,21 +273,4 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
     }
 
 
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EmployeeListFragment().apply {
-
-            }
-    }
 }

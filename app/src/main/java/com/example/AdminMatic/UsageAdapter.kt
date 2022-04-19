@@ -70,11 +70,11 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             //labor type
             materialCl.isVisible = false
 
-            var employeeImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.usage_emp_iv)
+            val employeeImageView:ImageView = holder.itemView.findViewById(R.id.usage_emp_iv)
 
 
             Picasso.with(context)
-                .load("${GlobalVars.thumbBase + list[position].pic}")
+                .load(GlobalVars.thumbBase + list[position].pic)
                 .placeholder(R.drawable.user_placeholder) //optional
                 //.resize(imgWidth, imgHeight)         //optional
                 //.centerCrop()                        //optional
@@ -84,34 +84,33 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
 
 
-            var startTxt:TextView = holder.itemView.findViewById<TextView>(R.id.usage_start_edit_txt)
+            val startTxt:TextView = holder.itemView.findViewById(R.id.usage_start_edit_txt)
             startTxt.setBackgroundResource(R.drawable.text_view_layout)
             if (usage.start != null && usage.start != "0000-00-00 00:00:00"){
                 startTxt.text = usage.getTime(usage.start!!)
             }
-            startTxt.setOnClickListener({
+            startTxt.setOnClickListener {
                 // editStart()
                 usageEditListener.editStart(position)
-            })
+            }
 
 
-
-            var stopTxt:TextView = holder.itemView.findViewById<TextView>(R.id.usage_stop_edit_txt)
+            val stopTxt:TextView = holder.itemView.findViewById(R.id.usage_stop_edit_txt)
             stopTxt.setBackgroundResource(R.drawable.text_view_layout)
             if (usage.stop != null && usage.stop != "0000-00-00 00:00:00"){
                 stopTxt.text = usage.getTime(usage.stop!!)
             }
 
-            stopTxt.setOnClickListener({
+            stopTxt.setOnClickListener {
                 //editStart()
                 usageEditListener.editStop(position)
-            })
+            }
 
 
-            var breakTxt:TextView = holder.itemView.findViewById<TextView>(R.id.usage_break_edit_txt)
+            val breakTxt:TextView = holder.itemView.findViewById(R.id.usage_break_edit_txt)
 
             breakTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
-            breakTxt.setSelectAllOnFocus(true);
+            breakTxt.setSelectAllOnFocus(true)
 
             breakTxt.setBackgroundResource(R.drawable.text_view_layout)
             if (usage.lunch != null){
@@ -124,54 +123,28 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
 
 
-            breakTxt.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-                override  fun onEditorAction(
-                    v: TextView?,
-                    actionId: Int,
-                    event: KeyEvent?
-                ): Boolean {
+            breakTxt.setOnEditorActionListener { _, actionId, _ ->
+                //var numeric = true
 
-                    //var numeric = true
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // Call your code here
 
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        // Call your code here
+                    breakTxt.clearFocus()
 
-                        breakTxt.clearFocus()
-
-                        usageEditListener.editBreak(position,breakTxt.text.toString(),actionId)
+                    usageEditListener.editBreak(position, breakTxt.text.toString(), actionId)
 
 
-                        return true
-                    }else{
-                        return false
-                    }
-
-
-
-
-
-
-
-
+                    true
+                } else {
+                    false
                 }
-            })
-
-
-
-
-
-
-
-
-
-
-
-
-            var totalTxt:TextView = holder.itemView.findViewById<TextView>(R.id.usage_total_tv)
-
-            if (usage.qty != null){
-                totalTxt.text = usage.qty!! + " Hours"
             }
+
+
+            val totalTxt:TextView = holder.itemView.findViewById<TextView>(R.id.usage_total_tv)
+
+
+            totalTxt.text = usage.qty!! + " Hours"
 
 
 
@@ -179,10 +152,10 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
                 println("status click")
 
-                var popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+                val popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
                 popUp.inflate(R.menu.task_status_menu)
 
-                popUp.menu.add(0, usage.ID.toInt(), 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context)!!, context.getString(R.string.delete)))
+                popUp.menu.add(0, usage.ID.toInt(), 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context), context.getString(R.string.delete)))
 
                 popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
 
@@ -191,7 +164,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     true
                 })
 
-                popUp.gravity = Gravity.RIGHT
+                popUp.gravity = Gravity.END
                 popUp.show()
 
             }
@@ -200,32 +173,35 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             //material type
             laborCl.isVisible = false
 
-            var vendorSearch:SearchView = holder.itemView.findViewById<SearchView>(R.id.usage_vendor_sv)
+            val vendorSearch:SearchView = holder.itemView.findViewById(R.id.usage_vendor_sv)
             vendorSearch.setBackgroundResource(R.drawable.text_view_layout)
+            /*
             if (usage.vendor != null && usage.vendor != "0" && usage.vendor != ""){
                 //vendorSearch.setQuery(usage.vendor!!)
             }
 
-            var quantityTxt:EditText = holder.itemView.findViewById(R.id.usage_quantity_et)
+             */
+
+            val quantityTxt:EditText = holder.itemView.findViewById(R.id.usage_quantity_et)
            quantityTxt.setText(usage.qty)
 
-            var unitCostTxt:EditText = holder.itemView.findViewById(R.id.usage_quantity_et)
+            val unitCostTxt:EditText = holder.itemView.findViewById(R.id.usage_quantity_et)
             if(usage.unitCost != null){
                 unitCostTxt.setText(usage.unitCost!!)
             }
 
 
-            var totalCostTxt:EditText = holder.itemView.findViewById(R.id.usage_quantity_et)
+            val totalCostTxt:EditText = holder.itemView.findViewById(R.id.usage_quantity_et)
             if(usage.totalCost != null){
                 totalCostTxt.setText(usage.totalCost!!)
             }
 
 
 
-            var receiptImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.usage_receipt_iv)
+            val receiptImageView:ImageView = holder.itemView.findViewById(R.id.usage_receipt_iv)
             if(list[position].receipt != null){
                 Picasso.with(context)
-                    .load("${GlobalVars.thumbBase + list[position].receipt!!}")
+                    .load(GlobalVars.thumbBase + list[position].receipt!!)
                     .placeholder(R.drawable.ic_images) //optional
                     //.resize(imgWidth, imgHeight)         //optional
                     //.centerCrop()                        //optional

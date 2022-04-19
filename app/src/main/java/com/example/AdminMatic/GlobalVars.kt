@@ -57,12 +57,6 @@ class GlobalVars: Application() {
     }
 
 
-    override fun onCreate() {
-        super.onCreate()
-        // initialization code here
-
-    }
-
     /* helper functions */
 
 
@@ -79,7 +73,7 @@ class GlobalVars: Application() {
 
 
     /** Returns the consumer friendly device name  */
-    fun getDeviceName(): String? {
+    fun getDeviceName(): String {
         val manufacturer = Build.MANUFACTURER
         val model = Build.MODEL
         return if (model.startsWith(manufacturer)) {
@@ -87,7 +81,7 @@ class GlobalVars: Application() {
         } else capitalize(manufacturer) + " " + model
     }
 
-    fun capitalize(str: String): String {
+    private fun capitalize(str: String): String {
         if (TextUtils.isEmpty(str)) {
             return str
         }
@@ -110,7 +104,7 @@ class GlobalVars: Application() {
 
     // To Add Icons to Menu Items
 
-     fun resize(image: Drawable, context:Context): Drawable? {
+     fun resize(image: Drawable, context:Context): Drawable {
         val b = (image as BitmapDrawable).bitmap
         val bitmapResized = Bitmap.createScaledBitmap(b, 25, 25, true)
         return BitmapDrawable(context.resources, bitmapResized)
@@ -120,7 +114,7 @@ class GlobalVars: Application() {
      fun menuIconWithText(
         r: Drawable,
         title: String
-    ): CharSequence? {
+    ): CharSequence {
         r.setBounds(0, 0, r.intrinsicWidth, r.intrinsicHeight)
         val sb = SpannableString("    $title")
         val imageSpan = ImageSpan(r, ImageSpan.ALIGN_CENTER)
@@ -173,7 +167,7 @@ class GlobalVars: Application() {
             builder.setMessage(message)
         }
 
-        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+        builder.setPositiveButton(android.R.string.yes) { _, _ ->
             //Toast.makeText(context,
                // android.R.string.yes, Toast.LENGTH_SHORT).show()
         }
@@ -195,7 +189,7 @@ class GlobalVars: Application() {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -205,9 +199,9 @@ class GlobalVars: Application() {
                // hideProgressView()
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     //var customers: JSONObject = parentObject.getJSONObject("customers")
-                    var customers: JSONArray = parentObject.getJSONArray("customers")
+                    val customers: JSONArray = parentObject.getJSONArray("customers")
                     // println("customers = ${customers.toString()}")
                     // println("customers count = ${customers.length()}")
 
@@ -283,9 +277,9 @@ class GlobalVars: Application() {
         ) {
             override fun getParams(): Map<String, String> {
                 val params: MutableMap<String, String> = HashMap()
-                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                params["companyUnique"] = loggedInEmployee!!.companyUnique
+                params["sessionKey"] = loggedInEmployee!!.sessionKey
+                println("params = $params")
                 return params
             }
         }

@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -14,15 +13,11 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.customer_list_item.view.*
 import kotlinx.android.synthetic.main.invoice_list_item.view.*
 import java.util.*
 
 
-
-class InvoicesAdapter(private val list: MutableList<Invoice>, private val context: Context,private val cellClickListener: InvoiceCellClickListener, private val customerView:Boolean = false)
-
-    : RecyclerView.Adapter<InvoiceViewHolder>(), Filterable {
+class InvoicesAdapter(private val list: MutableList<Invoice>, private val cellClickListener: InvoiceCellClickListener) : RecyclerView.Adapter<InvoiceViewHolder>(), Filterable {
 
 
     var filterList:MutableList<Invoice> = emptyList<Invoice>().toMutableList()
@@ -123,7 +118,7 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
 
             val popUp = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.options_menu)
-            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
                     R.id.menu1 -> {
@@ -138,7 +133,7 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
                 }
 
                 true
-            })
+            }
 
 
 

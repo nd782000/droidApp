@@ -11,7 +11,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,8 +51,8 @@ interface UsageEditListener {
     fun editStart(row:Int)
     fun editStop(row:Int)
     fun editBreak(row:Int,lunch:String, actionID:Int)
-    fun editQty(row:Int,qty:kotlin.Double)
-    fun editVendor(row:Int,vendor:String,unitCost:kotlin.Double)
+    fun editQty(row:Int,qty: Double)
+    fun editVendor(row:Int,vendor:String,unitCost: Double)
     fun editCost(row:Int,cost:Double)
     fun showHistory()
 }
@@ -62,7 +61,7 @@ interface UsageEditListener {
 
 class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSelectedListener {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    //private var param1: String? = null
     private var param2: String? = null
 
     private  var woItem: WoItem? = null
@@ -70,25 +69,25 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     lateinit var globalVars:GlobalVars
 
-    private var adapter: UsageAdapter? = null
+    //private var adapter: UsageAdapter? = null
 
 
-    lateinit var pgsBar: ProgressBar
-    lateinit var empSpinner: Spinner
-    lateinit var startStopCl: ConstraintLayout
-    lateinit var usageRecyclerView: RecyclerView
-    lateinit var startBtn: Button
-    lateinit var stopBtn: Button
-    lateinit var submitBtn: Button
+    private lateinit var pgsBar: ProgressBar
+    private lateinit var empSpinner: Spinner
+    private lateinit var startStopCl: ConstraintLayout
+    private lateinit var usageRecyclerView: RecyclerView
+    private lateinit var startBtn: Button
+    private lateinit var stopBtn: Button
+    private lateinit var submitBtn: Button
 
-    lateinit var empsOnWo:Array<Employee>
+    //lateinit var empsOnWo:Array<Employee>
 
     var usageToLog:MutableList<Usage> = mutableListOf()
-    var usageToLogJSONMutableList:MutableList<String> = mutableListOf()
+    private var usageToLogJSONMutableList:MutableList<String> = mutableListOf()
 
 
 
-    lateinit var timePicker: TimePickerHelper
+    private lateinit var timePicker: TimePickerHelper
 
     private var editsMade: Boolean = false
 
@@ -99,8 +98,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            woItem = it.getParcelable<WoItem?>("woItem")
-            workOrder = it.getParcelable<WorkOrder>("workOrder")!!
+            woItem = it.getParcelable("woItem")
+            workOrder = it.getParcelable("workOrder")!!
 
             param2 = it.getString(ARG_PARAM2)
         }
@@ -109,7 +108,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         println("onCreateView")
         globalVars = GlobalVars()
@@ -122,12 +121,12 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             override fun handleOnBackPressed() {
                 // Handle the back button event
                 println("handleOnBackPressed")
-                if(editsMade == true){
+                if(editsMade){
                     println("edits made")
-                    var builder = AlertDialog.Builder(myView.context)
+                    val builder = AlertDialog.Builder(myView.context)
                     builder.setTitle("Unsaved Changes")
                     builder.setMessage("Go back without saving?")
-                    builder.setPositiveButton("YES") { dialog, which ->
+                    builder.setPositiveButton("YES") { _, _ ->
                         //Toast.makeText(context,
                         // android.R.string.yes, Toast.LENGTH_SHORT).show()
                         println("go back")
@@ -136,7 +135,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
                     }
-                    builder.setNegativeButton("NO") { dialog, which ->
+                    builder.setNegativeButton("NO") { _, _ ->
                         //Toast.makeText(context,
                         // android.R.string.yes, Toast.LENGTH_SHORT).show()
 
@@ -156,7 +155,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 }
             }
         }
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
 
         // Inflate the layout for this fragment
@@ -180,10 +179,10 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         println("workOrder.ID = ${workOrder.woID}")
 
-        println("workOrder.emps = ${workOrder.emps.toString()}")
+        println("workOrder.emps = ${workOrder.emps}")
 
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Enter Usage"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.enter_usage)
 
 
         pgsBar = myView.findViewById(R.id.progressBar)
@@ -214,7 +213,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-        val empAdapter:EmpAdapter = EmpAdapter(myView.context,GlobalVars.employeeList!!.toList())
+        val empAdapter = EmpAdapter(myView.context,GlobalVars.employeeList!!.toList())
 
 
         empSpinner.adapter = empAdapter
@@ -244,12 +243,12 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-    fun addActiveUsage() {
+    private fun addActiveUsage() {
         //loop thru usage array and edit start time
         println("addActiveUsage()")
 
         print("usageToLog.count = ${usageToLog.count()}")
-        var openUsage: Boolean = false
+        var openUsage = false
 
         val todayDate = LocalDateTime.now()
 
@@ -267,7 +266,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             println("usage.stop = ${usage.stop}")
 
-            var formattedUsageDateString: String = ""
+            var formattedUsageDateString = ""
 
             if (usage.start != null) {
 
@@ -277,7 +276,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 println("date from usage = $date")
 
                 formattedUsageDateString = date.toString()
-                println("usage date string = ${formattedUsageDateString}")
+                println("usage date string = $formattedUsageDateString")
 
             }
 
@@ -298,11 +297,11 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         if(woItem!!.type == "1"){
             //labor type
 
-            if(openUsage == false) {
+            if(!openUsage) {
                 for (emp in workOrder.emps) {
                     print("empName = ${emp.name}")
 
-                    val usage:Usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
+                    val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
                     usage.empID = emp.ID
                     usage.empName = emp.name
                     usage.pic = emp.pic
@@ -327,7 +326,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             if (usageToLog.count() == 0){
 
 
-                val usage:Usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
+                val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
                 usage.empID = null
                 usage.empName = null
                 usage.pic = null
@@ -493,11 +492,11 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-    fun addEmployee(emp:Employee){
-        println("add employee with ${emp.toString()}")
+    private fun addEmployee(emp:Employee){
+        println("add employee with $emp")
 
 
-        val usage:Usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
+        val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
         usage.empID = emp.ID
         usage.empName = emp.name
         usage.pic = emp.pic
@@ -642,7 +641,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             m = cal.get(Calendar.MINUTE)
         }else{
 
-            val sdf: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
 
             cal = Calendar.getInstance()
 
@@ -661,11 +660,11 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
                 val current = LocalDate.now()
 
-                val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "${hourOfDay}"
-                val minuteStr = if (minute < 10) "0${minute}" else "${minute}"
+                val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "$hourOfDay"
+                val minuteStr = if (minute < 10) "0${minute}" else "$minute"
 
                 val startString = "$current $hourStr:$minuteStr:00"
-                println("startString is  "+startString)
+                println("startString is  $startString")
 
 
 
@@ -697,23 +696,23 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
                 //check to update other starts
-                var locked:Boolean = true
+                var locked = true
                 if(usageToLog.count() > 1){
                     for (usage in usageToLog){
                         if(usage.locked == false){
                             locked = false
                         }
                     }
-                    if (locked == false){
+                    if (!locked){
 
-                        var builder = AlertDialog.Builder(myView.context)
+                        val builder = AlertDialog.Builder(myView.context)
                         builder.setTitle("Update Everyone's Start Time?")
-                        builder.setPositiveButton("YES") { dialog, which ->
+                        builder.setPositiveButton("YES") { _, _ ->
                             //Toast.makeText(context,
                             // android.R.string.yes, Toast.LENGTH_SHORT).show()
                             editOthersStart(row)
                         }
-                        builder.setNegativeButton("NO") { dialog, which ->
+                        builder.setNegativeButton("NO") { _, _ ->
                             //Toast.makeText(context,
                             // android.R.string.yes, Toast.LENGTH_SHORT).show()
                             setQty()
@@ -748,7 +747,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             m = cal.get(Calendar.MINUTE)
         }else{
 
-            val sdf: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
 
             cal = Calendar.getInstance()
 
@@ -767,11 +766,11 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
                 val current = LocalDate.now()
 
-                val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "${hourOfDay}"
-                val minuteStr = if (minute < 10) "0${minute}" else "${minute}"
+                val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "$hourOfDay"
+                val minuteStr = if (minute < 10) "0${minute}" else "$minute"
 
                 val stopString = "$current $hourStr:$minuteStr:00"
-                println("stopString is  "+stopString)
+                println("stopString is  $stopString")
 
 
                 if (usageToLog[row].start == null){
@@ -800,23 +799,23 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
                 //check to update other stops
-                var locked:Boolean = true
+                var locked = true
                 if(usageToLog.count() > 1){
                     for (usage in usageToLog){
                         if(usage.locked == false){
                             locked = false
                         }
                     }
-                    if (locked == false){
+                    if (!locked){
 
-                        var builder = AlertDialog.Builder(myView.context)
+                        val builder = AlertDialog.Builder(myView.context)
                         builder.setTitle("Update Everyone's Stop Time?")
-                        builder.setPositiveButton("YES") { dialog, which ->
+                        builder.setPositiveButton("YES") { _, _ ->
                             //Toast.makeText(context,
                             // android.R.string.yes, Toast.LENGTH_SHORT).show()
                             editOthersStop(row)
                         }
-                        builder.setNegativeButton("NO") { dialog, which ->
+                        builder.setNegativeButton("NO") { _, _ ->
                             //Toast.makeText(context,
                             // android.R.string.yes, Toast.LENGTH_SHORT).show()
                             setQty()
@@ -893,23 +892,23 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
             //check to update other breaks
-            var locked:Boolean = true
+            var locked = true
             if(usageToLog.count() > 1){
                 for (usage in usageToLog){
                     if(usage.locked == false){
                         locked = false
                     }
                 }
-                if (locked == false){
+                if (!locked){
 
-                    var builder = AlertDialog.Builder(myView.context)
+                    val builder = AlertDialog.Builder(myView.context)
                     builder.setTitle("Update Everyone's Break Time?")
-                    builder.setPositiveButton("YES") { dialog, which ->
+                    builder.setPositiveButton("YES") { _, _ ->
                         //Toast.makeText(context,
                         // android.R.string.yes, Toast.LENGTH_SHORT).show()
                         editOthersBreak(row)
                     }
-                    builder.setNegativeButton("NO") { dialog, which ->
+                    builder.setNegativeButton("NO") { _, _ ->
                         //Toast.makeText(context,
                         // android.R.string.yes, Toast.LENGTH_SHORT).show()
                         setQty()
@@ -984,7 +983,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     }
 
-    fun editOthersBreak(row:Int){
+    private fun editOthersBreak(row:Int){
 
         println("editOthersBreak")
         for (usage in usageToLog){
@@ -1015,7 +1014,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 println("blank row")
             }else{
 
-                var qtySeconds:Long = 0L
+                var qtySeconds: Long
 
                 if(usage.start == null || usage.start == "0000-00-00 00:00:00" || usage.stop == null || usage.stop == "0000-00-00 00:00:00"){
                     println("start or stop is null")
@@ -1029,8 +1028,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
                     if(startTime != null && stopTime != null){
-                        qtySeconds = startTime!!.until(stopTime!!, ChronoUnit.SECONDS)
-                      usage.qty =   startTime!!.until(stopTime!!, ChronoUnit.HOURS).toString()
+                        qtySeconds = startTime.until(stopTime, ChronoUnit.SECONDS)
+                      usage.qty =   startTime.until(stopTime, ChronoUnit.HOURS).toString()
 
                         var breakTime = 0.0
                         if(usage.lunch != null && usage.lunch != "" && usage.lunch != "0"){
@@ -1102,8 +1101,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         //loop thru usage array and build JSON array
         editsMade = false //resets edit checker
 
-        var i = 0
-        for (usage in usageToLog) {
+        for ((i, usage) in usageToLog.withIndex()) {
             var usageQty = 0.0
             println("usage.qty = ${usage.qty}")
             if(usage.qty != "0.0" && usage.qty != ""){
@@ -1154,10 +1152,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             usageToLogJSONMutableList.add(jsonUsagePretty)
 
 
-            i ++
-
-
-
         }
 
         callDB(usageToLogJSONMutableList.toString())
@@ -1177,7 +1171,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -1189,7 +1183,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
 
 
                     globalVars.playSaveSound(myView.context)
@@ -1212,7 +1206,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["usageToLog"] = json
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -1247,7 +1241,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-    override fun editQty(row: Int, qty: kotlin.Double) {
+    override fun editQty(row: Int, qty: Double) {
         TODO("Not yet implemented")
     }
 
@@ -1255,7 +1249,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         TODO("Not yet implemented")
     }
 
-    override fun editVendor(row: Int, vendor: String, unitCost: kotlin.Double) {
+    override fun editVendor(row: Int, vendor: String, unitCost: Double) {
         TODO("Not yet implemented")
     }
 

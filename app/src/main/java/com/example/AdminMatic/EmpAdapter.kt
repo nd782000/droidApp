@@ -2,7 +2,6 @@ package com.example.AdminMatic
 
 import android.R
 import android.content.Context
-import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -58,15 +57,15 @@ class EmpAdapter(context: Context, items: List<Employee>?) :
 
     private fun getCustomView(position: Int, convertView: View?, parent: ViewGroup): View {
         // Distinguish "real" spinner items (that can be reused) from initial selection item
-        var position = position
+        var lPosition = position
 
 
         val row: View =
             if (convertView != null && convertView !is TextView) convertView else LayoutInflater.from(
                 context
             ).inflate(com.AdminMatic.R.layout.spinner_right_aligned, parent, false)
-        position -= 1 // Adjust for initial selection item
-        val employee: Employee? = getItem(position)
+        lPosition -= 1 // Adjust for initial selection item
+        val employee: Employee? = getItem(lPosition)
 
 
 
