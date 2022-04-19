@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -9,18 +8,21 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.customer_list_item.view.*
 import kotlinx.android.synthetic.main.work_order_list_item.view.*
 import java.util.*
 
 
-
-class WorkOrdersAdapter(private val list: MutableList<WorkOrder>, private val context: Context,private val cellClickListener: WorkOrderCellClickListener, private val customerView:Boolean = false)
+class WorkOrdersAdapter(
+    private val list: MutableList<WorkOrder>,
+    private val cellClickListener: WorkOrderCellClickListener,
+    private val customerView: Boolean = false
+)
 
     : RecyclerView.Adapter<WorkOrderViewHolder>(), Filterable {
 
@@ -51,9 +53,9 @@ class WorkOrdersAdapter(private val list: MutableList<WorkOrder>, private val co
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         println("queryText = $queryText")
         //text highlighting for first string
-        if (queryText != null && !queryText.isEmpty() && queryText != "") {
+        if (queryText.isNotEmpty() && queryText != "") {
 
-            val startPos1: Int = filterList[position].custName!!.toLowerCase().indexOf(queryText.toLowerCase())
+            val startPos1: Int = filterList[position].custName!!.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos1 = startPos1 + queryText.length
             if (startPos1 != -1) {
                 val spannable: Spannable = SpannableString(filterList[position].custName)
@@ -78,10 +80,10 @@ class WorkOrdersAdapter(private val list: MutableList<WorkOrder>, private val co
         }
 
         //text highlighting for second string
-        if (queryText != null && !queryText.isEmpty() && queryText != "") {
+        if (queryText.isNotEmpty() && queryText != "") {
 
 
-            val startPos2: Int = filterList[position].title.toLowerCase().indexOf(queryText.toLowerCase())
+            val startPos2: Int = filterList[position].title.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos2 = startPos2 + queryText.length
             if (startPos2 != -1) {
                 val spannable: Spannable = SpannableString(filterList[position].title)
@@ -139,11 +141,11 @@ class WorkOrdersAdapter(private val list: MutableList<WorkOrder>, private val co
                     filterList = list
                 } else {
 
-                    var resultList:MutableList<WorkOrder> = mutableListOf()
+                    val resultList:MutableList<WorkOrder> = mutableListOf()
                     for (row in list) {
                         //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
                        // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
-                        if (row.custName!!.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT)) || row.title!!.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))) {
+                        if (row.custName!!.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.title.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
 
                             println("add row")
 

@@ -8,9 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,7 +43,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            customer = it.getParcelable<Customer?>("customer")
+            customer = it.getParcelable("customer")
 
         }
     }
@@ -111,7 +109,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
                 ContactsAdapter(
                     customer!!.contacts.toMutableList(),
-                    it, this@ContactsFragment
+                    this@ContactsFragment
                 )
             }
 
@@ -141,14 +139,14 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
         println("Cell clicked with contact: ${data.value}")
 
-        data.let { data ->
+        data.let {
 
-            when (data.type) {
+            when (it.type) {
 
 
                 //Main Phone
                 "1" -> {
-                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.value))
+                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + it.value))
                     com.example.AdminMatic.myView.context.startActivity(intent)
                 }
                 //Main Email
@@ -156,7 +154,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
                     val intent = Intent(Intent.ACTION_SENDTO)
                     intent.data = Uri.parse("mailto:") // only email apps should handle this
-                    val emailArray = arrayOf<String>(data.value.toString())
+                    val emailArray = arrayOf(it.value.toString())
                     intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
                     // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
                     // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
@@ -177,7 +175,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
 
                     val i = Intent(Intent.ACTION_VIEW)
-                    i.data = Uri.parse(data.value!!)
+                    i.data = Uri.parse(it.value!!)
                     startActivity(i)
 
                 }
@@ -191,7 +189,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
                 }
                 //Alt Phone
                 "8" -> {
-                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.value))
+                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + it.value))
                     com.example.AdminMatic.myView.context.startActivity(intent)
 
                 }
@@ -199,7 +197,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
                 "9" -> {
                     val intent = Intent(Intent.ACTION_SENDTO)
                     intent.data = Uri.parse("mailto:") // only email apps should handle this
-                    val emailArray = arrayOf<String>(data.value.toString())
+                    val emailArray = arrayOf(data.value.toString())
                     intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
                     // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
                     // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
@@ -227,7 +225,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
                 "13" -> {
                     val intent = Intent(Intent.ACTION_SENDTO)
                     intent.data = Uri.parse("mailto:") // only email apps should handle this
-                    val emailArray = arrayOf<String>(data.value.toString())
+                    val emailArray = arrayOf(data.value.toString())
                     intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
                     // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
                     // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
@@ -264,6 +262,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
         recyclerView.visibility = View.VISIBLE
     }
 
+    /*
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -273,13 +272,13 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
          * @param param2 Parameter 2.
          * @return A new instance of fragment CustomerListFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ContactsFragment().apply {
 
             }
     }
+     */
 
 
 

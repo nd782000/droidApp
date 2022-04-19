@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -9,17 +8,17 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import kotlinx.android.synthetic.main.contract_list_item.view.*
 import java.util.*
 
 
-
-class ContractsAdapter(private val list: MutableList<Contract>, private val context: Context, private val cellClickListener: ContractCellClickListener, private val customerView:Boolean = false)
+class ContractsAdapter(private val list: MutableList<Contract>, private val cellClickListener: ContractCellClickListener, private val customerView: Boolean = false)
 
     : RecyclerView.Adapter<ContractViewHolder>(), Filterable {
 
@@ -81,7 +80,7 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
                 }
             }
         } else {
-            if(customerView == false) {
+            if(!customerView) {
                 holder.itemView.list_name.text =
                     filterList[position].custName!! + " - " + filterList[position].title
             }else{

@@ -1,27 +1,14 @@
 package com.example.AdminMatic
 
-import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.customer_list_item.view.*
 import kotlinx.android.synthetic.main.equipment_detail_list_item.view.*
-import kotlinx.android.synthetic.main.wo_item_list_item.view.*
-import java.util.*
 
 
-
-class EquipmentDetailAdapter(private val list: MutableList<String>, private val context: Context,private val cellClickListener: EquipmentDetailCellClickListener)
+class EquipmentDetailAdapter(list: MutableList<String>, private val cellClickListener: EquipmentDetailCellClickListener)
 
     : RecyclerView.Adapter<EquipmentDetailViewHolder>() {
 

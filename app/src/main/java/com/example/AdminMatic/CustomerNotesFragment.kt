@@ -6,14 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
-
-
 
 
 //great resource fo recyclerView inf
@@ -27,11 +22,6 @@ class CustomerNotesFragment : Fragment(){
     lateinit var myView:View
     lateinit var  pgsBar: ProgressBar
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,11 +42,5 @@ class CustomerNotesFragment : Fragment(){
 
         //need to wait for this function to initialize views
         println("onViewCreated")
-
-
-
     }
-
-
-
 }

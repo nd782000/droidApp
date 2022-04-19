@@ -1,28 +1,17 @@
 package com.example.AdminMatic
 
-import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.PopupMenu
+import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.customer_list_item.view.*
 import kotlinx.android.synthetic.main.wo_item_list_item.view.*
-import java.util.*
 
 
-
-class WoItemsAdapter(private val list: MutableList<WoItem>, private val context: Context,private val cellClickListener: WoItemCellClickListener)
-
-    : RecyclerView.Adapter<WoItemViewHolder>() {
+class WoItemsAdapter(list: MutableList<WoItem>, private val cellClickListener: WoItemCellClickListener) : RecyclerView.Adapter<WoItemViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
@@ -71,12 +60,12 @@ class WoItemsAdapter(private val list: MutableList<WoItem>, private val context:
 
 
         //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
+        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
             println("menu click")
 
-            var popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+            val popUp = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.options_menu)
-            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
                     R.id.menu1 -> {
@@ -91,7 +80,7 @@ class WoItemsAdapter(private val list: MutableList<WoItem>, private val context:
                 }
 
                 true
-            })
+            }
 
 
 

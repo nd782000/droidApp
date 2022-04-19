@@ -53,14 +53,6 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
     lateinit var adapter:ItemsAdapter
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -77,7 +69,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
         val emptyList:MutableList<Item> = mutableListOf()
 
-        adapter = ItemsAdapter(emptyList,myView.context, this)
+        adapter = ItemsAdapter(emptyList, this)
 
 
 
@@ -161,8 +153,10 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
 
                         adapter = activity?.let {
-                            ItemsAdapter(itemsList,
-                                it, this@ItemListFragment)
+                            ItemsAdapter(
+                                itemsList,
+                                this@ItemListFragment
+                            )
                         }
 
                         val itemDecoration: ItemDecoration =
@@ -196,7 +190,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
 
 
-                        (adapter as ItemsAdapter).notifyDataSetChanged();
+                        (adapter as ItemsAdapter).notifyDataSetChanged()
 
                         // Remember to CLEAR OUT old items before appending in the new ones
 
@@ -267,8 +261,8 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
 
-        data.let { data ->
-            val directions = ItemListFragmentDirections.navigateToItem(data)
+        data.let {
+            val directions = ItemListFragmentDirections.navigateToItem(it)
             myView.findNavController().navigate(directions)
         }
     }

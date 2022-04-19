@@ -3,6 +3,7 @@
     <string name="version">Version %1$s</string>
 
     <string name="Welcome">Welcome, User!</string>
+    <string name="welcome_name">Welcome %1$s!</string>
     <string name="employeeList">Employees List</string>
     <string name="group_text_message">Group Text Message</string>
     <string name="numActiveEmployees"># Active Employees</string>
@@ -14,10 +15,12 @@
     <string name="customer">Customer</string>
     <string name="customers">Customers</string>
     <string name="vendor">Vendor</string>
+    <string name="vendor_list">Vendor List</string>
     <string name="item">Item</string>
     <string name="item_list">Item List</string>
     <string name="leads">Leads</string>
     <string name="lead">Lead</string>
+
     <string name="lead_list">Lead List</string>
     <string name="schedule">Work Orders</string>
     <string name="invoice">Invoice</string>
@@ -55,6 +58,8 @@
     <string name="shifts">Shifts</string>
     <string name="payroll">Payroll</string>
     <string name="login">Log In</string>
+    <string name="login_to_adminmatic">Log In to Adminmatic</string>
+    <string name="remember_me">Remember Me:</string>
     <string name="customers_search">Search Customers</string>
     <string name="schedules_search">Search Schedules</string>
     <string name="items_search">Search Items</string>
@@ -73,6 +78,7 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="locate">Locate</string>
     <string name="work_order">Work Order</string>
+    <string name="work_order_item">Work Order Item</string>
     <string name="view_employee_schedule">View ______s Schedule</string>
     <string name="schedule_settings">Schedule Settings</string>
     <string name="yourUsageFrom">Your usage from:</string>
@@ -90,6 +96,20 @@
 
     <string name="type">Type</string>
     <string name="status">Status</string>
+
+    <string name="leads_amount">Leads(%1$d)</string>
+    <string name="contracts_amount">Contracts(%1$d)</string>
+    <string name="work_orders_amount">Work Orders(%1$d)</string>
+    <string name="invoices_amount">Invoices(%1$d)</string>
+    <string name="usage_hours">%1$s Hours</string>
+
+    <!--Payroll stuff-->
+    <string name="enter_payroll">Enter Payroll</string>
+    <string name="no_time">No Time</string>
+    <string name="zero_hours">0.00</string>
+
+    <string name="enter_usage">Enter Usage</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -126,6 +146,7 @@
 
     <string name="no_phone_found">No Phone Found</string>
     <string name="no_email_found">No Email Found</string>
+    <string name="no_website_found">No Website Found</string>
     <string name="no_address_found">No Address Found</string>
     <string name="add_lead">Add Lead</string>
     <string name="add_contract">Add Contract</string>
@@ -175,6 +196,8 @@
     <string name="mi_km">Mi./Km.</string>
     <string name="days">Days</string>
 
+    <string name="service">Service</string>
+    <string name="new_service">New Service</string>
     <string name="new_service_name">Name: </string>
     <string name="new_service_type">Type: </string>
     <string name="new_service_frequency">Frequency: </string>

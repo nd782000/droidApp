@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -18,8 +17,7 @@ import kotlinx.android.synthetic.main.item_list_item.view.*
 import java.util.*
 
 
-
-class ItemsAdapter(private val list: MutableList<Item>, private val context: Context,private val cellClickListener: ItemCellClickListener)
+class ItemsAdapter(private val list: MutableList<Item>, private val cellClickListener: ItemCellClickListener)
 
     : RecyclerView.Adapter<ItemViewHolder>(), Filterable {
 
@@ -85,12 +83,12 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
 
 
         //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
+        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
             println("menu click")
 
             val popUp = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.options_menu)
-            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
                     R.id.menu1 -> {
@@ -105,7 +103,7 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
                 }
 
                 true
-            })
+            }
 
 
 

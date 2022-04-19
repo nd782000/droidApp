@@ -54,18 +54,10 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
     lateinit var adapter:VendorsAdapter
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         println("onCreateView")
@@ -76,9 +68,9 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
         //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
        // progBar.alpha = 0.2f
 
-        var emptyList:MutableList<Vendor> = mutableListOf()
+        val emptyList:MutableList<Vendor> = mutableListOf()
 
-        adapter = VendorsAdapter(emptyList,myView.context, this)
+        adapter = VendorsAdapter(emptyList, this)
 
 
 
@@ -86,7 +78,7 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
 
        // (activity as AppCompatActivity).supportActionBar?.title = "Vendor List"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Vendor List"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.vendor_list)
 
 
         // Inflate the layout for this fragment
@@ -123,7 +115,7 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -145,9 +137,9 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
-                    var vendors:JSONArray = parentObject.getJSONArray("vendors")
-                    println("vendors = ${vendors.toString()}")
+                    println("parentObject = $parentObject")
+                    val vendors:JSONArray = parentObject.getJSONArray("vendors")
+                    println("vendors = $vendors")
                     println("vendors count = ${vendors.length()}")
 
 
@@ -161,8 +153,10 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
 
 
                         adapter = activity?.let {
-                            VendorsAdapter(vendorsList,
-                                it, this@VendorListFragment)
+                            VendorsAdapter(
+                                vendorsList,
+                                this@VendorListFragment
+                            )
                         }
 
                         val itemDecoration: ItemDecoration =
@@ -181,8 +175,8 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
                             // Make sure you call swipeContainer.setRefreshing(false)
                             // once the network request has completed successfully.
                             //fetchTimelineAsync(0)
-                            searchView.setQuery("", false);
-                            searchView.clearFocus();
+                            searchView.setQuery("", false)
+                            searchView.clearFocus()
                             getVendors()
                         }
                         // Configure the refreshing colors
@@ -196,16 +190,16 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
 
 
 
-                        (adapter as VendorsAdapter).notifyDataSetChanged();
+                        (adapter as VendorsAdapter).notifyDataSetChanged()
 
                         // Remember to CLEAR OUT old items before appending in the new ones
 
                         // ...the data has come back, add new items to your adapter...
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false;
+                        customerSwipeContainer.isRefreshing = false
 
-                      //  Toast.makeText(activity,"${vendorsList.count()} Vendors Loaded",Toast.LENGTH_SHORT).show()
+                        //  Toast.makeText(activity,"${vendorsList.count()} Vendors Loaded",Toast.LENGTH_SHORT).show()
 
 
 
@@ -256,7 +250,7 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -267,8 +261,8 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
 
-        data?.let { data ->
-            val directions = VendorListFragmentDirections.navigateToVendor(data, "")
+        data.let {
+            val directions = VendorListFragmentDirections.navigateToVendor(it, "")
             myView.findNavController().navigate(directions)
         }
     }
@@ -287,22 +281,4 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
         recyclerView.visibility = View.VISIBLE
     }
 
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            VendorListFragment().apply {
-
-            }
-    }
 }

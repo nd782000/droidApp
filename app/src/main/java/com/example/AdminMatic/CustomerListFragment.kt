@@ -1,14 +1,13 @@
 package com.example.AdminMatic
 
+//import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -22,10 +21,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
-import com.google.gson.GsonBuilder
-//import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import kotlinx.android.synthetic.main.fragment_customer_list.*
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -50,11 +46,6 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
     lateinit var  swipeRefresh:SwipeRefreshLayout
     lateinit var adapter:CustomersAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,7 +56,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
 
         val emptyList:MutableList<Customer> = mutableListOf()
-        adapter = CustomersAdapter(emptyList,myView.context, this)
+        adapter = CustomersAdapter(emptyList, this)
         //(activity as AppCompatActivity).supportActionBar?.title = "Customer List"
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.customer_list)
@@ -104,7 +95,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
                     CustomersAdapter(
                         GlobalVars.customerList!!,
-                        it, this@CustomerListFragment
+                        this@CustomerListFragment
                     )
 
 
@@ -119,8 +110,8 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                 swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
                     // Make sure you call swipeContainer.setRefreshing(false)
                     // once the network request has completed successfully.
-                    searchView.setQuery("", false);
-                    searchView.clearFocus();
+                    searchView.setQuery("", false)
+                    searchView.clearFocus()
                     getCustomers()
                 }
                 // Configure the refreshing colors
@@ -130,12 +121,12 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                     R.color.colorAccent,
                     R.color.colorPrimaryDark
                 )
-                (adapter as CustomersAdapter).notifyDataSetChanged();
+                (adapter as CustomersAdapter).notifyDataSetChanged()
 
                 // Remember to CLEAR OUT old items before appending in the new ones
 
                 // Now we call setRefreshing(false) to signal refresh has finished
-                customerSwipeContainer.isRefreshing = false;
+                customerSwipeContainer.isRefreshing = false
 /*
 
                 Toast.makeText(
@@ -185,14 +176,14 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                 hideProgressView()
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     //var customers: JSONObject = parentObject.getJSONObject("customers")
-                    val customers:JSONArray = parentObject.getJSONArray("customers")
+                    //val customers:JSONArray = parentObject.getJSONArray("customers")
                    // println("customers = ${customers.toString()}")
                    // println("customers count = ${customers.length()}")
 
-                    val gson = GsonBuilder().create()
-                    val customersList = gson.fromJson(customers.toString() , Array<Customer>::class.java).toMutableList()
+                    //val gson = GsonBuilder().create()
+                    //val customersList = gson.fromJson(customers.toString() , Array<Customer>::class.java).toMutableList()
 
                     /*
                     list_recycler_view.apply {
@@ -267,7 +258,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -281,9 +272,9 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
     override fun onCustomerCellClickListener(data:Customer) {
         println("Cell clicked with customer: ${data.sysname}")
-        data.let { data ->
-           // val directions = CustomerListFragmentDirections.navigateToCustomer(data)
-            val directions = CustomerListFragmentDirections.navigateToCustomer(data.ID)
+        data.let {
+            // val directions = CustomerListFragmentDirections.navigateToCustomer(data)
+            val directions = CustomerListFragmentDirections.navigateToCustomer(it.ID)
             myView.findNavController().navigate(directions)
         }
     }
@@ -299,7 +290,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
         searchView.visibility = View.VISIBLE
         recyclerView.visibility = View.VISIBLE
     }
-
+    /*
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
@@ -307,4 +298,6 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
             }
     }
+
+     */
 }

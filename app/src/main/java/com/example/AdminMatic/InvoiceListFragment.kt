@@ -55,14 +55,6 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
     lateinit var adapter:InvoicesAdapter
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,7 +71,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
         val emptyList:MutableList<Invoice> = mutableListOf()
 
-        adapter = InvoicesAdapter(emptyList,myView.context, this)
+        adapter = InvoicesAdapter(emptyList, this)
 
 
 
@@ -163,8 +155,10 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
 
                         adapter = activity?.let {
-                            InvoicesAdapter(invoicesList,
-                                it, this@InvoiceListFragment)
+                            InvoicesAdapter(
+                                invoicesList,
+                                this@InvoiceListFragment
+                            )
                         }
 
                         val itemDecoration: ItemDecoration =
@@ -269,8 +263,8 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data.let { data ->
-            val directions = InvoiceListFragmentDirections.navigateToInvoice(data)
+        data.let {
+            val directions = InvoiceListFragmentDirections.navigateToInvoice(it)
             myView.findNavController().navigate(directions)
         }
     }
@@ -289,22 +283,4 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
         recyclerView.visibility = View.VISIBLE
     }
 
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            InvoiceListFragment().apply {
-
-            }
-    }
 }

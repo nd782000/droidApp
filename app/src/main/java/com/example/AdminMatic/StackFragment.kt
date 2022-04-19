@@ -32,13 +32,6 @@ import java.util.HashMap
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [StackFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
-
 lateinit var stackView:View
          var type:Int = 1
          var ID:String = ""
@@ -116,7 +109,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
 
         println("onCreateView")
@@ -197,7 +190,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
 
         var urlString = "https://www.adminmatic.com/cp/app/functions/get/systemStack.php"
 
-        var params: MutableMap<String, String> = HashMap()
+        val params: MutableMap<String, String> = HashMap()
 
 
 
@@ -237,7 +230,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -253,11 +246,11 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
 
 
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
 
 
-                    var leadsJSON: JSONArray = parentObject.getJSONArray("leads")
-                    println("leadsJSON = ${leadsJSON.toString()}")
+                    val leadsJSON: JSONArray = parentObject.getJSONArray("leads")
+                    println("leadsJSON = $leadsJSON")
                     println("leadsJSON count = ${leadsJSON.length()}")
                     leadsList = gson.fromJson(leadsJSON.toString() , Array<Lead>::class.java).toMutableList()
 
@@ -265,11 +258,12 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                     dummyLead.description = "Select Leads"
                     leadsList!!.add(0,dummyLead)
 
-                    leadTxt.text = "Leads(${leadsJSON.length()})"
+                    println("AAAAAAAAAAA" + leadsJSON.length())
+                    leadTxt.text = getString(R.string.leads_amount, leadsJSON.length())
 
 
-                    var contractsJSON: JSONArray = parentObject.getJSONArray("contracts")
-                    println("contractsJSON = ${contractsJSON.toString()}")
+                    val contractsJSON: JSONArray = parentObject.getJSONArray("contracts")
+                    println("contractsJSON = $contractsJSON")
                     println("contractsJSON count = ${contractsJSON.length()}")
                     contractsList = gson.fromJson(contractsJSON.toString() , Array<Contract>::class.java).toMutableList()
                     //leadsList.add(0,"Leads(${leadsList.count()})")
@@ -278,12 +272,12 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                     dummyContract.title = "Select Contracts"
                     contractsList!!.add(0,dummyContract)
 
-                    contractTxt.text = "Contracts(${contractsJSON.length()})"
+                    contractTxt.text = getString(R.string.contracts_amount, contractsJSON.length())
 
 
 
-                    var workOrdersJSON: JSONArray = parentObject.getJSONArray("workOrders")
-                    println("workOrdersJSON = ${workOrdersJSON.toString()}")
+                    val workOrdersJSON: JSONArray = parentObject.getJSONArray("workOrders")
+                    println("workOrdersJSON = $workOrdersJSON")
                     println("workOrdersJSON count = ${workOrdersJSON.length()}")
                     workOrdersList = gson.fromJson(workOrdersJSON.toString() , Array<WorkOrder>::class.java).toMutableList()
                     val dummyWorkOrder = WorkOrder()
@@ -292,10 +286,10 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                     workOrdersList!!.add(0,dummyWorkOrder)
 
                    // leadsList.add(0,"Leads(${leadsList.count()})")
-                    workOrderTxt.text = "WorkOrders(${workOrdersJSON.length()})"
+                    workOrderTxt.text = getString(R.string.work_orders_amount, workOrdersJSON.length())
 
-                    var invoicesJSON: JSONArray = parentObject.getJSONArray("invoices")
-                    println("invoicesJSON = ${invoicesJSON.toString()}")
+                    val invoicesJSON: JSONArray = parentObject.getJSONArray("invoices")
+                    println("invoicesJSON = $invoicesJSON")
 
                     println("invoicesJSON count = ${invoicesJSON.length()}")
                     invoicesList = gson.fromJson(invoicesJSON.toString() , Array<Invoice>::class.java).toMutableList()
@@ -305,37 +299,37 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                     dummyInvoice.title = "Select Invoices"
                     invoicesList!!.add(0,dummyInvoice)
 
-                    invoiceTxt.text = "Invoices(${invoicesJSON.length()})"
+                    invoiceTxt.text = getString(R.string.invoices_amount, invoicesJSON.length())
 
 
-                    val leadAdapter: ArrayAdapter<Lead>? = ArrayAdapter<Lead>(
+                    val leadAdapter: ArrayAdapter<Lead> = ArrayAdapter<Lead>(
                         myView.context,
                         android.R.layout.simple_spinner_dropdown_item, leadsList!!
                     )
-                    leadAdapter!!.setDropDownViewResource(R.layout.spinner_right_aligned)
+                    leadAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
                     leadSpinner.adapter = leadAdapter
                    /// leadSpinner.setSpinnerText("Leads(${leadsList!!.count()})")
 
-                    val contractAdapter: ArrayAdapter<Contract>? = ArrayAdapter<Contract>(
+                    val contractAdapter: ArrayAdapter<Contract> = ArrayAdapter<Contract>(
                         myView.context,
                         android.R.layout.simple_spinner_dropdown_item, contractsList!!
                     )
-                    contractAdapter!!.setDropDownViewResource(R.layout.spinner_right_aligned)
+                    contractAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
                     contractSpinner.adapter = contractAdapter
                     //contractSpinner.setSpinnerText("Contracts(${contractsList!!.count()})")
 
-                    val workOrderAdapter: ArrayAdapter<WorkOrder>? = ArrayAdapter<WorkOrder>(
+                    val workOrderAdapter: ArrayAdapter<WorkOrder> = ArrayAdapter<WorkOrder>(
                         requireContext(),
                         android.R.layout.simple_spinner_dropdown_item, workOrdersList!!
                     )
-                    workOrderAdapter!!.setDropDownViewResource(R.layout.spinner_right_aligned)
+                    workOrderAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
                     workOrderSpinner.adapter = workOrderAdapter
 
-                    val invoiceAdapter: ArrayAdapter<Invoice>? = ArrayAdapter<Invoice>(
+                    val invoiceAdapter: ArrayAdapter<Invoice> = ArrayAdapter<Invoice>(
                         myView.context,
                         android.R.layout.simple_spinner_dropdown_item, invoicesList!!
                     )
-                    invoiceAdapter!!.setDropDownViewResource(R.layout.spinner_right_aligned)
+                    invoiceAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
                     invoiceSpinner.adapter = invoiceAdapter
 
 
@@ -351,7 +345,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                             leadTxt.setOnClickListener {
                                 // your code to run when the user clicks on the TextView
                                 println("leadSpinner click")
-                                var lead: Lead = gson.fromJson(
+                                val lead: Lead = gson.fromJson(
                                     leadsJSON[0].toString(),
                                     Lead::class.java
                                 )
@@ -361,7 +355,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                             }
 
                         } else {
-                            leadSpinner!!.onItemSelectedListener =
+                            leadSpinner.onItemSelectedListener =
                                 object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>,
@@ -374,7 +368,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                                         if (position != 0){
 
 
-                                            var lead: Lead = gson.fromJson(
+                                            val lead: Lead = gson.fromJson(
                                                 leadsJSON[position - 1].toString(),
                                                 Lead::class.java
                                             )
@@ -407,7 +401,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                             contractTxt.setOnClickListener {
                                 // your code to run when the user clicks on the TextView
                                 println("contractSpinner click")
-                                var contract: Contract = gson.fromJson(
+                                val contract: Contract = gson.fromJson(
                                     contractsJSON[0].toString(),
                                     Contract::class.java
                                 )
@@ -417,7 +411,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                             }
 
                         } else {
-                            contractSpinner!!.onItemSelectedListener =
+                            contractSpinner.onItemSelectedListener =
                                 object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>,
@@ -430,7 +424,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                                         if (position != 0){
                                             // var contract:WorkOrder = gson.fromJson(contractsJSON[position],WorkOrder)
 
-                                            var contract: Contract = gson.fromJson(
+                                            val contract: Contract = gson.fromJson(
                                                 contractsJSON[position - 1].toString(),
                                                 Contract::class.java
                                             )
@@ -464,7 +458,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                             workOrderTxt.setOnClickListener {
                                 // your code to run when the user clicks on the TextView
                                 println("workOrderSpinner click")
-                                var workOrder: WorkOrder = gson.fromJson(
+                                val workOrder: WorkOrder = gson.fromJson(
                                     workOrdersJSON[0].toString(),
                                     WorkOrder::class.java
                                 )
@@ -474,7 +468,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                             }
 
                         } else {
-                            workOrderSpinner!!.onItemSelectedListener =
+                            workOrderSpinner.onItemSelectedListener =
                                 object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>,
@@ -487,7 +481,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                                         if (position != 0){
                                             // var workOrder:WorkOrder = gson.fromJson(workOrdersJSON[position],WorkOrder)
 
-                                            var workOrder: WorkOrder = gson.fromJson(
+                                            val workOrder: WorkOrder = gson.fromJson(
                                                 workOrdersJSON[position - 1].toString(),
                                                 WorkOrder::class.java
                                             )
@@ -520,7 +514,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                             invoiceTxt.setOnClickListener {
                                 // your code to run when the user clicks on the TextView
                                 println("invoiceSpinner click")
-                                var invoice: Invoice = gson.fromJson(
+                                val invoice: Invoice = gson.fromJson(
                                         invoicesJSON[0].toString(),
                                     Invoice::class.java
                                 )
@@ -530,7 +524,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                             }
 
                         } else {
-                            invoiceSpinner!!.onItemSelectedListener =
+                            invoiceSpinner.onItemSelectedListener =
                                 object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>,
@@ -542,7 +536,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
 
                                         if (position != 0){
 
-                                            var invoice: Invoice = gson.fromJson(
+                                            val invoice: Invoice = gson.fromJson(
                                                 invoicesJSON[position - 1].toString(),
                                                 Invoice::class.java
                                             )
@@ -590,7 +584,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
 
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -658,33 +652,5 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
 
 
 
-
-
-
-
-
-
-    /*
-
-        companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment StackFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            StackFragment(val _type: Int, val _ID: String).apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
-                }
-    }
-    */
 
 }

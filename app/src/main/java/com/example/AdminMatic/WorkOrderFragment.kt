@@ -217,7 +217,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         adapter = activity?.let {
                             WoItemsAdapter(
                                 itemList,
-                                it, this@WorkOrderFragment
+                                this@WorkOrderFragment
                             )
                         }
 

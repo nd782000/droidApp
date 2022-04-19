@@ -24,12 +24,6 @@ import com.squareup.picasso.Picasso
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MainMenuFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
 
 lateinit var myView:View
 
@@ -57,26 +51,26 @@ class MainMenuFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         myView =  inflater.inflate(R.layout.fragment_main_menu, container, false)
 
 
        // (activity as AppCompatActivity).supportActionBar?.title = "AdminMatic Home"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "AdminMatic"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.app_name)
 
 
 
-        var constraintLayout: ConstraintLayout = myView.findViewById<ConstraintLayout>(R.id.logged_in_employee_constraint_layout)
+        val constraintLayout: ConstraintLayout = myView.findViewById(R.id.logged_in_employee_constraint_layout)
 
 
 
-        var constraintSet:ConstraintSet = ConstraintSet()
+        val constraintSet = ConstraintSet()
         constraintSet.clone(constraintLayout)
 
 
-        var loggedInEmployeeImageView:ImageView = myView.findViewById<ImageView>(R.id.logged_in_employee_image_view)
+        val loggedInEmployeeImageView:ImageView = myView.findViewById(R.id.logged_in_employee_image_view)
 
 
         Picasso.with(context)
@@ -89,8 +83,8 @@ class MainMenuFragment : Fragment() {
 
 
 
-        var loggedInEmployeeTextView:TextView = myView.findViewById<TextView>(R.id.logged_in_employee)
-        loggedInEmployeeTextView.text = "Welcome ${loggedInEmployee!!.fName}!"
+        val loggedInEmployeeTextView:TextView = myView.findViewById(R.id.logged_in_employee)
+        loggedInEmployeeTextView.text = getString(R.string.welcome_name, loggedInEmployee!!.fName)
 
 
 

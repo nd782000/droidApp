@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -9,19 +8,17 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import kotlinx.android.synthetic.main.lead_list_item.view.*
 import java.util.*
 
 
-
-class LeadsAdapter(private val list: MutableList<Lead>, private val context: Context,private val cellClickListener: LeadCellClickListener, private val customerView:Boolean = false)
-
-    : RecyclerView.Adapter<LeadViewHolder>(), Filterable {
+class LeadsAdapter(private val list: MutableList<Lead>, private val cellClickListener: LeadCellClickListener, private val customerView: Boolean = false) : RecyclerView.Adapter<LeadViewHolder>(), Filterable {
 
 
     var filterList:MutableList<Lead> = emptyList<Lead>().toMutableList()

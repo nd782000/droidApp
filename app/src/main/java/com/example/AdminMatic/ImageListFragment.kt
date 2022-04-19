@@ -17,15 +17,10 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-import kotlinx.android.parcel.Parcelize
-
-import kotlinx.android.synthetic.main.fragment_image_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_image_list.customerSwipeContainer
 import kotlinx.android.synthetic.main.fragment_image_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-
 
 
 /*
@@ -57,7 +52,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
     lateinit var searchView:androidx.appcompat.widget.SearchView
     lateinit var  swipeRefresh:SwipeRefreshLayout
 
-    lateinit var addImagesBtn: Button
+    private lateinit var addImagesBtn: Button
 
 
     // lateinit var  btn: Button
@@ -71,13 +66,6 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
     var refreshing = false
     var searching = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -300,9 +288,9 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
                     val images:JSONArray = parentObject.getJSONArray("images")
-                    println("images = ${images.toString()}")
+                    println("images = $images")
                     println("images count = ${images.length()}")
 
 
@@ -314,9 +302,9 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                     println("imageList count = ${imageList.count()}")
 
                     // Now we call setRefreshing(false) to signal refresh has finished
-                    customerSwipeContainer.isRefreshing = false;
+                    customerSwipeContainer.isRefreshing = false
 
-                   // Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 
 
                     adapter.filterList = imageList
@@ -347,7 +335,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                 params["offset"] = offset.toString()
 
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -369,8 +357,8 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
 
     override fun onImageCellClickListener(data:Image) {
-        data.let { data ->
-            val directions = ImageListFragmentDirections.navigateToImage(data)
+        data.let {
+            val directions = ImageListFragmentDirections.navigateToImage(it)
             myView.findNavController().navigate(directions)
         }
     }

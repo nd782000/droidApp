@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -48,7 +47,7 @@ interface TaskCellClickListener {
 
 class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSelectedListener {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    //private var param1: String? = null
     private var param2: String? = null
 
 
@@ -64,44 +63,44 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
+    private lateinit var  pgsBar: ProgressBar
 
-    lateinit var woItemSearch: SearchView
+    private lateinit var woItemSearch: SearchView
 
-    lateinit var estCl:ConstraintLayout
-    lateinit var estTxt:EditText
-    lateinit var chargeSpinner:Spinner
+    private lateinit var estCl:ConstraintLayout
+    private lateinit var estTxt:EditText
+    private lateinit var chargeSpinner:Spinner
 
-    lateinit var hideCl:ConstraintLayout
-    lateinit var hideQtySwitch:Switch
-    lateinit var qtyTxt:EditText
+    private lateinit var hideCl:ConstraintLayout
+    private lateinit var hideQtySwitch:Switch
+    private lateinit var qtyTxt:EditText
 
-    lateinit var taxCl:ConstraintLayout
-    lateinit var taxableSwitch:Switch
-    lateinit var priceTxt:EditText
+    private lateinit var taxCl:ConstraintLayout
+    private lateinit var taxableSwitch:Switch
+    private lateinit var priceTxt:EditText
 
-    lateinit var totalCl:ConstraintLayout
-    lateinit var totalTxt:EditText
+    private lateinit var totalCl:ConstraintLayout
+    private lateinit var totalTxt:EditText
 
-    lateinit var leadTaskBtn:Button
-    lateinit var tasksRv:RecyclerView
-    lateinit var descriptionCl:ConstraintLayout
+    private lateinit var leadTaskBtn:Button
+    private lateinit var tasksRv:RecyclerView
+    private lateinit var descriptionCl:ConstraintLayout
 
-    lateinit var usageBtn:Button
-    lateinit var profitCl:ConstraintLayout
+    private lateinit var usageBtn:Button
+    private lateinit var profitCl:ConstraintLayout
 
-    lateinit var submitBtn:Button
+    private lateinit var submitBtn:Button
 
 
-    var chargeTypeArray:Array<String> = arrayOf("No Charge", "Flat", "T & M")
+    private var chargeTypeArray:Array<String> = arrayOf("No Charge", "Flat", "T & M")
 
-    var editMode = false
+    private var editMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            woItem = it.getParcelable<WoItem?>("woItem")
-            workOrder = it.getParcelable<WorkOrder>("workOrder")!!
+            woItem = it.getParcelable("woItem")
+            workOrder = it.getParcelable("workOrder")!!
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -112,14 +111,14 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_customer, container, false)
         // employee = args
         myView = inflater.inflate(R.layout.fragment_wo_item, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder Item"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.work_order_item)
 
         return myView
     }
@@ -192,27 +191,10 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             context as Callbacks
         } else {
             throw ClassCastException(
-                context.toString()
-                    .toString() + " must implemenet LogOut"
+                "$context must implement LogOut"
             )
         }
     }
-
-
-    override fun onDestroyView() {
-
-        //if self.delegate != nil && self.statusEditsMade == true{
-        //                self.delegate.refreshWo(_refeshWoID: self.woItem.ID, _newWoStatus: self.newWoStatus)
-        //            }
-
-        //if (listener != null){
-           // listener!!.refreshWorkOrder()
-        //}
-
-
-        super.onDestroyView()
-    }
-
 
 
     override fun getWoItem(){
@@ -228,7 +210,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -243,7 +225,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
 
 
                     val gson = GsonBuilder().create()
@@ -253,7 +235,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
 
 
-                    var taskJSON: JSONArray = parentObject.getJSONArray("tasks")
+                    val taskJSON: JSONArray = parentObject.getJSONArray("tasks")
                     val taskList = gson.fromJson(taskJSON.toString() , Array<Task>::class.java).toMutableList()
 
                     tasksRv.apply {
@@ -298,7 +280,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["woItemID"] = woItem!!.ID
 
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -309,14 +291,14 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
     override fun uploadImage(_task:Task){
 
-        var images:Array<Image>
-        if(_task.images == null){
-            images = arrayOf()
+        val images:Array<Image> = if(_task.images == null){
+            arrayOf()
         }else{
-            images = _task.images!!
+            _task.images!!
         }
 
-        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"","${_task.ID}","${_task.task}","","")
+        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"",
+            _task.ID,"${_task.task}","","")
         myView.findNavController().navigate(directions)
     }
 
@@ -324,16 +306,15 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     override fun onTaskCellClickListener(data:Task) {
 
         println("Cell clicked with task: ${data.task}")
-        var images:Array<Image>
-        if(data.images == null){
-            images = arrayOf()
+        val images:Array<Image> = if(data.images == null){
+            arrayOf()
         }else{
-            images = data.images!!
+            data.images!!
         }
 
-        data?.let { data ->
+        data.let {
 
-            val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"","${data.ID}","${data.task}","","")
+            val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"", it.ID,"${it.task}","","")
 
            myView.findNavController().navigate(directions)
         }
@@ -374,7 +355,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             android.R.layout.simple_spinner_dropdown_item, chargeTypeArray
 
         )
-        adapter!!.setDropDownViewResource(R.layout.spinner_right_aligned)
+        adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
         chargeSpinner.adapter = adapter
 
@@ -437,7 +418,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
             totalTxt.setText(woItem!!.total)
 
-            if (editMode == true){
+            if (editMode){
                 println("editMode = true")
 
                // woItemSearch.isEnabled = true
@@ -573,9 +554,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     ) {
         view.isEnabled = enabled
         if (view is ViewGroup) {
-            val viewGroup = view
-            for (i in 0 until viewGroup.childCount) {
-                val child = viewGroup.getChildAt(i)
+            for (i in 0 until view.childCount) {
+                val child = view.getChildAt(i)
                 setViewAndChildrenEnabled(child, enabled)
             }
         }

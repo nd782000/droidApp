@@ -19,9 +19,7 @@ import java.util.*
 
 
 
-class CustomersAdapter(private val list: MutableList<Customer>, private val context: Context,private val cellClickListener: CustomerCellClickListener)
-
-    : RecyclerView.Adapter<CustomerViewHolder>(), Filterable {
+class CustomersAdapter(private val list: MutableList<Customer>, private val cellClickListener: CustomerCellClickListener): RecyclerView.Adapter<CustomerViewHolder>(), Filterable {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
@@ -112,12 +110,12 @@ class CustomersAdapter(private val list: MutableList<Customer>, private val cont
 
 
         //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
+        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
             println("menu click")
 
-            val popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+            val popUp = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.options_menu)
-            popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
                     R.id.menu1 -> {
@@ -132,7 +130,7 @@ class CustomersAdapter(private val list: MutableList<Customer>, private val cont
                 }
 
                 true
-            })
+            }
 
 
 

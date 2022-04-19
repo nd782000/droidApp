@@ -1,21 +1,22 @@
 package com.example.AdminMatic
 
-import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.AdminMatic.R
 import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import kotlinx.android.synthetic.main.fragment_equipment_list.*
-import kotlinx.android.synthetic.main.fragment_map.*
-import kotlinx.android.synthetic.main.fragment_new_service.*
 
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -27,7 +28,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val markerList = mutableListOf<Marker>()
     private var mapFragment : SupportMapFragment?=null
     private val pinMapWorkOrder = HashMap<Marker?, WorkOrder>()
-
 
     //Todo: change to an enum maybe, currently 0 = work orders and 1 = leads
     var mode:Int = 0
@@ -51,7 +51,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         myView = inflater.inflate(R.layout.fragment_map, container, false)
 
 
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.wo_count)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
 
         mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
 
@@ -130,19 +130,4 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         pgsBar.visibility = View.INVISIBLE
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EquipmentListFragment().apply {
-            }
-    }
 }

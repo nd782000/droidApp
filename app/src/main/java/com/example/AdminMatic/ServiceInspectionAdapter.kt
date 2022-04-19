@@ -13,9 +13,7 @@ import kotlinx.android.synthetic.main.wo_item_list_item.view.*
 import java.util.*
 
 
-class ServiceInspectionAdapter(private val list: MutableList<InspectionQuestion>, private val context: Context,private val cellClickListener: ServiceInspectionCellClickListener)
-
-    : RecyclerView.Adapter<ServiceInspectionViewHolder>() {
+class ServiceInspectionAdapter(list: MutableList<InspectionQuestion>, private val cellClickListener: ServiceInspectionCellClickListener) : RecyclerView.Adapter<ServiceInspectionViewHolder>() {
 
     var filterList:MutableList<InspectionQuestion> = emptyList<InspectionQuestion>().toMutableList()
 

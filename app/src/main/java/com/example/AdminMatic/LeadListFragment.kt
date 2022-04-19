@@ -52,14 +52,6 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
     lateinit var adapter:LeadsAdapter
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,7 +68,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
         val emptyList:MutableList<Lead> = mutableListOf()
 
-        adapter = LeadsAdapter(emptyList,myView.context, this)
+        adapter = LeadsAdapter(emptyList, this)
 
 
 
@@ -161,8 +153,10 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
 
                         adapter = activity?.let {
-                            LeadsAdapter(leadsList,
-                                it, this@LeadListFragment)
+                            LeadsAdapter(
+                                leadsList,
+                                this@LeadListFragment
+                            )
                         }
 
                         val itemDecoration: ItemDecoration =
@@ -267,8 +261,8 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         //Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data.let { data ->
-            val directions = LeadListFragmentDirections.navigateToLead(data)
+        data.let {
+            val directions = LeadListFragmentDirections.navigateToLead(it)
             myView.findNavController().navigate(directions)
         }
 
@@ -290,21 +284,4 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
     }
 
 
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LeadListFragment().apply {
-
-            }
-    }
 }
