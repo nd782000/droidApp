@@ -101,16 +101,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             bitmapDescriptor = when (it.status) {
                 "0" -> {
                     //Todo: can't set it gray with official code, so maybe use our own bitmaps here
-                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
+                    BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_skip)
+
                 }
                 "1" -> {
-                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                    BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_not_started)
                 }
                 "2" -> {
-                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
+                    BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_in_progress)
                 }
                 else -> {
-                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                    BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_done)
                 }
             }
 
@@ -120,6 +121,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     .title(it.custName +" - "+ it.title)
                     .snippet(it.custAddress)
                     .icon(bitmapDescriptor)
+
             )
             newMarker?.let { it1 -> markerList.add(it1) }
             pinMapWorkOrder[newMarker] = it
