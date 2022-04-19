@@ -28,6 +28,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val markerList = mutableListOf<Marker>()
     private var mapFragment : SupportMapFragment?=null
     private val pinMapWorkOrder = HashMap<Marker?, WorkOrder>()
+    lateinit var googleMapGlobal:GoogleMap
 
     //Todo: change to an enum maybe, currently 0 = work orders and 1 = leads
     var mode:Int = 0
@@ -63,6 +64,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //need to wait for this function to initialize views
         println("onViewCreated")
+
+        (activity as MainActivity?)!!.setMap(this)
+
+
         pgsBar = view.findViewById(R.id.progressBar)
         refreshBtn = view.findViewById(R.id.map_refresh_btn)
 
@@ -73,10 +78,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         println("map ready")
+        googleMapGlobal = googleMap
+        updateMap()
+
+    }
+
+
+    fun updateMap(){
+        println("updateMap")
+
         var newMarker: Marker?
         var bitmapDescriptor: BitmapDescriptor?
 
-        googleMap.setOnInfoWindowClickListener { marker ->
+        googleMapGlobal.setOnInfoWindowClickListener { marker ->
             val directions =
                 WorkOrderListFragmentDirections.navigateToWorkOrder(pinMapWorkOrder[marker])
             myView.findNavController().navigate(directions)
@@ -100,7 +114,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             }
 
-            newMarker = googleMap.addMarker(
+            newMarker = googleMapGlobal.addMarker(
                 MarkerOptions()
                     .position(LatLng(it.lat!!.toDouble(), it.lng!!.toDouble()))
                     .title(it.custName +" - "+ it.title)
@@ -118,7 +132,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val bounds = builder.build()
         val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
 
-        googleMap.moveCamera(cu)
+        googleMapGlobal.moveCamera(cu)
+
+        refreshBtn.setOnClickListener {
+            (activity as MainActivity?)!!.refreshWorkOrders()
+        }
 
     }
 

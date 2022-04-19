@@ -101,6 +101,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         println("onViewCreated")
 
 
+        (activity as MainActivity?)!!.setWorkOrderList(this)
+
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.work_orders_search)
@@ -186,7 +188,14 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
 
             //skip get workOrders and go directly to layoutViews
-            layoutViews()
+            //layoutViews()
+            if (this.isVisible){
+                layoutViews()
+            }
+
+            //if(activity != null){
+
+            //}
 
             scheduleSpinner.setTag(R.id.pos, scheduleSpinnerPosition)
             scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
@@ -203,7 +212,9 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     }
 
 
-    private fun getWorkOrders(){
+
+
+     fun getWorkOrders(){
         println("getWorkOrders")
 
 
@@ -244,16 +255,15 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                             gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
                                 .toMutableList()
 
-                        countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
-                        layoutViews()
+                        (activity as MainActivity?)!!.updateMap()
 
-                        /*
-                        Toast.makeText(
-                            activity,
-                            "${globalWorkOrdersList!!.count()} WorkOrders Loaded",
-                            Toast.LENGTH_SHORT
-                        ).show()
-*/
+                        countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+
+                        if (this.isVisible){
+                            layoutViews()
+                        }
+
+
 
 
 
@@ -290,14 +300,19 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
     }
 
+
+
     fun layoutViews(){
         println("layoutViews")
+        println(activity)
 
         hideProgressView()
 
         list_recycler_view.apply {
 
-                layoutManager = LinearLayoutManager(activity)
+        layoutManager = LinearLayoutManager((activity as MainActivity?)!!)
+
+
 
 
             //workOrdersList.clear()

@@ -33,6 +33,8 @@ interface  LogOut{
 interface Callbacks{
     fun refreshWorkOrder()
     fun refreshImages()
+    fun refreshWorkOrders()
+    fun refreshLeads()
 }
 
 interface StackDelegate {
@@ -875,6 +877,8 @@ class SpinnerInteractionListener : AdapterView.OnItemSelectedListener, View.OnTo
 class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
     lateinit var  pgsBar: ProgressBar
+    private var workOrderListFragment: WorkOrderListFragment? = null
+    private var mapFragment: MapFragment? = null
      private var imageListFragment: ImageListFragment? = null
     //lateinit var  hostFragment: Fragment
 
@@ -1040,7 +1044,46 @@ override fun logOut(view: View){
     }
 
 
+
+
     //callback methods
+
+
+    override fun refreshLeads() {
+        println("refreshWorkLeads")
+
+    }
+
+    fun setWorkOrderList(_workOrderListFragment:WorkOrderListFragment?){
+        println("setWorkOrderList")
+        this.workOrderListFragment = _workOrderListFragment!!
+    }
+
+    fun setMap(_mapFragment:MapFragment?){
+        println("setMap")
+        this.mapFragment = _mapFragment!!
+    }
+
+
+    fun updateMap(){
+        println("updateMap")
+        if(mapFragment != null){
+            mapFragment!!.updateMap()
+        }
+    }
+
+    override fun refreshWorkOrders() {
+        println("refreshWorkOrders")
+
+        if(workOrderListFragment != null){
+            println("fragments not null ")
+            workOrderListFragment!!.getWorkOrders()
+        }
+
+
+    }
+
+
 
     override fun refreshWorkOrder() {
         println("refreshWorkOrder")
