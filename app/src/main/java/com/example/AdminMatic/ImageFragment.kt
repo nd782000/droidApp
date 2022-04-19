@@ -27,7 +27,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class ImageFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    //private var param1: String? = null
     private var param2: String? = null
 
     private  var image: Image? = null
@@ -55,13 +55,13 @@ class ImageFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
        // return inflater.inflate(R.layout.fragment_image, container, false)
         myView = inflater.inflate(R.layout.fragment_image, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = image!!.name
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = image!!.name
 
         return myView
     }
@@ -79,7 +79,7 @@ class ImageFragment : Fragment() {
 
         println("image path = ${GlobalVars.mediumBase + image!!.fileName}")
         Picasso.with(context)
-            .load("${GlobalVars.mediumBase + image!!.fileName}")
+            .load(GlobalVars.mediumBase + image!!.fileName)
             //.resize(imgWidth, imgHeight)         //optional
             //.centerCrop()                        //optional
             .into(imageView)                        //Your image view object.
@@ -93,7 +93,7 @@ class ImageFragment : Fragment() {
         }
 
         likesTextView  = myView.findViewById(R.id.likes_tv)
-        likesTextView.text = "x${image!!.likes} Likes"
+        likesTextView.text = getString(R.string.x_likes, image!!.likes)
 
         custNameTextView  = myView.findViewById(R.id.image_customer_tv)
         custNameTextView.text = image!!.customerName

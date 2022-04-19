@@ -53,9 +53,9 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         println("queryText = $queryText")
         //text highlighting for first string
-        if (queryText != null && !queryText.isEmpty() && queryText != "") {
+        if (queryText.isNotEmpty() && queryText != "") {
 
-            val startPos1: Int = filterList[position].name.toLowerCase().indexOf(queryText.toLowerCase())
+            val startPos1: Int = filterList[position].name.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos1 = startPos1 + queryText.length
             if (startPos1 != -1) {
                 val spannable: Spannable = SpannableString(filterList[position].name)
@@ -79,11 +79,11 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
             holder.itemView.list_name.text = filterList[position].name
         }
 
-        var employeeImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.employee_item_image_view)
+        val employeeImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.employee_item_image_view)
 
 
         Picasso.with(context)
-            .load("${GlobalVars.thumbBase + filterList[position].pic}")
+            .load(GlobalVars.thumbBase + filterList[position].pic)
             .placeholder(R.drawable.user_placeholder) //optional
             //.resize(imgWidth, imgHeight)         //optional
             //.centerCrop()                        //optional
@@ -100,14 +100,14 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
         holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
             println("menu click")
 
-            var popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+            val popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
             popUp.inflate(R.menu.emp_options_menu)
             popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
                     R.id.call -> {
                         //Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-                        println("phone btn clicked ${employee!!.phone}")
+                        println("phone btn clicked ${employee.phone}")
 
                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.phone))
                         myView.context.startActivity(intent)
@@ -119,7 +119,7 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
                         //intent.putExtra("sms_body", "Here goes your message...")
                        // myView.context.startActivity(intent)
                        // val number =
-                            "12346556" // The number on which you want to send SMS
+                           // "12346556" // The number on which you want to send SMS
 
                         myView.context.startActivity(
                             Intent(
@@ -179,11 +179,11 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
                     filterList = list
                 } else {
 
-                    var resultList:MutableList<Employee> = mutableListOf()
+                    val resultList:MutableList<Employee> = mutableListOf()
                     for (row in list) {
                         //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
                        // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
-                        if (row.name.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))) {
+                        if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
 
                             println("add row")
 

@@ -26,7 +26,7 @@
         android:id="@+id/customerSwipeContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/lead_count_textview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/leads_search">
@@ -34,10 +34,56 @@
             android:id="@+id/list_recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            />
+        />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+
+    <TextView
+        android:id="@+id/lead_count_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:gravity="center_vertical"
+        android:text=""
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/new_lead_btn"
+
+        />
+
+
+    <Button
+        android:id="@+id/new_lead_btn"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+
+        android:text="Crews"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/map_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <Button
+        android:id="@+id/map_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+
+        android:layout_marginRight="10dp"
+        android:background="@drawable/ic_map_pin"
+        android:insetTop="12dp"
+        android:insetBottom="12dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="5dp"
+        android:text=""
+        app:iconPadding="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
 
     <ProgressBar
         android:id="@+id/progressBar"

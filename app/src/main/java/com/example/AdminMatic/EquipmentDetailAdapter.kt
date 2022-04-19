@@ -66,7 +66,7 @@ class EquipmentDetailAdapter(private val list: MutableList<String>, private val 
 
 
 
-        val data = filterList[position]
+        //val data = filterList[position]
         holder.itemView.setOnClickListener {
             cellClickListener.onEquipmentDetailCellClickListener(position)
         }
@@ -106,7 +106,7 @@ class EquipmentDetailViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     fun bind(detail: String, position: Int) {
         mNameView?.text = detail
         if (position == 9) { // vendor link
-            mNameView!!.setTextColor(mNameView!!.context.getColor(R.color.link));
+            mNameView!!.setTextColor(mNameView!!.context.getColor(R.color.link))
         }
     }
 }

@@ -70,7 +70,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
        // adapter = ContactsAdapter(customer!!.contacts.toMutableList(),myView.context,this)
         //(activity as AppCompatActivity).supportActionBar?.title = "Customer List"
 
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = "Contact List"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.contacts_list)
 
         // Inflate the layout for this fragment
         return myView

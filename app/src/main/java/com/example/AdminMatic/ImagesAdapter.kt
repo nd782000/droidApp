@@ -54,10 +54,10 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
         println("queryText = $queryText")
 
         //text highlighting for second string
-        if (queryText != null && !queryText.isEmpty() && queryText != "" && filterList[position].customerName != null) {
+        if (queryText.isNotEmpty() && queryText != "" && filterList[position].customerName != null) {
 
 
-            val startPos2: Int = filterList[position].customerName!!.toLowerCase().indexOf(queryText.toLowerCase())
+            val startPos2: Int = filterList[position].customerName!!.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos2 = startPos2 + queryText.length
             if (startPos2 != -1) {
                 val spannable: Spannable = SpannableString(filterList[position].customerName!!)
@@ -88,13 +88,13 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
 
         }
 
-        var imageImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.image_item_image_view)
+        val imageImageView:ImageView = holder.itemView.findViewById<ImageView>(R.id.image_item_image_view)
 
 
         Picasso.with(context)
 
 
-            .load("${GlobalVars.thumbBase + filterList[position].fileName}")
+            .load(GlobalVars.thumbBase + filterList[position].fileName)
             //.placeholder(R.drawable.ic_images) //optional
             //.resize(imgWidth, imgHeight)         //optional
             //.centerCrop()                        //optional
@@ -108,13 +108,14 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
 
     }
 
-
+    /*
     fun getImageCount(): Int{
 
         print("getImageCount = ${list.size}")
         return list.size
 
     }
+    */
 
 
     override fun getItemCount(): Int{
@@ -146,12 +147,12 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
                     filterList = list
                 } else {
 
-                    var resultList:MutableList<Image> = mutableListOf()
+                    val resultList:MutableList<Image> = mutableListOf()
                     for (row in list) {
                         //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
                        // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
                         if (row.customerName == null){
-                            if (row.name.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))) {
+                            if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
 
                                 println("add row")
 
@@ -160,7 +161,7 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
                                 println("resultList.count = ${resultList.count()}")
                             }
                         }else{
-                            if (row.name.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT)) || row.customerName!!.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))) {
+                            if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.customerName.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
 
                                 println("add row")
 
@@ -227,12 +228,10 @@ class ImageViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     fun bind(image: Image) {
         mNameView?.text = image.name
         if(image.customerName != null){
-            mTypeView?.text = image.customerName!!
+            mTypeView?.text = image.customerName
         }
 
 
     }
-
-
 
 }

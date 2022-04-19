@@ -66,7 +66,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         println("onCreateView")
@@ -77,7 +77,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
         //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
         // progBar.alpha = 0.2f
 
-        var emptyList:MutableList<Invoice> = mutableListOf()
+        val emptyList:MutableList<Invoice> = mutableListOf()
 
         adapter = InvoicesAdapter(emptyList,myView.context, this)
 
@@ -87,7 +87,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
        // (activity as AppCompatActivity).supportActionBar?.title = "Invoice List"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Invoice List"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.invoice_list)
 
 
 
@@ -125,7 +125,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -147,9 +147,9 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
-                    var invoices:JSONArray = parentObject.getJSONArray("invoices")
-                    println("invoices = ${invoices.toString()}")
+                    println("parentObject = $parentObject")
+                    val invoices:JSONArray = parentObject.getJSONArray("invoices")
+                    println("invoices = $invoices")
                     println("invoices count = ${invoices.length()}")
 
 
@@ -183,8 +183,8 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
                             // Make sure you call swipeContainer.setRefreshing(false)
                             // once the network request has completed successfully.
                             //fetchTimelineAsync(0)
-                            searchView.setQuery("", false);
-                            searchView.clearFocus();
+                            searchView.setQuery("", false)
+                            searchView.clearFocus()
                             getInvoices()
                         }
                         // Configure the refreshing colors
@@ -198,14 +198,14 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
 
 
-                        (adapter as InvoicesAdapter).notifyDataSetChanged();
+                        (adapter as InvoicesAdapter).notifyDataSetChanged()
 
                         // Remember to CLEAR OUT old items before appending in the new ones
 
                         // ...the data has come back, add new items to your adapter...
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false;
+                        customerSwipeContainer.isRefreshing = false
 
                       //  Toast.makeText(activity,"${invoicesList.count()} Invoices Loaded",Toast.LENGTH_SHORT).show()
 
@@ -258,7 +258,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -269,7 +269,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        data?.let { data ->
+        data.let { data ->
             val directions = InvoiceListFragmentDirections.navigateToInvoice(data)
             myView.findNavController().navigate(directions)
         }

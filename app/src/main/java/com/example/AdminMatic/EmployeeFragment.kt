@@ -52,9 +52,9 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
     lateinit var  pgsBar: ProgressBar
     lateinit var  empViewTop: ConstraintLayout
-    lateinit var  empViewMenu: ConstraintLayout
-    lateinit var  empViewContainer: ConstraintLayout
-    lateinit var  empViewFooter: ConstraintLayout
+    //lateinit var  empViewMenu: ConstraintLayout
+    //lateinit var  empViewContainer: ConstraintLayout
+    //lateinit var  empViewFooter: ConstraintLayout
     lateinit var recyclerView: RecyclerView
     lateinit var  swipeRefresh: SwipeRefreshLayout
 
@@ -114,7 +114,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
 
        // employee = args
@@ -131,7 +131,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Employee"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Employee"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.employee)
 
 
         return myView
@@ -151,7 +151,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         empImageView = view.findViewById(R.id.emp_pic_iv)
         Picasso.with(context)
-            .load("${GlobalVars.thumbBase + employee!!.pic}")
+            .load(GlobalVars.thumbBase + employee!!.pic)
             .placeholder(R.drawable.user_placeholder) //optional
             //.resize(imgWidth, imgHeight)         //optional
             //.centerCrop()                        //optional
@@ -275,13 +275,13 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         }
         refreshing = false
 
-        var limit = 200
+        val limit = 200
 
         var urlString = "https://www.adminmatic.com/cp/app/functions/get/images.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -299,7 +299,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
-                    var images:JSONArray = parentObject.getJSONArray("images")
+                    val images:JSONArray = parentObject.getJSONArray("images")
                     println("images = ${images.toString()}")
                     println("images count = ${images.length()}")
 
@@ -352,7 +352,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     }
 
 
-    fun RecyclerView.onScrollToEnd(
+    private fun RecyclerView.onScrollToEnd(
         onScrollNearEnd: (Unit) -> Unit
     ) = addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -384,7 +384,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     }
 
     override fun onImageCellClickListener(data:Image) {
-        data?.let { data ->
+        data.let { data ->
             val directions = EmployeeFragmentDirections.navigateEmployeeToImage(data)
             myView.findNavController().navigate(directions)
         }

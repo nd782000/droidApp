@@ -64,7 +64,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         println("onCreateView")
@@ -75,7 +75,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
         //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
         // progBar.alpha = 0.2f
 
-        var emptyList:MutableList<Item> = mutableListOf()
+        val emptyList:MutableList<Item> = mutableListOf()
 
         adapter = ItemsAdapter(emptyList,myView.context, this)
 
@@ -85,7 +85,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Item List"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Item List"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.item_list)
 
 
 
@@ -123,7 +123,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -145,9 +145,9 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
-                    var items:JSONArray = parentObject.getJSONArray("items")
-                    println("items = ${items.toString()}")
+                    println("parentObject = $parentObject")
+                    val items:JSONArray = parentObject.getJSONArray("items")
+                    println("items = $items")
                     println("items count = ${items.length()}")
 
 
@@ -181,8 +181,8 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
                             // Make sure you call swipeContainer.setRefreshing(false)
                             // once the network request has completed successfully.
                             //fetchTimelineAsync(0)
-                            searchView.setQuery("", false);
-                            searchView.clearFocus();
+                            searchView.setQuery("", false)
+                            searchView.clearFocus()
                             getItems()
                         }
                         // Configure the refreshing colors
@@ -203,7 +203,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
                         // ...the data has come back, add new items to your adapter...
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false;
+                        customerSwipeContainer.isRefreshing = false
 
                        // Toast.makeText(activity,"${itemsList.count()} Items Loaded",Toast.LENGTH_SHORT).show()
 
@@ -256,7 +256,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -267,7 +267,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
 
-        data?.let { data ->
+        data.let { data ->
             val directions = ItemListFragmentDirections.navigateToItem(data)
             myView.findNavController().navigate(directions)
         }

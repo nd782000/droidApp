@@ -66,14 +66,14 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         globalVars = GlobalVars()
         myView = inflater.inflate(R.layout.fragment_employee_list, container, false)
 
 
-        var emptyList:MutableList<Employee> = mutableListOf()
+        val emptyList:MutableList<Employee> = mutableListOf()
 
         adapter = EmployeesAdapter(emptyList,myView.context, this)
 
@@ -83,7 +83,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Employee List"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Employee List"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.employee_list)
 
         // Inflate the layout for this fragment
       //  return inflater.inflate(R.layout.fragment_employee_list, container, false)
@@ -121,7 +121,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -144,7 +144,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     //println("parentObject = ${parentObject.toString()}")
-                    var employees:JSONArray = parentObject.getJSONArray("employees")
+                    val employees:JSONArray = parentObject.getJSONArray("employees")
                    // println("employees = ${employees.toString()}")
                    // println("employees count = ${employees.length()}")
 
@@ -264,7 +264,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
     override fun onEmployeeCellClickListener(data:Employee) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         //Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
-        data?.let { data ->
+        data.let { data ->
             val directions = EmployeeListFragmentDirections.navigateToEmployee(data)
             myView.findNavController().navigate(directions)
         }

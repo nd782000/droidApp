@@ -58,17 +58,17 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         globalVars = GlobalVars()
         myView = inflater.inflate(R.layout.fragment_customer_list, container, false)
 
 
-        var emptyList:MutableList<Customer> = mutableListOf()
+        val emptyList:MutableList<Customer> = mutableListOf()
         adapter = CustomersAdapter(emptyList,myView.context, this)
         //(activity as AppCompatActivity).supportActionBar?.title = "Customer List"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Customer List"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.customer_list)
 
         // Inflate the layout for this fragment
         return myView
@@ -175,7 +175,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -187,7 +187,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
                     //var customers: JSONObject = parentObject.getJSONObject("customers")
-                    var customers:JSONArray = parentObject.getJSONArray("customers")
+                    val customers:JSONArray = parentObject.getJSONArray("customers")
                    // println("customers = ${customers.toString()}")
                    // println("customers count = ${customers.length()}")
 
@@ -281,7 +281,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
     override fun onCustomerCellClickListener(data:Customer) {
         println("Cell clicked with customer: ${data.sysname}")
-        data?.let { data ->
+        data.let { data ->
            // val directions = CustomerListFragmentDirections.navigateToCustomer(data)
             val directions = CustomerListFragmentDirections.navigateToCustomer(data.ID)
             myView.findNavController().navigate(directions)

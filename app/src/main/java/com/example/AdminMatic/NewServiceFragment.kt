@@ -38,12 +38,6 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 
-/*
-interface EquipmentDetailCellClickListener {
-    fun onEquipmentDetailCellClickListener(data:String)
-}
-*/
-
 class NewServiceFragment : Fragment() {
 
     private var equipment: Equipment? = null
@@ -132,7 +126,8 @@ class NewServiceFragment : Fragment() {
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val currentTime = Date()
 
-        newService = EquipmentService(  "0", //temp
+        newService = EquipmentService(
+            "0", //temp
             "Untitled",
             "0",
             getString(R.string.service_type_one_time), //typeName

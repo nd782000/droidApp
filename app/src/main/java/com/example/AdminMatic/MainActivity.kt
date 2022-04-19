@@ -10,9 +10,11 @@ import android.widget.ProgressBar
 import android.widget.Spinner
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
+import com.AdminMatic.BuildConfig
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -900,12 +902,13 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
         println("onCreateOptionsMenu")
         menuInflater.inflate(R.menu.menu, menu)
+        menu[menu.size()-1].title = getString(R.string.version, BuildConfig.VERSION_NAME)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
-        val id = item.getItemId()
+        val id = item.itemId
 
         if (id == android.R.id.home) {
             back()

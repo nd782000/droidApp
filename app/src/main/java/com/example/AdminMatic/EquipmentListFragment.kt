@@ -63,7 +63,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         println("onCreateView")
@@ -74,7 +74,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
         //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
         // progBar.alpha = 0.2f
 
-        var emptyList:MutableList<Equipment> = mutableListOf()
+        val emptyList:MutableList<Equipment> = mutableListOf()
 
         adapter = EquipmentAdapter(emptyList,myView.context, this)
 
@@ -84,7 +84,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Equipment List"
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "Equipment List"
+        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment_list)
 
 
 
@@ -122,7 +122,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "${"$urlString?cb=$currentTimestamp"}"
+        urlString = "$urlString?cb=$currentTimestamp"
         val queue = Volley.newRequestQueue(myView.context)
 
 
@@ -145,7 +145,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = ${parentObject.toString()}")
-                    var equipment:JSONArray = parentObject.getJSONArray("equipment")
+                    val equipment:JSONArray = parentObject.getJSONArray("equipment")
                     println("equipment = ${equipment.toString()}")
                     println("equipment count = ${equipment.length()}")
 
@@ -266,7 +266,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
 
-        data?.let { data ->
+        data.let { data ->
             val directions = EquipmentListFragmentDirections.navigateToEquipment(data)
             myView.findNavController().navigate(directions)
         }
