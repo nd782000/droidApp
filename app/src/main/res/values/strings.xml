@@ -181,10 +181,20 @@
     <string name="completion_notes">Completion Notes:</string>
     <string name="submit">Submit</string>
 
+    <string name="woScheduleLbl">Schedule:</string>
+    <string name="woChargeLbl">Charge:</string>
+    <string name="woCrewLbl">Main Crew:</string>
+    <string name="woRepLbl">Rep:</string>
+    <string name="woPriceLbl">Price:</string>
+    <string name="woProfitLbl">Profit:</string>
+    <string name="woCostLbl">Cost:</string>
+    <string name="woProfitPercentLbl">Profit %:</string>
+
     <string name="wo_charge_nc">No Charge</string>
-    <string name="wo_charge_fl">Flat %1$s</string>
+    <string name="wo_charge_fl">Flat Price</string>
     <string name="wo_charge_tm">T&amp;M</string>
     <string name="wo_count">%1$s Scheduled Work Order(s)</string>
+    <string name="dollar_sign">$%1$s</string>
 
     <string name="service_type">Type: %1$s</string>
     <string name="service_due">Due: %1$s %2$s</string>

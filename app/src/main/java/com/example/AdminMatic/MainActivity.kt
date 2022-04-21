@@ -1079,8 +1079,6 @@ override fun logOut(view: View){
             println("fragments not null ")
             workOrderListFragment!!.getWorkOrders()
         }
-
-
     }
 
 

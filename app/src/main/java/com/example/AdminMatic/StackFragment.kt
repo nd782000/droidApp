@@ -258,9 +258,7 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
                     dummyLead.description = "Select Leads"
                     leadsList!!.add(0,dummyLead)
 
-                    println("AAAAAAAAAAA" + leadsJSON.length())
                     leadTxt.text = getString(R.string.leads_amount, leadsJSON.length())
-
 
                     val contractsJSON: JSONArray = parentObject.getJSONArray("contracts")
                     println("contractsJSON = $contractsJSON")

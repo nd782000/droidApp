@@ -1,17 +1,20 @@
 package com.example.AdminMatic
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wo_item_list_item.view.*
 
 
-class WoItemsAdapter(list: MutableList<WoItem>, private val cellClickListener: WoItemCellClickListener) : RecyclerView.Adapter<WoItemViewHolder>() {
+class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, private val cellClickListener: WoItemCellClickListener) : RecyclerView.Adapter<WoItemViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
@@ -48,6 +51,23 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val cellClickListener: W
 
 
         holder.itemView.list_name.text = filterList[position].item
+
+        val mIconView:ImageView = holder.itemView.findViewById(R.id.status_icon_iv)
+        when (woItem.status) {
+            "0"-> Picasso.with(context)
+                .load(R.drawable.ic_canceled)
+                .into(mIconView)
+            "1"-> Picasso.with(context)
+                .load(R.drawable.ic_not_started)
+                .into(mIconView)
+            "2"-> Picasso.with(context)
+                .load(R.drawable.ic_in_progress)
+                .into(mIconView)
+            "3"-> Picasso.with(context)
+                .load(R.drawable.ic_done)
+                .into(mIconView)
+
+        }
 
 
 
@@ -114,17 +134,28 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val cellClickListener: W
 
 class WoItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.wo_item_list_item, parent, false)) {
+
+    private var mIconView: ImageView? = null
     private var mNameView: TextView? = null
+    private var mEstView: TextView? = null
+    private var mActView: TextView? = null
 
 
 
     init {
         mNameView = itemView.findViewById(R.id.list_name)
-
+        mIconView = itemView.findViewById(R.id.status_icon_iv)
+        mEstView = itemView.findViewById(R.id.list_est_tv)
+        mActView = itemView.findViewById(R.id.list_act_tv)
     }
 
     fun bind(woItem: WoItem) {
+
+
+
         mNameView?.text = woItem.item
+        mEstView?.text = woItem.est
+        mActView?.text = woItem.usageQty
 
     }
 

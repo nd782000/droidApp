@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.fragment_main_menu.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.math.BigDecimal

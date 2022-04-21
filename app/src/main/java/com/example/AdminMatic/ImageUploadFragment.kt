@@ -226,7 +226,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         descriptionTxt = myView.findViewById(R.id.image_upload_task_edit_txt)
 
         if (taskDescription != ""){
-            descriptionTxt.text = taskDescription as Editable
+            descriptionTxt.text = Editable.Factory.getInstance().newEditable(taskDescription)
         }
 
 

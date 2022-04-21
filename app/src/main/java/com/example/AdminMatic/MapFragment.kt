@@ -71,6 +71,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         pgsBar = view.findViewById(R.id.progressBar)
         refreshBtn = view.findViewById(R.id.map_refresh_btn)
 
+        refreshBtn.setOnClickListener{
+            //refreshWorkOrders()
+        }
+
         mapFragment!!.getMapAsync(this)
 
         hideProgressView()

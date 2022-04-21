@@ -27,11 +27,6 @@ import java.util.*
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [workOrderFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 
 interface WoItemCellClickListener {
     fun onWoItemCellClickListener(data:WoItem)
@@ -39,7 +34,7 @@ interface WoItemCellClickListener {
 
 class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    //private var param1: String? = null
     private var param2: String? = null
 
     private  var workOrder: WorkOrder? = null
@@ -52,21 +47,27 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
     lateinit var  pgsBar: ProgressBar
 
-    lateinit var  stackFragment: StackFragment
+    private lateinit var  stackFragment: StackFragment
 
-    lateinit var statusBtn:ImageButton
-    lateinit var customerBtn:Button
+    private lateinit var statusBtn:ImageButton
+    private lateinit var customerBtn:Button
 
     lateinit var titleTxt:TextView
     lateinit var scheduleTxt:TextView
-    lateinit var deptTxt:TextView
+    //lateinit var deptTxt:TextView
     lateinit var crewTxt:TextView
     lateinit var chargeTxt:TextView
     lateinit var repTxt:TextView
 
-    lateinit var statusCustCL:ConstraintLayout
-    lateinit var dataCL:ConstraintLayout
-    lateinit var footerCL:ConstraintLayout
+    private lateinit var priceTxt:TextView
+    private lateinit var costTxt:TextView
+    private lateinit var profitTxt:TextView
+    private lateinit var profitPercentTxt:TextView
+    private lateinit var profitBar:ProgressBar
+
+    private lateinit var statusCustCL:ConstraintLayout
+    private lateinit var dataCL:ConstraintLayout
+    private lateinit var footerCL:ConstraintLayout
 
     lateinit var itemRecyclerView:RecyclerView
 
@@ -74,7 +75,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            workOrder = it.getParcelable<WorkOrder?>("workOrder")
+            workOrder = it.getParcelable("workOrder")
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -96,7 +97,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         myView = inflater.inflate(R.layout.fragment_work_order, container, false)
 
 
-        ((activity as AppCompatActivity).supportActionBar?.getCustomView()!!.findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder #${workOrder!!.woID}"
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder #${workOrder!!.woID}"
 
         // Inflate the layout for this fragment
         return myView
@@ -120,7 +121,6 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         statusBtn.setOnClickListener{
             println("status btn clicked")
             showStatusMenu()
-
         }
 
         customerBtn = myView.findViewById(R.id.customer_btn)
@@ -129,7 +129,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             println("customer btn clicked")
 
 
-            val customer:Customer = Customer(workOrder!!.customer!!)
+            val customer = Customer(workOrder!!.customer!!)
             val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer.ID)
             myView.findNavController().navigate(directions)
 
@@ -138,10 +138,16 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
         titleTxt = myView.findViewById(R.id.title_val_tv)
         scheduleTxt = myView.findViewById(R.id.schedule_val_tv)
-        deptTxt = myView.findViewById(R.id.dept_val_tv)
+        //deptTxt = myView.findViewById(R.id.dept_val_tv)
         crewTxt = myView.findViewById(R.id.crew_val_tv)
         chargeTxt = myView.findViewById(R.id.charge_val_tv)
         repTxt = myView.findViewById(R.id.rep_val_tv)
+
+        priceTxt = myView.findViewById(R.id.price_tv)
+        costTxt = myView.findViewById(R.id.cost_tv)
+        profitTxt = myView.findViewById(R.id.profit_tv)
+        profitPercentTxt = myView.findViewById(R.id.profit_percent_tv)
+        profitBar = myView.findViewById(R.id.profit_bar)
 
         statusCustCL = myView.findViewById(R.id.status_cust_cl)
         dataCL = myView.findViewById(R.id.work_order_data_cl)
@@ -171,7 +177,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 println("Response $response")
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = ${parentObject.toString()}")
+                    println("parentObject = $parentObject")
 
                     val gson = GsonBuilder().create()
                     workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
@@ -182,9 +188,12 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     if(workOrder!!.nextPlannedDate != null){
                         scheduleTxt.text = workOrder!!.nextPlannedDate
                     }
+                    /*
                     if(workOrder!!.department != null){
                         deptTxt.text = workOrder!!.department!!
                     }
+
+                     */
                     if(workOrder!!.crewName != null){
                         crewTxt.text = workOrder!!.mainCrew!!
                     }
@@ -198,7 +207,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                             workOrder!!.chargeName = getString(R.string.wo_charge_nc)
                         }
                         "2" -> {
-                            workOrder!!.chargeName = getString(R.string.wo_charge_fl, workOrder!!.totalPrice)
+                            workOrder!!.chargeName = getString(R.string.wo_charge_fl)
                         }
                         "3" -> {
                             workOrder!!.chargeName = getString(R.string.wo_charge_tm)
@@ -209,14 +218,27 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     }
                     chargeTxt.text = workOrder!!.chargeName
 
+
+                    val profit:Float = workOrder!!.totalPriceRaw.toFloat() - workOrder!!.totalCostRaw.toFloat()
+                    val profitPercent:Int = (profit / workOrder!!.totalPriceRaw.toFloat() * 100).toInt()
+
+                    priceTxt.text = workOrder!!.totalPrice
+                    costTxt.text = workOrder!!.totalCost
+                    profitTxt.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
+                    profitPercentTxt.text = profitPercent.toString()
+                    profitBar.progress = 100 - profitPercent
+
+
                     val woItemJSON: JSONArray = parentObject.getJSONArray("items")
                     val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
+                    println("woItemJSON $woItemJSON")
 
                     work_order_items_rv.apply {
                         layoutManager = LinearLayoutManager(activity)
                         adapter = activity?.let {
                             WoItemsAdapter(
                                 itemList,
+                                context,
                                 this@WorkOrderFragment
                             )
                         }
@@ -243,7 +265,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["woID"] = workOrder!!.woID
-                println("params = ${params.toString()}")
+                println("params = $params")
                 return params
             }
         }
@@ -253,17 +275,18 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     private fun showStatusMenu(){
         println("showStatusMenu")
 
-        var popUp:PopupMenu = PopupMenu(myView.context,statusBtn)
+        val popUp = PopupMenu(myView.context,statusBtn)
         popUp.inflate(R.menu.task_status_menu)
         popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_not_started)!!,myView.context)!!, myView.context.getString(R.string.not_started)))
         popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_in_progress)!!,myView.context)!!, myView.context.getString(R.string.in_progress)))
         popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_done)!!,myView.context)!!, myView.context.getString(R.string.finished)))
-        popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+        popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
             workOrder!!.status = item!!.itemId.toString()
 
             setStatus(workOrder!!.status)
-            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
+            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT)
+                .show()
 
             showProgressView()
 
@@ -283,7 +306,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                     try {
                         val parentObject = JSONObject(response)
-                        println("parentObject = ${parentObject.toString()}")
+                        println("parentObject = $parentObject")
 
                         hideProgressView()
 
@@ -304,14 +327,14 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     params["status"] = workOrder!!.status
                     params["woID"] = workOrder!!.woID
                     params["empID"] = GlobalVars.loggedInEmployee!!.ID
-                    println("params = ${params.toString()}")
+                    println("params = $params")
                     return params
                 }
             }
             queue.add(postRequest1)
             true
-        })
-        popUp.gravity = Gravity.LEFT
+        }
+        popUp.gravity = Gravity.START
         popUp.show()
     }
 
@@ -332,7 +355,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     }
 
     override fun newWorkOrderView(_workOrder: WorkOrder) {
-        println("newWorkOrderView ${_workOrder}")
+        println("newWorkOrderView $_workOrder")
         workOrder = _workOrder
         getWorkOrder()
     }
@@ -348,21 +371,18 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         println("Cell clicked with woItem: ${data.item}")
 
 
-        data?.let { data ->
+        data.let {
 
-            var woItemFragment: WoItemFragment
-            val SIMPLE_FRAGMENT_TAG = "myfragmenttag"
+            //var woItemFragment: WoItemFragment
+            //val SIMPLE_FRAGMENT_TAG = "myfragmenttag"
 
             //myView.findNavController().navigate()
-           // ft.add(R.id.container_all, frag as Fragment).commit()
+            // ft.add(R.id.container_all, frag as Fragment).commit()
 
 
+            val directions = WorkOrderFragmentDirections.navigateToWoItem(it, workOrder!!)
 
-            val directions = WorkOrderFragmentDirections.navigateToWoItem(data,workOrder!!)
-
-           myView.findNavController().navigate(directions)
-
-
+            myView.findNavController().navigate(directions)
 
 
         }
@@ -381,23 +401,23 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         when(status) {
             "1" -> {
                 println("1")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_not_started)
+                statusBtn.setBackgroundResource(R.drawable.ic_not_started)
             }
             "2" -> {
                 println("2")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_in_progress)
+                statusBtn.setBackgroundResource(R.drawable.ic_in_progress)
             }
             "3" -> {
                 println("3")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_done)
+                statusBtn.setBackgroundResource(R.drawable.ic_done)
             }
             "4" -> {
                 println("4")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_canceled)
+                statusBtn.setBackgroundResource(R.drawable.ic_canceled)
             }
             "5" -> {
                 println("5")
-                statusBtn!!.setBackgroundResource(R.drawable.ic_waiting)
+                statusBtn.setBackgroundResource(R.drawable.ic_waiting)
             }
         }
     }
