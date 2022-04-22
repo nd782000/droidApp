@@ -284,13 +284,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toLeftOf="@id/guideline10"/>
 
-        <SearchView
-            android:id="@+id/usage_vendor_sv"
+        <Spinner
+            android:id="@+id/usage_vendor_spinner"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:text="Vendor:"
             android:paddingRight="6dp"
             android:gravity="center"
+            android:imeOptions="actionDone"
 
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
@@ -313,7 +314,8 @@
             android:layout_height="50dp"
             android:ems="10"
             android:inputType="numberDecimal"
-            android:text="Name"
+            android:imeOptions="actionDone"
+            android:text="0"
             app:layout_constraintTop_toBottomOf="@id/usage_vendor_tv"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline11"/>
@@ -347,13 +349,14 @@
             android:layout_height="50dp"
             android:ems="10"
             android:inputType="numberDecimal"
-            android:text="Name"
+            android:imeOptions="actionDone"
+            android:text=""
             app:layout_constraintTop_toBottomOf="@id/usage_quantity_tv"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline11"/>
 
         <TextView
-            android:id="@+id/usage_total_cost_tv"
+            android:id="@+id/usage_total_cost_label_tv"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:text="Total Cost $"
@@ -362,13 +365,16 @@
             app:layout_constraintTop_toBottomOf="@id/usage_unit_cost_tv"
             app:layout_constraintRight_toLeftOf="@id/guideline10"/>
 
-        <EditText
-            android:id="@+id/usage_total_cost_et"
+        <TextView
+            android:id="@+id/usage_total_cost_tv"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:paddingLeft="8dp"
             android:ems="10"
+            android:textSize="18dp"
             android:inputType="numberDecimal"
-            android:text="Name"
+            android:text="0.00"
+            android:gravity="center_vertical"
             app:layout_constraintTop_toBottomOf="@id/usage_unit_cost_et"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline11"/>
@@ -383,7 +389,7 @@
             app:layout_constraintTop_toBottomOf="@id/usage_total_cost_tv"
             app:layout_constraintRight_toLeftOf="@id/guideline10"/>
 
-        />
+
         <ImageView
             android:id="@+id/usage_receipt_iv"
             android:layout_width="0dp"
@@ -392,7 +398,7 @@
             app:layout_constraintTop_toBottomOf="@id/usage_total_cost_tv"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline11"/>
-        />
+
 
 
 

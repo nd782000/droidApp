@@ -27,6 +27,7 @@ import java.util.HashMap
 
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import java.lang.Double
+import kotlin.math.roundToInt
 
 
 class UsageAdapter(private val list: MutableList<Usage>, private val context: Context,private val usageEditListener: UsageEditListener, private val woItem:WoItem)
@@ -117,23 +118,10 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 breakTxt.text = usage.lunch!!
             }
 
-
-
-
-
-
-
             breakTxt.setOnEditorActionListener { _, actionId, _ ->
-                //var numeric = true
-
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    // Call your code here
-
                     breakTxt.clearFocus()
-
                     usageEditListener.editBreak(position, breakTxt.text.toString(), actionId)
-
-
                     true
                 } else {
                     false
@@ -141,7 +129,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             }
 
 
-            val totalTxt:TextView = holder.itemView.findViewById<TextView>(R.id.usage_total_tv)
+            val totalTxt:TextView = holder.itemView.findViewById(R.id.usage_total_tv)
 
 
             totalTxt.text = usage.qty!! + " Hours"
@@ -149,20 +137,20 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
 
             //options btn click
-            holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener(){
+            holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
                 println("status click")
 
-                val popUp:PopupMenu = PopupMenu(myView.context,holder.itemView)
+                val popUp = PopupMenu(myView.context,holder.itemView)
                 popUp.inflate(R.menu.task_status_menu)
 
                 popUp.menu.add(0, usage.ID.toInt(), 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context), context.getString(R.string.delete)))
 
-                popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
+                popUp.setOnMenuItemClickListener {
 
                     usageEditListener.deleteUsage(position)
 
                     true
-                })
+                }
 
                 popUp.gravity = Gravity.END
                 popUp.show()
@@ -173,7 +161,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             //material type
             laborCl.isVisible = false
 
-            val vendorSearch:SearchView = holder.itemView.findViewById(R.id.usage_vendor_sv)
+            val vendorSearch:Spinner = holder.itemView.findViewById(R.id.usage_vendor_spinner)
             vendorSearch.setBackgroundResource(R.drawable.text_view_layout)
             /*
             if (usage.vendor != null && usage.vendor != "0" && usage.vendor != ""){
@@ -182,21 +170,83 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
              */
 
-            val quantityTxt:EditText = holder.itemView.findViewById(R.id.usage_quantity_et)
-           quantityTxt.setText(usage.qty)
+            val adapter: ArrayAdapter<Vendor> = ArrayAdapter<Vendor>(
+                myView.context,
+                android.R.layout.simple_spinner_dropdown_item, woItem.vendors
 
-            val unitCostTxt:EditText = holder.itemView.findViewById(R.id.usage_quantity_et)
+            )
+            adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
+
+            vendorSearch.adapter = adapter
+
+
+            val quantityTxt:TextView = holder.itemView.findViewById(R.id.usage_quantity_et)
+            quantityTxt.text = usage.qty
+
+            quantityTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
+            quantityTxt.setSelectAllOnFocus(true)
+
+            quantityTxt.setBackgroundResource(R.drawable.text_view_layout)
+
+            quantityTxt.setOnEditorActionListener { _, actionId, _ ->
+                //var numeric = true
+
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // Call your code here
+
+                    quantityTxt.clearFocus()
+
+                    val qtyInput = quantityTxt.text.toString().toDouble().roundToInt()
+
+                    usageEditListener.editQty(position, qtyInput, actionId)
+
+
+                    true
+                } else {
+                    false
+                }
+            }
+
+
+
+            val unitCostTxt:EditText = holder.itemView.findViewById(R.id.usage_unit_cost_et)
             if(usage.unitCost != null){
                 unitCostTxt.setText(usage.unitCost!!)
             }
 
 
-            val totalCostTxt:EditText = holder.itemView.findViewById(R.id.usage_quantity_et)
-            if(usage.totalCost != null){
-                totalCostTxt.setText(usage.totalCost!!)
+            unitCostTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
+            unitCostTxt.setSelectAllOnFocus(true)
+
+            unitCostTxt.setBackgroundResource(R.drawable.text_view_layout)
+
+            unitCostTxt.setOnEditorActionListener { _, actionId, _ ->
+                //var numeric = true
+
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // Call your code here
+
+                    unitCostTxt.clearFocus()
+
+                    val costInput = unitCostTxt.text.toString().toDouble()
+                    val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
+                    usageEditListener.editCost(position, costInputTrimmed, actionId)
+
+
+                    true
+                } else {
+                    false
+                }
             }
 
 
+            val totalCostTxt:TextView = holder.itemView.findViewById(R.id.usage_total_cost_tv)
+            if(usage.totalCost != null){
+                totalCostTxt.text = usage.totalCost!!
+            }
+            if(usage.totalCost == ""){
+                totalCostTxt.text = "0.00"
+            }
 
             val receiptImageView:ImageView = holder.itemView.findViewById(R.id.usage_receipt_iv)
             if(list[position].receipt != null){
@@ -207,25 +257,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     //.centerCrop()                        //optional
                     .into(receiptImageView)                       //Your image view object.
             }
-
-
-
-
-
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
     }
 
 

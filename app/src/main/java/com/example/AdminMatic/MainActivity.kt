@@ -751,7 +751,6 @@ data class WoItem(var ID:String,
     }
 }
 
-
 @Parcelize
 data class WorkOrder(var woID: String = "0",
                      var status: String = "",
@@ -801,13 +800,6 @@ data class WorkOrder(var woID: String = "0",
         return title
     }
 
-
-
-
-
-
-
-
     fun setEmps(){
         println("setEmps")
         if (this.crews != null){
@@ -821,11 +813,60 @@ data class WorkOrder(var woID: String = "0",
         }else{
             print("crews not set")
         }
-
     }
+}
 
+@Parcelize
+data class Permissions(var leads:String? = "",
+                       var contracts:String? = "",
+                       var schedule:String? = "",
+                       var invoices:String? = "",
+                       var customers:String? = "",
+                       var employees:String? = "",
+                       var items:String? = "",
+                       var vendors:String? = "",
+                       var equipment:String? = "",
+                       var files:String? = "",
+                       var reports:String? = "",
+                       var settings:String? = "",
+                       var accounting:String? = "",
+                       var emails:String? = "",
+                       var terms:String? = "",
+                       var templates:String? = "",
+                       var zones:String? = "",
+                       var planner:String? = "",
+                       var home:String? = "",
+                       var payroll:String? = "",
+                       var crews:String? = "",
+                       var leadsEdit:String? = "",
+                       var contractsEdit:String? = "",
+                       var scheduleEdit:String? = "",
+                       var scheduleMoney:String? = "",
+                       var invoicesEdit:String? = "",
+                       var customersEdit:String? = "",
+                       var customersMoney:String? = "",
+                       var employeesEdit:String? = "",
+                       var payrollEdit:String? = "",
+                       var crewsEdit:String? = "",
+                       var itemsEdit:String? = "",
+                       var itemsMoney:String? = "",
+                       var vendorsEdit:String? = "",
+                       var equipmentEdit:String? = "",
+                       var filesEdit:String? = "",
+                       var usageApp:String? = "",
+                       var payrollApp:String? = "",
+                       var settingsEdit:String? = "",
+                       var accountingEdit:String? = "",
+                       var emailsEdit:String? = "",
+                       var templatesEdit:String? = "",
+                       var termsEdit:String? = "",
+                       var zonesEdit:String? = "",
 
+    ) : Parcelable {
 
+        override fun toString(): String {
+        return "Permissions"
+        }
 }
 
 

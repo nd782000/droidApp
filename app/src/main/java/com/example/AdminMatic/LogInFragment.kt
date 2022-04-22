@@ -413,60 +413,121 @@ class LogInFragment : Fragment() {
             }
         }
         queue.add(postRequest1)
+    }
+
+    private fun getPermissions(){
+        println("getPermissions")
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/permissions.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(activity)
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+
+                    val permissions:Permissions = Gson().fromJson(parentObject.toString(), Permissions::class.java)
+
+                    GlobalVars.permissions = permissions
+                    println("accounting permissions = ${GlobalVars.permissions!!.accounting}")
+
+
+                    myView.findNavController().navigate(R.id.navigateToMainMenu)
+
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+
+
+            },
+            Response.ErrorListener { // error
+
+                // Log.e("VOLLEY", error.toString())
+                // Log.d("Error.Response", error())
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = companyUnique!!
+                //params["empID"] = loggedInEmpID!!
+                params["sessionKey"] = sessionKey!!
+
+                println("params = $params")
+                return params
+            }
+        }
+        queue.add(postRequest1)
 
 
     }
 
 
 
-        private fun validateFields():Boolean{
-
-            hideSoftKeyboard(requireActivity())
 
 
-            val allGood: Boolean
 
-            val company: String = companyEditText.text.toString()
+    private fun validateFields():Boolean{
+
+        hideSoftKeyboard(requireActivity())
+
+
+        val allGood: Boolean
+
+        val company: String = companyEditText.text.toString()
+        //check if the EditText have values or not
+        println("company = $company")
+        if(company.trim().isNotEmpty() && company != "") {
+            //Toast.makeText(activity,"Message : $company",Toast.LENGTH_SHORT).show()
+           // allGood = true
+            val user: String = userEditText.text.toString()
             //check if the EditText have values or not
-            println("company = $company")
-            if(company.trim().isNotEmpty() && company != "") {
-                //Toast.makeText(activity,"Message : $company",Toast.LENGTH_SHORT).show()
+            println("user = $user")
+            if(user.trim().isNotEmpty() && user != "") {
+                //Toast.makeText(getActivity(),"Message : $user",Toast.LENGTH_SHORT).show()
                // allGood = true
-                val user: String = userEditText.text.toString()
+                val pass: String = passEditText.text.toString()
                 //check if the EditText have values or not
-                println("user = $user")
-                if(user.trim().isNotEmpty() && user != "") {
-                    //Toast.makeText(getActivity(),"Message : $user",Toast.LENGTH_SHORT).show()
-                   // allGood = true
-                    val pass: String = passEditText.text.toString()
-                    //check if the EditText have values or not
-                    println("pass = $pass")
-                    allGood = if(pass.trim().isNotEmpty() && pass != "") {
-                        //Toast.makeText(getActivity(),"Message : $pass",Toast.LENGTH_SHORT).show()
-                        true
-                    }else{
-                        Toast.makeText(activity,"Please enter a Password.",Toast.LENGTH_SHORT).show()
-                        false
-                    }
+                println("pass = $pass")
+                allGood = if(pass.trim().isNotEmpty() && pass != "") {
+                    //Toast.makeText(getActivity(),"Message : $pass",Toast.LENGTH_SHORT).show()
+                    true
                 }else{
-
-                    Toast.makeText(activity,"Please enter a User Name.",Toast.LENGTH_SHORT).show()
-
-                    allGood =false
+                    Toast.makeText(activity,"Please enter a Password.",Toast.LENGTH_SHORT).show()
+                    false
                 }
             }else{
-                Toast.makeText(activity,"Please enter Company Identifier.",Toast.LENGTH_SHORT).show()
-                allGood = false
+
+                Toast.makeText(activity,"Please enter a User Name.",Toast.LENGTH_SHORT).show()
+
+                allGood =false
             }
-
-
-
-
-
-
-            return allGood
-
+        }else{
+            Toast.makeText(activity,"Please enter Company Identifier.",Toast.LENGTH_SHORT).show()
+            allGood = false
         }
+
+
+
+
+
+
+        return allGood
+
+    }
 
 
 
@@ -741,7 +802,7 @@ class LogInFragment : Fragment() {
                     val gson = GsonBuilder().create()
                     GlobalVars.customerList = gson.fromJson(customers.toString() , Array<Customer>::class.java).toMutableList()
 
-                    myView.findNavController().navigate(R.id.navigateToMainMenu)
+                    getPermissions()
 
                     /*
                     list_recycler_view.apply {

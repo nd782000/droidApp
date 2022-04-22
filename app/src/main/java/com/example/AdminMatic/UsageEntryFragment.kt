@@ -20,7 +20,6 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_main_menu.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -52,9 +51,9 @@ interface UsageEditListener {
     fun editStart(row:Int)
     fun editStop(row:Int)
     fun editBreak(row:Int,lunch:String, actionID:Int)
-    fun editQty(row:Int,qty: Double)
+    fun editQty(row:Int,qtyInt: Int, actionID:Int)
     fun editVendor(row:Int,vendor:String,unitCost: Double)
-    fun editCost(row:Int,cost:Double)
+    fun editCost(row: Int, costDouble: Double, actionID:Int)
     fun showHistory()
 }
 
@@ -114,7 +113,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         println("onCreateView")
         globalVars = GlobalVars()
         myView = inflater.inflate(R.layout.fragment_usage_entry, container, false)
-
 
 
 
@@ -213,11 +211,10 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
 
 
-
         val empAdapter = EmpAdapter(myView.context,GlobalVars.employeeList!!.toList())
-
-
         empSpinner.adapter = empAdapter
+
+
 
         empSpinner.onItemSelectedListener = this@UsageEntryFragment
 
@@ -841,10 +838,10 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-    override fun editBreak(row: Int, breakString: String, actionID:Int) {
+    override fun editBreak(row: Int, lunch: String, actionID:Int) {
 
         try {
-            val num = java.lang.Double.parseDouble(breakString)
+            val num = java.lang.Double.parseDouble(lunch)
         } catch (e: NumberFormatException) {
             // numeric = false
 
@@ -887,7 +884,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             }
 
 
-            usageToLog[row].lunch = breakString
+            usageToLog[row].lunch = lunch
 
            // setQty()
 
@@ -994,7 +991,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
 
         setQty()
-
 
     }
 
@@ -1242,12 +1238,66 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-    override fun editQty(row: Int, qty: Double) {
-        TODO("Not yet implemented")
+    override fun editQty(row: Int, qtyInt: Int, actionID:Int) {
+        /*
+        try {
+            val num = java.lang.Double.parseDouble(qtyString)
+        } catch (e: NumberFormatException) {
+            // numeric = false
+
+            globalVars.playErrorSound(myView.context)
+            globalVars.simpleAlert(myView.context,"Quantity Error","Quantity must be a number of items.")
+
+            //setQty()
+            // updateUsageTable()
+
+            return
+        }
+         */
+
+        if (actionID == EditorInfo.IME_ACTION_DONE) {
+
+            if (usageToLog[row].unitCost == null || usageToLog[row].unitCost == "") {
+                usageToLog[row].unitCost = "0.00"
+            }
+
+            usageToLog[row].qty = qtyInt.toString()
+            val totalCost = (usageToLog[row].unitCost!!.toDouble() * qtyInt).toString()
+            usageToLog[row].totalCost = totalCost
+            updateUsageTable()
+        }
     }
 
-    override fun editCost(row: Int, cost: Double) {
-        TODO("Not yet implemented")
+    override fun editCost(row: Int, costDouble: Double, actionID:Int) {
+        /*
+        try {
+            val num = java.lang.Double.parseDouble(costString)
+        } catch (e: NumberFormatException) {
+            // numeric = false
+
+            globalVars.playErrorSound(myView.context)
+            globalVars.simpleAlert(myView.context,"Unit Cost Error","Unit Cost must be a numeric price.")
+
+            //setQty()
+            // updateUsageTable()
+
+            return
+        }
+
+         */
+
+        if (actionID == EditorInfo.IME_ACTION_DONE) {
+
+            if (usageToLog[row].qty == "") {
+                usageToLog[row].qty = "0"
+            }
+
+            usageToLog[row].unitCost = String.format("%.2f", costDouble)
+            val totalCost = (usageToLog[row].qty.toDouble() * costDouble).toString()
+            usageToLog[row].totalCost = totalCost
+            updateUsageTable()
+
+        }
     }
 
     override fun editVendor(row: Int, vendor: String, unitCost: Double) {

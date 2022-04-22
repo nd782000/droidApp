@@ -35,6 +35,7 @@ class GlobalVars: Application() {
     companion object {
         var test:String = "testString"
         var loggedInEmployee:Employee? = null
+        var permissions:Permissions? = null
 
         var thumbBase:String? = null
         var mediumBase:String? = null
