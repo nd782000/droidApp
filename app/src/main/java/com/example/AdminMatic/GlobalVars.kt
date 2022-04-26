@@ -44,6 +44,7 @@ class GlobalVars: Application() {
         var employeeList:Array<Employee>? = null
 
         var globalWorkOrdersList:MutableList<WorkOrder>? = null
+        var globalLeadList:MutableList<Lead>? = null
         var scheduleSpinnerPosition:Int = 2
 
 

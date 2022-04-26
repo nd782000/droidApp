@@ -52,7 +52,7 @@ interface UsageEditListener {
     fun editStop(row:Int)
     fun editBreak(row:Int,lunch:String, actionID:Int)
     fun editQty(row:Int,qtyInt: Int, actionID:Int)
-    fun editVendor(row:Int,vendor:String,unitCost: Double)
+    fun editVendor(row:Int,vendor:String)
     fun editCost(row: Int, costDouble: Double, actionID:Int)
     fun showHistory()
 }
@@ -116,6 +116,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
+        // Todo: Make this work with the header bar back button as well
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // Handle the back button event
@@ -230,7 +231,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
 
 
-
+        usageToLog.clear()
 
         addActiveUsage()
 
@@ -1123,6 +1124,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                             if( GlobalVars.loggedInEmployee!!.ID != usage.addedBy){
 
                                 usage.locked = true
+
                             }
                         }
 
@@ -1264,6 +1266,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             usageToLog[row].qty = qtyInt.toString()
             val totalCost = (usageToLog[row].unitCost!!.toDouble() * qtyInt).toString()
             usageToLog[row].totalCost = totalCost
+            editsMade = true
             updateUsageTable()
         }
     }
@@ -1295,13 +1298,18 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             usageToLog[row].unitCost = String.format("%.2f", costDouble)
             val totalCost = (usageToLog[row].qty.toDouble() * costDouble).toString()
             usageToLog[row].totalCost = totalCost
+            editsMade = true
             updateUsageTable()
 
         }
     }
 
-    override fun editVendor(row: Int, vendor: String, unitCost: Double) {
-        TODO("Not yet implemented")
+    override fun editVendor(row: Int, vendor: String) {
+        usageToLog[row].vendor = vendor
+        editsMade = true
+
+        //This isn't needed because the spinner display updates itself, also calling it here creates an infinite loop?
+        //updateUsageTable()
     }
 
     override fun showHistory() {

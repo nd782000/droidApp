@@ -2,31 +2,18 @@ package com.example.AdminMatic
 
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ImageSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wo_item_list_item.view.*
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.util.HashMap
-
-import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
-import java.lang.Double
+import java.util.Collections.copy
 import kotlin.math.roundToInt
 
 
@@ -170,14 +157,32 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
              */
 
+            val vendorListCopy = mutableListOf<Vendor>()
+            vendorListCopy.addAll(woItem.vendors)
+            vendorListCopy.add(Vendor("", "Other", "","","","","","","", "", "",""))
+
             val adapter: ArrayAdapter<Vendor> = ArrayAdapter<Vendor>(
                 myView.context,
-                android.R.layout.simple_spinner_dropdown_item, woItem.vendors
-
+                android.R.layout.simple_spinner_dropdown_item, vendorListCopy
             )
             adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
             vendorSearch.adapter = adapter
+
+            vendorSearch.onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    parentView: AdapterView<*>?,
+                    selectedItemView: View?,
+                    spinnerPosition: Int,
+                    id: Long
+                ) {
+                    usageEditListener.editVendor(position, vendorListCopy[spinnerPosition].ID)
+                }
+
+                override fun onNothingSelected(parentView: AdapterView<*>?) {
+                    // your code here
+                }
+            }
 
 
             val quantityTxt:TextView = holder.itemView.findViewById(R.id.usage_quantity_et)
@@ -256,6 +261,11 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     //.resize(imgWidth, imgHeight)         //optional
                     //.centerCrop()                        //optional
                     .into(receiptImageView)                       //Your image view object.
+            }
+            receiptImageView.setOnClickListener{
+                val directions = UsageEntryFragmentDirections.navigateUsageEntryToImageUpload("WOITEM",
+                    arrayOf(),"","", woItem.woID, woItem.itemID,"","","","","")
+                myView.findNavController().navigate(directions)
             }
         }
     }

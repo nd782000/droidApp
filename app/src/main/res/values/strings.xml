@@ -20,6 +20,7 @@
     <string name="item_list">Item List</string>
     <string name="leads">Leads</string>
     <string name="lead">Lead</string>
+    <string name="lead_map">Lead Map</string>
 
     <string name="lead_list">Lead List</string>
     <string name="schedule">Work Orders</string>

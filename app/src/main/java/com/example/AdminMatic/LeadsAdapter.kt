@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -11,14 +12,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.lead_list_item.view.*
 import java.util.*
 
 
-class LeadsAdapter(private val list: MutableList<Lead>, private val cellClickListener: LeadCellClickListener, private val customerView: Boolean = false) : RecyclerView.Adapter<LeadViewHolder>(), Filterable {
+class LeadsAdapter(private val list: MutableList<Lead>, private val context: Context, private val cellClickListener: LeadCellClickListener, private val customerView: Boolean = false) : RecyclerView.Adapter<LeadViewHolder>(), Filterable {
 
 
     var filterList:MutableList<Lead> = emptyList<Lead>().toMutableList()
@@ -46,6 +49,30 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val cellClickLis
 
         println("queryText = $queryText")
         //text highlighting for first string
+
+        val leadStatusImageView: ImageView = holder.itemView.findViewById(R.id.list_lead_status_icon_iv)
+
+        when (lead.statusID) {
+            "1"-> Picasso.with(context)
+                .load(R.drawable.ic_not_started)
+                .into(leadStatusImageView)
+            "2"-> Picasso.with(context)
+                .load(R.drawable.ic_in_progress)
+                .into(leadStatusImageView)
+        }
+
+        val daysAged:String = when (filterList[position].daysAged) {
+            "0" -> {
+                "Today"
+            }
+            "1" -> {
+                "Yesterday"
+            }
+            else -> {
+                filterList[position].daysAged + " Days"
+            }
+        }
+
         if (queryText.isNotEmpty() && queryText != "") {
 
             val startPos1: Int = (filterList[position].custName!! + " - " + filterList[position].description!!).lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
@@ -64,21 +91,25 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val cellClickLis
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_name.text = spannable
+                holder.itemView.list_lead_name_tv.text = spannable
             } else {
                 if(!customerView){
                     //Todo: figure out how to pull strings from Resources within an adapter
-                    holder.itemView.list_name.text = filterList[position].custName!! + " - " + filterList[position].description!!
+                    holder.itemView.list_lead_name_tv.text = filterList[position].custName!! + " #" + filterList[position].ID
+                    holder.itemView.list_lead_description_tv.text = filterList[position].description!!
+                    holder.itemView.list_lead_date_tv.text = daysAged
                 }else{
-                    holder.itemView.list_name.text = filterList[position].description!!
+                    holder.itemView.list_lead_name_tv.text = filterList[position].description!!
                 }
 
             }
         } else {
             if(!customerView){
-                holder.itemView.list_name.text = filterList[position].custName!! + " - " + filterList[position].description!!
+                holder.itemView.list_lead_name_tv.text = filterList[position].custName!! + " #" + filterList[position].ID
+                holder.itemView.list_lead_description_tv.text = filterList[position].description!!
+                holder.itemView.list_lead_date_tv.text = daysAged
             }else{
-                holder.itemView.list_name.text = filterList[position].description!!
+                holder.itemView.list_lead_name_tv.text = filterList[position].description!!
             }
         }
 
@@ -176,13 +207,12 @@ class LeadViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
 
     init {
-        mNameView = itemView.findViewById(R.id.list_name)
+        mNameView = itemView.findViewById(R.id.list_lead_name_tv)
 
     }
 
     fun bind(lead: Lead) {
         mNameView?.text = lead.custName!!
-
     }
 
 

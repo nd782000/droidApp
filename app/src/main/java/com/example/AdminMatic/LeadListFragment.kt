@@ -17,6 +17,7 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.AdminMatic.GlobalVars.Companion.globalLeadList
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
 
@@ -45,7 +46,6 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
     lateinit var searchView:androidx.appcompat.widget.SearchView
     lateinit var  swipeRefresh:SwipeRefreshLayout
 
-
     //lateinit var  newLeadBtn: Button
     private lateinit var  mapBtn: Button
 
@@ -68,7 +68,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
         val emptyList:MutableList<Lead> = mutableListOf()
 
-        adapter = LeadsAdapter(emptyList, this)
+        adapter = LeadsAdapter(emptyList, this.myView.context, this)
 
 
 
@@ -89,19 +89,27 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
         //need to wait for this function to initialize views
         println("onViewCreated")
+
+        (activity as MainActivity?)!!.setLeadList(this)
+
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.leads_search)
         swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
         mapBtn = view.findViewById((R.id.map_btn))
 
-        getLeads()
+        mapBtn.setOnClickListener{
+            println("Map button clicked!")
+            val directions = LeadListFragmentDirections.navigateToMap(1)
+            myView.findNavController().navigate(directions)
+        }
 
+        getLeads()
 
     }
 
 
-    private fun getLeads(){
+    fun getLeads(){
         println("getLeads")
 
 
@@ -143,9 +151,11 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                     println("leads count = ${leads.length()}")
 
 
-
+                    if (globalLeadList != null) {
+                        globalLeadList!!.clear()
+                    }
                     val gson = GsonBuilder().create()
-                    val leadsList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
+                    globalLeadList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
 
 
                     list_recycler_view.apply {
@@ -154,8 +164,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
                         adapter = activity?.let {
                             LeadsAdapter(
-                                leadsList,
-                                this@LeadListFragment
+                                globalLeadList!!, context,this@LeadListFragment
                             )
                         }
 

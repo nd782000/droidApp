@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.AdminMatic.R
 import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
+import com.example.AdminMatic.GlobalVars.Companion.globalLeadList
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -28,6 +29,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val markerList = mutableListOf<Marker>()
     private var mapFragment : SupportMapFragment?=null
     private val pinMapWorkOrder = HashMap<Marker?, WorkOrder>()
+    private val pinMapLead = HashMap<Marker?, Lead>()
     lateinit var googleMapGlobal:GoogleMap
 
     //Todo: change to an enum maybe, currently 0 = work orders and 1 = leads
@@ -52,7 +54,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         myView = inflater.inflate(R.layout.fragment_map, container, false)
 
 
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+        if (mode == 0){ // Work orders
+            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+        }
+        else { // Leads
+            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_map)
+        }
 
         mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
 
@@ -94,41 +101,87 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         var newMarker: Marker?
         var bitmapDescriptor: BitmapDescriptor?
 
-        googleMapGlobal.setOnInfoWindowClickListener { marker ->
-            val directions =
-                WorkOrderListFragmentDirections.navigateToWorkOrder(pinMapWorkOrder[marker])
-            myView.findNavController().navigate(directions)
-        }
 
-        globalWorkOrdersList!!.forEach {
 
-            bitmapDescriptor = when (it.status) {
-                "0" -> {
-                    //Todo: can't set it gray with official code, so maybe use our own bitmaps here
-                    BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_skip)
-
-                }
-                "1" -> {
-                    BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_not_started)
-                }
-                "2" -> {
-                    BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_in_progress)
-                }
-                else -> {
-                    BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_done)
-                }
+        if (mode == 0) { // Work orders
+            googleMapGlobal.setOnInfoWindowClickListener { marker ->
+                val directions =
+                    WorkOrderListFragmentDirections.navigateToWorkOrder(pinMapWorkOrder[marker])
+                myView.findNavController().navigate(directions)
             }
 
-            newMarker = googleMapGlobal.addMarker(
-                MarkerOptions()
-                    .position(LatLng(it.lat!!.toDouble(), it.lng!!.toDouble()))
-                    .title(it.custName +" - "+ it.title)
-                    .snippet(it.custAddress)
-                    .icon(bitmapDescriptor)
+            globalWorkOrdersList!!.forEach {
 
-            )
-            newMarker?.let { it1 -> markerList.add(it1) }
-            pinMapWorkOrder[newMarker] = it
+                bitmapDescriptor = when (it.status) {
+                    "0" -> {
+                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_skip)
+                    }
+                    "1" -> {
+                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_not_started)
+                    }
+                    "2" -> {
+                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_in_progress)
+                    }
+                    else -> {
+                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_done)
+                    }
+                }
+
+                newMarker = googleMapGlobal.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(it.lat!!.toDouble(), it.lng!!.toDouble()))
+                        .title(it.custName + " - " + it.title)
+                        .snippet(it.custAddress)
+                        .icon(bitmapDescriptor)
+
+                )
+                newMarker?.let { it1 -> markerList.add(it1) }
+                pinMapWorkOrder[newMarker] = it
+            }
+
+            refreshBtn.setOnClickListener {
+                (activity as MainActivity?)!!.refreshWorkOrders()
+            }
+        }
+        else { // Leads
+            googleMapGlobal.setOnInfoWindowClickListener { marker ->
+                val directions =
+                    LeadListFragmentDirections.navigateToLead(pinMapLead[marker])
+                myView.findNavController().navigate(directions)
+            }
+
+            globalLeadList!!.forEach {
+
+                bitmapDescriptor = when (it.statusID) {
+                    "0" -> {
+                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_skip)
+                    }
+                    "1" -> {
+                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_not_started)
+                    }
+                    "2" -> {
+                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_in_progress)
+                    }
+                    else -> {
+                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_done)
+                    }
+                }
+
+                newMarker = googleMapGlobal.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(it.lat!!.toDouble(), it.lng!!.toDouble()))
+                        .title(it.custName)
+                        .snippet(it.description)
+                        .icon(bitmapDescriptor)
+
+                )
+                newMarker?.let { it1 -> markerList.add(it1) }
+                pinMapLead[newMarker] = it
+            }
+
+            refreshBtn.setOnClickListener {
+                (activity as MainActivity?)!!.refreshWorkOrders()
+            }
         }
 
         val builder = LatLngBounds.Builder()
@@ -140,9 +193,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         googleMapGlobal.moveCamera(cu)
 
-        refreshBtn.setOnClickListener {
-            (activity as MainActivity?)!!.refreshWorkOrders()
-        }
+
 
     }
 

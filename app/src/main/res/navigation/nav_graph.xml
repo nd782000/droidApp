@@ -101,6 +101,9 @@
         <action
             android:id="@+id/navigateToLead"
             app:destination="@id/leadFragment" />
+        <action
+            android:id="@+id/navigateToMap"
+            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
         android:id="@+id/contractListFragment"
@@ -136,6 +139,9 @@
         <action
             android:id="@+id/navigateToWorkOrder"
             app:destination="@id/workOrderFragment" />
+        <action
+            android:id="@+id/navigateToLead"
+            app:destination="@id/leadFragment" />
     </fragment>
     <fragment
         android:id="@+id/invoiceListFragment"
@@ -460,6 +466,9 @@
         <argument
             android:name="workOrder"
             app:argType="com.example.AdminMatic.WorkOrder" />
+        <action
+            android:id="@+id/navigateUsageEntryToImageUpload"
+            app:destination="@id/imageUpload" />
     </fragment>
     <fragment
         android:id="@+id/customerContactFragment"

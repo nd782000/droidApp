@@ -2,6 +2,7 @@ package com.example.AdminMatic
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcel
 import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
@@ -919,6 +920,7 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
     lateinit var  pgsBar: ProgressBar
     private var workOrderListFragment: WorkOrderListFragment? = null
+    private var leadListFragment: LeadListFragment? = null
     private var mapFragment: MapFragment? = null
      private var imageListFragment: ImageListFragment? = null
     //lateinit var  hostFragment: Fragment
@@ -971,9 +973,11 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
     fun back(){
         println("back")
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        navController.navigateUp()
+        // This allows back button checks like "Are you sure you want to exit without submitting" to work on the menu bar back as well
+        super.onBackPressed();
+        //val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        //val navController = navHostFragment.navController
+        //navController.navigateUp()
     }
 
     private fun home(){
@@ -1093,11 +1097,20 @@ override fun logOut(view: View){
     override fun refreshLeads() {
         println("refreshWorkLeads")
 
+        if(leadListFragment != null){
+            println("fragments not null ")
+            leadListFragment!!.getLeads()
+        }
     }
 
     fun setWorkOrderList(_workOrderListFragment:WorkOrderListFragment?){
         println("setWorkOrderList")
         this.workOrderListFragment = _workOrderListFragment!!
+    }
+
+    fun setLeadList(_leadListFragment:LeadListFragment?){
+        println("setWorkOrderList")
+        this.leadListFragment = _leadListFragment!!
     }
 
     fun setMap(_mapFragment:MapFragment?){

@@ -256,7 +256,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
                 titleText = "Upload to W.O."
             }
             "WOITEM" -> {
-                titleText = "Upload to WoItem"
+                titleText = "Add Receipt Image"
             }
             "LEADTASK" -> {
                 titleText = "Upload to Lead Task"
@@ -409,7 +409,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
                     //uploadImage()
                 }
                 "WOITEM" -> {
-                   // uploadImage()
+                    uploadImage()
                 }
                 "LEADTASK" -> {
                     if(taskID == "0"){
