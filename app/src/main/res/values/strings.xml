@@ -256,7 +256,13 @@
     <string name="lead_customer_button_text">%1$s %2$s</string>
     <string name="lead_number">Lead #%1$s</string>
 
+    <string name="all_departments">All Departments</string>
+    <string name="all_crews">All Crews</string>
+    <string name="all_equipment">All Equipment</string>
 
+    <string name="x_departments">%1$d Department(s)</string>
+    <string name="x_crews">%1$d Crew(s)</string>
+    <string name="x_equipment">%1$d Piece(s) of Equipment</string>
 
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
 

@@ -125,6 +125,21 @@
         <action
             android:id="@+id/navigateToMap"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/navigateToDepartments"
+            app:destination="@id/departmentsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/departmentsFragment"
+        android:name="com.example.AdminMatic.DepartmentsFragment"
+        android:label="fragment_departments"
+        tools:layout="@layout/fragment_departments" >
+        <action
+            android:id="@+id/navigateToEmployee"
+            app:destination="@id/employeeFragment" />
+        <action
+            android:id="@+id/navigateToEquipment"
+            app:destination="@id/equipmentFragment" />
     </fragment>
 
     <fragment

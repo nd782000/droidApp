@@ -114,6 +114,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
         crewBtn.setOnClickListener {
             println("Crew Click")
+            val directions = WorkOrderListFragmentDirections.navigateToDepartments()
+            myView.findNavController().navigate(directions)
         }
 
         mapBtn.setOnClickListener{

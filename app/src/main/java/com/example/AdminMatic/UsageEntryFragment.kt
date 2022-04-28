@@ -114,9 +114,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         globalVars = GlobalVars()
         myView = inflater.inflate(R.layout.fragment_usage_entry, container, false)
 
-
-
-        // Todo: Make this work with the header bar back button as well
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // Handle the back button event
