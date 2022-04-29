@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -11,15 +12,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.work_order_list_item.view.*
 import java.util.*
 
 
 class WorkOrdersAdapter(
     private val list: MutableList<WorkOrder>,
+    private val context: Context,
     private val cellClickListener: WorkOrderCellClickListener,
     private val customerView: Boolean = false
 )
@@ -105,6 +109,21 @@ class WorkOrdersAdapter(
             }
         } else {
             holder.itemView.list_title.text = filterList[position].title
+        }
+
+
+        val serviceStatusImageView: ImageView = holder.itemView.findViewById(R.id.list_wo_status_icon_image_view)
+
+        when (workOrder.status) {
+            "1"-> Picasso.with(context)
+                .load(R.drawable.ic_not_started)
+                .into(serviceStatusImageView)
+            "2"-> Picasso.with(context)
+                .load(R.drawable.ic_in_progress)
+                .into(serviceStatusImageView)
+            "3"-> Picasso.with(context)
+                .load(R.drawable.ic_done)
+                .into(serviceStatusImageView)
         }
 
 

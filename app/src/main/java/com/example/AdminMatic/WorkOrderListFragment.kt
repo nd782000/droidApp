@@ -88,7 +88,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     if (globalWorkOrdersList == null) {
         val emptyList: MutableList<WorkOrder> = mutableListOf()
 
-        adapter = WorkOrdersAdapter(emptyList, this)
+        adapter = WorkOrdersAdapter(emptyList, this.myView.context,this)
     }
 
         return myView
@@ -114,7 +114,15 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
         crewBtn.setOnClickListener {
             println("Crew Click")
-            val directions = WorkOrderListFragmentDirections.navigateToDepartments()
+
+            var directions = WorkOrderListFragmentDirections.navigateToDepartments(false)
+            //val spinnerPosition:Int = scheduleSpinner.getTag(R.id.pos) as Int
+
+            // Even spinner positions are the personal ones
+            if (scheduleSpinnerPosition % 2 == 0) {
+                directions = WorkOrderListFragmentDirections.navigateToDepartments(true)
+            }
+
             myView.findNavController().navigate(directions)
         }
 
@@ -148,6 +156,13 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
 
             scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
+
+            if (scheduleSpinnerPosition % 2 == 0) {
+                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
+            }
+            else {
+                crewBtn.text = getString(R.string.crews_everyone)
+            }
 
 
 
@@ -320,8 +335,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             //workOrdersList.clear()
             adapter = activity?.let {
                 WorkOrdersAdapter(
-                    globalWorkOrdersList!!,
-                    this@WorkOrderListFragment
+                    globalWorkOrdersList!!, context,this@WorkOrderListFragment
                 )
             }
 
@@ -423,12 +437,14 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     endDateDB = ""
 
                     empID = loggedInEmployee!!.ID
+                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
                 }
                 1 -> {println("all dates everyone")
                     startDateDB = ""
                     endDateDB = ""
 
                     empID = ""
+                    crewBtn.text = getString(R.string.crews_everyone)
                 }
                 2 -> {println("today personal")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -439,6 +455,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
+                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
                 }
                 3 -> {println("today everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -450,6 +467,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
+                    crewBtn.text = getString(R.string.crews_everyone)
                 }
                 4 -> {println("tomorrow personal")
                     /* // timezone-ignoring version, seems to make it behave like iOS
@@ -465,6 +483,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
+                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
                 }
                 5 -> {println("tomorrow everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -475,6 +494,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID =""
+                    crewBtn.text = getString(R.string.crews_everyone)
                 }
                 6 -> {println("this week personal")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -485,6 +505,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
+                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
                 }
                 7 -> {println("this week everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -495,6 +516,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
+                    crewBtn.text = getString(R.string.crews_everyone)
                 }
                 8 -> {println("next week personal")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -505,6 +527,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
+                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
                 }
                 9 -> {println("next week everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -515,6 +538,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
+                    crewBtn.text = getString(R.string.crews_everyone)
                 }
                 10 -> {println("next 14 days personal")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -525,6 +549,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
+                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
                 }
                 11 -> {println("next 14 days everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -535,6 +560,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
+                    crewBtn.text = getString(R.string.crews_everyone)
                 }
                 12 -> {println("next 30 days personal")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -545,6 +571,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
+                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
                 }
                 13 -> {println("next 30 days everyone")
                     val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -555,6 +582,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
+                    crewBtn.text = getString(R.string.crews_everyone)
                 }
                 14 -> {println("this year personal")
                     val odtStart: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atTime(OffsetTime.MIN)
@@ -564,6 +592,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = loggedInEmployee!!.ID
+                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
                 }
                 15 -> {println("this year everyone")
                     val odtStart: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atTime(OffsetTime.MIN)
@@ -573,6 +602,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                     endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                     empID = ""
+                    crewBtn.text = getString(R.string.crews_everyone)
                 }
 
 
@@ -802,6 +832,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         scheduleSpinner.visibility = View.INVISIBLE
         crewBtn.visibility = View.INVISIBLE
         mapBtn.visibility = View.INVISIBLE
+        countTextView.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
@@ -812,6 +843,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         scheduleSpinner.visibility = View.VISIBLE
         crewBtn.visibility = View.VISIBLE
         mapBtn.visibility = View.VISIBLE
+        countTextView.visibility = View.VISIBLE
     }
 
 

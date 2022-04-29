@@ -140,6 +140,10 @@
         <action
             android:id="@+id/navigateToEquipment"
             app:destination="@id/equipmentFragment" />
+        <argument
+            android:name="personal"
+            app:argType="boolean"
+            app:nullable="false" />
     </fragment>
 
     <fragment

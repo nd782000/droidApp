@@ -180,6 +180,12 @@ data class Crew(var ID:String,
 }
 
 
+data class EquipmentCrew(
+                var name: String?,
+                var color: String? = "",
+                var equips: MutableList<Equipment> = mutableListOf()
+)
+
 @Parcelize
 data class Customer(
     var ID: String,

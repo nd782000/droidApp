@@ -264,6 +264,13 @@
     <string name="x_crews">%1$d Crew(s)</string>
     <string name="x_equipment">%1$d Piece(s) of Equipment</string>
 
+    <string name="xs_departments">%1$s\'s Departments</string>
+    <string name="xs_crews">%1$s\'s Crews</string>
+    <string name="xs_equipment">%1$s\'s Equipment</string>
+    <string name="crews_everyone">Crews (Everyone)</string>
+    <string name="crews_name">Crews (%1$s)</string>
+
+
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
 
     <string name="pick_single">Please select your image</string>
