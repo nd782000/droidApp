@@ -76,6 +76,20 @@
             android:textStyle="bold"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/imageViewLockedLabor"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            app:srcCompat="@drawable/ic_lock"
+            android:textAlignment="center"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/usage_start_stop_cl"
@@ -284,8 +298,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toLeftOf="@id/guideline10"/>
 
-        <Spinner
-            android:id="@+id/usage_vendor_spinner"
+        <TextView
+            android:id="@+id/usage_vendor_select_tv"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:text="Vendor:"
@@ -296,6 +310,20 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline12" />
+        <ImageView
+            android:id="@+id/imageViewLockedMaterial"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            app:srcCompat="@drawable/ic_lock"
+            android:textAlignment="center"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView

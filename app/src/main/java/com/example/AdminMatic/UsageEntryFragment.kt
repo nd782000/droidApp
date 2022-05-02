@@ -51,7 +51,7 @@ interface UsageEditListener {
     fun editStart(row:Int)
     fun editStop(row:Int)
     fun editBreak(row:Int,lunch:String, actionID:Int)
-    fun editQty(row:Int,qtyInt: Int, actionID:Int)
+    fun editQty(row:Int,qtyDouble: Double, actionID:Int)
     fun editVendor(row:Int,vendor:String)
     fun editCost(row: Int, costDouble: Double, actionID:Int)
     fun showHistory()
@@ -230,10 +230,13 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         usageToLog.clear()
 
+        println("FFFFFFFFFFFFFFFFFFFhjkfgdfhjk")
         addActiveUsage()
 
 
-
+        val itemDecoration: RecyclerView.ItemDecoration =
+            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+        usageRecyclerView.addItemDecoration(itemDecoration)
 
     }
 
@@ -333,9 +336,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usage.override = "1"
                 usage.locked = false
 
-                usage.start = null
-                usage.stop = null
-                usage.lunch = null
+                usage.start = globalVars.getDBDateStringFromDate(Date())
+                usage.stop = globalVars.getDBDateStringFromDate(Date())
+                usage.lunch = "0.00"
 
                 usage.vendor = ""
                 usage.unitCost = ""
@@ -523,10 +526,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 )
             }
 
-
-            val itemDecoration: RecyclerView.ItemDecoration =
-                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-            usageRecyclerView.addItemDecoration(itemDecoration)
 
             (adapter as UsageAdapter).notifyDataSetChanged()
         }
@@ -1130,6 +1129,10 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
                 }else{
                     //material
+                    if (usage.vendor == null || usage.vendor == "") {
+                        globalVars.simpleAlert(myView.context, "Error","No vendor selected.")
+                        return
+                    }
 
                 }
 
@@ -1237,22 +1240,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-    override fun editQty(row: Int, qtyInt: Int, actionID:Int) {
-        /*
-        try {
-            val num = java.lang.Double.parseDouble(qtyString)
-        } catch (e: NumberFormatException) {
-            // numeric = false
-
-            globalVars.playErrorSound(myView.context)
-            globalVars.simpleAlert(myView.context,"Quantity Error","Quantity must be a number of items.")
-
-            //setQty()
-            // updateUsageTable()
-
-            return
-        }
-         */
+    override fun editQty(row: Int, qtyDouble: Double, actionID:Int) {
 
         if (actionID == EditorInfo.IME_ACTION_DONE) {
 
@@ -1260,31 +1248,15 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usageToLog[row].unitCost = "0.00"
             }
 
-            usageToLog[row].qty = qtyInt.toString()
-            val totalCost = (usageToLog[row].unitCost!!.toDouble() * qtyInt).toString()
-            usageToLog[row].totalCost = totalCost
+            usageToLog[row].qty = String.format("%.2f", qtyDouble)
+            val totalCost = (usageToLog[row].unitCost!!.toDouble() * usageToLog[row].qty.toDouble())
+            usageToLog[row].totalCost = String.format("%.2f", totalCost)
             editsMade = true
             updateUsageTable()
         }
     }
 
     override fun editCost(row: Int, costDouble: Double, actionID:Int) {
-        /*
-        try {
-            val num = java.lang.Double.parseDouble(costString)
-        } catch (e: NumberFormatException) {
-            // numeric = false
-
-            globalVars.playErrorSound(myView.context)
-            globalVars.simpleAlert(myView.context,"Unit Cost Error","Unit Cost must be a numeric price.")
-
-            //setQty()
-            // updateUsageTable()
-
-            return
-        }
-
-         */
 
         if (actionID == EditorInfo.IME_ACTION_DONE) {
 
@@ -1293,8 +1265,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             }
 
             usageToLog[row].unitCost = String.format("%.2f", costDouble)
-            val totalCost = (usageToLog[row].qty.toDouble() * costDouble).toString()
-            usageToLog[row].totalCost = totalCost
+            val totalCost = (usageToLog[row].qty.toDouble() * usageToLog[row].unitCost!!.toDouble())
+            usageToLog[row].totalCost = String.format("%.2f", totalCost)
             editsMade = true
             updateUsageTable()
 
@@ -1303,6 +1275,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     override fun editVendor(row: Int, vendor: String) {
         usageToLog[row].vendor = vendor
+
         editsMade = true
 
         //This isn't needed because the spinner display updates itself, also calling it here creates an infinite loop?

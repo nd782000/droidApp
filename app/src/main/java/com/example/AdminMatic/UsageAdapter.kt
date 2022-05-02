@@ -2,6 +2,9 @@ package com.example.AdminMatic
 
 import android.content.Context
 import android.content.res.Configuration
+import android.provider.Settings
+import android.renderscript.ScriptGroup
+import android.text.InputType
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
@@ -42,21 +45,32 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
     override fun onBindViewHolder(holder: UsageViewHolder, position: Int) {
 
 
-
-
         val usage: Usage = list[position]
         holder.bind(usage)
-
-
-
 
 
         val laborCl = holder.itemView.findViewById<ConstraintLayout>(R.id.usage_labor_cl)
         val materialCl = holder.itemView.findViewById<ConstraintLayout>(R.id.usage_material_cl)
 
-        if(usage.type == "1"){
+        if(usage.type == "1") {
             //labor type
+
+            // Lock this cell if the values are already filled and it's a different person than the logged in employee
+            usage.locked = false;
+            if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID
+            && usage.start != null
+            && usage.start != "0000-00-00 00:00:00"
+            && usage.stop != null
+            && usage.stop!= "0000-00-00 00:00:00") {
+                usage.locked = true
+                val lock:ImageView = holder.itemView.findViewById(R.id.imageViewLockedLabor)
+                lock.visibility = View.VISIBLE
+                val optionsButton:TextView = holder.itemView.findViewById(R.id.textViewOptions)
+                optionsButton.visibility = View.INVISIBLE
+            }
+
             materialCl.isVisible = false
+
 
             val employeeImageView:ImageView = holder.itemView.findViewById(R.id.usage_emp_iv)
 
@@ -77,9 +91,11 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             if (usage.start != null && usage.start != "0000-00-00 00:00:00"){
                 startTxt.text = usage.getTime(usage.start!!)
             }
-            startTxt.setOnClickListener {
-                // editStart()
-                usageEditListener.editStart(position)
+            if (!usage.locked!!) {
+                startTxt.setOnClickListener {
+                    // editStart()
+                    usageEditListener.editStart(position)
+                }
             }
 
 
@@ -88,10 +104,11 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             if (usage.stop != null && usage.stop != "0000-00-00 00:00:00"){
                 stopTxt.text = usage.getTime(usage.stop!!)
             }
-
-            stopTxt.setOnClickListener {
-                //editStart()
-                usageEditListener.editStop(position)
+            if (!usage.locked!!) {
+                stopTxt.setOnClickListener {
+                    //editStart()
+                    usageEditListener.editStop(position)
+                }
             }
 
 
@@ -104,17 +121,20 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             if (usage.lunch != null){
                 breakTxt.text = usage.lunch!!
             }
-
-            breakTxt.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    breakTxt.clearFocus()
-                    usageEditListener.editBreak(position, breakTxt.text.toString(), actionId)
-                    true
-                } else {
-                    false
+            if (!usage.locked!!) {
+                breakTxt.setOnEditorActionListener { _, actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        breakTxt.clearFocus()
+                        usageEditListener.editBreak(position, breakTxt.text.toString(), actionId)
+                        true
+                    } else {
+                        false
+                    }
                 }
             }
-
+            else {
+                breakTxt.inputType = InputType.TYPE_NULL
+            }
 
             val totalTxt:TextView = holder.itemView.findViewById(R.id.usage_total_tv)
 
@@ -128,19 +148,23 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 println("status click")
 
                 val popUp = PopupMenu(myView.context,holder.itemView)
-                popUp.inflate(R.menu.task_status_menu)
 
-                popUp.menu.add(0, usage.ID.toInt(), 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context), context.getString(R.string.delete)))
 
-                popUp.setOnMenuItemClickListener {
+                if (!usage.locked!!) {
+                    popUp.inflate(R.menu.task_status_menu)
 
-                    usageEditListener.deleteUsage(position)
+                    popUp.menu.add(0, usage.ID.toInt(), 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context), context.getString(R.string.delete)))
 
-                    true
+                    popUp.setOnMenuItemClickListener {
+                        usageEditListener.deleteUsage(position)
+
+                        true
+                    }
+
+
+                    popUp.gravity = Gravity.END
+                    popUp.show()
                 }
-
-                popUp.gravity = Gravity.END
-                popUp.show()
 
             }
 
@@ -148,6 +172,82 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             //material type
             laborCl.isVisible = false
 
+            usage.locked = false;
+            if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID
+                && usage.vendor != null
+                && usage.qty!= "0.00"
+                && usage.unitCost != "0.00"
+                && usage.unitCost != null) {
+                usage.locked = true
+                val lock:ImageView = holder.itemView.findViewById(R.id.imageViewLockedMaterial)
+                lock.visibility = View.VISIBLE
+            }
+
+            val vendorSelectText = holder.itemView.findViewById<TextView>(R.id.usage_vendor_select_tv)
+            vendorSelectText.setBackgroundResource(R.drawable.text_view_layout)
+
+            if (usage.vendor == "0") {
+                vendorSelectText.text = R.string.other.toString()
+            }
+
+            when (usage.vendor) {
+                "0" -> {
+                    vendorSelectText.text = "Other"
+                }
+                "" -> {
+                    vendorSelectText.text = "Select Vendor"
+                }
+                null -> {
+                    vendorSelectText.text = "Select Vendor"
+                }
+                else -> {
+                    vendorSelectText.text = "Existing Vendor!"
+
+                    woItem.vendors.forEach {
+                        if (it.ID == usage.vendor) {
+                            vendorSelectText.text = it.name
+                        }
+                    }
+
+                }
+
+            }
+            if (!usage.locked!!) {
+                vendorSelectText.setOnClickListener {
+                    println("status click")
+                    val popUp = PopupMenu(myView.context, holder.itemView)
+                    popUp.inflate(R.menu.task_status_menu)
+
+                    woItem.vendors.forEach { v->
+                        popUp.menu.add(0, v.ID.toInt(), 1, v.name)
+                        popUp.menu.add(0, 0, 1, R.string.other)
+                    }
+
+                    popUp.setOnMenuItemClickListener {
+
+                        // Update cost from the selected vendor
+                        woItem.vendors.forEach { v->
+                            if (v.ID.toInt() == it.itemId) {
+                                usageEditListener.editCost(position,v.cost!!.toDouble(),EditorInfo.IME_ACTION_DONE)
+                            }
+                        }
+
+                        usageEditListener.editVendor(position, it.itemId.toString())
+
+
+                        vendorSelectText.text = it.title
+                        true
+                    }
+                    popUp.gravity = Gravity.END
+                    popUp.show()
+                }
+            }
+
+
+
+
+
+            /*
             val vendorSearch:Spinner = holder.itemView.findViewById(R.id.usage_vendor_spinner)
             vendorSearch.setBackgroundResource(R.drawable.text_view_layout)
             /*
@@ -169,21 +269,37 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
             vendorSearch.adapter = adapter
 
-            vendorSearch.onItemSelectedListener = object : OnItemSelectedListener {
-                override fun onItemSelected(
-                    parentView: AdapterView<*>?,
-                    selectedItemView: View?,
-                    spinnerPosition: Int,
-                    id: Long
-                ) {
-                    usageEditListener.editVendor(position, vendorListCopy[spinnerPosition].ID)
-                }
+            if (!usage.locked!!) {
+                vendorSearch.onItemSelectedListener = object : OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parentView: AdapterView<*>?,
+                        selectedItemView: View?,
+                        spinnerPosition: Int,
+                        id: Long
+                    ) {
+                        if (!holder.mInitialized) {
+                            holder.mInitialized = true
+                        }
+                        else {
+                            usageEditListener.editVendor(position, vendorListCopy[spinnerPosition].ID)
+                            if (vendorListCopy[spinnerPosition].name != "Other") {
+                                if (vendorListCopy[spinnerPosition].cost != null && vendorListCopy[spinnerPosition].cost != "") {
+                                    usageEditListener.editCost(position,vendorListCopy[spinnerPosition].cost!!.toDouble(),EditorInfo.IME_ACTION_DONE)
+                                }
+                            }
+                        }
+                    }
 
-                override fun onNothingSelected(parentView: AdapterView<*>?) {
-                    // your code here
+                    override fun onNothingSelected(parentView: AdapterView<*>?) {
+                        // your code here
+                    }
                 }
             }
+            else {
+                vendorSearch.isEnabled = false
+            }
 
+             */
 
             val quantityTxt:TextView = holder.itemView.findViewById(R.id.usage_quantity_et)
             quantityTxt.text = usage.qty
@@ -192,25 +308,31 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             quantityTxt.setSelectAllOnFocus(true)
 
             quantityTxt.setBackgroundResource(R.drawable.text_view_layout)
+            if (!usage.locked!!) {
+                quantityTxt.setOnEditorActionListener { _, actionId, _ ->
+                    //var numeric = true
 
-            quantityTxt.setOnEditorActionListener { _, actionId, _ ->
-                //var numeric = true
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // Call your code here
 
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    // Call your code here
-
-                    quantityTxt.clearFocus()
-
-                    val qtyInput = quantityTxt.text.toString().toDouble().roundToInt()
-
-                    usageEditListener.editQty(position, qtyInput, actionId)
+                        quantityTxt.clearFocus()
 
 
-                    true
-                } else {
-                    false
+                        val qtyInput = quantityTxt.text.toString().toDouble()
+                        val qtyInputTrimmed = (qtyInput * 100.0).roundToInt() / 100.0
+                        usageEditListener.editQty(position, qtyInputTrimmed, actionId)
+
+
+                        true
+                    } else {
+                        false
+                    }
                 }
             }
+            else {
+                quantityTxt.inputType = InputType.TYPE_NULL
+            }
+
 
 
 
@@ -225,23 +347,28 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
             unitCostTxt.setBackgroundResource(R.drawable.text_view_layout)
 
-            unitCostTxt.setOnEditorActionListener { _, actionId, _ ->
-                //var numeric = true
+            if (!usage.locked!!) {
+                unitCostTxt.setOnEditorActionListener { _, actionId, _ ->
+                    //var numeric = true
 
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    // Call your code here
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // Call your code here
 
-                    unitCostTxt.clearFocus()
+                        unitCostTxt.clearFocus()
 
-                    val costInput = unitCostTxt.text.toString().toDouble()
-                    val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
-                    usageEditListener.editCost(position, costInputTrimmed, actionId)
+                        val costInput = unitCostTxt.text.toString().toDouble()
+                        val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
+                        usageEditListener.editCost(position, costInputTrimmed, actionId)
 
 
-                    true
-                } else {
-                    false
+                        true
+                    } else {
+                        false
+                    }
                 }
+            }
+            else {
+                unitCostTxt.inputType = InputType.TYPE_NULL
             }
 
 
@@ -262,10 +389,12 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     //.centerCrop()                        //optional
                     .into(receiptImageView)                       //Your image view object.
             }
-            receiptImageView.setOnClickListener{
-                val directions = UsageEntryFragmentDirections.navigateUsageEntryToImageUpload("WOITEM",
-                    arrayOf(),"","", woItem.woID, woItem.itemID,"","","","","")
-                myView.findNavController().navigate(directions)
+            if (!usage.locked!!) {
+                receiptImageView.setOnClickListener{
+                    val directions = UsageEntryFragmentDirections.navigateUsageEntryToImageUpload("WOITEM",
+                        arrayOf(),"","", woItem.woID, woItem.itemID,"","","","","")
+                    myView.findNavController().navigate(directions)
+                }
             }
         }
     }
@@ -296,6 +425,8 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 class UsageViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.usage_list_item, parent, false)) {
     private var mNameView: TextView? = null
+    // This is used to tell the recycler to skip its first "onItemSelected" call so it doesn't go off automatically on load
+    var mInitialized = false
 
     //private var thumbView:ImageView? = null
    // private var empPic:ImageView? = null

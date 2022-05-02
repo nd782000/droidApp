@@ -269,6 +269,8 @@
     <string name="xs_equipment">%1$s\'s Equipment</string>
     <string name="crews_everyone">Crews (Everyone)</string>
     <string name="crews_name">Crews (%1$s)</string>
+    <string name="other">Other</string>
+    <string name="select_vendor">Select Vendor</string>
 
 
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
