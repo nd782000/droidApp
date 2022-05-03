@@ -68,19 +68,19 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     private lateinit var woItemSearch: SearchView
 
     private lateinit var estCl:ConstraintLayout
-    private lateinit var estTxt:EditText
+    private lateinit var estEditTxt:EditText
     private lateinit var chargeSpinner:Spinner
 
     private lateinit var hideCl:ConstraintLayout
     private lateinit var hideQtySwitch:Switch
-    private lateinit var qtyTxt:EditText
+    private lateinit var qtyEditTxt:EditText
 
     private lateinit var taxCl:ConstraintLayout
     private lateinit var taxableSwitch:Switch
-    private lateinit var priceTxt:EditText
+    private lateinit var priceEditTxt:EditText
 
     private lateinit var totalCl:ConstraintLayout
-    private lateinit var totalTxt:EditText
+    private lateinit var totalEditTxt:EditText
 
     private lateinit var leadTaskBtn:Button
     private lateinit var tasksRv:RecyclerView
@@ -88,6 +88,13 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
     private lateinit var usageBtn:Button
     private lateinit var profitCl:ConstraintLayout
+
+    private lateinit var priceTxt:TextView
+    private lateinit var costTxt:TextView
+    private lateinit var profitTxt:TextView
+    private lateinit var profitPercentTxt:TextView
+    private lateinit var profitBar:ProgressBar
+
 
     private lateinit var submitBtn:Button
 
@@ -133,19 +140,19 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         woItemSearch = myView.findViewById(R.id.wo_item_search)
         estCl = myView.findViewById(R.id.wo_item_est_cl)
-        estTxt = myView.findViewById(R.id.wo_item_est_val_et)
+        estEditTxt = myView.findViewById(R.id.wo_item_est_val_et)
         chargeSpinner = myView.findViewById(R.id.wo_item_charge_spinner)
 
         hideCl = myView.findViewById(R.id.wo_item_hide_cl)
         hideQtySwitch = myView.findViewById(R.id.wo_item_hide_qty_switch)
-        qtyTxt = myView.findViewById(R.id.wo_item_qty_val_et)
+        qtyEditTxt = myView.findViewById(R.id.wo_item_qty_val_et)
 
         taxCl = myView.findViewById(R.id.wo_item_tax_cl)
         taxableSwitch = myView.findViewById(R.id.wo_item_taxable_switch)
-        priceTxt = myView.findViewById(R.id.wo_item_price_val_et)
+        priceEditTxt = myView.findViewById(R.id.wo_item_price_val_et)
 
         totalCl = myView.findViewById(R.id.wo_item_total_cl)
-        totalTxt = myView.findViewById(R.id.wo_item_total_val_et)
+        totalEditTxt = myView.findViewById(R.id.wo_item_total_val_et)
 
         leadTaskBtn = myView.findViewById(R.id.wo_item_lead_task_btn)
         tasksRv = myView.findViewById(R.id.wo_item_tasks_rv)
@@ -169,16 +176,25 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         }
         profitCl = myView.findViewById(R.id.wo_item_profit_cl)
+        priceTxt = myView.findViewById(R.id.price_tv)
+        costTxt = myView.findViewById(R.id.cost_tv)
+        profitTxt = myView.findViewById(R.id.profit_tv)
+        profitPercentTxt = myView.findViewById(R.id.profit_percent_tv)
+        profitBar = myView.findViewById(R.id.profit_bar)
 
         submitBtn = myView.findViewById(R.id.wo_item_submit_btn)
 
 
         if (woItem == null){
-
+            //fillProfitCl()
             hideProgressView()
+
         }else{
             getWoItem()
         }
+
+
+
 
 
 
@@ -196,6 +212,16 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         }
     }
 
+    private fun fillProfitCl() {
+        val profit:Float = woItem!!.price.toFloat() - woItem!!.totalCost.toFloat()
+        val profitPercent:Int = (profit / woItem!!.price.toFloat() * 100).toInt()
+
+        priceTxt.text = woItem!!.price
+        costTxt.text = woItem!!.totalCost
+        profitTxt.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
+        profitPercentTxt.text = profitPercent.toString()
+        profitBar.progress = 100 - profitPercent
+    }
 
     override fun getWoItem(){
         println("get woItem")
@@ -224,41 +250,44 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
 
-                    val gson = GsonBuilder().create()
-                    woItem = gson.fromJson(parentObject.toString() , WoItem::class.java)
+                        val gson = GsonBuilder().create()
+                        woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
+
+
+                        val taskJSON: JSONArray = parentObject.getJSONArray("tasks")
+                        val taskList = gson.fromJson(taskJSON.toString(), Array<Task>::class.java)
+                            .toMutableList()
+
+                        tasksRv.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = activity?.let {
+                                TasksAdapter(
+                                    taskList,
+                                    it,
+                                    this@WoItemFragment,
+                                    woItem as WoItem
+                                )
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(
+                                    myView.context,
+                                    DividerItemDecoration.VERTICAL
+                                )
+                            tasksRv.addItemDecoration(itemDecoration)
 
 
 
-
-
-                    val taskJSON: JSONArray = parentObject.getJSONArray("tasks")
-                    val taskList = gson.fromJson(taskJSON.toString() , Array<Task>::class.java).toMutableList()
-
-                    tasksRv.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            TasksAdapter(
-                                taskList,
-                                it,
-                                this@WoItemFragment,
-                                woItem as WoItem
-                            )
+                            (adapter as TasksAdapter).notifyDataSetChanged()
                         }
-
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        tasksRv.addItemDecoration(itemDecoration)
-
-
-
-                        (adapter as TasksAdapter).notifyDataSetChanged()
+                        //fillProfitCl()
+                        hideProgressView()
                     }
-
-                    hideProgressView()
 
 
 
@@ -298,7 +327,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         }
 
         val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"",
-            _task.ID,"${_task.task}","","")
+            _task.ID,"${_task.task}","","", "")
         myView.findNavController().navigate(directions)
     }
 
@@ -314,7 +343,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         data.let {
 
-            val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"", it.ID,"${it.task}","","")
+            val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"", it.ID,"${it.task}","","", "")
 
            myView.findNavController().navigate(directions)
         }
@@ -389,9 +418,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             woItemSearch.setQuery(woItem!!.item,true)
             woItemSearch.clearFocus()
 
-            estTxt.setText(woItem!!.est)
-
-
+            estEditTxt.setText(woItem!!.est)
+            profitCl.visibility = View.VISIBLE
 
 
 
@@ -401,22 +429,18 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
 
 
-
-
-
-
             if (woItem!!.hideUnits == "1"){
                 hideQtySwitch.isChecked = true
             }
 
-            qtyTxt.setText(woItem!!.act)
+            qtyEditTxt.setText(woItem!!.act)
 
             if (woItem!!.taxType == "1"){
                 taxableSwitch.isChecked = true
             }
-            priceTxt.setText(woItem!!.price)
+            priceEditTxt.setText(woItem!!.price)
 
-            totalTxt.setText(woItem!!.total)
+            totalEditTxt.setText(woItem!!.total)
 
             if (editMode){
                 println("editMode = true")
@@ -424,8 +448,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                // woItemSearch.isEnabled = true
                 //woItemSearch.isClickable = true
                 setViewAndChildrenEnabled(woItemSearch,true)
-                estTxt.isEnabled = true
-                estTxt.isClickable = true
+                estEditTxt.isEnabled = true
+                estEditTxt.isClickable = true
                 chargeSpinner.isEnabled = true
                 chargeSpinner.isClickable = true
                 chargeSpinner.onItemSelectedListener = this@WoItemFragment
@@ -461,8 +485,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 setViewAndChildrenEnabled(woItemSearch,false)
 
 
-                estTxt.isEnabled = false
-                estTxt.isClickable = false
+                estEditTxt.isEnabled = false
+                estEditTxt.isClickable = false
                 chargeSpinner.isEnabled = false
                 chargeSpinner.isClickable = false
                 chargeSpinner.onItemSelectedListener = null
@@ -489,7 +513,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
                 submitBtn.visibility = View.GONE
 
-                profitCl.visibility = View.GONE
+                //profitCl.visibility = View.GONE
             }
 
             if (woItem!!.type == "1"){

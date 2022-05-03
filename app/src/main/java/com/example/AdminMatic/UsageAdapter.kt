@@ -20,7 +20,7 @@ import java.util.Collections.copy
 import kotlin.math.roundToInt
 
 
-class UsageAdapter(private val list: MutableList<Usage>, private val context: Context,private val usageEditListener: UsageEditListener, private val woItem:WoItem)
+class UsageAdapter(private val list: MutableList<Usage>, private val context: Context,private val usageEditListener: UsageEditListener, private val woItem:WoItem, private val workOrder:WorkOrder)
 
     : RecyclerView.Adapter<UsageViewHolder>() {
 
@@ -47,6 +47,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
         val usage: Usage = list[position]
         holder.bind(usage)
+
 
 
         val laborCl = holder.itemView.findViewById<ConstraintLayout>(R.id.usage_labor_cl)
@@ -390,9 +391,10 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     .into(receiptImageView)                       //Your image view object.
             }
             if (!usage.locked!!) {
+                //todo: check if usage already exists before letting you upload a receipt (see iOS behavior)
                 receiptImageView.setOnClickListener{
                     val directions = UsageEntryFragmentDirections.navigateUsageEntryToImageUpload("WOITEM",
-                        arrayOf(),"","", woItem.woID, woItem.itemID,"","","","","")
+                        arrayOf(),workOrder.customer, workOrder.custName, woItem.woID, woItem.itemID,"","","","","", usage.ID)
                     myView.findNavController().navigate(directions)
                 }
             }

@@ -556,6 +556,10 @@
             android:name="equipmentID"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="usageID"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/navigateUploadToImageListFragment"
             app:destination="@id/imageListFragment" />

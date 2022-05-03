@@ -372,19 +372,21 @@ class LogInFragment : Fragment() {
                 println("Response $response")
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
-                    println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
+                        println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
 
-                    val employee:Employee = Gson().fromJson(parentObject.getJSONObject("employee").toString(), Employee::class.java)
+                        val employee:Employee = Gson().fromJson(parentObject.getJSONObject("employee").toString(), Employee::class.java)
 
-                    loggedInEmployee = employee
-                    println("loggedInEmployee.fname = ${loggedInEmployee!!.fName}")
+                        loggedInEmployee = employee
+                        println("loggedInEmployee.fname = ${loggedInEmployee!!.fName}")
 
-                    deviceID = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
+                        deviceID = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
 
-                    getFields()
+                        getFields()
+                    }
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -433,16 +435,18 @@ class LogInFragment : Fragment() {
                 println("Response $response")
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
-                    val permissions:Permissions = Gson().fromJson(parentObject.toString(), Permissions::class.java)
+                        val permissions: Permissions = Gson().fromJson(parentObject.toString(), Permissions::class.java)
 
-                    GlobalVars.permissions = permissions
-                    println("accounting permissions = ${GlobalVars.permissions!!.accounting}")
+                        GlobalVars.permissions = permissions
+                        println("accounting permissions = ${GlobalVars.permissions!!.accounting}")
 
 
-                    myView.findNavController().navigate(R.id.navigateToMainMenu)
+                        myView.findNavController().navigate(R.id.navigateToMainMenu)
+                    }
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -559,49 +563,43 @@ class LogInFragment : Fragment() {
 
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
+                        val errorArray:JSONArray = parentObject.getJSONArray("errorArray")
+                        if (errorArray.length() > 0){
+                            println("log in error ${errorArray[0]}")
+                            Toast.makeText(activity,errorArray[0].toString(),Toast.LENGTH_LONG).show()
+                            stopLoading()
+                            companyEditText.setText("")
+                            userEditText.setText("")
+                            passEditText.setText("")
+                        }else{
 
+                            println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
 
+                            val employee:Employee = Gson().fromJson(parentObject.getJSONObject("employee").toString(), Employee::class.java)
 
-                    val errorArray:JSONArray = parentObject.getJSONArray("errorArray")
-                    if (errorArray.length() > 0){
-                        println("log in error ${errorArray[0]}")
-                        Toast.makeText(activity,errorArray[0].toString(),Toast.LENGTH_LONG).show()
+                            loggedInEmployee = employee
 
+                            //textView.text = "Device ID: $id"
 
-                        stopLoading()
-                        companyEditText.setText("")
-                        userEditText.setText("")
-                        passEditText.setText("")
-                    }else{
+                            deviceID = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
+                            println("loggedInEmployee.fname = ${loggedInEmployee!!.fName}")
 
-                        println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
+                            //save stored vars
+                            val sharedPref = this.requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+                            with (sharedPref.edit()) {
 
-                        val employee:Employee = Gson().fromJson(parentObject.getJSONObject("employee").toString(), Employee::class.java)
-
-                        loggedInEmployee = employee
-
-                        //textView.text = "Device ID: $id"
-
-
-                        deviceID = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
-                        println("loggedInEmployee.fname = ${loggedInEmployee!!.fName}")
-
-
-                        //save stored vars
-                        val sharedPref = this.requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
-                        with (sharedPref.edit()) {
-
-                            putString("loggedInEmpID",loggedInEmployee!!.ID)
-                            putString("sessionKey",loggedInEmployee!!.sessionKey)
-                            putString("companyUnique",loggedInEmployee!!.companyUnique)
-                            putString("deviceID",deviceID)
-                            apply()
+                                putString("loggedInEmpID",loggedInEmployee!!.ID)
+                                putString("sessionKey",loggedInEmployee!!.sessionKey)
+                                putString("companyUnique",loggedInEmployee!!.companyUnique)
+                                putString("deviceID",deviceID)
+                                apply()
+                            }
+                            getFields()
                         }
-
-                        getFields()
                     }
 
 
@@ -667,15 +665,16 @@ class LogInFragment : Fragment() {
 
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
 
-                    thumbBase = parentObject.getString("thumbBase")
-                    mediumBase = parentObject.getString("mediumBase")
-                    rawBase = parentObject.getString("rawBase")
-                    println("thumbBase= $thumbBase")
-
+                        thumbBase = parentObject.getString("thumbBase")
+                        mediumBase = parentObject.getString("mediumBase")
+                        rawBase = parentObject.getString("rawBase")
+                        println("thumbBase= $thumbBase")
+                    }
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -726,24 +725,25 @@ class LogInFragment : Fragment() {
                 println("Response $response")
 
                 try {
-                    val parentObject = JSONObject(response)
-                    //println("parentObject = ${parentObject.toString()}")
-                    //var employees:JSONArray = parentObject.getJSONArray("employees")
-                   // println("employees = ${employees.toString()}")
-                    //println("employees count = ${employees.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        //println("parentObject = ${parentObject.toString()}")
+                        //var employees:JSONArray = parentObject.getJSONArray("employees")
+                        // println("employees = ${employees.toString()}")
+                        //println("employees count = ${employees.length()}")
 
 
-
-                    val employeeJSONArray = parentObject.getJSONArray("employees")
-                    // employeeList = parentObject.getJSONArray("employees")
-
-
-                    val gson = GsonBuilder().create()
-                    employeeList = gson.fromJson(employeeJSONArray.toString() , Array<Employee>::class.java)
+                        val employeeJSONArray = parentObject.getJSONArray("employees")
+                        // employeeList = parentObject.getJSONArray("employees")
 
 
-                   // myView.findNavController().navigate(R.id.navigateToMainMenu)
-                    getCustomers()
+                        val gson = GsonBuilder().create()
+                        employeeList = gson.fromJson(employeeJSONArray.toString(), Array<Employee>::class.java)
+
+
+                        // myView.findNavController().navigate(R.id.navigateToMainMenu)
+                        getCustomers()
+                    }
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -792,73 +792,76 @@ class LogInFragment : Fragment() {
                 println("Response $response")
                // hideProgressView()
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    //var customers: JSONObject = parentObject.getJSONObject("customers")
-                    val customers: JSONArray = parentObject.getJSONArray("customers")
-                    // println("customers = ${customers.toString()}")
-                    // println("customers count = ${customers.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        //var customers: JSONObject = parentObject.getJSONObject("customers")
+                        val customers: JSONArray = parentObject.getJSONArray("customers")
+                        // println("customers = ${customers.toString()}")
+                        // println("customers count = ${customers.length()}")
 
-                    val gson = GsonBuilder().create()
-                    GlobalVars.customerList = gson.fromJson(customers.toString() , Array<Customer>::class.java).toMutableList()
+                        val gson = GsonBuilder().create()
+                        GlobalVars.customerList = gson.fromJson(customers.toString() , Array<Customer>::class.java).toMutableList()
 
-                    getPermissions()
+                        getPermissions()
 
-                    /*
-                    list_recycler_view.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            CustomersAdapter(customersList,
-                                it, this@CustomerListFragment)
-                        }
-
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        recyclerView.addItemDecoration(itemDecoration)
-
-
-                        // Setup refresh listener which triggers new data loading
-                        swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
-                            // Make sure you call swipeContainer.setRefreshing(false)
-                            // once the network request has completed successfully.
-                            searchView.setQuery("", false);
-                            searchView.clearFocus();
-                            getCustomers()
-                        }
-                        // Configure the refreshing colors
-                        swipeRefresh.setColorSchemeResources(
-                            R.color.button,
-                            R.color.black,
-                            R.color.colorAccent,
-                            R.color.colorPrimaryDark
-                        )
-                        (adapter as CustomersAdapter).notifyDataSetChanged();
-
-                        // Remember to CLEAR OUT old items before appending in the new ones
-
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false;
-
-                        Toast.makeText(activity,"${customersList.count()} Customers Loaded", Toast.LENGTH_SHORT).show()
-
-                        //search listener
-                        customers_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-                            override fun onQueryTextSubmit(query: String?): Boolean {
-                                return false
+                        /*
+                        list_recycler_view.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = activity?.let {
+                                CustomersAdapter(customersList,
+                                    it, this@CustomerListFragment)
                             }
 
-                            override fun onQueryTextChange(newText: String?): Boolean {
-                                println("onQueryTextChange = $newText")
-                                (adapter as CustomersAdapter).filter.filter(newText)
-                                return false
-                            }
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            recyclerView.addItemDecoration(itemDecoration)
 
-                        })
+
+                            // Setup refresh listener which triggers new data loading
+                            swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                                // Make sure you call swipeContainer.setRefreshing(false)
+                                // once the network request has completed successfully.
+                                searchView.setQuery("", false);
+                                searchView.clearFocus();
+                                getCustomers()
+                            }
+                            // Configure the refreshing colors
+                            swipeRefresh.setColorSchemeResources(
+                                R.color.button,
+                                R.color.black,
+                                R.color.colorAccent,
+                                R.color.colorPrimaryDark
+                            )
+                            (adapter as CustomersAdapter).notifyDataSetChanged();
+
+                            // Remember to CLEAR OUT old items before appending in the new ones
+
+                            // Now we call setRefreshing(false) to signal refresh has finished
+                            customerSwipeContainer.isRefreshing = false;
+
+                            Toast.makeText(activity,"${customersList.count()} Customers Loaded", Toast.LENGTH_SHORT).show()
+
+                            //search listener
+                            customers_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+                                override fun onQueryTextSubmit(query: String?): Boolean {
+                                    return false
+                                }
+
+                                override fun onQueryTextChange(newText: String?): Boolean {
+                                    println("onQueryTextChange = $newText")
+                                    (adapter as CustomersAdapter).filter.filter(newText)
+                                    return false
+                                }
+
+                            })
+                        }
+                        */
                     }
 
-                    */
+
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
                     println("JSONException")

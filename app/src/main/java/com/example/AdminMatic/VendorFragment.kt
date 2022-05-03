@@ -244,17 +244,19 @@ class VendorFragment : Fragment() {
 
                     //Todo: figure out why the vendor is coming in null
                     try {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                        if (isResumed) {
+                            val parentObject = JSONObject(response)
+                            println("parentObject = $parentObject")
 
 
-                        val gson = GsonBuilder().create()
+                            val gson = GsonBuilder().create()
 
-                        val vendorArray = gson.fromJson(parentObject.toString() ,VendorArray::class.java)
+                            val vendorArray = gson.fromJson(parentObject.toString() ,VendorArray::class.java)
 
-                        vendor = vendorArray.vendors[0]
+                            vendor = vendorArray.vendors[0]
 
-                        populateVendorView()
+                            populateVendorView()
+                        }
 
 
                     } catch (e: JSONException) {

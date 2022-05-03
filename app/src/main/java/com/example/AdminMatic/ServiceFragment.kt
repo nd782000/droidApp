@@ -209,10 +209,12 @@ class ServiceFragment : Fragment() {
                     println("Response $response")
 
                     try {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                        if (isResumed) {
+                            val parentObject = JSONObject(response)
+                            println("parentObject = $parentObject")
 
-                        hideProgressView()
+                            hideProgressView()
+                        }
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {

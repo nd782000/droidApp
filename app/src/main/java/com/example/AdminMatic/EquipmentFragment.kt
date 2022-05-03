@@ -196,66 +196,67 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                 println("Response $response")
                 hideProgressView()
                 try {
-
-                    val gson = GsonBuilder().create()
-
-
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-
-                    //current adapter
-                    val services:JSONArray = parentObject.getJSONArray("services")
-                    println("services = $services")
-                    println("services count = ${services.length()}")
-
-                    val servicesListCurrent = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
-                    println("ServiceCount = ${servicesListCurrent.count()}")
-
-                    currentServicesAdapter = ServiceAdapter(servicesListCurrent,this.myView.context, false,this)
-
-                    //history adapter
-                    val servicesHistory:JSONArray = parentObject.getJSONArray("serviceHistory")
-                    println("servicesHistory = $servicesHistory")
-                    println("servicesHistory count = ${servicesHistory.length()}")
-
-                    val servicesListHistory = gson.fromJson(servicesHistory.toString() , Array<EquipmentService>::class.java).toMutableList()
-                    println("ServiceHistoryCount = ${servicesListHistory.count()}")
-
-                    println(equipment!!.dealer)
-
-                    historyServicesAdapter = ServiceAdapter(servicesListHistory,this.myView.context, true,this)
+                    if (isResumed) {
+                        val gson = GsonBuilder().create()
 
 
-                    serviceRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
-                    //currentRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        //current adapter
+                        val services:JSONArray = parentObject.getJSONArray("services")
+                        println("services = $services")
+                        println("services count = ${services.length()}")
+
+                        val servicesListCurrent = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
+                        println("ServiceCount = ${servicesListCurrent.count()}")
+
+                        currentServicesAdapter = ServiceAdapter(servicesListCurrent,this.myView.context, false,this)
+
+                        //history adapter
+                        val servicesHistory:JSONArray = parentObject.getJSONArray("serviceHistory")
+                        println("servicesHistory = $servicesHistory")
+                        println("servicesHistory count = ${servicesHistory.length()}")
+
+                        val servicesListHistory = gson.fromJson(servicesHistory.toString() , Array<EquipmentService>::class.java).toMutableList()
+                        println("ServiceHistoryCount = ${servicesListHistory.count()}")
+
+                        println(equipment!!.dealer)
+
+                        historyServicesAdapter = ServiceAdapter(servicesListHistory,this.myView.context, true,this)
 
 
+                        serviceRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
 
-                    serviceRecyclerView.adapter = currentServicesAdapter
+                        //currentRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
 
 
 
+                        serviceRecyclerView.adapter = currentServicesAdapter
 
-                    val itemDecoration: RecyclerView.ItemDecoration =
-                        DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                    serviceRecyclerView.addItemDecoration(itemDecoration)
 
-                    /*
-                    currentRecyclerView.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            ServiceAdapter(servicesList,
-                                it, this@EquipmentFragment)
+
+
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        serviceRecyclerView.addItemDecoration(itemDecoration)
+
+                        /*
+                        currentRecyclerView.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = activity?.let {
+                                ServiceAdapter(servicesList,
+                                    it, this@EquipmentFragment)
+                            }
+                            (adapter as ServiceAdapter).notifyDataSetChanged();
                         }
-                        (adapter as ServiceAdapter).notifyDataSetChanged();
+
+                         */
+
+                        /* Here 'response' is a String containing the response you received from the website... */
+
+                        // getServicesHistory()
                     }
-
-                     */
-
-                    /* Here 'response' is a String containing the response you received from the website... */
-
-                   // getServicesHistory()
 
 
                 } catch (e: JSONException) {
@@ -342,10 +343,12 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     println("Response $response")
 
                     try {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                        if (isResumed) {
+                            val parentObject = JSONObject(response)
+                            println("parentObject = $parentObject")
 
-                        hideProgressView()
+                            hideProgressView()
+                        }
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {

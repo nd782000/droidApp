@@ -176,81 +176,83 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             Response.Listener { response -> // response
                 println("Response $response")
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
-                    val gson = GsonBuilder().create()
-                    workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
-                    println(workOrder)
+                        val gson = GsonBuilder().create()
+                        workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
+                        println(workOrder)
 
-                    setStatus(workOrder!!.status)
-                    titleTxt.text = workOrder!!.title
-                    if(workOrder!!.nextPlannedDate != null){
-                        scheduleTxt.text = workOrder!!.nextPlannedDate
-                    }
-                    /*
-                    if(workOrder!!.department != null){
-                        deptTxt.text = workOrder!!.department!!
-                    }
-
-                     */
-                    if(workOrder!!.crewName != null){
-                        crewTxt.text = workOrder!!.mainCrew!!
-                    }
-                    if(workOrder!!.salesRepName != null){
-                        repTxt.text = workOrder!!.salesRepName!!
-                    }
-
-                    println("Charge Name: ${workOrder!!.chargeName}")
-                    when (workOrder!!.charge) {
-                        "1" -> {
-                            workOrder!!.chargeName = getString(R.string.wo_charge_nc)
+                        setStatus(workOrder!!.status)
+                        titleTxt.text = workOrder!!.title
+                        if(workOrder!!.nextPlannedDate != null){
+                            scheduleTxt.text = workOrder!!.nextPlannedDate
                         }
-                        "2" -> {
-                            workOrder!!.chargeName = getString(R.string.wo_charge_fl)
-                        }
-                        "3" -> {
-                            workOrder!!.chargeName = getString(R.string.wo_charge_tm)
-                        }
-                        else -> {
-                            workOrder!!.chargeName = ""
-                        }
-                    }
-                    chargeTxt.text = workOrder!!.chargeName
-
-
-                    val profit:Float = workOrder!!.totalPriceRaw.toFloat() - workOrder!!.totalCostRaw.toFloat()
-                    val profitPercent:Int = (profit / workOrder!!.totalPriceRaw.toFloat() * 100).toInt()
-
-                    priceTxt.text = workOrder!!.totalPrice
-                    costTxt.text = workOrder!!.totalCost
-                    profitTxt.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
-                    profitPercentTxt.text = profitPercent.toString()
-                    profitBar.progress = 100 - profitPercent
-
-
-                    val woItemJSON: JSONArray = parentObject.getJSONArray("items")
-                    val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
-                    println("woItemJSON $woItemJSON")
-
-                    work_order_items_rv.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            WoItemsAdapter(
-                                itemList,
-                                context,
-                                this@WorkOrderFragment
-                            )
+                        /*
+                        if(workOrder!!.department != null){
+                            deptTxt.text = workOrder!!.department!!
                         }
 
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        itemRecyclerView.addItemDecoration(itemDecoration)
-                        (adapter as WoItemsAdapter).notifyDataSetChanged()
-                    }
+                         */
+                        if(workOrder!!.crewName != null){
+                            crewTxt.text = workOrder!!.mainCrew!!
+                        }
+                        if(workOrder!!.salesRepName != null){
+                            repTxt.text = workOrder!!.salesRepName!!
+                        }
 
-                    workOrder!!.setEmps()
-                    hideProgressView()
+                        println("Charge Name: ${workOrder!!.chargeName}")
+                        when (workOrder!!.charge) {
+                            "1" -> {
+                                workOrder!!.chargeName = getString(R.string.wo_charge_nc)
+                            }
+                            "2" -> {
+                                workOrder!!.chargeName = getString(R.string.wo_charge_fl)
+                            }
+                            "3" -> {
+                                workOrder!!.chargeName = getString(R.string.wo_charge_tm)
+                            }
+                            else -> {
+                                workOrder!!.chargeName = ""
+                            }
+                        }
+                        chargeTxt.text = workOrder!!.chargeName
+
+
+                        val profit:Float = workOrder!!.totalPriceRaw.toFloat() - workOrder!!.totalCostRaw.toFloat()
+                        val profitPercent:Int = (profit / workOrder!!.totalPriceRaw.toFloat() * 100).toInt()
+
+                        priceTxt.text = workOrder!!.totalPrice
+                        costTxt.text = workOrder!!.totalCost
+                        profitTxt.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
+                        profitPercentTxt.text = profitPercent.toString()
+                        profitBar.progress = 100 - profitPercent
+
+
+                        val woItemJSON: JSONArray = parentObject.getJSONArray("items")
+                        val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
+                        println("woItemJSON $woItemJSON")
+
+                        work_order_items_rv.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = activity?.let {
+                                WoItemsAdapter(
+                                    itemList,
+                                    context,
+                                    this@WorkOrderFragment
+                                )
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            itemRecyclerView.addItemDecoration(itemDecoration)
+                            (adapter as WoItemsAdapter).notifyDataSetChanged()
+                        }
+
+                        workOrder!!.setEmps()
+                        hideProgressView()
+                    }
 
                 } catch (e: JSONException) {
                     println("JSONException")

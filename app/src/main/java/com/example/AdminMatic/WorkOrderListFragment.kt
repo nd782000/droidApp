@@ -255,34 +255,32 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
 
                     try {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
-                        println("workOrders = $workOrders")
-                        println("workOrders count = ${workOrders.length()}")
+                        if (isResumed) {
+                            val parentObject = JSONObject(response)
+                            println("parentObject = $parentObject")
+                            val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
+                            println("workOrders = $workOrders")
+                            println("workOrders count = ${workOrders.length()}")
 
-                        if (globalWorkOrdersList != null) {
-                            globalWorkOrdersList!!.clear()
+                            if (globalWorkOrdersList != null) {
+                                globalWorkOrdersList!!.clear()
+                            }
+
+
+                            val gson = GsonBuilder().create()
+
+                            globalWorkOrdersList =
+                                gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
+                                    .toMutableList()
+
+                            (activity as MainActivity?)!!.updateMap()
+
+                            countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+
+                            if (this.isVisible){
+                                layoutViews()
+                            }
                         }
-
-
-                        val gson = GsonBuilder().create()
-
-                        globalWorkOrdersList =
-                            gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
-                                .toMutableList()
-
-                        (activity as MainActivity?)!!.updateMap()
-
-                        countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
-
-                        if (this.isVisible){
-                            layoutViews()
-                        }
-
-
-
-
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {

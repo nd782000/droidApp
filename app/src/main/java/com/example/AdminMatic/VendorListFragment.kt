@@ -136,94 +136,92 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
 
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    val vendors:JSONArray = parentObject.getJSONArray("vendors")
-                    println("vendors = $vendors")
-                    println("vendors count = ${vendors.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        val vendors:JSONArray = parentObject.getJSONArray("vendors")
+                        println("vendors = $vendors")
+                        println("vendors count = ${vendors.length()}")
 
 
 
-                    val gson = GsonBuilder().create()
-                    val vendorsList = gson.fromJson(vendors.toString() , Array<Vendor>::class.java).toMutableList()
+                        val gson = GsonBuilder().create()
+                        val vendorsList = gson.fromJson(vendors.toString() , Array<Vendor>::class.java).toMutableList()
 
 
-                    list_recycler_view.apply {
-                        layoutManager = LinearLayoutManager(activity)
+                        list_recycler_view.apply {
+                            layoutManager = LinearLayoutManager(activity)
 
 
-                        adapter = activity?.let {
-                            VendorsAdapter(
-                                vendorsList,
-                                this@VendorListFragment
+                            adapter = activity?.let {
+                                VendorsAdapter(
+                                    vendorsList,
+                                    this@VendorListFragment
+                                )
+                            }
+
+                            val itemDecoration: ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            recyclerView.addItemDecoration(itemDecoration)
+
+                            //for item animations
+                            // recyclerView.itemAnimator = SlideInUpAnimator()
+
+
+
+                            // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+                            // Setup refresh listener which triggers new data loading
+                            // Setup refresh listener which triggers new data loading
+                            swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                                // Make sure you call swipeContainer.setRefreshing(false)
+                                // once the network request has completed successfully.
+                                //fetchTimelineAsync(0)
+                                searchView.setQuery("", false)
+                                searchView.clearFocus()
+                                getVendors()
+                            }
+                            // Configure the refreshing colors
+                            // Configure the refreshing colors
+                            swipeRefresh.setColorSchemeResources(
+                                R.color.button,
+                                R.color.black,
+                                R.color.colorAccent,
+                                R.color.colorPrimaryDark
                             )
+
+
+
+                            (adapter as VendorsAdapter).notifyDataSetChanged()
+
+                            // Remember to CLEAR OUT old items before appending in the new ones
+
+                            // ...the data has come back, add new items to your adapter...
+
+                            // Now we call setRefreshing(false) to signal refresh has finished
+                            customerSwipeContainer.isRefreshing = false
+
+                            //  Toast.makeText(activity,"${vendorsList.count()} Vendors Loaded",Toast.LENGTH_SHORT).show()
+
+
+
+                            //search listener
+                            vendors_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+
+                                override fun onQueryTextSubmit(query: String?): Boolean {
+                                    return false
+                                }
+
+                                override fun onQueryTextChange(newText: String?): Boolean {
+                                    println("onQueryTextChange = $newText")
+                                    (adapter as VendorsAdapter).filter.filter(newText)
+                                    return false
+                                }
+
+                            })
+
                         }
-
-                        val itemDecoration: ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        recyclerView.addItemDecoration(itemDecoration)
-
-                        //for item animations
-                        // recyclerView.itemAnimator = SlideInUpAnimator()
-
-
-
-                        // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
-                        // Setup refresh listener which triggers new data loading
-                        // Setup refresh listener which triggers new data loading
-                        swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
-                            // Make sure you call swipeContainer.setRefreshing(false)
-                            // once the network request has completed successfully.
-                            //fetchTimelineAsync(0)
-                            searchView.setQuery("", false)
-                            searchView.clearFocus()
-                            getVendors()
-                        }
-                        // Configure the refreshing colors
-                        // Configure the refreshing colors
-                        swipeRefresh.setColorSchemeResources(
-                            R.color.button,
-                            R.color.black,
-                            R.color.colorAccent,
-                            R.color.colorPrimaryDark
-                        )
-
-
-
-                        (adapter as VendorsAdapter).notifyDataSetChanged()
-
-                        // Remember to CLEAR OUT old items before appending in the new ones
-
-                        // ...the data has come back, add new items to your adapter...
-
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false
-
-                        //  Toast.makeText(activity,"${vendorsList.count()} Vendors Loaded",Toast.LENGTH_SHORT).show()
-
-
-
-                        //search listener
-                        vendors_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-
-                            override fun onQueryTextSubmit(query: String?): Boolean {
-                                return false
-                            }
-
-                            override fun onQueryTextChange(newText: String?): Boolean {
-                                println("onQueryTextChange = $newText")
-                                (adapter as VendorsAdapter).filter.filter(newText)
-                                return false
-                            }
-
-                        })
-
-
-
-
-
                     }
 
 

@@ -1035,8 +1035,6 @@ override fun logOut(view: View){
 
                 try {
 
-
-
                     GlobalVars.loggedInEmployee = null
                     hideProgressView()
                     val navController = Navigation.findNavController(view)

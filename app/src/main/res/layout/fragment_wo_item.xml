@@ -360,8 +360,115 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/wo_item_profit_cl"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="80dp"
+        android:background="@color/background"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/price_lbl_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/woPriceLbl"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/price_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textSize="14sp"
+            app:layout_constraintLeft_toRightOf="@id/price_lbl_tv"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/profit_lbl_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/woProfitLbl"
+            android:textSize="14sp"
+            app:layout_constraintRight_toLeftOf="@id/profit_tv"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/profit_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textSize="14sp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/cost_lbl_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/woCostLbl"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/price_lbl_tv" />
+        <TextView
+            android:id="@+id/cost_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textSize="14sp"
+            app:layout_constraintLeft_toRightOf="@id/cost_lbl_tv"
+            app:layout_constraintTop_toBottomOf="@id/price_lbl_tv"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/profit_percent_lbl_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/woProfitPercentLbl"
+            android:textSize="14sp"
+            app:layout_constraintRight_toLeftOf="@id/profit_percent_tv"
+            app:layout_constraintTop_toBottomOf="@id/profit_tv" />
+        <TextView
+            android:id="@+id/profit_percent_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textSize="14sp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profit_tv"
+            android:textStyle="bold"/>
+
+        <ProgressBar
+            android:id="@+id/profit_bar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:progressBackgroundTint = "@color/colorPrimary"
+            android:progressTint = "@color/red"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:layout_width="0dp"
+            android:layout_height="15dp"
+            android:progress="50"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -179,7 +179,9 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
               //var numeric = true
 
               try {
-                  val num = parseDouble(breakTxt.text.toString())
+                  if (isResumed) {
+                      val num = parseDouble(breakTxt.text.toString())
+                  }
               } catch (e: NumberFormatException) {
                  // numeric = false
 
@@ -310,78 +312,80 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                    println("payroll = $payrollJSON")
-                    println("payroll count = ${payrollJSON.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                        println("payroll = $payrollJSON")
+                        println("payroll count = ${payrollJSON.length()}")
 
 
 
-                    val gson = GsonBuilder().create()
-                    val payrollList = gson.fromJson(payrollJSON.toString() , Array<Payroll>::class.java).toMutableList()
+                        val gson = GsonBuilder().create()
+                        val payrollList = gson.fromJson(payrollJSON.toString() , Array<Payroll>::class.java).toMutableList()
 
-                     currentPayroll = payrollList[payrollList.count() - 1]
+                         currentPayroll = payrollList[payrollList.count() - 1]
 
-                    if (currentPayroll.startTimeShort != null && currentPayroll.startTimeShort != "No Time" && currentPayroll.startTimeShort != ""){
-                        println("currentPayroll.startTimeShort = ${currentPayroll.startTimeShort!!}")
+                        if (currentPayroll.startTimeShort != null && currentPayroll.startTimeShort != "No Time" && currentPayroll.startTimeShort != ""){
+                            println("currentPayroll.startTimeShort = ${currentPayroll.startTimeShort!!}")
 
 
-                       startTxt.setText(currentPayroll.startTimeShort!!)
-                    }else{
-                        startTxt.setText(getString(R.string.no_time))
+                           startTxt.setText(currentPayroll.startTimeShort!!)
+                        }else{
+                            startTxt.setText(getString(R.string.no_time))
+                        }
+
+                        if (currentPayroll.stopTimeShort != null && currentPayroll.stopTimeShort != "No Time" && currentPayroll.stopTimeShort != "") {
+                            stopTxt.setText(currentPayroll.stopTimeShort!!)
+                        }else{
+                            stopTxt.setText(getString(R.string.no_time))
+                        }
+                        if (currentPayroll.lunch != null) {
+                            breakTxt.setText(currentPayroll.lunch!!)
+                        }else{
+                            breakTxt.setText("0")
+                        }
+
+                        if (currentPayroll.total != null) {
+                            totalTxt.text = currentPayroll.total!!
+                        }else{
+                            totalTxt.text = getString(R.string.zero_hours)
+                        }
+                        val combinedTotal: String? = parentObject.getString("combinedTotal")
+                        println("payroll = $combinedTotal")
+                        if (combinedTotal != null) {
+                            combinedTotalTxt.text = combinedTotal
+                        }else{
+                            combinedTotalTxt.text = getString(R.string.zero_hours)
+                        }
+
+                        //var pendingString: String =
+                       // println("pendingString = ${parentObject.getString("verified")}")
+                        if (currentPayroll.verified !="0") {
+                            //pendingTxt.text = "Pending Shift"
+                            pendingTxt.visibility = View.GONE
+
+                            //combinedPendingTxt.text = "Excludes Pending"
+                            combinedPendingTxt.visibility = View.GONE
+                        }else{
+                            pendingTxt.visibility = View.VISIBLE
+                            combinedPendingTxt.visibility = View.VISIBLE
+                        }
+
+
+
+                        firstLoad = true
+
+                        println("currentPayroll.appCreatedBy = ${currentPayroll.appCreatedBy}")
+
+                        if (currentPayroll.appCreatedBy == GlobalVars.loggedInEmployee!!.ID || currentPayroll.appCreatedBy == "0" && currentPayroll.createdBy == "0" || currentPayroll.startTime == "No Time"){
+                            unlockInputs()
+                        }else{
+                            lockInputs()
+                        }
+
+                        hideProgressView()
                     }
-
-                    if (currentPayroll.stopTimeShort != null && currentPayroll.stopTimeShort != "No Time" && currentPayroll.stopTimeShort != "") {
-                        stopTxt.setText(currentPayroll.stopTimeShort!!)
-                    }else{
-                        stopTxt.setText(getString(R.string.no_time))
-                    }
-                    if (currentPayroll.lunch != null) {
-                        breakTxt.setText(currentPayroll.lunch!!)
-                    }else{
-                        breakTxt.setText("0")
-                    }
-
-                    if (currentPayroll.total != null) {
-                        totalTxt.text = currentPayroll.total!!
-                    }else{
-                        totalTxt.text = getString(R.string.zero_hours)
-                    }
-                    val combinedTotal: String? = parentObject.getString("combinedTotal")
-                    println("payroll = $combinedTotal")
-                    if (combinedTotal != null) {
-                        combinedTotalTxt.text = combinedTotal
-                    }else{
-                        combinedTotalTxt.text = getString(R.string.zero_hours)
-                    }
-
-                    //var pendingString: String =
-                   // println("pendingString = ${parentObject.getString("verified")}")
-                    if (currentPayroll.verified !="0") {
-                        //pendingTxt.text = "Pending Shift"
-                        pendingTxt.visibility = View.GONE
-
-                        //combinedPendingTxt.text = "Excludes Pending"
-                        combinedPendingTxt.visibility = View.GONE
-                    }else{
-                        pendingTxt.visibility = View.VISIBLE
-                        combinedPendingTxt.visibility = View.VISIBLE
-                    }
-
-
-
-                    firstLoad = true
-
-                    println("currentPayroll.appCreatedBy = ${currentPayroll.appCreatedBy}")
-
-                    if (currentPayroll.appCreatedBy == GlobalVars.loggedInEmployee!!.ID || currentPayroll.appCreatedBy == "0" && currentPayroll.createdBy == "0" || currentPayroll.startTime == "No Time"){
-                        unlockInputs()
-                    }else{
-                        lockInputs()
-                    }
-
-                    hideProgressView()
 
 
 
@@ -666,14 +670,16 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                    println("payroll = $payrollJSON")
-                    println("payroll count = ${payrollJSON.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                        println("payroll = $payrollJSON")
+                        println("payroll count = ${payrollJSON.length()}")
 
 
-                    getPayroll()
+                        getPayroll()
+                    }
 
 
                     /* Here 'response' is a String containing the response you received from the website... */

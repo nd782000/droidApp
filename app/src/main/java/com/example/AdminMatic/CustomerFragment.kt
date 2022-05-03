@@ -172,21 +172,16 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
                     try {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                        if (isResumed) {
+                            val parentObject = JSONObject(response)
+                            println("parentObject = $parentObject")
 
+                            val gson = GsonBuilder().create()
+                            val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
 
-                        val gson = GsonBuilder().create()
-
-                        val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
-
-                        customer = customerArray.customers[0]
-
-
-
-                        getLeads()
-
-
+                            customer = customerArray.customers[0]
+                            getLeads()
+                        }
 
                     } catch (e: JSONException) {
                         println("JSONException")
@@ -251,24 +246,26 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    val leads: JSONArray = parentObject.getJSONArray("leads")
-                    println("leads = $leads")
-                    println("leads count = ${leads.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        val leads: JSONArray = parentObject.getJSONArray("leads")
+                        println("leads = $leads")
+                        println("leads count = ${leads.length()}")
 
 
+                        val gson = GsonBuilder().create()
+                        val leadsList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
 
-                    val gson = GsonBuilder().create()
-                    val leadsList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
 
-                    val leadAdapter = LeadsAdapter(leadsList, this.myView.context, this, true)
+                        val leadAdapter = LeadsAdapter(leadsList, this.myView.context, this, true)
 
-                    leadsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    leadsRecyclerView.adapter = leadAdapter
+                        leadsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        leadsRecyclerView.adapter = leadAdapter
 
-                    //layoutViews()
-                    getContracts()
+                        //layoutViews()
+                        getContracts()
+                    }
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -336,22 +333,24 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 println("Response $response")
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    val contracts: JSONArray = parentObject.getJSONArray("contracts")
-                    println("contracts = $contracts")
-                    println("contracts count = ${contracts.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        val contracts: JSONArray = parentObject.getJSONArray("contracts")
+                        println("contracts = $contracts")
+                        println("contracts count = ${contracts.length()}")
 
-                    val gson = GsonBuilder().create()
-                    val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
+                        val gson = GsonBuilder().create()
+                        val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
 
-                    val contractAdapter = ContractsAdapter(contractsList, this, true)
+                        val contractAdapter = ContractsAdapter(contractsList, this, true)
 
-                    contractsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    contractsRecyclerView.adapter = contractAdapter
+                        contractsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        contractsRecyclerView.adapter = contractAdapter
 
-                    //layoutViews()
-                    getWorkOrders()
+                        //layoutViews()
+                        getWorkOrders()
+                    }
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -410,22 +409,24 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 println("Response $response")
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
-                    println("workOrders = $workOrders")
-                    println("workOrders count = ${workOrders.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
+                        println("workOrders = $workOrders")
+                        println("workOrders count = ${workOrders.length()}")
 
-                    val gson = GsonBuilder().create()
-                    val workOrdersList = gson.fromJson(workOrders.toString() , Array<WorkOrder>::class.java).toMutableList()
+                        val gson = GsonBuilder().create()
+                        val workOrdersList = gson.fromJson(workOrders.toString() , Array<WorkOrder>::class.java).toMutableList()
 
-                    val workOrderAdapter = WorkOrdersAdapter(workOrdersList, this.myView.context, this, true)
+                        val workOrderAdapter = WorkOrdersAdapter(workOrdersList, this.myView.context, this, true)
 
-                    workOrdersRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    workOrdersRecyclerView.adapter = workOrderAdapter
+                        workOrdersRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        workOrdersRecyclerView.adapter = workOrderAdapter
 
-                    //layoutViews()
-                    getInvoices()
+                        //layoutViews()
+                        getInvoices()
+                    }
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -485,22 +486,25 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 println("Response $response")
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    val invoices: JSONArray = parentObject.getJSONArray("invoices")
-                    println("invoices = $invoices")
-                    println("invoices count = ${invoices.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        val invoices: JSONArray = parentObject.getJSONArray("invoices")
+                        println("invoices = $invoices")
+                        println("invoices count = ${invoices.length()}")
 
-                    val gson = GsonBuilder().create()
-                    val invoicesList = gson.fromJson(invoices.toString() , Array<Invoice>::class.java).toMutableList()
+                        val gson = GsonBuilder().create()
+                        val invoicesList = gson.fromJson(invoices.toString() , Array<Invoice>::class.java).toMutableList()
 
-                    val invoicesAdapter = InvoicesAdapter(invoicesList, this)
 
-                    invoicesRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    invoicesRecyclerView.adapter = invoicesAdapter
+                        val invoicesAdapter = InvoicesAdapter(invoicesList, this)
 
-                    layoutViews()
-                   // getImages()
+                        invoicesRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        invoicesRecyclerView.adapter = invoicesAdapter
+
+                        layoutViews()
+                       // getImages()
+                    }
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -581,41 +585,43 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    val images:JSONArray = parentObject.getJSONArray("images")
-                    println("images = $images")
-                    println("images count = ${images.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        val images:JSONArray = parentObject.getJSONArray("images")
+                        println("images = $images")
+                        println("images count = ${images.length()}")
 
 
 
-                    val gson = GsonBuilder().create()
-                    loadMoreImageList = gson.fromJson(images.toString() , Array<Image>::class.java).toMutableList()
-                    println("loadMoreImageList count = ${loadMoreImageList.count()}")
-                    imageList.addAll(loadMoreImageList)
-                    println("imageList count = ${imageList.count()}")
+                        val gson = GsonBuilder().create()
+                        loadMoreImageList = gson.fromJson(images.toString() , Array<Image>::class.java).toMutableList()
+                        println("loadMoreImageList count = ${loadMoreImageList.count()}")
+                        imageList.addAll(loadMoreImageList)
+                        println("imageList count = ${imageList.count()}")
 
-                    // Now we call setRefreshing(false) to signal refresh has finished
-                    //customerSwipeContainer.isRefreshing = false;
+                        // Now we call setRefreshing(false) to signal refresh has finished
+                        //customerSwipeContainer.isRefreshing = false;
 
-                    Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
-
-
-                    adapter.filterList = imageList
-
-                    (adapter as ImagesAdapter).notifyDataSetChanged();
-
-                    imagesLoaded = true
-
-                    imagesRecyclerView.adapter = adapter
-
-                    // recyclerView.apply {
-                    // layoutManager = GridLayoutManager(myView.context, 2)
+                        Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 
 
-                    // }
+                        adapter.filterList = imageList
 
-                    imagesRecyclerView.layoutManager = GridLayoutManager(myView.context, 2)
+                        (adapter as ImagesAdapter).notifyDataSetChanged();
+
+                        imagesLoaded = true
+
+                        imagesRecyclerView.adapter = adapter
+
+                        // recyclerView.apply {
+                        // layoutManager = GridLayoutManager(myView.context, 2)
+
+
+                        // }
+
+                        imagesRecyclerView.layoutManager = GridLayoutManager(myView.context, 2)
+                    }
 
 
 
@@ -877,7 +883,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                     customer.let { customer ->
                         val directions = CustomerFragmentDirections.navigateCustomerToImageUpload("Customer",
-                            arrayOf(),customerID,customer.sysname,"","","","","","","")
+                            arrayOf(),customerID,customer.sysname,"","","","","","","", "")
                         myView.findNavController().navigate(directions)
                     }
 

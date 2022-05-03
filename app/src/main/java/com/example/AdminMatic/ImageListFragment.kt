@@ -125,7 +125,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                 println("add images btn clicked")
 
                 val directions = ImageListFragmentDirections.navigateToGalleryImageUpload("GALLERY",
-                    arrayOf(),"","","","","","","","","")
+                    arrayOf(),"","","","","","","","","", "")
                 myView.findNavController().navigate(directions)
             }
 
@@ -287,31 +287,34 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    val images:JSONArray = parentObject.getJSONArray("images")
-                    println("images = $images")
-                    println("images count = ${images.length()}")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        val images: JSONArray = parentObject.getJSONArray("images")
+                        println("images = $images")
+                        println("images count = ${images.length()}")
 
 
+                        val gson = GsonBuilder().create()
+                        loadMoreImageList =
+                            gson.fromJson(images.toString(), Array<Image>::class.java)
+                                .toMutableList()
+                        println("loadMoreImageList count = ${loadMoreImageList.count()}")
+                        imageList.addAll(loadMoreImageList)
+                        println("imageList count = ${imageList.count()}")
 
-                    val gson = GsonBuilder().create()
-                    loadMoreImageList = gson.fromJson(images.toString() , Array<Image>::class.java).toMutableList()
-                    println("loadMoreImageList count = ${loadMoreImageList.count()}")
-                    imageList.addAll(loadMoreImageList)
-                    println("imageList count = ${imageList.count()}")
+                        // Now we call setRefreshing(false) to signal refresh has finished
+                        customerSwipeContainer.isRefreshing = false
 
-                    // Now we call setRefreshing(false) to signal refresh has finished
-                    customerSwipeContainer.isRefreshing = false
-
-                    // Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
+                        // Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 
 
-                    adapter.filterList = imageList
+                        adapter.filterList = imageList
 
-                    (adapter as ImagesAdapter).notifyDataSetChanged();
+                        (adapter as ImagesAdapter).notifyDataSetChanged();
 
-                    imagesLoaded = true
+                        imagesLoaded = true
+                    }
 
 
 

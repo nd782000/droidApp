@@ -7,6 +7,10 @@ package com.example.AdminMatic
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -50,6 +54,7 @@ import kotlinx.android.synthetic.main.fragment_payroll.view.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
@@ -72,6 +77,7 @@ private  var taskID: String = ""
 private  var taskDescription: String = ""
 private  var employeeID: String = ""
 private  var equipmentID: String = ""
+private  var usageID: String = ""
 
 
 private val mRetryPolicy: RetryPolicy = DefaultRetryPolicy(
@@ -188,6 +194,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             taskDescription = it.getString("taskDescription")!!
             employeeID = it.getString("employeeID")!!
             equipmentID = it.getString("equipmentID")!!
+            usageID = it.getString("usageID")!!
 
 
 
@@ -293,7 +300,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
-                taskDescription = descriptionTxt.text as String
+                taskDescription = descriptionTxt.text.toString()
             }
         })
 
@@ -690,8 +697,52 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
     }
 
+    private fun rotate(bitmap: Bitmap, degrees: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degrees)
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
 
+    // Untested WIP
+    private fun handleRotation(imgPath: String) {
+        val bMap = BitmapFactory.decodeFile(imgPath) ?: return
+        try {
+            val ei = ExifInterface(imgPath)
+            val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED)
 
+            var rotatedBitmap: Bitmap? = null
+            when (orientation) {
+                ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = bMap
+
+                ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotate(bMap, 270f)
+
+                ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap = rotate(bMap, 180f)
+
+                ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap = rotate(bMap, 90f)
+                else -> rotatedBitmap = bMap
+            }
+
+            //Update the input file with the new bytes.
+            var out: FileOutputStream? = null
+            try {
+                out = FileOutputStream(imgPath)
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out) // bmp is your Bitmap instance
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                try {
+                    out?.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+
+            }
+
+        } catch (e: IOException) {
+        }
+
+    }
 
 
 
@@ -828,16 +879,18 @@ private  fun saveTask(){
         Response.Listener { response -> // response
             println("Response $response")
             try {
-                val parentObject = JSONObject(response)
-                println("parentObject = $parentObject")
+                if (isResumed) {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
-                val gson = GsonBuilder().create()
-
-
-                taskID = gson.fromJson(parentObject["leadTaskID"].toString() , String::class.java)
+                    val gson = GsonBuilder().create()
 
 
-                uploadImage()
+                    taskID = gson.fromJson(parentObject["leadTaskID"].toString() , String::class.java)
+
+
+                    uploadImage()
+                }
 
 
             } catch (e: JSONException) {
@@ -977,6 +1030,10 @@ private  fun saveTask(){
                     //params["task"] = taskID
 
                     params["woID"] = woID
+
+                    if (mode == "WOITEM") {
+                        params["usageID"] = usageID
+                    }
 
                     params["equipmentID"] = equipmentID
                     //params["albumID"] = albumID

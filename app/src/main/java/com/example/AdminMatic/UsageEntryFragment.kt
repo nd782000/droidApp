@@ -230,7 +230,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         usageToLog.clear()
 
-        println("FFFFFFFFFFFFFFFFFFFhjkfgdfhjk")
         addActiveUsage()
 
 
@@ -522,7 +521,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                     usageToLog,
                     it,
                     this@UsageEntryFragment,
-                    woItem as WoItem
+                    woItem as WoItem,
+                    workOrder
                 )
             }
 
@@ -838,7 +838,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     override fun editBreak(row: Int, lunch: String, actionID:Int) {
 
         try {
-            val num = java.lang.Double.parseDouble(lunch)
+            if (isResumed) {
+                val num = java.lang.Double.parseDouble(lunch)
+            }
         } catch (e: NumberFormatException) {
             // numeric = false
 
@@ -1181,13 +1183,15 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 println("Response $response")
 
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
 
-                    globalVars.playSaveSound(myView.context)
+                        globalVars.playSaveSound(myView.context)
 
-                    hideProgressView()
+                        hideProgressView()
+                    }
 
                 } catch (e: JSONException) {
                     println("JSONException")

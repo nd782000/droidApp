@@ -136,7 +136,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
 
                 val directions = LeadFragmentDirections.navigateLeadToImageUpload("LEADTASK",
-                    arrayOf(),lead!!.customer,lead!!.custName,"","",lead!!.ID,"0","","","")
+                    arrayOf(),lead!!.customer,lead!!.custName,"","",lead!!.ID,"0","","","", "")
 
                 myView.findNavController().navigate(directions)
 
@@ -161,85 +161,79 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
             Response.Listener { response -> // response
                 println("Response $response")
                 try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
-                    val gson = GsonBuilder().create()
-                    //var leadJSONObject:JSONObject
-                    //leadJSONObject = gson.fromJson(parentObject["leads"].toString() , JSONObject::class.java)
+                        val gson = GsonBuilder().create()
+                        //var leadJSONObject:JSONObject
+                        //leadJSONObject = gson.fromJson(parentObject["leads"].toString() , JSONObject::class.java)
 
-                    val leadsArray:Array<Lead> = gson.fromJson(parentObject["leads"].toString() , Array<Lead>::class.java)
-                    //var leadsArray:Array<Lead> = leadJSONObject["leads"] as Array<Lead>
-                    //leadJSONObject = gson.fromJson(parentObject.toString(), )
-                    lead = leadsArray[0]
-                    //lead.tasks =
+                        val leadsArray:Array<Lead> = gson.fromJson(parentObject["leads"].toString() , Array<Lead>::class.java)
+                        //var leadsArray:Array<Lead> = leadJSONObject["leads"] as Array<Lead>
+                        //leadJSONObject = gson.fromJson(parentObject.toString(), )
+                        lead = leadsArray[0]
+                        //lead.tasks =
 
-                    setStatus(lead!!.statusID)
+                        setStatus(lead!!.statusID)
 
-                    if(lead!!.dateNice != null){
-                        scheduleTxt.text = lead!!.dateNice!!
-                    }
-                    if(lead!!.deadlineNice != null){
-                        deadlineTxt.text = lead!!.deadlineNice!!
-                    }
-                    if(lead!!.repName != null){
-                        salesRepTxt.text = lead!!.repName!!
-                    }
-                    if(lead!!.requestedByCust != null){
-                        requestedByTxt.text = lead!!.requestedByCust!!
-                    }
-                    if(lead!!.description != null){
-                        descriptionTxt.text = lead!!.description!!
-                    }
-
-                   // var leadObj:JSONObject = parentObject["leads"][0] as JSONObject
-                   // var taskJSON: JSONArray = parentObject[0].getJSONArray("tasks")
-                   // val taskList = gson.fromJson(taskJSON.toString() , Array<Task>::class.java).toMutableList()
-
-
-                    //var leadTaskJSON: JSONArray = leadsArray[0].getJSONArray("tasks")
-                    //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
-
-                   // var woItemJSON: JSONArray = parentObject.getJSONArray("items")
-                    //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
-
-
-                   // var leadTaskJSON: JSONArray = parentObject.getJSONArray("tasks")
-                   // val taskList = gson.fromJson(leadTaskJSON.toString() , Array<Task>::class.java).toMutableList()
-                    println("lead.cust = ${lead!!.custName!!}")
-                   // if(lead!!.tasks != null && ){
-                       // println("tasks 1 = ${lead!!.tasks!![0].task}")
-                   // }
-
-
-                    taskRecyclerView.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            LeadTasksAdapter(
-                                lead!!.tasks!!.toMutableList(),
-                                it,
-                                this@LeadFragment,
-                                lead as Lead
-                            )
+                        if(lead!!.dateNice != null){
+                            scheduleTxt.text = lead!!.dateNice!!
+                        }
+                        if(lead!!.deadlineNice != null){
+                            deadlineTxt.text = lead!!.deadlineNice!!
+                        }
+                        if(lead!!.repName != null){
+                            salesRepTxt.text = lead!!.repName!!
+                        }
+                        if(lead!!.requestedByCust != null){
+                            requestedByTxt.text = lead!!.requestedByCust!!
+                        }
+                        if(lead!!.description != null){
+                            descriptionTxt.text = lead!!.description!!
                         }
 
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        taskRecyclerView.addItemDecoration(itemDecoration)
+                       // var leadObj:JSONObject = parentObject["leads"][0] as JSONObject
+                       // var taskJSON: JSONArray = parentObject[0].getJSONArray("tasks")
+                       // val taskList = gson.fromJson(taskJSON.toString() , Array<Task>::class.java).toMutableList()
+
+
+                        //var leadTaskJSON: JSONArray = leadsArray[0].getJSONArray("tasks")
+                        //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
+
+                       // var woItemJSON: JSONArray = parentObject.getJSONArray("items")
+                        //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
+
+
+                       // var leadTaskJSON: JSONArray = parentObject.getJSONArray("tasks")
+                       // val taskList = gson.fromJson(leadTaskJSON.toString() , Array<Task>::class.java).toMutableList()
+                        println("lead.cust = ${lead!!.custName!!}")
+                       // if(lead!!.tasks != null && ){
+                           // println("tasks 1 = ${lead!!.tasks!![0].task}")
+                       // }
+
+
+                        taskRecyclerView.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = activity?.let {
+                                LeadTasksAdapter(
+                                    lead!!.tasks!!.toMutableList(),
+                                    it,
+                                    this@LeadFragment,
+                                    lead as Lead
+                                )
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            taskRecyclerView.addItemDecoration(itemDecoration)
 
 
 
-                        (adapter as LeadTasksAdapter).notifyDataSetChanged()
+                            (adapter as LeadTasksAdapter).notifyDataSetChanged()
+                        }
+                        hideProgressView()
                     }
-
-
-
-
-
-
-
-
-                    hideProgressView()
 
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -322,10 +316,12 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                     println("Response $response")
 
                     try {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                        if (isResumed) {
+                            val parentObject = JSONObject(response)
+                            println("parentObject = $parentObject")
 
-                        hideProgressView()
+                            hideProgressView()
+                        }
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {
@@ -365,7 +361,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         }
 
 
-        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,"","","","",lead!!.ID, _task.ID,"${_task.task}","","")
+        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,"","","","",lead!!.ID, _task.ID,"${_task.task}","","", "")
         myView.findNavController().navigate(directions)
     }
 
