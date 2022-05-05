@@ -6,6 +6,8 @@
     <string name="welcome_name">Welcome %1$s!</string>
     <string name="employeeList">Employees List</string>
     <string name="group_text_message">Group Text Message</string>
+    <string name="depts_crews_equip">Depts/Crews/Equip</string>
+    <string name="x_active_employees">%1$d Active Employees</string>
     <string name="numActiveEmployees"># Active Employees</string>
     <string name="numActiveCustomers"># Active Customers</string>
     <string name="numActiveVendors"># Active Vendors</string>
@@ -181,6 +183,7 @@
     <string name="next_date">Next:</string>
     <string name="completion_notes">Completion Notes:</string>
     <string name="submit">Submit</string>
+    <string name="description">Description:</string>
 
     <string name="woScheduleLbl">Schedule:</string>
     <string name="woChargeLbl">Charge:</string>

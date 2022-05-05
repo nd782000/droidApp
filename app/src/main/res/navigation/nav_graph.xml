@@ -71,6 +71,9 @@
         <action
             android:id="@+id/navigateToEmployee"
             app:destination="@id/employeeFragment" />
+        <action
+            android:id="@+id/navigateToDepartments"
+            app:destination="@id/departmentsFragment" />
     </fragment>
     <fragment
         android:id="@+id/vendorListFragment"

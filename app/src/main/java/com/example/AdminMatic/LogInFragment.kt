@@ -207,8 +207,10 @@ class LogInFragment : Fragment() {
 
         companyEditText = EditText(myView.context)
         companyEditText.hint = "Company Unique"
+
         companyEditText.setSingleLine()
         companyEditText.setPadding(10,0,10,0)
+        companyEditText.height = 100
 
 
         companyEditText.setBackgroundResource(R.drawable.text_view_layout)
@@ -221,6 +223,7 @@ class LogInFragment : Fragment() {
         userEditText.hint = "User Name"
         userEditText.setSingleLine()
         userEditText.setPadding(10,0,10,0)
+        userEditText.height = 100
         userEditText.setBackgroundResource(R.drawable.text_view_layout)
         userEditText.id = generateViewId()
         myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(userEditText)
@@ -230,6 +233,7 @@ class LogInFragment : Fragment() {
         passEditText.hint = "Password"
         passEditText.setSingleLine()
         passEditText.setPadding(10,0,10,0)
+        passEditText.height = 100
         passEditText.setBackgroundResource(R.drawable.text_view_layout)
         passEditText.id = generateViewId()
         passEditText.transformationMethod = PasswordTransformationMethod()

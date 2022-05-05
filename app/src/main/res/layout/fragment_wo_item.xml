@@ -44,7 +44,7 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="3dp"
             android:textSize="18sp"
-            android:gravity="center_vertical|right"
+            android:gravity="center_vertical|left"
 
             android:text="@string/woItemEstLbl"
             app:layout_constraintTop_toTopOf="parent"
@@ -336,8 +336,34 @@
         android:id="@+id/wo_item_description_cl"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@+id/wo_item_lead_task_btn"
         app:layout_constraintBottom_toTopOf="@id/wo_item_usage_btn">
+        <TextView
+            android:id="@+id/wo_item_description_label_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/description"
+            android:textSize="18sp"
+            android:layout_margin="3dp"
+            android:gravity="start"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+        <TextView
+            android:id="@+id/wo_item_description_tv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text=""
+            android:textSize="18sp"
+            android:layout_marginHorizontal="3dp"
+            android:padding="6dp"
+            android:gravity="start"
+            android:background="@drawable/text_view_layout"
+            app:layout_constraintTop_toBottomOf="@id/wo_item_description_label_tv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

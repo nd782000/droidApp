@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.TextView
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import org.w3c.dom.Text
 
 
 interface EmployeeCellClickListener {
@@ -36,16 +38,17 @@ interface EmployeeCellClickListener {
 class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
 
 
-    lateinit  var globalVars:GlobalVars
+    lateinit var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
+    lateinit var pgsBar: ProgressBar
     lateinit var recyclerView: RecyclerView
-    lateinit var searchView:androidx.appcompat.widget.SearchView
-    lateinit var  swipeRefresh:SwipeRefreshLayout
+    lateinit var searchView: androidx.appcompat.widget.SearchView
+    lateinit var swipeRefresh: SwipeRefreshLayout
+    lateinit var employeeCountTv: TextView
 
-
-    // lateinit var  btn: Button
+    //lateinit var  groupTextBtn: Button
+    private lateinit var  crewsBtn: Button
 
     lateinit var adapter:EmployeesAdapter
 
@@ -81,15 +84,22 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
-            //need to wait for this function to initialize views
-            println("onViewCreated")
-            pgsBar = view.findViewById(R.id.progressBar)
-            recyclerView = view.findViewById(R.id.list_recycler_view)
-            searchView = view.findViewById(R.id.employees_search)
-            swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
+        //need to wait for this function to initialize views
+        println("onViewCreated")
+        pgsBar = view.findViewById(R.id.progressBar)
+        recyclerView = view.findViewById(R.id.list_recycler_view)
+        searchView = view.findViewById(R.id.employees_search)
+        swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
+        employeeCountTv = view.findViewById(R.id.employee_count_textview)
+        crewsBtn = view.findViewById(R.id.crews_btn)
 
-            getEmployees()
 
+        crewsBtn.setOnClickListener{
+            val directions = EmployeeListFragmentDirections.navigateToDepartments(false)
+            myView.findNavController().navigate(directions)
+        }
+
+        getEmployees()
 
     }
 
@@ -141,7 +151,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
                         val gson = GsonBuilder().create()
                         val employeesList = gson.fromJson(employees.toString() , Array<Employee>::class.java).toMutableList()
 
-
+                        employeeCountTv.text = getString(R.string.x_active_employees, employeesList.size)
 
                         list_recycler_view.apply {
                             layoutManager = LinearLayoutManager(activity)

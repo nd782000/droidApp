@@ -85,6 +85,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     private lateinit var leadTaskBtn:Button
     private lateinit var tasksRv:RecyclerView
     private lateinit var descriptionCl:ConstraintLayout
+    private lateinit var descriptionTv:TextView
 
     private lateinit var usageBtn:Button
     private lateinit var profitCl:ConstraintLayout
@@ -157,6 +158,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         leadTaskBtn = myView.findViewById(R.id.wo_item_lead_task_btn)
         tasksRv = myView.findViewById(R.id.wo_item_tasks_rv)
         descriptionCl = myView.findViewById(R.id.wo_item_description_cl)
+        descriptionTv = myView.findViewById(R.id.wo_item_description_tv)
         usageBtn = myView.findViewById(R.id.wo_item_usage_btn)
         usageBtn.setOnClickListener{
 
@@ -213,11 +215,19 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     }
 
     private fun fillProfitCl() {
-        val profit:Float = woItem!!.price.toFloat() - woItem!!.totalCost.toFloat()
-        val profitPercent:Int = (profit / woItem!!.price.toFloat() * 100).toInt()
+        var totalPrice = 0.0
+        var totalCost = 0.0
 
-        priceTxt.text = woItem!!.price
-        costTxt.text = woItem!!.totalCost
+
+        woItem!!.usage.forEach {
+            totalPrice += it.totalPrice!!.toDouble()
+        }
+
+        val profit:Float = totalPrice.toFloat() - woItem!!.totalCost.toFloat()
+        val profitPercent:Int = (profit / totalPrice.toFloat() * 100).toInt()
+
+        priceTxt.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(totalPrice))
+        costTxt.text = getString(R.string.dollar_sign, woItem!!.totalCost)
         profitTxt.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
         profitPercentTxt.text = profitPercent.toString()
         profitBar.progress = 100 - profitPercent
@@ -257,6 +267,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
                         val gson = GsonBuilder().create()
                         woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
+                        descriptionTv.text = woItem!!.empDesc
 
 
                         val taskJSON: JSONArray = parentObject.getJSONArray("tasks")
@@ -285,7 +296,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
                             (adapter as TasksAdapter).notifyDataSetChanged()
                         }
-                        //fillProfitCl()
+                        fillProfitCl()
                         hideProgressView()
                     }
 

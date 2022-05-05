@@ -221,8 +221,8 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
                     woItem.vendors.forEach { v->
                         popUp.menu.add(0, v.ID.toInt(), 1, v.name)
-                        popUp.menu.add(0, 0, 1, R.string.other)
                     }
+                    popUp.menu.add(0, 0, 1, R.string.other)
 
                     popUp.setOnMenuItemClickListener {
 
@@ -392,10 +392,19 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             }
             if (!usage.locked!!) {
                 //todo: check if usage already exists before letting you upload a receipt (see iOS behavior)
+
                 receiptImageView.setOnClickListener{
-                    val directions = UsageEntryFragmentDirections.navigateUsageEntryToImageUpload("WOITEM",
-                        arrayOf(),workOrder.customer, workOrder.custName, woItem.woID, woItem.itemID,"","","","","", usage.ID)
-                    myView.findNavController().navigate(directions)
+                    if (usage.ID == "0") {
+                        globalVars.simpleAlert(myView.context, "Submit Usage","Please submit usage before attempting to add a receipt.")
+                    }
+                    else if (usage.hasReceipt == "1") {
+                        globalVars.simpleAlert(myView.context, "Receipt already uploaded","A receipt image has already been uploaded for this usage.")
+                    }
+                    else {
+                        val directions = UsageEntryFragmentDirections.navigateUsageEntryToImageUpload("WOITEM",
+                            arrayOf(),workOrder.customer, workOrder.custName, woItem.woID, woItem.itemID,"","","","","", usage.ID)
+                        myView.findNavController().navigate(directions)
+                    }
                 }
             }
         }

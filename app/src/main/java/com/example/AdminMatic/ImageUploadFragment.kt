@@ -1033,7 +1033,9 @@ private  fun saveTask(){
 
                     if (mode == "WOITEM") {
                         params["usageID"] = usageID
+                        params["name"] = "Receipt Image"
                     }
+
 
                     params["equipmentID"] = equipmentID
                     //params["albumID"] = albumID
