@@ -8,6 +8,8 @@
     <string name="group_text_message">Group Text Message</string>
     <string name="depts_crews_equip">Depts/Crews/Equip</string>
     <string name="x_active_employees">%1$d Active Employees</string>
+    <string name="x_active_contracts">%1$d Active Contracts</string>
+    <string name="x_active_leads">%1$d Active Leads</string>
     <string name="numActiveEmployees"># Active Employees</string>
     <string name="numActiveCustomers"># Active Customers</string>
     <string name="numActiveVendors"># Active Vendors</string>
@@ -113,6 +115,23 @@
 
     <string name="enter_usage">Enter Usage</string>
 
+    <!--Contracts stuff-->
+    <string name="contract_title">Title:</string>
+    <string name="contract_charge">Charge:</string>
+    <string name="contract_payment">Payment:</string>
+    <string name="contract_sales_rep">Sales Rep:</string>
+    <string name="contract_notes">Notes:</string>
+    <string name="contract_items">Items:</string>
+    <string name="contract_sign">Sign</string>
+    <string name="contract_includes_any_tax">Includes any Tax</string>
+    <string name="contract_customer_button_text">%1$s %2$s</string>
+    <string name="contract_charge_nc">NC - No Charge</string>
+    <string name="contract_charge_fl">FL - Flat Price</string>
+    <string name="contract_charge_tm">T&amp;M - Time &amp; Material</string>
+
+
+
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -125,6 +144,7 @@
     <string name="vendors">Vendors</string>
     <string name="contracts">Contracts</string>
     <string name="contract">Contract</string>
+    <string name="add_new_contract">Add New Contract</string>
     <string name="txt_equipment_dummy">No Description Provided</string>
     <string name="view_service_lists">View Service Lists</string>
     <string name="get_contracts">Get Contracts</string>
@@ -200,6 +220,11 @@
     <string name="wo_count">%1$s Scheduled Work Order(s)</string>
     <string name="dollar_sign">$%1$s</string>
 
+    <string name="wo_header_status">Sts.</string>
+    <string name="wo_header_name">Name</string>
+    <string name="wo_header_estimated">Est.</string>
+    <string name="wo_header_actual">Act.</string>
+
     <string name="service_type">Type: %1$s</string>
     <string name="service_due">Due: %1$s %2$s</string>
     <string name="service_frequency">Frequency: %1$s %2$s</string>
@@ -258,6 +283,8 @@
 
     <string name="lead_customer_button_text">%1$s %2$s</string>
     <string name="lead_number">Lead #%1$s</string>
+    <string name="add_new_lead">Add New Lead</string>
+
 
     <string name="all_departments">All Departments</string>
     <string name="all_crews">All Crews</string>

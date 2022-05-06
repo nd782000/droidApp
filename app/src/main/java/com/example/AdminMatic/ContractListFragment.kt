@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,7 +46,9 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
     lateinit var  pgsBar: ProgressBar
     lateinit var recyclerView: RecyclerView
     lateinit var searchView:androidx.appcompat.widget.SearchView
-    lateinit var  swipeRefresh:SwipeRefreshLayout
+    lateinit var footerCL:androidx.constraintlayout.widget.ConstraintLayout
+    lateinit var swipeRefresh:SwipeRefreshLayout
+    lateinit var contractCountText:TextView
 
 
     // lateinit var  btn: Button
@@ -69,14 +72,14 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
         val emptyList:MutableList<Contract> = mutableListOf()
 
-        adapter = ContractsAdapter(emptyList, this)
+        adapter = ContractsAdapter(emptyList, this.myView.context, this)
 
 
 
 
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Contract List"
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.get_contracts)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.contracts)
 
 
         // Inflate the layout for this fragment
@@ -91,7 +94,9 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.contracts_search)
-        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
+        swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
+        contractCountText = view.findViewById(R.id.contract_count_textview)
+        footerCL = view.findViewById(R.id.footer_cl)
 
         getContracts()
 
@@ -146,16 +151,15 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
                         val gson = GsonBuilder().create()
                         val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
 
+                        contractCountText.text = getString(R.string.x_active_contracts, contractsList.size)
+
 
                         list_recycler_view.apply {
                             layoutManager = LinearLayoutManager(activity)
 
 
                             adapter = activity?.let {
-                                ContractsAdapter(
-                                    contractsList,
-                                    this@ContractListFragment
-                                )
+                                ContractsAdapter(contractsList, context,this@ContractListFragment)
                             }
 
                             val itemDecoration: ItemDecoration =
@@ -253,16 +257,13 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
     }
 
     override fun onContractCellClickListener(data:Contract) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
+        //Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
-        /*
-        data.let { data ->
-            // val directions = ContractListFragmentDirections.navigateToContract(data)
-            // myView.findNavController().navigate(directions)
+        data.let {
+            val directions = ContractListFragmentDirections.navigateToContract(data)
+            myView.findNavController().navigate(directions)
         }
 
-         */
 
     }
 
@@ -272,12 +273,14 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         pgsBar.visibility = View.VISIBLE
         searchView.visibility = View.INVISIBLE
         recyclerView.visibility = View.INVISIBLE
+        footerCL.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
         searchView.visibility = View.VISIBLE
         recyclerView.visibility = View.VISIBLE
+        footerCL.visibility = View.VISIBLE
     }
 
 

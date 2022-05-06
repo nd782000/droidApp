@@ -139,26 +139,21 @@ class WoItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     private var mNameView: TextView? = null
     private var mEstView: TextView? = null
     private var mActView: TextView? = null
-
-
+    private var mDescriptionView: TextView? = null
 
     init {
         mNameView = itemView.findViewById(R.id.list_name)
         mIconView = itemView.findViewById(R.id.status_icon_iv)
         mEstView = itemView.findViewById(R.id.list_est_tv)
         mActView = itemView.findViewById(R.id.list_act_tv)
+        mDescriptionView = itemView.findViewById(R.id.list_description_tv)
     }
 
     fun bind(woItem: WoItem) {
-
-
-
         mNameView?.text = woItem.item
         mEstView?.text = woItem.est
         mActView?.text = woItem.usageQty
-
+        mDescriptionView?.text = woItem.empDesc
     }
-
-
 
 }

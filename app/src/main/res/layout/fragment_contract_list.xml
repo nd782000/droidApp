@@ -38,6 +38,65 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/footer_cl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/contract_count_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:paddingTop="4dp"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/new_contract_btn"
+
+            />
+
+
+        <Button
+            android:id="@+id/new_contract_btn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+
+            android:text="@string/add_new_contract"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/map_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <Button
+            android:id="@+id/map_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+
+            android:layout_marginRight="10dp"
+            android:background="@drawable/ic_settings"
+            android:insetTop="12dp"
+            android:insetBottom="12dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
+            android:text=""
+            app:iconPadding="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
     <ProgressBar
         android:id="@+id/progressBar"

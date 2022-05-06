@@ -47,7 +47,9 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
     lateinit var  swipeRefresh:SwipeRefreshLayout
 
     //lateinit var  newLeadBtn: Button
-    private lateinit var  mapBtn: Button
+    private lateinit var leadCountTv: TextView
+    private lateinit var mapBtn: Button
+    private lateinit var footerCL: androidx.constraintlayout.widget.ConstraintLayout
 
     lateinit var adapter:LeadsAdapter
 
@@ -96,7 +98,9 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.leads_search)
         swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
-        mapBtn = view.findViewById((R.id.map_btn))
+        mapBtn = view.findViewById(R.id.map_btn)
+        leadCountTv = view.findViewById(R.id.lead_count_textview)
+        footerCL = view.findViewById(R.id.footer_cl)
 
         mapBtn.setOnClickListener{
             println("Map button clicked!")
@@ -157,7 +161,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                         }
                         val gson = GsonBuilder().create()
                         globalLeadList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
-
+                        leadCountTv.text = getString(R.string.x_active_leads, globalLeadList!!.size)
 
                         list_recycler_view.apply {
                             layoutManager = LinearLayoutManager(activity)
@@ -278,12 +282,14 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         pgsBar.visibility = View.VISIBLE
         searchView.visibility = View.INVISIBLE
         recyclerView.visibility = View.INVISIBLE
+        footerCL.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
         searchView.visibility = View.VISIBLE
         recyclerView.visibility = View.VISIBLE
+        footerCL.visibility = View.VISIBLE
     }
 
 

@@ -118,7 +118,8 @@ data class Contract(var ID: String = "0",
                     var customerSigned:String? = "",
                     var repSignaturePath:String? = "",
                     var customerSignaturePath:String? = "",
-                    var custNameAndID:String? = ""
+                    var custNameAndID:String? = "",
+                    var items: Array<ContractItem>? = null
 ): Parcelable{
     override fun toString(): String {
         return title

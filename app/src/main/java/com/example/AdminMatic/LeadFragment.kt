@@ -119,7 +119,6 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
             val directions = LeadFragmentDirections.navigateLeadToCustomer(customer.ID)
             myView.findNavController().navigate(directions)
 
-
         }
 
         scheduleTxt = myView.findViewById(R.id.lead_schedule_val_tv)

@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -11,14 +12,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.contract_list_item.view.*
+import kotlinx.android.synthetic.main.lead_list_item.view.*
 import java.util.*
 
 
-class ContractsAdapter(private val list: MutableList<Contract>, private val cellClickListener: ContractCellClickListener, private val customerView: Boolean = false)
+class ContractsAdapter(private val list: MutableList<Contract>, private val context: Context, private val cellClickListener: ContractCellClickListener, private val customerView: Boolean = false)
 
     : RecyclerView.Adapter<ContractViewHolder>(), Filterable {
 
@@ -40,24 +44,41 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cell
 
     override fun onBindViewHolder(holder: ContractViewHolder, position: Int) {
 
-
-
-
         val contract: Contract = filterList[position]
         holder.bind(contract)
-        //holder.itemView.list_sysname.text = filterList[position].sysname
-        //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
+
         println("queryText = $queryText")
         //text highlighting for first string
+
+        val contractStatusImageView: ImageView = holder.itemView.findViewById(R.id.list_contract_status_icon_iv)
+
+        when (contract.status) {
+            "0"-> Picasso.with(context)
+                .load(R.drawable.ic_not_started)
+                .into(contractStatusImageView)
+            "1"-> Picasso.with(context)
+                .load(R.drawable.ic_in_progress)
+                .into(contractStatusImageView)
+        }
+
+        val daysAged:String = when (filterList[position].daysAged) {
+            "0" -> {
+                "Today"
+            }
+            "1" -> {
+                "Yesterday"
+            }
+            else -> {
+                filterList[position].daysAged + " Days"
+            }
+        }
+
         if (queryText.isNotEmpty() && queryText != "") {
 
-            val startPos1: Int = (filterList[position].custName!! + " - " + filterList[position].title).lowercase(
-                Locale.getDefault()
-            )
-                .indexOf(queryText.lowercase(Locale.getDefault()))
+            val startPos1: Int = (filterList[position].custName!! + " - " + filterList[position].title!!).lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos1 = startPos1 + queryText.length
             if (startPos1 != -1) {
-                val spannable: Spannable = SpannableString(filterList[position].custName!! + " - " + filterList[position].title)
+                val spannable: Spannable = SpannableString(filterList[position].custName!! + " - " + filterList[position].title!!)
                 val colorStateList = ColorStateList(
                     arrayOf(intArrayOf()),
                     intArrayOf(Color.parseColor("#005100"))
@@ -70,21 +91,25 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cell
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_name.text = spannable
+                holder.itemView.list_lead_name_tv.text = spannable
             } else {
-                if(!customerView) {
-                    holder.itemView.list_name.text =
-                        filterList[position].custName!! + " - " + filterList[position].title
+                if(!customerView){
+                    //Todo: figure out how to pull strings from Resources within an adapter
+                    holder.itemView.list_contract_name_tv.text = filterList[position].custName!! + " #" + filterList[position].ID
+                    holder.itemView.list_contract_description_tv.text = filterList[position].title!!
+                    holder.itemView.list_contract_date_tv.text = daysAged
                 }else{
-                    holder.itemView.list_name.text = filterList[position].title
+                    holder.itemView.list_contract_name_tv.text = filterList[position].title!!
                 }
+
             }
         } else {
-            if(!customerView) {
-                holder.itemView.list_name.text =
-                    filterList[position].custName!! + " - " + filterList[position].title
+            if(!customerView){
+                holder.itemView.list_contract_name_tv.text = filterList[position].custName!! + " #" + filterList[position].ID
+                holder.itemView.list_contract_description_tv.text = filterList[position].title!!
+                holder.itemView.list_contract_date_tv.text = daysAged
             }else{
-                holder.itemView.list_name.text = filterList[position].title
+                holder.itemView.list_contract_name_tv.text = filterList[position].title!!
             }
         }
 
@@ -187,7 +212,7 @@ class ContractViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
     fun bind(contract: Contract) {
-        mNameView?.text = contract.custName!!
+        //mNameView?.text = contract.custName!!
 
     }
 

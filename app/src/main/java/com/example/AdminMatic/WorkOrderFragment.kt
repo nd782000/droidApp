@@ -68,6 +68,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     private lateinit var statusCustCL:ConstraintLayout
     private lateinit var dataCL:ConstraintLayout
     private lateinit var footerCL:ConstraintLayout
+    private lateinit var headerCL:ConstraintLayout
 
     lateinit var itemRecyclerView:RecyclerView
 
@@ -152,6 +153,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         statusCustCL = myView.findViewById(R.id.status_cust_cl)
         dataCL = myView.findViewById(R.id.work_order_data_cl)
         footerCL = myView.findViewById(R.id.work_order_footer_cl)
+        headerCL = myView.findViewById(R.id.header_cl)
 
         itemRecyclerView = myView.findViewById(R.id.work_order_items_rv)
 
@@ -433,6 +435,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         statusCustCL.visibility = View.INVISIBLE
         dataCL.visibility = View.INVISIBLE
         footerCL.visibility = View.INVISIBLE
+        headerCL.visibility = View.INVISIBLE
         itemRecyclerView.visibility = View.INVISIBLE
     }
 
@@ -441,6 +444,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         statusCustCL.visibility = View.VISIBLE
         dataCL.visibility = View.VISIBLE
         footerCL.visibility = View.VISIBLE
+        headerCL.visibility = View.VISIBLE
         itemRecyclerView.visibility = View.VISIBLE
     }
 

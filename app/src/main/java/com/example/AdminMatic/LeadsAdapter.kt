@@ -119,12 +119,6 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
             cellClickListener.onLeadCellClickListener(data)
         }
 
-
-
-
-
-
-
     }
 
     override fun getItemCount(): Int{

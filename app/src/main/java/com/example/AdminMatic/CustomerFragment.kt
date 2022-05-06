@@ -343,7 +343,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         val gson = GsonBuilder().create()
                         val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
 
-                        val contractAdapter = ContractsAdapter(contractsList, this, true)
+                        val contractAdapter = ContractsAdapter(contractsList, this.myView.context, this, true)
 
                         contractsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
                         contractsRecyclerView.adapter = contractAdapter
