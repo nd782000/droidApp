@@ -91,7 +91,7 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_lead_name_tv.text = spannable
+                holder.itemView.list_contract_name_tv.text = spannable
             } else {
                 if(!customerView){
                     //Todo: figure out how to pull strings from Resources within an adapter

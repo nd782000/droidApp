@@ -99,7 +99,7 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
             popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_not_started)!!,context), context.getString(R.string.not_started)))
             popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_in_progress)!!,context), context.getString(R.string.in_progress)))
             popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_done)!!,context), context.getString(R.string.finished)))
-            popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context), context.getString(R.string.cancelled)))
+            popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context), context.getString(R.string.canceled)))
 
            // menu.add(0, 1, 1, menuIconWithText(getResources().getDrawable(R.mipmap.user_2), getResources().getString(R.string.action_profile)));
 

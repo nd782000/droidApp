@@ -933,6 +933,7 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
     //lateinit var  hostFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_GlobalVarExample);
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         pgsBar = this.findViewById(R.id.progressBar)

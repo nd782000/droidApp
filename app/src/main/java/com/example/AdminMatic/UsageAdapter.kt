@@ -357,9 +357,16 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
                         unitCostTxt.clearFocus()
 
-                        val costInput = unitCostTxt.text.toString().toDouble()
-                        val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
-                        usageEditListener.editCost(position, costInputTrimmed, actionId)
+                        if (unitCostTxt.text.toString() != "") {
+                            val costInput = unitCostTxt.text.toString().toDouble()
+                            val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
+                            usageEditListener.editCost(position, costInputTrimmed, actionId)
+                        }
+                        else {
+                            usageEditListener.editCost(position, 0.0, actionId)
+                        }
+
+
 
 
                         true

@@ -429,9 +429,12 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
                 }
                 "CONTRACTTASK" -> {
                     //titleText = "Upload to Task"
+                    uploadImage()
                 }
                 "TASK" -> {
                     //titleText = "Upload to Task"
+                    println("fuckAAAAAAAAAAAAAAAAAAA")
+                    uploadImage()
                 }
                 "EMPLOYEE" -> {
                     //titleText = "Upload to Employee"

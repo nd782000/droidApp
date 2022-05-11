@@ -197,7 +197,13 @@
     <string name="woList">Work Order List</string>
     <string name="in_progress">In Progress</string>
     <string name="finished">Finished</string>
-    <string name="cancelled">Cancelled</string>
+    <string name="scheduled">Scheduled</string>
+    <string name="awarded">Awarded</string>
+    <string name="declined">Declined</string>
+    <string name="waiting">Waiting</string>
+    <string name="canceled">Canceled</string>
+    <string name="new_contract">New</string>
+    <string name="sent">Sent</string>
     <string name="delete">Delete</string>
     <string name="current_date">Current Date:</string>
     <string name="next_date">Next:</string>

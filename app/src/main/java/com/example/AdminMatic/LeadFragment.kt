@@ -106,7 +106,6 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         statusBtn.setOnClickListener{
             println("status btn clicked")
             showStatusMenu()
-
         }
 
         customerBtn = myView.findViewById(R.id.lead_customer_btn)
@@ -396,8 +395,6 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
 
     override fun showProgressView() {
-
-        println("showProgressView")
         pgsBar.visibility = View.VISIBLE
         statusCustCL.visibility = View.INVISIBLE
         dataCL.visibility = View.INVISIBLE
