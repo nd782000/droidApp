@@ -126,7 +126,7 @@
     <string name="contract_includes_any_tax">Includes any Tax</string>
     <string name="contract_customer_button_text">%1$s %2$s</string>
     <string name="contract_charge_nc">NC - No Charge</string>
-    <string name="contract_charge_fl">FL - Flat Price</string>
+    <string name="contract_charge_fl">FL - Fixed</string>
     <string name="contract_charge_tm">T&amp;M - Time &amp; Material</string>
 
 
@@ -221,7 +221,7 @@
     <string name="woProfitPercentLbl">Profit %:</string>
 
     <string name="wo_charge_nc">No Charge</string>
-    <string name="wo_charge_fl">Flat Price</string>
+    <string name="wo_charge_fl">Fixed</string>
     <string name="wo_charge_tm">T&amp;M</string>
     <string name="wo_count">%1$s Scheduled Work Order(s)</string>
     <string name="dollar_sign">$%1$s</string>

@@ -5,6 +5,7 @@ package com.example.AdminMatic
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -200,14 +201,13 @@ class LogInFragment : Fragment() {
     private fun createLogInView(){
         println("createLogInView")
 
-
         pgsBar = myView.findViewById(R.id.progressBar) as ProgressBar
         pgsBar.isVisible = false
 
 
         companyEditText = EditText(myView.context)
         companyEditText.hint = "Company Unique"
-
+        //companyEditText.highlightColor = resources.getColor(R.color.colorTextSelected)
         companyEditText.setSingleLine()
         companyEditText.setPadding(10,0,10,0)
         companyEditText.height = 100
@@ -224,13 +224,11 @@ class LogInFragment : Fragment() {
         userEditText.setSingleLine()
         userEditText.setPadding(10,0,10,0)
         userEditText.height = 100
-        //userEditText.textCursorDrawable= "@null"
         userEditText.setBackgroundResource(R.drawable.text_view_layout)
         userEditText.id = generateViewId()
         myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(userEditText)
 
         passEditText = EditText(myView.context)
-
         passEditText.hint = "Password"
         passEditText.setSingleLine()
         passEditText.setPadding(10,0,10,0)
@@ -243,6 +241,23 @@ class LogInFragment : Fragment() {
         rememberSwitch = Switch(myView.context)
         rememberSwitch.text = getString(R.string.remember_me)
         rememberSwitch.id = generateViewId()
+
+        /*
+        val colorList = ColorStateList(
+            arrayOf(
+                intArrayOf(-android.R.attr.state_checked),  // Disabled
+                intArrayOf(android.R.attr.state_checked)    // Enabled
+
+            ),
+            intArrayOf(
+                resources.getColor(R.color.gray),     // The color for the Disabled state
+                resources.getColor(R.color.colorPrimary)      // The color for the Enabled state
+            )
+        )
+
+        rememberSwitch.trackTintList = colorList
+
+         */
 
         rememberSwitch.setOnClickListener{
             rememberMe = if (rememberSwitch.isChecked){
@@ -515,17 +530,15 @@ class LogInFragment : Fragment() {
                     //Toast.makeText(getActivity(),"Message : $pass",Toast.LENGTH_SHORT).show()
                     true
                 }else{
-                    Toast.makeText(activity,"Please enter a Password.",Toast.LENGTH_SHORT).show()
+                    context?.let { globalVars.simpleAlert(it,"Error","Please enter a password.") }
                     false
                 }
             }else{
-
-                Toast.makeText(activity,"Please enter a User Name.",Toast.LENGTH_SHORT).show()
-
+                context?.let { globalVars.simpleAlert(it,"Error","Please enter a username.") }
                 allGood =false
             }
         }else{
-            Toast.makeText(activity,"Please enter Company Identifier.",Toast.LENGTH_SHORT).show()
+            context?.let { globalVars.simpleAlert(it,"Error","Please enter a company identifier.") }
             allGood = false
         }
 
@@ -575,7 +588,8 @@ class LogInFragment : Fragment() {
                         val errorArray:JSONArray = parentObject.getJSONArray("errorArray")
                         if (errorArray.length() > 0){
                             println("log in error ${errorArray[0]}")
-                            Toast.makeText(activity,errorArray[0].toString(),Toast.LENGTH_LONG).show()
+                            //Toast.makeText(activity,errorArray[0].toString(),Toast.LENGTH_LONG).show()
+                            context?.let { globalVars.simpleAlert(it,"Error",errorArray[0].toString()) }
                             stopLoading()
                             companyEditText.setText("")
                             userEditText.setText("")

@@ -201,7 +201,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     woItem.vendors.forEach {
                         if (it.prefered == "1") {
                             vendorSelectText.text = it.name
-                            usageEditListener.editCost(position,it.cost!!.toDouble(),EditorInfo.IME_ACTION_DONE, false)
+                            usageEditListener.editCost(position,it.cost!!,EditorInfo.IME_ACTION_DONE, false)
                             usageEditListener.editVendor(position, it.ID)
                         }
                     }
@@ -235,7 +235,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                         // Update cost from the selected vendor
                         woItem.vendors.forEach { v->
                             if (v.ID.toInt() == it.itemId) {
-                                usageEditListener.editCost(position,v.cost!!.toDouble(),EditorInfo.IME_ACTION_DONE, true)
+                                usageEditListener.editCost(position,v.cost!!,EditorInfo.IME_ACTION_DONE, true)
                             }
                         }
 
@@ -249,10 +249,6 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     popUp.show()
                 }
             }
-
-
-
-
 
             /*
             val vendorSearch:Spinner = holder.itemView.findViewById(R.id.usage_vendor_spinner)
@@ -325,9 +321,9 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                         quantityTxt.clearFocus()
 
 
-                        val qtyInput = quantityTxt.text.toString().toDouble()
-                        val qtyInputTrimmed = (qtyInput * 100.0).roundToInt() / 100.0
-                        usageEditListener.editQty(position, qtyInputTrimmed, actionId)
+                        //val qtyInput = quantityTxt.text.toString().toDouble()
+                        //val qtyInputTrimmed = (qtyInput * 100.0).roundToInt() / 100.0
+                        usageEditListener.editQty(position, quantityTxt.text.toString(), actionId)
 
 
                         true
@@ -364,12 +360,13 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                         unitCostTxt.clearFocus()
 
                         if (unitCostTxt.text.toString() != "") {
-                            val costInput = unitCostTxt.text.toString().toDouble()
-                            val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
-                            usageEditListener.editCost(position, costInputTrimmed, actionId, true)
+                            //val costInput = unitCostTxt.text.toString().toDouble()
+                            //val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
+                            usageEditListener.editCost(position, unitCostTxt.text.toString(), actionId, true)
+                            //usageEditListener.editCost(position, "7,9", actionId, true)
                         }
                         else {
-                            usageEditListener.editCost(position, 0.0, actionId, true)
+                            usageEditListener.editCost(position, "0.0", actionId, true)
                         }
 
 

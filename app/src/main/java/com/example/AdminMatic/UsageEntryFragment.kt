@@ -32,6 +32,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
+import kotlin.math.roundToInt
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,9 +52,9 @@ interface UsageEditListener {
     fun editStart(row:Int)
     fun editStop(row:Int)
     fun editBreak(row:Int,lunch:String, actionID:Int)
-    fun editQty(row:Int,qtyDouble: Double, actionID:Int)
+    fun editQty(row:Int, qty:String, actionID:Int)
     fun editVendor(row:Int,vendor:String)
-    fun editCost(row: Int, costDouble: Double, actionID:Int, updateUsageTable:Boolean)
+    fun editCost(row: Int, cost:String, actionID:Int, updateUsageTable:Boolean)
     fun showHistory()
 }
 
@@ -838,9 +839,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     override fun editBreak(row: Int, lunch: String, actionID:Int) {
 
         try {
-            if (isResumed) {
-                val num = java.lang.Double.parseDouble(lunch)
-            }
+            val num = java.lang.Double.parseDouble(lunch.toString().replace(',', '.'))
         } catch (e: NumberFormatException) {
             // numeric = false
 
@@ -883,7 +882,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             }
 
 
-            usageToLog[row].lunch = lunch
+            usageToLog[row].lunch = lunch.replace(",",".")
 
            // setQty()
 
@@ -1221,21 +1220,25 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
      fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        empSpinner.visibility = View.INVISIBLE
-        usageRecyclerView.visibility = View.INVISIBLE
-        startStopCl.visibility = View.INVISIBLE
-        submitBtn.visibility = View.INVISIBLE
+         pgsBar.visibility = View.VISIBLE
+         usageRecyclerView.visibility = View.INVISIBLE
+         submitBtn.visibility = View.INVISIBLE
+         if (woItem!!.type == "1") {
+             startStopCl.visibility = View.INVISIBLE
+             empSpinner.visibility = View.INVISIBLE
+         }
 
     }
 
      fun hideProgressView() {
-        println("hideProgressView")
-        pgsBar.visibility = View.INVISIBLE
-        empSpinner.visibility = View.VISIBLE
-        usageRecyclerView.visibility = View.VISIBLE
-        startStopCl.visibility = View.VISIBLE
-        submitBtn.visibility = View.VISIBLE
+         println("hideProgressView")
+         pgsBar.visibility = View.INVISIBLE
+         usageRecyclerView.visibility = View.VISIBLE
+         submitBtn.visibility = View.VISIBLE
+         if (woItem!!.type == "1"){
+             startStopCl.visibility = View.VISIBLE
+             empSpinner.visibility = View.VISIBLE
+         }
     }
 
 
@@ -1245,7 +1248,21 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-    override fun editQty(row: Int, qtyDouble: Double, actionID:Int) {
+    override fun editQty(row: Int, qty: String, actionID:Int) {
+
+        try {
+            val num = java.lang.Double.parseDouble(qty.replace(',', '.'))
+        } catch (e: NumberFormatException) {
+            // numeric = false
+
+            globalVars.playErrorSound(myView.context)
+            globalVars.simpleAlert(myView.context,"Quantity Error","Quantity must be a number.")
+
+            usageToLog[row].qty = "0.00"
+            updateUsageTable()
+
+            return
+        }
 
         if (actionID == EditorInfo.IME_ACTION_DONE) {
 
@@ -1253,7 +1270,10 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usageToLog[row].unitCost = "0.00"
             }
 
-            usageToLog[row].qty = String.format("%.2f", qtyDouble)
+            val qtyFormatted = java.lang.Double.parseDouble(qty.replace(',', '.'))
+            val qtyTrimmed = (qtyFormatted * 100.0).roundToInt() / 100.0
+
+            usageToLog[row].qty = String.format("%.2f", qtyTrimmed)
             val totalCost = (usageToLog[row].unitCost!!.toDouble() * usageToLog[row].qty.toDouble())
             usageToLog[row].totalCost = String.format("%.2f", totalCost)
             editsMade = true
@@ -1261,7 +1281,21 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
     }
 
-    override fun editCost(row: Int, costDouble: Double, actionID:Int, updateUsageTable:Boolean) {
+    override fun editCost(row: Int, cost: String, actionID:Int, updateUsageTable:Boolean) {
+        try {
+            val num = java.lang.Double.parseDouble(cost.replace(',', '.'))
+        } catch (e: NumberFormatException) {
+            // numeric = false
+
+            globalVars.playErrorSound(myView.context)
+            globalVars.simpleAlert(myView.context,"Cost Error","Cost must be a number.")
+
+            usageToLog[row].unitCost = null
+            usageToLog[row].totalCost = null
+            updateUsageTable()
+
+            return
+        }
 
         if (actionID == EditorInfo.IME_ACTION_DONE) {
 
@@ -1269,7 +1303,10 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usageToLog[row].qty = "0"
             }
 
-            usageToLog[row].unitCost = String.format("%.2f", costDouble)
+            val costFormatted = java.lang.Double.parseDouble(cost.replace(',', '.'))
+            val costTrimmed = (costFormatted * 100.0).roundToInt() / 100.0
+
+            usageToLog[row].unitCost = String.format("%.2f", costTrimmed)
             val totalCost = (usageToLog[row].qty.toDouble() * usageToLog[row].unitCost!!.toDouble())
             usageToLog[row].totalCost = String.format("%.2f", totalCost)
             editsMade = true

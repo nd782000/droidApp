@@ -216,8 +216,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
     private fun fillProfitCl() {
         var totalPrice = 0.0
-        var totalCost = 0.0
-
 
         woItem!!.usage.forEach {
             totalPrice += it.totalPrice!!.toDouble()
@@ -273,6 +271,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                         val taskJSON: JSONArray = parentObject.getJSONArray("tasks")
                         val taskList = gson.fromJson(taskJSON.toString(), Array<Task>::class.java)
                             .toMutableList()
+
 
                         tasksRv.apply {
                             layoutManager = LinearLayoutManager(activity)
@@ -388,8 +387,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
      fun hideProgressView() {
 
-
-
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             myView.context,
             android.R.layout.simple_spinner_dropdown_item, chargeTypeArray
@@ -398,6 +395,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
         chargeSpinner.adapter = adapter
+
 
 
 
@@ -424,10 +422,12 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         }else{
 
-            // set text, spinner and switch values
-            woItemSearch.isIconified = false // Expand it
-            woItemSearch.setQuery(woItem!!.item,true)
-            woItemSearch.clearFocus()
+            // set text, spinner and switch values if
+             if (editMode) {
+                 woItemSearch.isIconified = false // Expand it
+                 woItemSearch.setQuery(woItem!!.item, true)
+                 woItemSearch.clearFocus()
+             }
 
             estEditTxt.setText(woItem!!.est)
             profitCl.visibility = View.VISIBLE

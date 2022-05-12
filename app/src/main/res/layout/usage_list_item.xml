@@ -124,9 +124,7 @@
                     android:layout_height="50dp"
                     android:layout_marginHorizontal="3dp"
                     android:ems="10"
-                    android:textCursorDrawable="@null"
                     android:inputType="textPersonName"
-                    android:textColorHighlight ="@color/colorTextSelected"
 
 
 
@@ -179,8 +177,6 @@
                     android:layout_marginHorizontal="3dp"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:textCursorDrawable="@null"
-                    android:textColorHighlight ="@color/colorTextSelected"
 
 
                     android:focusable="false"
@@ -233,9 +229,6 @@
                     android:layout_marginHorizontal="3dp"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:textCursorDrawable="@null"
-                    android:textColorHighlight ="@color/colorTextSelected"
-
 
                     android:imeOptions="actionDone"
 
@@ -291,7 +284,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/usage_material_cl"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="320dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -301,6 +294,7 @@
             android:text="Vendor:"
             android:paddingRight="6dp"
             android:gravity="center"
+            android:layout_marginTop="5dp"
 
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toLeftOf="@id/guideline10"/>
@@ -312,6 +306,7 @@
             android:text="Vendor:"
             android:paddingRight="6dp"
             android:gravity="center"
+            android:layout_marginTop="5dp"
             android:imeOptions="actionDone"
 
             app:layout_constraintTop_toTopOf="parent"
@@ -340,6 +335,7 @@
             android:text="Quantity"
             android:paddingRight="6dp"
             android:gravity="center"
+            android:layout_marginTop="5dp"
             app:layout_constraintTop_toBottomOf="@id/usage_vendor_tv"
             app:layout_constraintRight_toLeftOf="@id/guideline10"/>
 
@@ -350,9 +346,9 @@
             android:ems="10"
             android:inputType="numberDecimal"
             android:imeOptions="actionDone"
-            android:textCursorDrawable="@null"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="5dp"
             android:text="0"
-            android:textColorHighlight ="@color/colorTextSelected"
             app:layout_constraintTop_toBottomOf="@id/usage_vendor_tv"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline11"/>
@@ -375,6 +371,7 @@
             android:layout_height="50dp"
             android:text="Unit Cost $"
             android:paddingRight="6dp"
+            android:layout_marginTop="5dp"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@id/usage_quantity_tv"
             app:layout_constraintRight_toLeftOf="@id/guideline10"
@@ -387,9 +384,9 @@
             android:ems="10"
             android:inputType="numberDecimal"
             android:imeOptions="actionDone"
-            android:textCursorDrawable="@null"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="5dp"
             android:text=""
-            android:textColorHighlight ="@color/colorTextSelected"
             app:layout_constraintTop_toBottomOf="@id/usage_quantity_tv"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline11"/>
@@ -400,6 +397,7 @@
             android:layout_height="50dp"
             android:text="Total Cost $"
             android:paddingRight="6dp"
+            android:layout_marginTop="5dp"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@id/usage_unit_cost_tv"
             app:layout_constraintRight_toLeftOf="@id/guideline10"/>
@@ -409,6 +407,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:paddingLeft="8dp"
+            android:layout_marginTop="5dp"
             android:ems="10"
             android:textSize="18dp"
             android:inputType="numberDecimal"
