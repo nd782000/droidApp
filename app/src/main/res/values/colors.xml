@@ -25,6 +25,8 @@
     <color name="red">#ff0000</color>
     <color name="usageBtn">#E09E43</color>
     <color name="colorSplashScreen">#2A70DA</color>
+    <color name="colorTextSelected">#2A70DA</color>
+
 
 
 </resources>

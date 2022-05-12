@@ -124,7 +124,9 @@
                     android:layout_height="50dp"
                     android:layout_marginHorizontal="3dp"
                     android:ems="10"
+                    android:textCursorDrawable="@null"
                     android:inputType="textPersonName"
+                    android:textColorHighlight ="@color/colorTextSelected"
 
 
 
@@ -177,6 +179,8 @@
                     android:layout_marginHorizontal="3dp"
                     android:ems="10"
                     android:inputType="textPersonName"
+                    android:textCursorDrawable="@null"
+                    android:textColorHighlight ="@color/colorTextSelected"
 
 
                     android:focusable="false"
@@ -229,6 +233,9 @@
                     android:layout_marginHorizontal="3dp"
                     android:ems="10"
                     android:inputType="textPersonName"
+                    android:textCursorDrawable="@null"
+                    android:textColorHighlight ="@color/colorTextSelected"
+
 
                     android:imeOptions="actionDone"
 
@@ -343,7 +350,9 @@
             android:ems="10"
             android:inputType="numberDecimal"
             android:imeOptions="actionDone"
+            android:textCursorDrawable="@null"
             android:text="0"
+            android:textColorHighlight ="@color/colorTextSelected"
             app:layout_constraintTop_toBottomOf="@id/usage_vendor_tv"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline11"/>
@@ -378,7 +387,9 @@
             android:ems="10"
             android:inputType="numberDecimal"
             android:imeOptions="actionDone"
+            android:textCursorDrawable="@null"
             android:text=""
+            android:textColorHighlight ="@color/colorTextSelected"
             app:layout_constraintTop_toBottomOf="@id/usage_quantity_tv"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline11"/>

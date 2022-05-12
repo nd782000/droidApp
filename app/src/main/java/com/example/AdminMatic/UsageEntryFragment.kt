@@ -53,7 +53,7 @@ interface UsageEditListener {
     fun editBreak(row:Int,lunch:String, actionID:Int)
     fun editQty(row:Int,qtyDouble: Double, actionID:Int)
     fun editVendor(row:Int,vendor:String)
-    fun editCost(row: Int, costDouble: Double, actionID:Int)
+    fun editCost(row: Int, costDouble: Double, actionID:Int, updateUsageTable:Boolean)
     fun showHistory()
 }
 
@@ -1132,8 +1132,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 }else{
                     //material
                     if (usage.vendor == null || usage.vendor == "") {
-                        globalVars.simpleAlert(myView.context, "Error","No vendor selected.")
-                        return
+                        //globalVars.simpleAlert(myView.context, "Error","No vendor selected.")
+                        //return
+                        usage.vendor = "0"
                     }
 
                 }
@@ -1260,7 +1261,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
     }
 
-    override fun editCost(row: Int, costDouble: Double, actionID:Int) {
+    override fun editCost(row: Int, costDouble: Double, actionID:Int, updateUsageTable:Boolean) {
 
         if (actionID == EditorInfo.IME_ACTION_DONE) {
 
@@ -1272,7 +1273,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             val totalCost = (usageToLog[row].qty.toDouble() * usageToLog[row].unitCost!!.toDouble())
             usageToLog[row].totalCost = String.format("%.2f", totalCost)
             editsMade = true
-            updateUsageTable()
+            if (updateUsageTable) {
+                updateUsageTable()
+            }
 
         }
     }

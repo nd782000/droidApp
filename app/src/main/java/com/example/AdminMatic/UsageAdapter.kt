@@ -195,11 +195,17 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 "0" -> {
                     vendorSelectText.text = "Other"
                 }
-                "" -> {
+                "", null -> {
                     vendorSelectText.text = "Select Vendor"
-                }
-                null -> {
-                    vendorSelectText.text = "Select Vendor"
+
+                    woItem.vendors.forEach {
+                        if (it.prefered == "1") {
+                            vendorSelectText.text = it.name
+                            usageEditListener.editCost(position,it.cost!!.toDouble(),EditorInfo.IME_ACTION_DONE, false)
+                            usageEditListener.editVendor(position, it.ID)
+                        }
+                    }
+
                 }
                 else -> {
                     vendorSelectText.text = "Existing Vendor!"
@@ -229,7 +235,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                         // Update cost from the selected vendor
                         woItem.vendors.forEach { v->
                             if (v.ID.toInt() == it.itemId) {
-                                usageEditListener.editCost(position,v.cost!!.toDouble(),EditorInfo.IME_ACTION_DONE)
+                                usageEditListener.editCost(position,v.cost!!.toDouble(),EditorInfo.IME_ACTION_DONE, true)
                             }
                         }
 
@@ -360,10 +366,10 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                         if (unitCostTxt.text.toString() != "") {
                             val costInput = unitCostTxt.text.toString().toDouble()
                             val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
-                            usageEditListener.editCost(position, costInputTrimmed, actionId)
+                            usageEditListener.editCost(position, costInputTrimmed, actionId, true)
                         }
                         else {
-                            usageEditListener.editCost(position, 0.0, actionId)
+                            usageEditListener.editCost(position, 0.0, actionId, true)
                         }
 
 

@@ -224,6 +224,7 @@ class LogInFragment : Fragment() {
         userEditText.setSingleLine()
         userEditText.setPadding(10,0,10,0)
         userEditText.height = 100
+        //userEditText.textCursorDrawable= "@null"
         userEditText.setBackgroundResource(R.drawable.text_view_layout)
         userEditText.id = generateViewId()
         myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(userEditText)
