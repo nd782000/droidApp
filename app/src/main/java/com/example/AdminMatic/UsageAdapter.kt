@@ -401,8 +401,6 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     .into(receiptImageView)                       //Your image view object.
             }
             if (!usage.locked!!) {
-                //todo: check if usage already exists before letting you upload a receipt (see iOS behavior)
-
                 receiptImageView.setOnClickListener{
                     if (usage.ID == "0") {
                         globalVars.simpleAlert(myView.context, "Submit Usage","Please submit usage before attempting to add a receipt.")

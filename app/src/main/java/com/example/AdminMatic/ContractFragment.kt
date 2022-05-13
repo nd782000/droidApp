@@ -8,10 +8,17 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.fragment_contract_list.*
+import kotlinx.android.synthetic.main.fragment_work_order.*
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -20,12 +27,13 @@ import org.json.JSONObject
 //private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ContractFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ContractFragment : Fragment(), StackDelegate {
+
+interface ContractItemCellClickListener {
+    fun onContractItemCellClickListener(data:ContractItem)
+}
+
+
+class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListener {
     // TODO: Rename and change types of parameters
     private var param2: String? = null
 
@@ -44,6 +52,7 @@ class ContractFragment : Fragment(), StackDelegate {
     private lateinit var salesRepTv: TextView
     private lateinit var notesTv: TextView
     private lateinit var priceTv: TextView
+    private lateinit var recycler: RecyclerView
 
     private lateinit var  stackFragment: StackFragment
 
@@ -66,7 +75,7 @@ class ContractFragment : Fragment(), StackDelegate {
 
         globalVars = GlobalVars()
 
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.contract)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.contract_number, contract!!.ID)
 
 
         return myView
@@ -77,6 +86,8 @@ class ContractFragment : Fragment(), StackDelegate {
         println("Contract View")
 
         println("employee = ${contract!!.title}")
+
+
 
 
         pgsBar = view.findViewById(R.id.progress_bar)
@@ -110,6 +121,9 @@ class ContractFragment : Fragment(), StackDelegate {
         salesRepTv = myView.findViewById(R.id.contract_sales_rep_val_tv)
         notesTv = myView.findViewById(R.id.contract_notes_val_tv)
         priceTv = myView.findViewById(R.id.contract_price_tv)
+        recycler = myView.findViewById(R.id.contract_item_rv)
+
+
 
 
         val chargeName:String = when (contract!!.chargeType) {
@@ -129,13 +143,46 @@ class ContractFragment : Fragment(), StackDelegate {
 
         titleTv.text = contract!!.title
         chargeTv.text = chargeName
-        paymentTv.text = contract!!.paymentTermsID
+
+        when (contract!!.paymentTermsID) {
+            "0" -> {
+                paymentTv.text = getString(R.string.contract_payment_none)
+            }
+            "3" -> {
+                paymentTv.text = getString(R.string.contract_payment_2percent10net30)
+            }
+            "4" -> {
+                paymentTv.text = getString(R.string.contract_payment_prepay)
+            }
+            "6" -> {
+                paymentTv.text = getString(R.string.contract_payment_due_on_receipt)
+            }
+            "7" -> {
+                paymentTv.text = getString(R.string.contract_payment_net_15)
+            }
+            "8" -> {
+                paymentTv.text = getString(R.string.contract_payment_net_30)
+            }
+            "9" -> {
+                paymentTv.text = getString(R.string.contract_payment_net_60)
+            }
+            else -> {
+                paymentTv.text = contract!!.paymentTermsID
+            }
+        }
+
         salesRepTv.text =contract!!.repName
         notesTv.text = contract!!.notes
         notesTv.movementMethod = ScrollingMovementMethod()
-        priceTv.text = getString(R.string.dollar_sign, contract!!.total)
+        //Todo: maybe find a way to add the comma to money numbers without having to cast to a double
+        priceTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(contract!!.total!!.toDouble()))
+
+
 
         setStatus(contract!!.status)
+
+        // get items
+        getContract()
 
     }
 
@@ -273,6 +320,7 @@ class ContractFragment : Fragment(), StackDelegate {
 
 
     fun showProgressView() {
+        //todo: actually hide and show stuff here
         pgsBar.visibility = View.VISIBLE
     }
 
@@ -281,14 +329,97 @@ class ContractFragment : Fragment(), StackDelegate {
     }
 
 
+    private fun getContract(){
+        println("getCustomer = ${contract!!.ID}")
+        showProgressView()
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/contract.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+
+
+
+                try {
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+
+                        val gson = GsonBuilder().create()
+                        val contractNew = gson.fromJson(parentObject.toString() , Contract::class.java)
+
+                        contract = contractNew
+
+                        println("AAAAAAAAAAAAAAAA ${contract!!.items}")
+                        recycler.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = activity?.let {
+                                ContractItemAdapter(
+                                    contract!!.items!!.toMutableList(),
+                                    context,
+                                    this@ContractFragment
+                                )
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            recycler.addItemDecoration(itemDecoration)
+                            (adapter as ContractItemAdapter).notifyDataSetChanged()
+                        }
+                        hideProgressView()
+                    }
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["contractID"] = contract!!.ID
+
+                println("params = $params")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
+
+    override fun onContractItemCellClickListener(data:ContractItem) {
+        val directions = ContractFragmentDirections.navigateContractToContractItem(data)
+        myView.findNavController().navigate(directions)
+    }
+
+
+
+
+
+
     //Stack delegates
     override fun newLeadView(_lead: Lead) {
         println("newLeadView ${_lead.ID}")
 
 
-       // val directions = ContractFragmentDirections.navigateContractToLead(_lead)
-      //  myView.findNavController().navigate(directions)
-
+        val directions = ContractFragmentDirections.navigateContractToLead(_lead)
+        myView.findNavController().navigate(directions)
     }
 
     override fun newContractView(_contract: Contract) {

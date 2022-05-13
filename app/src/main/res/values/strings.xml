@@ -116,6 +116,8 @@
     <string name="enter_usage">Enter Usage</string>
 
     <!--Contracts stuff-->
+    <string name="contract_number">Contract #%1$s</string>
+    <string name="contract_list_name">%1$s #%2$s</string>
     <string name="contract_title">Title:</string>
     <string name="contract_charge">Charge:</string>
     <string name="contract_payment">Payment:</string>
@@ -128,7 +130,18 @@
     <string name="contract_charge_nc">NC - No Charge</string>
     <string name="contract_charge_fl">FL - Fixed</string>
     <string name="contract_charge_tm">T&amp;M - Time &amp; Material</string>
+    <string name="contract_payment_none">No Payment Terms</string>
+    <string name="contract_payment_2percent10net30">2% 10 Net 30</string>
+    <string name="contract_payment_due_on_receipt">Due on Receipt</string>
+    <string name="contract_payment_net_15">Net 15</string>
+    <string name="contract_payment_net_30">Net 30</string>
+    <string name="contract_payment_net_60">Net 60</string>
+    <string name="contract_payment_prepay">PRE-PAY</string>
+    <string name="contract_item_total_price">%1$s x $%2$s = $%3$s</string>
+    <string name="contract_item_image_count">(%1$s images)</string>
 
+    <!--Contract Item stuff-->
+    <string name="contract_item_number">Contract Item #%1$s</string>
 
 
 
@@ -235,6 +248,16 @@
     <string name="service_due">Due: %1$s %2$s</string>
     <string name="service_frequency">Frequency: %1$s %2$s</string>
     <string name="service_by">By: %1$s on %2$s</string>
+    <string name="service_completed_by">By: %1$s</string>
+    <string name="service_completed_on">On: %1$s</string>
+
+    <string name="service_due_now">Due: Now</string>
+    <string name="service_due_x">Due: %1$s</string>
+    <string name="service_due_before_use">Due: Before Use</string>
+    <string name="service_one_time">One Time Service</string>
+    <string name="service_every_x_days">Every %1$s Days</string>
+    <string name="service_every_x_mi_km">Every %1$s Mi./Km.</string>
+    <string name="service_every_x_engine_hours">Every %1$s Engine Hours</string>
 
     <string name="na">N/A</string>
     <string name="now">NOW</string>

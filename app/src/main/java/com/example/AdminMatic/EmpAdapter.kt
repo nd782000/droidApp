@@ -1,6 +1,6 @@
 package com.example.AdminMatic
 
-import android.R
+//import android.R
 import android.content.Context
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -8,11 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import com.AdminMatic.R
 import kotlinx.android.synthetic.main.spinner_right_aligned.view.*
 
 
 class EmpAdapter(context: Context, items: List<Employee>?) :
-    ArrayAdapter<Employee?>(context, R.layout.simple_spinner_dropdown_item, items!!) {
+    ArrayAdapter<Employee?>(context, R.layout.support_simple_spinner_dropdown_item, items!!) {
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         return if (position == 0) {
             initialSelection(true)
@@ -43,8 +44,7 @@ class EmpAdapter(context: Context, items: List<Employee>?) :
             16F
         )
 
-        //Todo: figure out how to get string from resource in an adapter
-        view.text = "Add Employee"
+        view.text = context.getString(R.string.add_employee)
         //val spacing =
            // context.resources.getDimensionPixelSize(R.dimen.spacing_smaller)
        // view.setPadding(0, spacing, 0, spacing)
