@@ -461,7 +461,9 @@ class LogInFragment : Fragment() {
 
                         val permissions: Permissions = Gson().fromJson(parentObject.toString(), Permissions::class.java)
 
+                        //permissions.payrollApp = "0"
                         GlobalVars.permissions = permissions
+
                         println("accounting permissions = ${GlobalVars.permissions!!.accounting}")
 
 

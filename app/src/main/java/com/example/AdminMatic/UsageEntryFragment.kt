@@ -267,7 +267,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             var formattedUsageDateString = ""
 
-            if (usage.start != null) {
+            if (usage.start != null && usage.start != "0000-00-00 00:00:00") {
 
 
                 val date = LocalDate.parse(usage.start!!, formatterLong)

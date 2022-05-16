@@ -98,6 +98,8 @@
     <string name="title_gizmos">gizmos</string>
     <string name="search_forEquipment">Search for Equipment</string>
     <string name="crew">Crew</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string name="type">Type</string>
     <string name="status">Status</string>
@@ -142,8 +144,22 @@
 
     <!--Contract Item stuff-->
     <string name="contract_item_number">Contract Item #%1$s</string>
+    <string name="no_images">No Images</string>
+    <string name="x_images">%1$d Images</string>
 
 
+    <!--Permissions stuff-->
+    <string name="access_denied">Access Denied</string>
+    <string name="no_permission_leads">You don\'t have permission to access leads.</string>
+    <string name="no_permission_contracts">You don\'t have permission to access contracts.</string>
+    <string name="no_permission_schedule">You don\'t have permission to access work orders.</string>
+    <string name="no_permission_invoices">You don\'t have permission to access invoices.</string>
+    <string name="no_permission_customers">You don\'t have permission to access customers.</string>
+    <string name="no_permission_employees">You don\'t have permission to access employees.</string>
+    <string name="no_permission_items">You don\'t have permission to access items.</string>
+    <string name="no_permission_vendors">You don\'t have permission to access vendors.</string>
+    <string name="no_permission_equipment">You don\'t have permission to access equipment.</string>
+    <string name="no_permission_payroll">You don\'t have permission to add payroll.</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

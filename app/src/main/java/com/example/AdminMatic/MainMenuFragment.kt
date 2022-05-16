@@ -26,6 +26,7 @@ private const val ARG_PARAM2 = "param2"
 
 
 lateinit var myView:View
+lateinit var globalVars: GlobalVars
 
 
 class MainMenuFragment : Fragment() {
@@ -42,7 +43,7 @@ class MainMenuFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
-
+        globalVars = GlobalVars()
     }
 
 
@@ -114,7 +115,13 @@ class MainMenuFragment : Fragment() {
 
             println("Go To Employees")
            // Toast.makeText(activity,"Go To Employees",Toast.LENGTH_SHORT).show()
-            myView.findNavController().navigate(R.id.navigateToEmployeeList)//var clickintent = Intent(this@MainMenu, CustomersList::class.java)
+            if (GlobalVars.permissions!!.employees == "1") {
+                myView.findNavController().navigate(R.id.navigateToEmployeeList)//var clickintent = Intent(this@MainMenu, CustomersList::class.java)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_employees))
+            }
+
             //startActivity(clickintent)
         }))
 
@@ -122,8 +129,12 @@ class MainMenuFragment : Fragment() {
             println("Go To Customers")
             //Toast.makeText(activity,"Go To Customers",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
 
-
-            myView.findNavController().navigate(R.id.navigateToCustomerList)
+            if (GlobalVars.permissions!!.customers == "1") {
+                myView.findNavController().navigate(R.id.navigateToCustomerList)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_customers))
+            }
             //var clickintent = Intent(this@MainMenu, EmployeesList::class.java)
            // startActivity(clickintent)
         }))
@@ -131,8 +142,12 @@ class MainMenuFragment : Fragment() {
         myView.findViewById<LinearLayout>(R.id.btn_vendors).setOnClickListener(({
             println("Go To Vendors")
             //Toast.makeText(activity,"Go To Vendors",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
-
-            myView.findNavController().navigate(R.id.navigateToVendorList)
+            if (GlobalVars.permissions!!.vendors == "1") {
+                myView.findNavController().navigate(R.id.navigateToVendorList)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_vendors))
+            }
 
             //var clickintent = Intent(this@MainMenu, VendorList::class.java)
             //startActivity(clickintent)
@@ -141,8 +156,12 @@ class MainMenuFragment : Fragment() {
         myView.findViewById<LinearLayout>(R.id.btn_items).setOnClickListener(({
             println("Go To Items")
             //Toast.makeText(activity,"Go To Items",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
-
-            myView.findNavController().navigate(R.id.navigateToItemList)
+            if (GlobalVars.permissions!!.items == "1") {
+                myView.findNavController().navigate(R.id.navigateToItemList)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_items))
+            }
 
             //var clickintent = Intent(this@MainMenu, ItemsList::class.java)
             //startActivity(clickintent)
@@ -151,14 +170,25 @@ class MainMenuFragment : Fragment() {
         myView.findViewById<LinearLayout>(R.id.btn_leads).setOnClickListener(({
             println("Go To Leads")
            // Toast.makeText(activity,"Go To Leads",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
-            myView.findNavController().navigate(R.id.navigateToLeadList)
+
+            if (GlobalVars.permissions!!.leads == "1") {
+                myView.findNavController().navigate(R.id.navigateToLeadList)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads))
+            }
             //var clickintent = Intent(this@MainMenu, ScheduleList::class.java)
             //startActivity(clickintent)
         }))
         myView.findViewById<LinearLayout>(R.id.btn_contracts).setOnClickListener(({
             println("Go To Contracts")
            // Toast.makeText(activity,"Go To Contracts",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
-            myView.findNavController().navigate(R.id.navigateToContractList)
+            if (GlobalVars.permissions!!.contracts == "1") {
+                myView.findNavController().navigate(R.id.navigateToContractList)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts))
+            }
 
             //var clickintent = Intent(this@MainMenu, PerformanceList::class.java)
             //startActivity(clickintent)
@@ -166,7 +196,12 @@ class MainMenuFragment : Fragment() {
         myView.findViewById<LinearLayout>(R.id.btn_schedule).setOnClickListener(({
             println("Go To Work Orders")
             //Toast.makeText(activity,"Go To Work Orders",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
-            myView.findNavController().navigate(R.id.navigateToWorkOrderList)
+            if (GlobalVars.permissions!!.schedule == "1") {
+                myView.findNavController().navigate(R.id.navigateToWorkOrderList)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_schedule))
+            }
             //var clickintent = Intent(this@MainMenu, PerformanceList::class.java)
             //startActivity(clickintent)
         }))
@@ -174,7 +209,12 @@ class MainMenuFragment : Fragment() {
         myView.findViewById<LinearLayout>(R.id.btn_invoices).setOnClickListener(({
             println("Go To Invoices")
             //Toast.makeText(activity,"Go To Invoices",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
-            myView.findNavController().navigate(R.id.navigateToInvoiceList)
+            if (GlobalVars.permissions!!.invoices == "1") {
+                myView.findNavController().navigate(R.id.navigateToInvoiceList)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_invoices))
+            }
 
             //var clickintent = Intent(this@MainMenu, PerformanceList::class.java)
             //startActivity(clickintent)
@@ -190,7 +230,12 @@ class MainMenuFragment : Fragment() {
         myView.findViewById<LinearLayout>(R.id.btn_equipment).setOnClickListener(({
             println("Go To Equipment")
            // Toast.makeText(activity,"Go To Equipment",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
-            myView.findNavController().navigate(R.id.navigateToEquipmentList)
+            if (GlobalVars.permissions!!.equipment == "1") {
+                myView.findNavController().navigate(R.id.navigateToEquipmentList)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_equipment))
+            }
             // var clickintent = Intent(this@MainMenu, EquipmentList::class.java)
             //startActivity(clickintent)
         }))

@@ -28,10 +28,12 @@ import org.json.JSONObject
 private const val ARG_PARAM2 = "param2"
 
 
+interface ContractTaskCellClickListener {
+    fun onContractTaskCellClickListener(data:ContractTask)
+}
 
 
-
-class ContractItemFragment : Fragment() {
+class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
     // TODO: Rename and change types of parameters
     private var param2: String? = null
 
@@ -47,10 +49,10 @@ class ContractItemFragment : Fragment() {
     private lateinit var contractItemSearch: SearchView
     private lateinit var hideQtySwitch: Switch
     private lateinit var taxableSwitch: Switch
-    private lateinit var chargeTv: TextView
-    private lateinit var qtyTv: TextView
-    private lateinit var priceTv: TextView
-    private lateinit var totalTv: TextView
+    private lateinit var chargeSpinner: Spinner
+    private lateinit var qtyEt: EditText
+    private lateinit var priceEt: EditText
+    private lateinit var totalEt: EditText
     private lateinit var recycler: RecyclerView
 
 
@@ -87,18 +89,39 @@ class ContractItemFragment : Fragment() {
         pgsBar = view.findViewById(R.id.progress_bar)
         pgsBar.visibility = View.INVISIBLE
 
+
+        contractItemSearch = myView.findViewById(R.id.contract_item_search)
+        hideQtySwitch = myView.findViewById(R.id.contract_item_hide_qty_switch)
+        taxableSwitch = myView.findViewById(R.id.contract_item_taxable_switch)
+        chargeSpinner = myView.findViewById(R.id.contract_item_charge_spinner)
+        qtyEt = myView.findViewById(R.id.contract_item_qty_val_et)
+        priceEt = myView.findViewById(R.id.contract_item_price_val_et)
+        totalEt = myView.findViewById(R.id.contract_item_total_val_et)
+        recycler = myView.findViewById(R.id.contract_item_tasks_rv)
+
+        contractItemSearch.isEnabled = false
+        chargeSpinner.isEnabled = false
+        qtyEt.isEnabled = false
+        priceEt.isEnabled = false
+        totalEt.isEnabled = false
+        hideQtySwitch.isEnabled = false
+        taxableSwitch.isEnabled = false
+
+
+        if (contractItem!!.hideUnits == "1") {
+            hideQtySwitch.isChecked = true
+        }
+
+        if (contractItem!!.taxType == "1") {
+            taxableSwitch.isChecked = true
+        }
+
+        //contractItemSearch.setQuery(contractItem!!.name, false)
+        qtyEt.setText(contractItem!!.qty)
+        priceEt.setText(contractItem!!.price)
+        totalEt.setText(contractItem!!.total)
+
         /*
-        titleTv = myView.findViewById(R.id.contract_title_val_tv)
-        chargeTv = myView.findViewById(R.id.contract_charge_val_tv)
-        paymentTv = myView.findViewById(R.id.contract_payment_val_tv)
-        salesRepTv = myView.findViewById(R.id.contract_sales_rep_val_tv)
-        notesTv = myView.findViewById(R.id.contract_notes_val_tv)
-        priceTv = myView.findViewById(R.id.contract_price_tv)
-        recycler = myView.findViewById(R.id.contract_item_rv)
-
-         */
-
-
         val chargeName:String = when (contractItem!!.chargeType) {
             "1" -> {
                 getString(R.string.contract_charge_nc)
@@ -114,12 +137,35 @@ class ContractItemFragment : Fragment() {
             }
         }
 
-        //chargeTv.text = chargeName
+        chargeSpinner.text = chargeName
+
+         */
 
 
-        // get items
+        recycler.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = activity?.let {
+                contractItem!!.tasks?.let { it1 ->
+                    ContractTasksAdapter(
+                        it1.toMutableList(),
+                        context,
+                        this@ContractItemFragment
+                    )
+                }
+            }
+
+            val itemDecoration: RecyclerView.ItemDecoration =
+                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+            recycler.addItemDecoration(itemDecoration)
+            (adapter as ContractTasksAdapter).notifyDataSetChanged()
+        }
     }
 
+    override fun onContractTaskCellClickListener(data:ContractTask) {
+        println("Clicked on contract task #${data.ID}")
+        //val directions = ContractFragmentDirections.navigateContractToContractItem(data)
+        //myView.findNavController().navigate(directions)
+    }
 
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE

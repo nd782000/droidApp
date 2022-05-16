@@ -417,9 +417,14 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
     override fun newLeadView(_lead: Lead) {
         println("newLeadView ${_lead.ID}")
 
+        if (GlobalVars.permissions!!.leads == "1") {
+            val directions = ContractFragmentDirections.navigateContractToLead(_lead)
+            myView.findNavController().navigate(directions)
+        }
+        else {
+            globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads))
+        }
 
-        val directions = ContractFragmentDirections.navigateContractToLead(_lead)
-        myView.findNavController().navigate(directions)
     }
 
     override fun newContractView(_contract: Contract) {
