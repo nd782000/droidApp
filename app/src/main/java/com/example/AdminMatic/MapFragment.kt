@@ -104,6 +104,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
 
         if (mode == 0) { // Work orders
+
+            if (globalWorkOrdersList.isNullOrEmpty()) {
+                return
+            }
+
             googleMapGlobal.setOnInfoWindowClickListener { marker ->
                 val directions =
                     WorkOrderListFragmentDirections.navigateToWorkOrder(pinMapWorkOrder[marker])
@@ -144,6 +149,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         }
         else { // Leads
+            if (globalLeadList.isNullOrEmpty()) {
+                return
+            }
+
             googleMapGlobal.setOnInfoWindowClickListener { marker ->
                 val directions =
                     LeadListFragmentDirections.navigateToLead(pinMapLead[marker])

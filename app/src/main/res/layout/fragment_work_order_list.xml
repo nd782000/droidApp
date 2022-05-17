@@ -9,36 +9,48 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_btns"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Spinner
-            android:id="@+id/schedule_spinner"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="parent"/>
-
         <androidx.appcompat.widget.SearchView
             android:id="@+id/work_orders_search"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
             android:background="@drawable/text_view_layout"
-            android:textCursorDrawable="@null"
             app:iconifiedByDefault="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:queryBackground="@null"
-
-
             android:title="Search"
-
             app:actionViewClass="android.widget.SearchView"/>
+
+        <Spinner
+            android:id="@+id/schedule_spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/work_orders_search"/>
+        <Button
+            android:id="@+id/crew_btn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="5dp"
+            android:text=""
+
+
+            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/work_orders_search"
+            />
+
+
 
 
 
@@ -82,17 +94,17 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/crew_btn"
+        app:layout_constraintBottom_toTopOf="@id/add_work_order_btn"
 
         />
 
 
     <Button
-        android:id="@+id/crew_btn"
+        android:id="@+id/add_work_order_btn"
         android:layout_width="0dp"
         android:layout_height="50dp"
 
-        android:text="Crews"
+        android:text="@string/add_work_order"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
 

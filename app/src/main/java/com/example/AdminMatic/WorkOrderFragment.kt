@@ -241,6 +241,10 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
                         println("woItemJSON $woItemJSON")
 
+                        itemList.forEach {
+                            it.woID = workOrder!!.woID
+                        }
+
                         work_order_items_rv.apply {
                             layoutManager = LinearLayoutManager(activity)
                             adapter = activity?.let {

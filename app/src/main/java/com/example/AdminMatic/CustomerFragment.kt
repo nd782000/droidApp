@@ -64,6 +64,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
     private lateinit var custPhoneBtnTxt:TextView
     private lateinit var custEmailBtnTxt:TextView
     private lateinit var custAddressBtnTxt:TextView
+    private lateinit var noImageCollectionTxt:TextView
 
 
     private lateinit var contactsBtn: Button
@@ -138,6 +139,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         workOrdersRecyclerView = myView.findViewById(R.id.customer_wos_rv)
         invoicesRecyclerView = myView.findViewById(R.id.customer_invoices_rv)
         imagesRecyclerView = myView.findViewById(R.id.customer_images_rv)
+        noImageCollectionTxt = myView.findViewById(R.id.customer_no_image_collection_text)
 
         tabLayout = myView.findViewById(R.id.customer_table_tl)
 
@@ -177,6 +179,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                             val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
 
                             customer = customerArray.customers[0]
+
                             getLeads()
                         }
 
@@ -785,6 +788,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         workOrdersRecyclerView.visibility = View.GONE
                         invoicesRecyclerView.visibility = View.GONE
                         imagesRecyclerView.visibility = View.GONE
+                        noImageCollectionTxt.visibility = View.GONE
                     }
                     1 -> {
                         tableMode = "CONTRACTS"
@@ -795,6 +799,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         workOrdersRecyclerView.visibility = View.GONE
                         invoicesRecyclerView.visibility = View.GONE
                         imagesRecyclerView.visibility = View.GONE
+                        noImageCollectionTxt.visibility = View.GONE
                     }
                     2 -> {
                         tableMode = "WOS"
@@ -805,6 +810,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         workOrdersRecyclerView.visibility = View.VISIBLE
                         invoicesRecyclerView.visibility = View.GONE
                         imagesRecyclerView.visibility = View.GONE
+                        noImageCollectionTxt.visibility = View.GONE
                     }
                     3 -> {
                         tableMode = "INVOICES"
@@ -815,14 +821,21 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         workOrdersRecyclerView.visibility = View.GONE
                         invoicesRecyclerView.visibility = View.VISIBLE
                         imagesRecyclerView.visibility = View.GONE
+                        noImageCollectionTxt.visibility = View.GONE
                     }
                     4 -> {
                         tableMode = "IMAGES"
                         addBtn.text = getString(R.string.add_images)
-                        Toast.makeText(com.example.AdminMatic.myView.context, "Images", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(com.example.AdminMatic.myView.context, "Images", Toast.LENGTH_SHORT).show()
 
-                        if(!imagesLoaded){
-                            getImages()
+                        if (customer.allowImages == "1") {
+                            if (!imagesLoaded) {
+                                getImages()
+                            }
+                        }
+                        else {
+                            addBtn.visibility = View.GONE
+                            noImageCollectionTxt.visibility = View.VISIBLE
                         }
                         leadsRecyclerView.visibility = View.GONE
                         contractsRecyclerView.visibility = View.GONE
@@ -871,16 +884,12 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                 }
                 "IMAGES" -> {
-
                     customer.let { customer ->
-                        val directions = CustomerFragmentDirections.navigateCustomerToImageUpload("Customer",
+                        val directions = CustomerFragmentDirections.navigateCustomerToImageUpload("CUSTOMER",
                             arrayOf(),customerID,customer.sysname,"","","","","","","", "")
                         myView.findNavController().navigate(directions)
                     }
-
-
                 }
-
             }
 
             //val directions = EmployeeListFragmentDirections.navigateToEmployee(data)

@@ -181,9 +181,6 @@ class GlobalVars: Application() {
     }
 
 
-
-
-
     private fun getCustomers(){
         println("getCustomers")
 

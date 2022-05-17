@@ -194,6 +194,7 @@ data class Customer(
     var mainAddr: String = "",
     var phone: String? = "",
     var email: String? = "",
+    var allowImages:String? = "",
 
     var contacts: Array<Contact> = arrayOf(),
 

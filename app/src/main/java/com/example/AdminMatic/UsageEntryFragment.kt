@@ -230,7 +230,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
         usageToLog.clear()
-
         addActiveUsage()
 
 
@@ -908,7 +907,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                         //Toast.makeText(context,
                         // android.R.string.yes, Toast.LENGTH_SHORT).show()
                         setQty()
-
                     }
                     builder.show()
                 }else{
@@ -1186,7 +1184,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                     if (isResumed) {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
-
 
                         globalVars.playSaveSound(myView.context)
 

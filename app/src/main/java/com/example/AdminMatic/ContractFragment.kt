@@ -6,6 +6,7 @@ import android.text.method.ScrollingMovementMethod
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.solver.state.State
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -53,6 +54,10 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
     private lateinit var notesTv: TextView
     private lateinit var priceTv: TextView
     private lateinit var recycler: RecyclerView
+    private lateinit var custLayout: androidx.constraintlayout.widget.ConstraintLayout
+    private lateinit var dataLayout: androidx.constraintlayout.widget.ConstraintLayout
+    private lateinit var footerLayout: LinearLayout
+
 
     private lateinit var  stackFragment: StackFragment
 
@@ -95,6 +100,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
         stackFragment = StackFragment(1,contract!!.ID,this)
 
+        //TODO: Figure out how to hide and show the stack view here during progress bar
         val ft = childFragmentManager.beginTransaction()
         ft.add(R.id.contract_cl, stackFragment, "stackFrag")
         ft.commitAllowingStateLoss()
@@ -124,6 +130,10 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         recycler = myView.findViewById(R.id.contract_item_rv)
 
 
+        //Stuff to hide with progress bar
+        custLayout = myView.findViewById(R.id.contract_status_cust_cl)
+        dataLayout = myView.findViewById(R.id.contract_data_cl)
+        footerLayout = myView.findViewById(R.id.contract_footer_cl)
 
 
         val chargeName:String = when (contract!!.chargeType) {
@@ -320,12 +330,17 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
 
     fun showProgressView() {
-        //todo: actually hide and show stuff here
         pgsBar.visibility = View.VISIBLE
+        custLayout.visibility = View.INVISIBLE
+        dataLayout.visibility = View.INVISIBLE
+        footerLayout.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
+        custLayout.visibility = View.VISIBLE
+        dataLayout.visibility = View.VISIBLE
+        footerLayout.visibility = View.VISIBLE
     }
 
 

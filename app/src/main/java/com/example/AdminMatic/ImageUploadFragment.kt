@@ -79,6 +79,8 @@ private  var employeeID: String = ""
 private  var equipmentID: String = ""
 private  var usageID: String = ""
 
+private var customerAllowImages: Boolean = true
+
 
 private val mRetryPolicy: RetryPolicy = DefaultRetryPolicy(
     0,
@@ -196,7 +198,9 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             equipmentID = it.getString("equipmentID")!!
             usageID = it.getString("usageID")!!
 
-
+            if (customerID != "") {
+                getAllowImages(customerID)
+            }
 
             println("images.count = ${images.count()}")
         }
@@ -403,6 +407,11 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         submitBtn.setOnClickListener{
             println("submit btn clicked")
 
+            println("AAAAAAAAAAAA $mode")
+            if (!customerAllowImages && mode != "WOITEM") {
+                globalVars.simpleAlert(myView.context,getString(R.string.no_image_collection),getString(R.string.no_image_collection_error))
+                return@setOnClickListener
+            }
 
 
             when (mode) {
@@ -411,6 +420,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
                 }
                 "CUSTOMER" -> {
                     uploadImage()
+
                 }
                 "WO" -> {
                     //uploadImage()
@@ -1072,7 +1082,60 @@ private  fun saveTask(){
     }
 
 
+    private fun getAllowImages(customerID:String) {
 
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/customer.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+
+                        val gson = GsonBuilder().create()
+                        val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
+
+                        val customer = customerArray.customers[0]
+
+                        if (customer.allowImages == "0") {
+                            customerAllowImages = false
+                        }
+                    }
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                //params["ID"] = customer!!.ID
+                params["ID"] = customerID
+
+                println("params = $params")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
 
 
 

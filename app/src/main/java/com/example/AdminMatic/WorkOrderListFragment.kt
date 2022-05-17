@@ -100,6 +100,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         //need to wait for this function to initialize views
         println("onViewCreated")
 
+        scheduleSpinnerPosition = 2
+
 
         (activity as MainActivity?)!!.setWorkOrderList(this)
 
@@ -157,12 +159,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
             scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
 
-            if (scheduleSpinnerPosition % 2 == 0) {
-                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
-            }
-            else {
-                crewBtn.text = getString(R.string.crews_everyone)
-            }
+
 
 
 
@@ -218,6 +215,10 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
 
             scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
+
+            updateScheduleInfo(scheduleSpinnerPosition)
+            countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+
         }
 
     }
@@ -280,6 +281,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                             if (this.isVisible){
                                 layoutViews()
                             }
+
+                            updateScheduleInfo(scheduleSpinnerPosition)
                         }
 
                         /* Here 'response' is a String containing the response you received from the website... */
@@ -354,6 +357,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 //fetchTimelineAsync(0)
                 searchView.setQuery("", false)
                 searchView.clearFocus()
+                println("Start date: $startDateDB")
+                println("End date: $endDateDB")
                 getWorkOrders()
             }
             // Configure the refreshing colors
@@ -424,192 +429,20 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         println("onItemSelected position = $position")
         println("scheduleSpinner.getTag(R.id.pos) = ${scheduleSpinner.getTag(R.id.pos)}")
 
+
+
         if(scheduleSpinner.getTag(R.id.pos) != null && scheduleSpinner.getTag(R.id.pos) != position){
 
             println("tag != pos")
 
+            updateScheduleInfo(position)
 
-            when(position) {
-                0 -> {println("all dates personal")
-                    startDateDB = ""
-                    endDateDB = ""
-
-                    empID = loggedInEmployee!!.ID
-                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
-                }
-                1 -> {println("all dates everyone")
-                    startDateDB = ""
-                    endDateDB = ""
-
-                    empID = ""
-                    crewBtn.text = getString(R.string.crews_everyone)
-                }
-                2 -> {println("today personal")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = odtStart
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = loggedInEmployee!!.ID
-                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
-                }
-                3 -> {println("today everyone")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = odtStart
-
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = ""
-                    crewBtn.text = getString(R.string.crews_everyone)
-                }
-                4 -> {println("tomorrow personal")
-                    /* // timezone-ignoring version, seems to make it behave like iOS
-                    val today: LocalDate = LocalDate.now()
-                    val odtStart: LocalDateTime = today.atTime(0, 0).plusDays(1)
-                    val odtStop: LocalDateTime = today.plusDays(2).atTime(0, 0)
-                     */
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN).plusDays(1)
-                    val odtStop: OffsetDateTime = odtStart
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = loggedInEmployee!!.ID
-                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
-                }
-                5 -> {println("tomorrow everyone")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN).plusDays(1)
-                    val odtStop: OffsetDateTime = odtStart
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID =""
-                    crewBtn.text = getString(R.string.crews_everyone)
-                }
-                6 -> {println("this week personal")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = odtStart.plusDays(6)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = loggedInEmployee!!.ID
-                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
-                }
-                7 -> {println("this week everyone")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = odtStart.plusDays(6)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = ""
-                    crewBtn.text = getString(R.string.crews_everyone)
-                }
-                8 -> {println("next week personal")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).plusDays(7).atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = odtStart.plusDays(6)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = loggedInEmployee!!.ID
-                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
-                }
-                9 -> {println("next week everyone")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).plusDays(7).atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = odtStart.plusDays(6)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = ""
-                    crewBtn.text = getString(R.string.crews_everyone)
-                }
-                10 -> {println("next 14 days personal")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(14).atTime(OffsetTime.MIN)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = loggedInEmployee!!.ID
-                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
-                }
-                11 -> {println("next 14 days everyone")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(14).atTime(OffsetTime.MIN)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = ""
-                    crewBtn.text = getString(R.string.crews_everyone)
-                }
-                12 -> {println("next 30 days personal")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(30).atTime(OffsetTime.MIN)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = loggedInEmployee!!.ID
-                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
-                }
-                13 -> {println("next 30 days everyone")
-                    val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                    val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = today.plusDays(30).atTime(OffsetTime.MIN)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = ""
-                    crewBtn.text = getString(R.string.crews_everyone)
-                }
-                14 -> {println("this year personal")
-                    val odtStart: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year+1, 1).atTime(OffsetTime.MIN)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = loggedInEmployee!!.ID
-                    crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
-                }
-                15 -> {println("this year everyone")
-                    val odtStart: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atTime(OffsetTime.MIN)
-                    val odtStop: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year+1, 1).atTime(OffsetTime.MIN)
-                    print("odtStart = $odtStart")
-                    print("odtStop = $odtStop")
-                    startDateDB = odtStart.format(dateFormatterYYYYMMDD)
-                    endDateDB = odtStop.format(dateFormatterYYYYMMDD)
-                    empID = ""
-                    crewBtn.text = getString(R.string.crews_everyone)
-                }
-
-
-            }
             getWorkOrders()
         }
 
         scheduleSpinnerPosition = position
         scheduleSpinner.setTag(R.id.pos, position)
+
 
 
         /*
@@ -820,7 +653,179 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
     }
 
+    private fun updateScheduleInfo(position:Int) {
+        when(position) {
+            0 -> {println("all dates personal")
+                startDateDB = ""
+                endDateDB = ""
 
+                empID = loggedInEmployee!!.ID
+                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
+            }
+            1 -> {println("all dates everyone")
+                startDateDB = ""
+                endDateDB = ""
+
+                empID = ""
+                crewBtn.text = getString(R.string.crews_everyone)
+            }
+            2 -> {println("today personal")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = odtStart
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = loggedInEmployee!!.ID
+                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
+            }
+            3 -> {println("today everyone")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = odtStart
+
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = ""
+                crewBtn.text = getString(R.string.crews_everyone)
+            }
+            4 -> {println("tomorrow personal")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN).plusDays(1)
+                val odtStop: OffsetDateTime = odtStart
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = loggedInEmployee!!.ID
+                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
+            }
+            5 -> {println("tomorrow everyone")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN).plusDays(1)
+                val odtStop: OffsetDateTime = odtStart
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID =""
+                crewBtn.text = getString(R.string.crews_everyone)
+            }
+            6 -> {println("this week personal")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = odtStart.plusDays(6)
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = loggedInEmployee!!.ID
+                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
+            }
+            7 -> {println("this week everyone")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = odtStart.plusDays(6)
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = ""
+                crewBtn.text = getString(R.string.crews_everyone)
+            }
+            8 -> {println("next week personal")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).plusDays(7).atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = odtStart.plusDays(6)
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = loggedInEmployee!!.ID
+                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
+            }
+            9 -> {println("next week everyone")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).plusDays(7).atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = odtStart.plusDays(6)
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = ""
+                crewBtn.text = getString(R.string.crews_everyone)
+            }
+            10 -> {println("next 14 days personal")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = today.plusDays(14).atTime(OffsetTime.MIN)
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = loggedInEmployee!!.ID
+                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
+            }
+            11 -> {println("next 14 days everyone")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = today.plusDays(14).atTime(OffsetTime.MIN)
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = ""
+                crewBtn.text = getString(R.string.crews_everyone)
+            }
+            12 -> {println("next 30 days personal")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = today.plusDays(30).atTime(OffsetTime.MIN)
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = loggedInEmployee!!.ID
+                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
+            }
+            13 -> {println("next 30 days everyone")
+                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
+                val odtStart: OffsetDateTime = today.atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = today.plusDays(30).atTime(OffsetTime.MIN)
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = ""
+                crewBtn.text = getString(R.string.crews_everyone)
+            }
+            14 -> {println("this year personal")
+                val odtStart: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year+1, 1).atTime(OffsetTime.MIN)
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = loggedInEmployee!!.ID
+                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fName)
+            }
+            15 -> {println("this year everyone")
+                val odtStart: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atTime(OffsetTime.MIN)
+                val odtStop: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year+1, 1).atTime(OffsetTime.MIN)
+                print("odtStart = $odtStart")
+                print("odtStop = $odtStop")
+                startDateDB = odtStart.format(dateFormatterYYYYMMDD)
+                endDateDB = odtStop.format(dateFormatterYYYYMMDD)
+                empID = ""
+                crewBtn.text = getString(R.string.crews_everyone)
+            }
+
+
+        }
+    }
 
 
     fun showProgressView() {

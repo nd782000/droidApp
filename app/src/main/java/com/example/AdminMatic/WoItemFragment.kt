@@ -160,6 +160,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         descriptionCl = myView.findViewById(R.id.wo_item_description_cl)
         descriptionTv = myView.findViewById(R.id.wo_item_description_tv)
         usageBtn = myView.findViewById(R.id.wo_item_usage_btn)
+
+        println("Work Order Item Customer: ${workOrder.customer}")
         usageBtn.setOnClickListener{
 
 
@@ -358,10 +360,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         }
 
         data.let {
-
             val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"", it.ID,"${it.task}","","", "")
-
-           myView.findNavController().navigate(directions)
+            myView.findNavController().navigate(directions)
         }
 
 
