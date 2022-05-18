@@ -144,11 +144,14 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         tabLayout = myView.findViewById(R.id.customer_table_tl)
 
 
+
+
+
         getCustomer()
 
     }
 
-    private fun getCustomer(){
+    fun getCustomer(){
        // println("getCustomer = ${customer!!.ID}")
         showProgressView()
 
@@ -205,6 +208,12 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
             }
         }
         queue.add(postRequest1)
+
+
+
+
+
+
     }
 
 

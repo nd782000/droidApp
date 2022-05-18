@@ -149,10 +149,16 @@ class GlobalVars: Application() {
 
 
     fun getTimeFromString(s:String): LocalTime?{
-        println("getTimeFromString")
-        val formatterLong = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        val time = LocalTime.parse(s, formatterLong)
-        println("time from string = $time")
+        println("getTimeFromString $s")
+        val time:LocalTime?
+        if (s != "0000-00-00 00:00:00"){
+            val formatterLong = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            time = LocalTime.parse(s, formatterLong)
+            println("time from string = $time")
+        }else {
+            time = null
+        }
+
         return time
     }
 

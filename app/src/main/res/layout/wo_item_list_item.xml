@@ -37,7 +37,7 @@
 
     <TextView
         android:id="@+id/list_act_tv"
-        android:layout_width="60dp"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -54,7 +54,7 @@
 
     <TextView
         android:id="@+id/list_est_tv"
-        android:layout_width="60dp"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
