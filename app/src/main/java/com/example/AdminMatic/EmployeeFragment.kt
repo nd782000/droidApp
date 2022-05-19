@@ -178,12 +178,11 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         empEmaileBtnTxt.text = employee!!.email
 
         payrollBtn = view.findViewById((R.id.payroll_btn))
-        payrollBtn.setOnClickListener {
+        payrollBtn.setOnClickListener{
             println("payroll btn clicked")
-
-            val directions = EmployeeFragmentDirections.navigateToPayroll(employee)
+            //val directions = EmployeeListFragmentDirections.navigateToEmployee(data)
+                val directions = EmployeeFragmentDirections.navigateToPayroll(employee)
             myView.findNavController().navigate(directions)
-
         }
 
 

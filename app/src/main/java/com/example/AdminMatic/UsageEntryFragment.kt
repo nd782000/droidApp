@@ -32,7 +32,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.math.roundToInt
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,9 +51,9 @@ interface UsageEditListener {
     fun editStart(row:Int)
     fun editStop(row:Int)
     fun editBreak(row:Int,lunch:String, actionID:Int)
-    fun editQty(row:Int, qty:String, actionID:Int)
+    fun editQty(row:Int,qtyDouble: Double, actionID:Int)
     fun editVendor(row:Int,vendor:String)
-    fun editCost(row: Int, cost:String, actionID:Int, updateUsageTable:Boolean)
+    fun editCost(row: Int, costDouble: Double, actionID:Int, updateUsageTable:Boolean)
     fun showHistory()
 }
 
@@ -266,7 +265,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             var formattedUsageDateString = ""
 
-            if (usage.start != null && usage.start != "0000-00-00 00:00:00") {
+            if (usage.start != null) {
 
 
                 val date = LocalDate.parse(usage.start!!, formatterLong)
@@ -665,7 +664,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-                if(usageToLog[row].stop != null){
+                if(usageToLog[row].stop != null && usageToLog[row].stop != "0000-00-00 00:00:00"){
                     if(globalVars.getTimeFromString(usageToLog[row].stop!!)!!  < globalVars.getTimeFromString(startString)!!){
                         println("start is after stop")
 
@@ -838,7 +837,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     override fun editBreak(row: Int, lunch: String, actionID:Int) {
 
         try {
-            val num = java.lang.Double.parseDouble(lunch.toString().replace(',', '.'))
+            if (isResumed) {
+                val num = java.lang.Double.parseDouble(lunch)
+            }
         } catch (e: NumberFormatException) {
             // numeric = false
 
@@ -881,7 +882,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             }
 
 
-            usageToLog[row].lunch = lunch.replace(",",".")
+            usageToLog[row].lunch = lunch
 
            // setQty()
 
@@ -951,8 +952,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     fun editOthersStart(row:Int){
 
-        println("editOthersStart")
+        println("editOthersStart with row $row  ${usageToLog[row].start}")
         for (usage in usageToLog){
+            println("usage locked = ${usage.locked}")
             if (usage.locked == false){
                 usage.start = usageToLog[row].start
             }
@@ -1217,25 +1219,21 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
      fun showProgressView() {
-         pgsBar.visibility = View.VISIBLE
-         usageRecyclerView.visibility = View.INVISIBLE
-         submitBtn.visibility = View.INVISIBLE
-         if (woItem!!.type == "1") {
-             startStopCl.visibility = View.INVISIBLE
-             empSpinner.visibility = View.INVISIBLE
-         }
+        pgsBar.visibility = View.VISIBLE
+        empSpinner.visibility = View.INVISIBLE
+        usageRecyclerView.visibility = View.INVISIBLE
+        startStopCl.visibility = View.INVISIBLE
+        submitBtn.visibility = View.INVISIBLE
 
     }
 
      fun hideProgressView() {
-         println("hideProgressView")
-         pgsBar.visibility = View.INVISIBLE
-         usageRecyclerView.visibility = View.VISIBLE
-         submitBtn.visibility = View.VISIBLE
-         if (woItem!!.type == "1"){
-             startStopCl.visibility = View.VISIBLE
-             empSpinner.visibility = View.VISIBLE
-         }
+        println("hideProgressView")
+        pgsBar.visibility = View.INVISIBLE
+        empSpinner.visibility = View.VISIBLE
+        usageRecyclerView.visibility = View.VISIBLE
+        startStopCl.visibility = View.VISIBLE
+        submitBtn.visibility = View.VISIBLE
     }
 
 
@@ -1245,21 +1243,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-    override fun editQty(row: Int, qty: String, actionID:Int) {
-
-        try {
-            val num = java.lang.Double.parseDouble(qty.replace(',', '.'))
-        } catch (e: NumberFormatException) {
-            // numeric = false
-
-            globalVars.playErrorSound(myView.context)
-            globalVars.simpleAlert(myView.context,"Quantity Error","Quantity must be a number.")
-
-            usageToLog[row].qty = "0.00"
-            updateUsageTable()
-
-            return
-        }
+    override fun editQty(row: Int, qtyDouble: Double, actionID:Int) {
 
         if (actionID == EditorInfo.IME_ACTION_DONE) {
 
@@ -1267,10 +1251,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usageToLog[row].unitCost = "0.00"
             }
 
-            val qtyFormatted = java.lang.Double.parseDouble(qty.replace(',', '.'))
-            val qtyTrimmed = (qtyFormatted * 100.0).roundToInt() / 100.0
-
-            usageToLog[row].qty = String.format("%.2f", qtyTrimmed)
+            usageToLog[row].qty = String.format("%.2f", qtyDouble)
             val totalCost = (usageToLog[row].unitCost!!.toDouble() * usageToLog[row].qty.toDouble())
             usageToLog[row].totalCost = String.format("%.2f", totalCost)
             editsMade = true
@@ -1278,21 +1259,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
     }
 
-    override fun editCost(row: Int, cost: String, actionID:Int, updateUsageTable:Boolean) {
-        try {
-            val num = java.lang.Double.parseDouble(cost.replace(',', '.'))
-        } catch (e: NumberFormatException) {
-            // numeric = false
-
-            globalVars.playErrorSound(myView.context)
-            globalVars.simpleAlert(myView.context,"Cost Error","Cost must be a number.")
-
-            usageToLog[row].unitCost = null
-            usageToLog[row].totalCost = null
-            updateUsageTable()
-
-            return
-        }
+    override fun editCost(row: Int, costDouble: Double, actionID:Int, updateUsageTable:Boolean) {
 
         if (actionID == EditorInfo.IME_ACTION_DONE) {
 
@@ -1300,10 +1267,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usageToLog[row].qty = "0"
             }
 
-            val costFormatted = java.lang.Double.parseDouble(cost.replace(',', '.'))
-            val costTrimmed = (costFormatted * 100.0).roundToInt() / 100.0
-
-            usageToLog[row].unitCost = String.format("%.2f", costTrimmed)
+            usageToLog[row].unitCost = String.format("%.2f", costDouble)
             val totalCost = (usageToLog[row].qty.toDouble() * usageToLog[row].unitCost!!.toDouble())
             usageToLog[row].totalCost = String.format("%.2f", totalCost)
             editsMade = true

@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
 import android.widget.*
@@ -157,10 +156,6 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         headerCL = myView.findViewById(R.id.header_cl)
 
         itemRecyclerView = myView.findViewById(R.id.work_order_items_rv)
-
-        if (GlobalVars.permissions!!.scheduleMoney == "0") {
-            footerCL.visibility = View.GONE
-        }
 
 
 
@@ -443,9 +438,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         pgsBar.visibility = View.VISIBLE
         statusCustCL.visibility = View.INVISIBLE
         dataCL.visibility = View.INVISIBLE
-        if (GlobalVars.permissions!!.scheduleMoney == "1") {
-            footerCL.visibility = View.INVISIBLE
-        }
+        footerCL.visibility = View.INVISIBLE
         headerCL.visibility = View.INVISIBLE
         itemRecyclerView.visibility = View.INVISIBLE
     }
@@ -454,9 +447,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         pgsBar.visibility = View.INVISIBLE
         statusCustCL.visibility = View.VISIBLE
         dataCL.visibility = View.VISIBLE
-        if (GlobalVars.permissions!!.scheduleMoney == "1") {
-            footerCL.visibility = View.VISIBLE
-        }
+        footerCL.visibility = View.VISIBLE
         headerCL.visibility = View.VISIBLE
         itemRecyclerView.visibility = View.VISIBLE
     }

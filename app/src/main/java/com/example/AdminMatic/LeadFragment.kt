@@ -185,12 +185,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                             salesRepTxt.text = lead!!.repName!!
                         }
                         if(lead!!.requestedByCust != null){
-                            if (lead!!.requestedByCust == "1") {
-                                requestedByTxt.text = getString(R.string.yes)
-                            }
-                            else {
-                                requestedByTxt.text = getString(R.string.no)
-                            }
+                            requestedByTxt.text = lead!!.requestedByCust!!
                         }
                         if(lead!!.description != null){
                             descriptionTxt.text = lead!!.description!!
@@ -429,13 +424,8 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
     override fun newContractView(_contract: Contract) {
         println("newContractView ${_contract.ID}")
-        if (GlobalVars.permissions!!.contracts == "1") {
-            val directions = LeadFragmentDirections.navigateLeadToContract(_contract)
-            myView.findNavController().navigate(directions)
-        }
-        else {
-            globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts))
-        }
+        val directions = LeadFragmentDirections.navigateLeadToContract(_contract)
+        myView.findNavController().navigate(directions)
     }
 
     override fun newWorkOrderView(_workOrder: WorkOrder) {

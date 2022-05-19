@@ -8,7 +8,6 @@ import android.content.res.Configuration
 import android.opengl.Visibility
 import android.os.Bundle
 import android.os.Parcelable
-import android.provider.Settings
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -166,15 +165,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
 
         breakTxt = myView.findViewById(R.id.break_edit_txt)
-
         breakTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
-
-
-
-
-
-
-
         breakTxt.setSelectAllOnFocus(true)
         breakTxt.setBackgroundResource(R.drawable.text_view_layout)
 
@@ -249,12 +240,6 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                 return false
             }
         })
-
-        if (GlobalVars.permissions!!.payrollApp == "0") {
-            breakTxt.isEnabled = false
-            breakTxt.isClickable = false
-            breakTxt.isFocusable = false
-        }
 
         startLock = myView.findViewById(R.id.start_lock_cl)
         stopLock = myView.findViewById(R.id.stop_lock_cl)
@@ -429,10 +414,6 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
     private fun start(){
         println("start")
-        if (GlobalVars.permissions!!.payrollApp == "0") {
-            globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))
-            return
-        }
 
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val currentDate = sdf.format(Date())
@@ -444,10 +425,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
     }
     private fun stop(){
         println("stop")
-        if (GlobalVars.permissions!!.payrollApp == "0") {
-            globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))
-            return
-        }
+
 
         println("currentPayroll.startTime = ${currentPayroll.startTime}")
         //validate break time
@@ -476,10 +454,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
     }
     private fun reset(){
         println("reset")
-        if (GlobalVars.permissions!!.payrollApp == "0") {
-            globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))
-            return
-        }
+
 
         if (currentPayroll.ID != "0"){
             currentPayroll.startTime = ""
@@ -501,10 +476,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
     private fun editStart(){
         println("editStart")
-        if (GlobalVars.permissions!!.payrollApp == "0") {
-            globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))
-            return
-        }
+
 
         val cal:Calendar
         val h:Int
@@ -565,11 +537,6 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
     private fun editStop(){
         println("editStop")
-
-        if (GlobalVars.permissions!!.payrollApp == "0") {
-            globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))
-            return
-        }
 
         if (currentPayroll.startTime == null)
         {

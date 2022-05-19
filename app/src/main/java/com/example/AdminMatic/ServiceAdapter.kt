@@ -43,7 +43,7 @@ class ServiceAdapter(list: MutableList<EquipmentService>, private val context: C
 
 
         val service: EquipmentService = filterList[position]
-        holder.bind(service, isHistoryMode, context)
+        holder.bind(service, isHistoryMode)
         println("queryText = $queryText")
         //text highlighting for first string
 
@@ -109,39 +109,40 @@ class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         mRightTxt = itemView.findViewById(R.id.list_service_right_txt)
     }
 
-    fun bind(service: EquipmentService, isHistoryMode: Boolean, context: Context) {
+    fun bind(service: EquipmentService, isHistoryMode: Boolean) {
 
         val createDate = LocalDateTime.parse(service.createDate, GlobalVars.dateFormatterPHP)
         val currentDate = LocalDateTime.now()
         val nextDate = createDate.plusDays(service.frequency!!.toLong())
 
+        //Todo: Figure out how to get getString() working here so these can be proper templates. None of the import options alone get it working
         //Todo: Make due text red
         mNameView?.text = service.name
         if (isHistoryMode) {
-            mLeftTxt?.text = context.getString(R.string.service_completed_by, service.completedBy) //"By: ${service.completedBy}"
-            mRightTxt?.text = context.getString(R.string.service_completed_on, service.completionDate) //"By: ${service.completedBy}"
+            mLeftTxt?.text = "By: ${service.completedBy}"
+            mRightTxt?.text = "On: ${service.completionDate}"
         }
         else {
             when (service.type) {
                 "0" -> { //one time
-                    mLeftTxt?.text = context.getString(R.string.service_due_now)
-                    mRightTxt?.text = context.getString(R.string.service_one_time)//"One Time Service"
+                    mLeftTxt?.text = "Due: Now"
+                    mRightTxt?.text = "One Time Service"
                 }
                 "1" -> { //date based
-                    mLeftTxt?.text = context.getString(R.string.service_due_x, nextDate.format(GlobalVars.dateFormatterShort))
-                    mRightTxt?.text = context.getString(R.string.service_every_x_days, service.frequency)
+                    mLeftTxt?.text = "Due: ${nextDate.format(GlobalVars.dateFormatterShort)}"
+                    mRightTxt?.text = "Every ${service.frequency} Days"
                 }
                 "2" -> { //mile/km based
-                    mLeftTxt?.text = context.getString(R.string.service_due_x, service.nextValue)
-                    mRightTxt?.text = context.getString(R.string.service_every_x_mi_km, service.frequency)
+                    mLeftTxt?.text = "Due: ${service.nextValue}"
+                    mRightTxt?.text = "Every ${service.frequency} Mi./Km."
                 }
                 "3" -> { //engine hour based
-                    mLeftTxt?.text = context.getString(R.string.service_due_x, service.nextValue)
-                    mRightTxt?.text = context.getString(R.string.service_every_x_engine_hours, service.frequency)
+                    mLeftTxt?.text = "Due: ${service.nextValue}"
+                    mRightTxt?.text = "Every ${service.frequency} Engine Hours"
                 }
                 "4" -> { //inspection
-                    mLeftTxt?.text = context.getString(R.string.service_due_before_use)
-                    mRightTxt?.text = context.getString(R.string.service_type_inspection)
+                    mLeftTxt?.text = "Due: Before Use"
+                    mRightTxt?.text = "Inspection"
                 }
             }
         }

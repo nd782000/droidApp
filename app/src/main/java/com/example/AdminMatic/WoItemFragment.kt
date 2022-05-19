@@ -188,12 +188,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         submitBtn = myView.findViewById(R.id.wo_item_submit_btn)
 
-        if (GlobalVars.permissions!!.scheduleMoney == "0") {
-            profitCl.visibility = View.GONE
-        }
 
-
-            if (woItem == null){
+        if (woItem == null){
             //fillProfitCl()
             hideProgressView()
 
@@ -222,6 +218,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
     private fun fillProfitCl() {
         var totalPrice = 0.0
+        var totalCost = 0.0
+
 
         woItem!!.usage.forEach {
             totalPrice += it.totalPrice!!.toDouble()
@@ -278,7 +276,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                         val taskList = gson.fromJson(taskJSON.toString(), Array<Task>::class.java)
                             .toMutableList()
 
-
                         tasksRv.apply {
                             layoutManager = LinearLayoutManager(activity)
                             adapter = activity?.let {
@@ -301,9 +298,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
                             (adapter as TasksAdapter).notifyDataSetChanged()
                         }
-                        if (GlobalVars.permissions!!.scheduleMoney == "1") {
-                            fillProfitCl()
-                        }
+                        fillProfitCl()
                         hideProgressView()
                     }
 
@@ -384,9 +379,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         tasksRv.visibility = View.INVISIBLE
         descriptionCl.visibility = View.INVISIBLE
         usageBtn.visibility = View.INVISIBLE
-        if (GlobalVars.permissions!!.scheduleMoney == "1") {
-            profitCl.visibility = View.INVISIBLE
-        }
+        profitCl.visibility = View.INVISIBLE
         submitBtn.visibility = View.INVISIBLE
 
 
@@ -394,6 +387,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     }
 
      fun hideProgressView() {
+
+
 
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             myView.context,
@@ -403,7 +398,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
         chargeSpinner.adapter = adapter
-
 
 
 
@@ -419,9 +413,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
 
             leadTaskBtn.visibility = View.GONE
-            if (GlobalVars.permissions!!.scheduleMoney == "1") {
-                profitCl.visibility = View.GONE
-            }
+            profitCl.visibility = View.GONE
             usageBtn.visibility = View.GONE
             tasksRv.visibility = View.GONE
             descriptionCl.visibility = View.GONE
@@ -432,17 +424,13 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         }else{
 
-            // set text, spinner and switch values if
-             if (editMode) {
-                 woItemSearch.isIconified = false // Expand it
-                 woItemSearch.setQuery(woItem!!.item, true)
-                 woItemSearch.clearFocus()
-             }
+            // set text, spinner and switch values
+            woItemSearch.isIconified = false // Expand it
+            woItemSearch.setQuery(woItem!!.item,true)
+            woItemSearch.clearFocus()
 
             estEditTxt.setText(woItem!!.est)
-            if (GlobalVars.permissions!!.scheduleMoney == "1") {
-                profitCl.visibility = View.VISIBLE
-            }
+            profitCl.visibility = View.VISIBLE
 
 
 
@@ -490,13 +478,15 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 taxCl.visibility = View.VISIBLE
                 totalCl.visibility = View.VISIBLE
                 leadTaskBtn.visibility = View.VISIBLE
-                if (GlobalVars.permissions!!.scheduleMoney == "1") {
-                    profitCl.visibility = View.GONE
-                }
+
+                profitCl.visibility = View.GONE
 
                 usageBtn.visibility = View.GONE
 
                 submitBtn.visibility = View.VISIBLE
+
+
+                profitCl.visibility = View.GONE
 
             }else{
                 println("editMode = false")
@@ -527,9 +517,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 taxCl.visibility = View.GONE
                 totalCl.visibility = View.GONE
                 leadTaskBtn.visibility = View.GONE
-                if (GlobalVars.permissions!!.scheduleMoney == "1") {
-                    profitCl.visibility = View.VISIBLE
-                }
+
+                profitCl.visibility = View.VISIBLE
 
                 usageBtn.visibility = View.VISIBLE
 
