@@ -7,244 +7,250 @@
     android:layout_height="match_parent"
     tools:context="com.example.AdminMatic.ImageFragment">
 
-    <!-- Header -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/image_upload_prep_header_cl"
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:background="@color/white"
+    android:id="@+id/all_cl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <!-- Header -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/image_upload_prep_header_cl"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:background="@color/white"
 
 
-        app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!--
-        <Switch
-            android:id="@+id/album_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:text="Album"
+            <!--
+            <Switch
+                android:id="@+id/album_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:text="Album"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+    -->
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/image_upload_prep_customer_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:accessibilityHeading="false"
+                android:background="@drawable/text_view_layout"
+                android:textCursorDrawable="@null"
+                app:actionViewClass="android.widget.SearchView"
+                app:defaultQueryHint='Select Customer'
+                app:iconifiedByDefault="false"
+                app:layout_constraintLeft_toLeftOf="parent"
+
+
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:queryBackground="@null" />
+
+
+
+
+            <!--
+                        android:focusable="false"
+                        android:focusableInTouchMode="true"
+            -->
+
+
+            <EditText
+                android:id="@+id/image_upload_task_edit_txt"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginHorizontal="3dp"
+                android:ems="10"
+                android:inputType="textMultiLine"
+                android:text="Description"
+                android:textAlignment="textStart"
+                android:lines="4"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image_upload_prep_customer_search" />
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+        <ScrollView
+            android:id="@+id/image_upload_prep_selected_images_sv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/image_upload_prep_footer_cl"
+            app:layout_constraintTop_toBottomOf="@+id/image_upload_prep_header_cl"
+            >
+
+
+            <LinearLayout
+                android:id="@+id/image_upload_prep_selected_images_ll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+            </LinearLayout>
+        </ScrollView>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/customer_search_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+
+            app:layout_constraintBottom_toTopOf="@+id/image_upload_prep_footer_cl"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
--->
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/image_upload_prep_customer_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:accessibilityHeading="false"
-            android:background="@drawable/text_view_layout"
-            android:textCursorDrawable="@null"
-            app:actionViewClass="android.widget.SearchView"
-            app:defaultQueryHint='Select Customer'
-            app:iconifiedByDefault="false"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_upload_prep_header_cl" />
 
 
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:queryBackground="@null" />
-
-
-
-
-        <!--
-                    android:focusable="false"
-                    android:focusableInTouchMode="true"
-        -->
-
-
-        <EditText
-            android:id="@+id/image_upload_task_edit_txt"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginHorizontal="3dp"
-            android:ems="10"
-            android:inputType="textMultiLine"
-            android:text="Description"
-            android:textAlignment="textStart"
-            android:lines="4"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_upload_prep_customer_search" />
-
-
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-
-    <ScrollView
-        android:id="@+id/image_upload_prep_selected_images_sv"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/image_upload_prep_footer_cl"
-        app:layout_constraintTop_toBottomOf="@+id/image_upload_prep_header_cl"
-        >
-
-
-        <LinearLayout
-            android:id="@+id/image_upload_prep_selected_images_ll"
+        <io.fotoapparat.view.CameraView
+            android:id="@+id/cameraView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-
-        </LinearLayout>
-    </ScrollView>
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/customer_search_rv"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/white"
-
-        app:layout_constraintBottom_toTopOf="@+id/image_upload_prep_footer_cl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_upload_prep_header_cl" />
-
-
-    <io.fotoapparat.view.CameraView
-        android:id="@+id/cameraView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-
-        >
-
-        <!--Optionally add tap to focus-->
-        <io.fotoapparat.view.FocusView
-            android:id="@+id/focusView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </io.fotoapparat.view.CameraView>
-
-    <TextView
-        android:id="@+id/no_permission"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="100dp"
-        android:text="No Camera permission granted."
-        android:textSize="20sp"
-        android:visibility="gone"
-        tools:ignore="HardcodedText"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <Button
-        android:id="@+id/capture_btn"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:text="+"
-        android:textSize="40sp"
-        android:insetBottom="0dp"
-        android:insetTop="0dp"
-
-        app:cornerRadius="40dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="50dp"
-
-        android:visibility="gone"
-
-
-        />
-
-
-    <!-- Footer -->
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/image_upload_prep_footer_cl"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/white"
-
-
-        app:layout_constraintBottom_toBottomOf="parent">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <Button
-            android:id="@+id/camera_btn"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="3dp"
-            android:text="Camera"
-
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/guideline13"
             app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
 
-             />
+            >
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline13"
+            <!--Optionally add tap to focus-->
+            <io.fotoapparat.view.FocusView
+                android:id="@+id/focusView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </io.fotoapparat.view.CameraView>
+
+        <TextView
+            android:id="@+id/no_permission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="100dp"
+            android:text="No Camera permission granted."
+            android:textSize="20sp"
+            android:visibility="gone"
+            tools:ignore="HardcodedText"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintGuide_percent="0.5"/>
-
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <Button
-            android:id="@+id/gallery_btn"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="3dp"
-            android:text="Library"
-            app:layout_constraintLeft_toRightOf="@id/guideline13"
+            android:id="@+id/capture_btn"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="+"
+            android:textSize="40sp"
+            android:insetBottom="0dp"
+            android:insetTop="0dp"
+
+            app:cornerRadius="40dp"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="50dp"
+
+            android:visibility="gone"
+
+
             />
 
-        <Button
-            android:id="@+id/submit_images_btn"
+
+        <!-- Footer -->
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/image_upload_prep_footer_cl"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="3dp"
-            android:text="Submit"
+            android:layout_height="100dp"
+            android:background="@color/white"
 
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/camera_btn" />
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <Button
+                android:id="@+id/camera_btn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="3dp"
+                android:text="Camera"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/guideline13"
+                app:layout_constraintTop_toTopOf="parent"
+
+                 />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintGuide_percent="0.5"/>
 
 
+            <Button
+                android:id="@+id/gallery_btn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="3dp"
+                android:text="Library"
+                app:layout_constraintLeft_toRightOf="@id/guideline13"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <Button
+                android:id="@+id/submit_images_btn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="3dp"
+                android:text="Submit"
+
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/camera_btn" />
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:visibility="invisible"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/button"
+        android:indeterminateTintMode="src_atop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

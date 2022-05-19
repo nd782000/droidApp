@@ -223,7 +223,13 @@ class MainMenuFragment : Fragment() {
         myView.findViewById<LinearLayout>(R.id.btn_images).setOnClickListener(({
             println("Go To Images")
             //Toast.makeText(activity,"Go To Images",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
-            myView.findNavController().navigate(R.id.navigateToImageList)
+            if (GlobalVars.permissions!!.files == "1") {
+                myView.findNavController().navigate(R.id.navigateToImageList)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_images))
+            }
+
             //var clickintent = Intent(this@MainMenu, ImagesList::class.java)
             //startActivity(clickintent)
         }))

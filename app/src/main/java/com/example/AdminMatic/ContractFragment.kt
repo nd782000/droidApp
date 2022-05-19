@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.app.AlertDialog
 import android.opengl.Visibility
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
@@ -32,9 +33,12 @@ private const val ARG_PARAM2 = "param2"
 interface ContractItemCellClickListener {
     fun onContractItemCellClickListener(data:ContractItem)
 }
+interface AddContractItemButtonListener {
+    fun onAddContractItemButtonListener()
+}
 
 
-class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListener {
+class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListener, AddContractItemButtonListener {
     // TODO: Rename and change types of parameters
     private var param2: String? = null
 
@@ -376,13 +380,13 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
                         contract = contractNew
 
-                        println("AAAAAAAAAAAAAAAA ${contract!!.items}")
                         recycler.apply {
                             layoutManager = LinearLayoutManager(activity)
                             adapter = activity?.let {
                                 ContractItemAdapter(
                                     contract!!.items!!.toMutableList(),
                                     context,
+                                    this@ContractFragment,
                                     this@ContractFragment
                                 )
                             }
@@ -419,10 +423,35 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
     }
 
     override fun onContractItemCellClickListener(data:ContractItem) {
-        val directions = ContractFragmentDirections.navigateContractToContractItem(data)
+        val directions = ContractFragmentDirections.navigateContractToContractItem(data, false)
         myView.findNavController().navigate(directions)
     }
 
+    override fun onAddContractItemButtonListener() {
+
+        val blankContractItem = ContractItem("0", "", "2", "0", contract!!.ID, "0")
+        val directions = ContractFragmentDirections.navigateContractToContractItem(blankContractItem, true)
+
+        if (contract!!.status == "1" || contract!!.status == "2" || contract!!.status == "3" || contract!!.status == "4") {
+            val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
+            builder.setTitle(getString(R.string.dialogue_add_contract_item_title))
+            builder.setMessage(getString(R.string.dialogue_add_contract_item_body))
+            builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
+                myView.findNavController().navigate(directions)
+            }
+            builder.setNegativeButton(getString(R.string.no)) { _, _ ->
+            }
+            builder.show()
+        }
+        else {
+            myView.findNavController().navigate(directions)
+        }
+
+
+
+
+
+    }
 
 
 

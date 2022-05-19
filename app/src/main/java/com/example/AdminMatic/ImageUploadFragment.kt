@@ -80,6 +80,7 @@ private  var equipmentID: String = ""
 private  var usageID: String = ""
 
 private var customerAllowImages: Boolean = true
+private var queriedCustomer: Customer? = null
 
 
 private val mRetryPolicy: RetryPolicy = DefaultRetryPolicy(
@@ -140,11 +141,15 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
     private lateinit var galleryBtn: Button
     private lateinit var submitBtn: Button
 
+    private lateinit var pgsBar: ProgressBar
+    private lateinit var allCL: ConstraintLayout
 
 
 
 
-   // private var imageData: ByteArray? = null
+
+
+    // private var imageData: ByteArray? = null
     private val postURL: String = "https://www.adminmatic.com/cp/app/functions/update/image.php"
    // private var selectedCustId: String? = null
     //var currentCameraUri :Uri? = null
@@ -198,9 +203,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             equipmentID = it.getString("equipmentID")!!
             usageID = it.getString("usageID")!!
 
-            if (customerID != "") {
-                getAllowImages(customerID)
-            }
+
 
             println("images.count = ${images.count()}")
         }
@@ -240,7 +243,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             descriptionTxt.text = Editable.Factory.getInstance().newEditable(taskDescription)
         }
 
-
+        pgsBar = myView.findViewById(R.id.progress_bar)
+        allCL = myView.findViewById(R.id.all_cl)
 
 
       //  return inflater.inflate(R.layout.fragment_image_upload, container, false)
@@ -253,6 +257,12 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        if (customerID != "") {
+            showProgressView()
+            getAllowImages(customerID, false)
+        }
+
         println("onViewCreated mode = $mode")
             var titleText = ""
         when (mode) {
@@ -285,6 +295,10 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
                 titleText = "Upload to Equipment"
             }
 
+        }
+
+        if (mode != "GALLERY") {
+            customerSearchView.visibility = View.GONE
         }
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = titleText
@@ -407,7 +421,6 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         submitBtn.setOnClickListener{
             println("submit btn clicked")
 
-            println("AAAAAAAAAAAA $mode")
             if (!customerAllowImages && mode != "WOITEM") {
                 globalVars.simpleAlert(myView.context,getString(R.string.no_image_collection),getString(R.string.no_image_collection_error))
                 return@setOnClickListener
@@ -1082,7 +1095,7 @@ private  fun saveTask(){
     }
 
 
-    private fun getAllowImages(customerID:String) {
+    private fun getAllowImages(newCustomerID:String, selectedFromRecycler:Boolean) {
 
         var urlString = "https://www.adminmatic.com/cp/app/functions/get/customer.php"
 
@@ -1111,6 +1124,29 @@ private  fun saveTask(){
                         if (customer.allowImages == "0") {
                             customerAllowImages = false
                         }
+
+                        if (selectedFromRecycler) {
+                            if (customerAllowImages) {
+                                customerID = newCustomerID
+                                customerSearchView.setQuery(queriedCustomer!!.sysname, false)
+                                customerRecyclerView.visibility = View.GONE
+
+                                //val imm = (activity as MainActivity?).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                //imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
+                                hideSoftKeyboard((activity as MainActivity?)!!)
+
+
+                                println("selcted cust = ${queriedCustomer!!.ID}")
+                            }
+                            else {
+                                globalVars.simpleAlert(myView.context,getString(R.string.no_image_collection),getString(R.string.no_image_collection_error))
+                                customerAllowImages = true
+                                customerID = ""
+                                customerSearchView.setQuery("", false)
+                                customerRecyclerView.visibility = View.GONE
+                            }
+                        }
+                        hideProgressView()
                     }
 
                 } catch (e: JSONException) {
@@ -1128,7 +1164,7 @@ private  fun saveTask(){
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 //params["ID"] = customer!!.ID
-                params["ID"] = customerID
+                params["ID"] = newCustomerID
 
                 println("params = $params")
                 return params
@@ -1143,19 +1179,8 @@ private  fun saveTask(){
         println("Cell clicked with customer: ${data.sysname}")
         data.let {
             // val directions = CustomerListFragmentDirections.navigateToCustomer(data)
-
-
-            customerID = it.ID
-            customerSearchView.setQuery(it.sysname, false)
-            customerRecyclerView.visibility = View.GONE
-
-            //val imm = (activity as MainActivity?).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            //imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
-            hideSoftKeyboard((activity as MainActivity?)!!)
-
-
-            println("selcted cust = ${it.ID}")
-
+            queriedCustomer = it
+            getAllowImages(it.ID, true)
         }
     }
 
@@ -1179,7 +1204,15 @@ private  fun saveTask(){
 
     }
 
+    fun showProgressView() {
+        pgsBar.visibility = View.VISIBLE
+        allCL.visibility = View.INVISIBLE
+    }
 
+    fun hideProgressView() {
+        pgsBar.visibility = View.INVISIBLE
+        allCL.visibility = View.VISIBLE
+    }
 
     companion object {
         /**
@@ -1203,11 +1236,8 @@ private  fun saveTask(){
                 arguments = Bundle().apply {
                     putString(mode, "CUSTOMER")
                     putParcelable("customer",customer)
-
                 }
             }
-
-
 
 
     }

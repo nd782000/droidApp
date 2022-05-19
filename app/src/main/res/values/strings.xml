@@ -156,6 +156,7 @@
     <string name="no_permission_contracts">You don\'t have permission to access contracts.</string>
     <string name="no_permission_schedule">You don\'t have permission to access work orders.</string>
     <string name="no_permission_invoices">You don\'t have permission to access invoices.</string>
+    <string name="no_permission_images">You don\'t have permission to access images.</string>
     <string name="no_permission_customers">You don\'t have permission to access customers.</string>
     <string name="no_permission_employees">You don\'t have permission to access employees.</string>
     <string name="no_permission_items">You don\'t have permission to access items.</string>
@@ -165,6 +166,7 @@
     <string name="no_permission_schedule_edit">You don\'t have permission to edit work orders.</string>
 
     <string name="add_equipment">Add Equipment</string>
+    <string name="add_item">Add Item</string>
     <string name="edit_fields">Edit Fields</string>
     <string name="equipment">Equipment</string>
     <string name="items">Items</string>
@@ -345,8 +347,15 @@
     <string name="other">Other</string>
     <string name="select_vendor">Select Vendor</string>
 
-    <string name="delete_item">Delete Item?</string>
-    <string name="delete_item_confirmation">Are you sure you want to delete this item?</string>
+    <string name="dialogue_delete_wo_item_title">Delete Item?</string>
+    <string name="dialogue_delete_wo_item_body">Are you sure you want to delete this item?</string>
+    <string name="dialogue_only_wo_item_title">Only Item</string>
+    <string name="dialogue_only_wo_item_body">You cannot delete the only item.</string>
+    <string name="dialogue_usage_exists_title">Usage Exists</string>
+    <string name="dialogue_usage_exists_body">You must delete any usage before deleting this item.</string>
+    <string name="dialogue_add_contract_item_title">Add Item?</string>
+    <string name="dialogue_add_contract_item_body">The customer may have already seen this contract. Are you sure you want to add an item?</string>
+
 
 
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>

@@ -361,13 +361,18 @@
     <fragment
         android:id="@+id/contractItemFragment"
         android:name="com.example.AdminMatic.ContractItemFragment"
-        android:label="fragment_contract"
+        android:label="fragment_contract_item"
         tools:layout="@layout/fragment_contract_item" >
         <argument
             android:name="contractItem"
             app:argType="com.example.AdminMatic.ContractItem"
             app:nullable="false" />
+        <argument
+            android:name="addMode"
+            app:argType="boolean"
+            app:nullable="false" />
     </fragment>
+
     <fragment
         android:id="@+id/invoiceFragment"
         android:name="com.example.AdminMatic.InvoiceFragment"

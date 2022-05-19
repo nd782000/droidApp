@@ -34,8 +34,7 @@ interface ContractTaskCellClickListener {
 
 
 class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
-    // TODO: Rename and change types of parameters
-    private var param2: String? = null
+    private var addMode: Boolean? = null
 
     private  var contractItem: ContractItem? = null
 
@@ -60,7 +59,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
         super.onCreate(savedInstanceState)
         arguments?.let {
             contractItem = it.getParcelable("contractItem")
-            param2 = it.getString(ARG_PARAM2)
+            addMode = it.getBoolean("addMode")
         }
     }
 
@@ -75,8 +74,12 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
 
         globalVars = GlobalVars()
 
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.contract_item_number, contractItem!!.ID)
-
+        if (addMode == true) {
+            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.add_item)
+        }
+        else {
+            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.contract_item_number, contractItem!!.ID)
+        }
 
         return myView
     }
@@ -99,29 +102,55 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
         totalEt = myView.findViewById(R.id.contract_item_total_val_et)
         recycler = myView.findViewById(R.id.contract_item_tasks_rv)
 
-        contractItemSearch.isEnabled = false
-        chargeSpinner.isEnabled = false
-        qtyEt.isEnabled = false
-        priceEt.isEnabled = false
-        totalEt.isEnabled = false
-        hideQtySwitch.isEnabled = false
-        taxableSwitch.isEnabled = false
+
+        if (addMode == true) {
+            recycler.visibility = View.GONE
+        }
+        else {
+            contractItemSearch.isEnabled = false
+            chargeSpinner.isEnabled = false
+            qtyEt.isEnabled = false
+            priceEt.isEnabled = false
+            totalEt.isEnabled = false
+            hideQtySwitch.isEnabled = false
+            taxableSwitch.isEnabled = false
 
 
-        if (contractItem!!.hideUnits == "1") {
-            hideQtySwitch.isChecked = true
+            if (contractItem!!.hideUnits == "1") {
+                hideQtySwitch.isChecked = true
+            }
+
+            if (contractItem!!.taxType == "1") {
+                taxableSwitch.isChecked = true
+            }
+            //contractItemSearch.setQuery(contractItem!!.name, false)
+
+            recycler.apply {
+                layoutManager = LinearLayoutManager(activity)
+                adapter = activity?.let {
+                    contractItem!!.tasks?.let { it1 ->
+                        ContractTasksAdapter(
+                            it1.toMutableList(),
+                            context,
+                            this@ContractItemFragment
+                        )
+                    }
+                }
+
+                val itemDecoration: RecyclerView.ItemDecoration =
+                    DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                recycler.addItemDecoration(itemDecoration)
+                (adapter as ContractTasksAdapter).notifyDataSetChanged()
+            }
         }
 
-        if (contractItem!!.taxType == "1") {
-            taxableSwitch.isChecked = true
-        }
-
-        //contractItemSearch.setQuery(contractItem!!.name, false)
         qtyEt.setText(contractItem!!.qty)
         priceEt.setText(contractItem!!.price)
         totalEt.setText(contractItem!!.total)
 
-        /*
+
+
+
         val chargeName:String = when (contractItem!!.chargeType) {
             "1" -> {
                 getString(R.string.contract_charge_nc)
@@ -137,28 +166,6 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
             }
         }
 
-        chargeSpinner.text = chargeName
-
-         */
-
-
-        recycler.apply {
-            layoutManager = LinearLayoutManager(activity)
-            adapter = activity?.let {
-                contractItem!!.tasks?.let { it1 ->
-                    ContractTasksAdapter(
-                        it1.toMutableList(),
-                        context,
-                        this@ContractItemFragment
-                    )
-                }
-            }
-
-            val itemDecoration: RecyclerView.ItemDecoration =
-                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-            recycler.addItemDecoration(itemDecoration)
-            (adapter as ContractTasksAdapter).notifyDataSetChanged()
-        }
     }
 
     override fun onContractTaskCellClickListener(data:ContractTask) {

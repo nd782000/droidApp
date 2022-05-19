@@ -108,28 +108,33 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
                             globalVars.simpleAlert(myView.context, context.getString(R.string.access_denied), context.getString(R.string.no_permission_schedule_edit))
                         }
                         else {
-                            val builder = AlertDialog.Builder(myView.context)
-                            builder.setTitle(context.getString(R.string.delete_item_confirmation))
-                            builder.setPositiveButton(context.getString(R.string.yes)) { _, _ ->
 
-                                var urlString = "https://www.adminmatic.com/cp/app/functions/delete/workOrderItem.php"
+                            if (filterList.size > 1) {
 
-                                val currentTimestamp = System.currentTimeMillis()
-                                println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-                                urlString = "$urlString?cb=$currentTimestamp"
-                                val queue = Volley.newRequestQueue(myView.context)
+                                val builder = AlertDialog.Builder(myView.context)
+                                builder.setTitle(context.getString(R.string.dialogue_delete_wo_item_title))
+                                builder.setMessage(context.getString(R.string.dialogue_delete_wo_item_body))
+                                builder.setPositiveButton(context.getString(R.string.yes)) { _, _ ->
 
-                                val postRequest1: StringRequest = object : StringRequest(
-                                    Method.POST, urlString,
-                                    Response.Listener { response -> // response
-                                        //Log.d("Response", response)
+                                    var urlString =
+                                        "https://www.adminmatic.com/cp/app/functions/delete/workOrderItem.php"
 
-                                        println("Response $response")
+                                    val currentTimestamp = System.currentTimeMillis()
+                                    println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+                                    urlString = "$urlString?cb=$currentTimestamp"
+                                    val queue = Volley.newRequestQueue(myView.context)
 
-                                        filterList.removeAt(position)
-                                        notifyDataSetChanged()
+                                    val postRequest1: StringRequest = object : StringRequest(
+                                        Method.POST, urlString,
+                                        Response.Listener { response -> // response
+                                            //Log.d("Response", response)
 
-                                        /*
+                                            println("Response $response")
+
+                                            filterList.removeAt(position)
+                                            notifyDataSetChanged()
+
+                                            /*
                                         try {
                                             val parentObject = JSONObject(response)
                                             println("parentObject = $parentObject")
@@ -156,30 +161,37 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
                                          */
 
-                                    },
-                                    Response.ErrorListener { // error
+                                        },
+                                        Response.ErrorListener { // error
 
 
-                                        // Log.e("VOLLEY", error.toString())
-                                        // Log.d("Error.Response", error())
+                                            // Log.e("VOLLEY", error.toString())
+                                            // Log.d("Error.Response", error())
+                                        }
+                                    ) {
+                                        override fun getParams(): Map<String, String> {
+                                            val params: MutableMap<String, String> = HashMap()
+                                            params["companyUnique"] =
+                                                GlobalVars.loggedInEmployee!!.companyUnique
+                                            params["sessionKey"] =
+                                                GlobalVars.loggedInEmployee!!.sessionKey
+                                            params["workOrderID"] = woItem.woID
+                                            params["workOrderItemID"] = woItem.ID
+                                            println("params = $params")
+                                            return params
+                                        }
                                     }
-                                ) {
-                                    override fun getParams(): Map<String, String> {
-                                        val params: MutableMap<String, String> = HashMap()
-                                        params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                                        params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                                        params["workOrderID"] = woItem.woID
-                                        params["workOrderItemID"] = woItem.ID
-                                        println("params = $params")
-                                        return params
-                                    }
+                                    queue.add(postRequest1)
                                 }
-                                queue.add(postRequest1)
+                                builder.setNegativeButton(context.getString(R.string.no)) { _, _ ->
+
+                                }
+                                builder.show()
                             }
-                            builder.setNegativeButton(context.getString(R.string.no)) { _, _ ->
+                            else {
+                                globalVars.simpleAlert(myView.context,context.getString(R.string.dialogue_only_wo_item_title),context.getString(R.string.dialogue_only_wo_item_body))
 
                             }
-                            builder.show()
                         }
 
 

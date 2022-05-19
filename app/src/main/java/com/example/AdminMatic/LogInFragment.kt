@@ -609,6 +609,10 @@ class LogInFragment : Fragment() {
                             deviceID = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
                             println("loggedInEmployee.fname = ${loggedInEmployee!!.fName}")
 
+                            sessionKey = loggedInEmployee!!.sessionKey
+                            loggedInEmpID = loggedInEmployee!!.sessionKey
+                            companyUnique = loggedInEmployee!!.companyUnique
+
                             //save stored vars
                             val sharedPref = this.requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
                             with (sharedPref.edit()) {

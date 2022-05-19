@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.solver.state.State
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -50,6 +52,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     private lateinit var crewBtn:Button
     private lateinit var mapBtn:Button
     private lateinit var countTextView: TextView
+    private lateinit var allCL: ConstraintLayout
 
     //update eq
     private var datesArray:Array<String> = arrayOf(
@@ -113,6 +116,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         crewBtn = view.findViewById(R.id.crew_btn)
         mapBtn = view.findViewById(R.id.map_btn)
         countTextView = view.findViewById(R.id.work_order_count_textview)
+        allCL = view.findViewById(R.id.all_cl)
 
         crewBtn.setOnClickListener {
             println("Crew Click")
@@ -830,23 +834,32 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE
+        allCL.visibility = View.INVISIBLE
+        /*
         searchView.visibility = View.INVISIBLE
         recyclerView.visibility = View.INVISIBLE
         scheduleSpinner.visibility = View.INVISIBLE
         crewBtn.visibility = View.INVISIBLE
         mapBtn.visibility = View.INVISIBLE
         countTextView.visibility = View.INVISIBLE
+
+         */
+
     }
 
     fun hideProgressView() {
         println("hideProgressView")
         pgsBar.visibility = View.INVISIBLE
+        allCL.visibility = View.VISIBLE
+        /*
         searchView.visibility = View.VISIBLE
         recyclerView.visibility = View.VISIBLE
         scheduleSpinner.visibility = View.VISIBLE
         crewBtn.visibility = View.VISIBLE
         mapBtn.visibility = View.VISIBLE
         countTextView.visibility = View.VISIBLE
+
+         */
     }
 
 
