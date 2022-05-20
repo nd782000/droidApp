@@ -33,6 +33,8 @@ class MainMenuFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    lateinit  var globalVars:GlobalVars
+
     //private var globalVars: GlobalVars? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +54,9 @@ class MainMenuFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        globalVars = GlobalVars()
+
         // Inflate the layout for this fragment
         myView =  inflater.inflate(R.layout.fragment_main_menu, container, false)
 
@@ -187,7 +192,7 @@ class MainMenuFragment : Fragment() {
                 myView.findNavController().navigate(R.id.navigateToImageList)
             }
             else {
-                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_images))
+                 globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_images))
             }
 
             //var clickintent = Intent(this@MainMenu, ImagesList::class.java)

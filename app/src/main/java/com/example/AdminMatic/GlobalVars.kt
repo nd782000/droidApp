@@ -47,8 +47,6 @@ class GlobalVars: Application() {
         var globalLeadList:MutableList<Lead>? = null
         var scheduleSpinnerPosition:Int = 2
 
-
-
         var deviceID:String? = null
 
         var customerList: MutableList<Customer>? = null

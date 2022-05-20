@@ -142,6 +142,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
                 recycler.addItemDecoration(itemDecoration)
                 (adapter as ContractTasksAdapter).notifyDataSetChanged()
             }
+
         }
 
         qtyEt.setText(contractItem!!.qty)

@@ -144,6 +144,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
     private lateinit var pgsBar: ProgressBar
     private lateinit var allCL: ConstraintLayout
 
+    lateinit  var globalVars:GlobalVars
+
 
 
 
@@ -229,6 +231,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
         adapter = CustomersAdapter(GlobalVars.customerList!!, this)
 
+        globalVars = GlobalVars()
 
 
 

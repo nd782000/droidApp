@@ -32,6 +32,9 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
     var filterList:MutableList<WoItem> = emptyList<WoItem>().toMutableList()
 
 
+    lateinit  var globalVars:GlobalVars
+
+
     var queryText = ""
 
     init {
@@ -53,7 +56,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
     override fun onBindViewHolder(holder: WoItemViewHolder, position: Int) {
 
 
-
+        globalVars = GlobalVars()
 
         val woItem: WoItem = filterList[position]
         holder.bind(woItem)
