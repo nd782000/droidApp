@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcel
@@ -7,11 +8,13 @@ import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.Spinner
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.AdminMatic.BuildConfig
@@ -185,6 +188,11 @@ data class EquipmentCrew(
                 var name: String?,
                 var color: String? = "",
                 var equips: MutableList<Equipment> = mutableListOf()
+)
+
+data class SearchItem(
+    var name: String = "",
+    var index: Int = 0
 )
 
 @Parcelize
@@ -919,7 +927,10 @@ class SpinnerInteractionListener : AdapterView.OnItemSelectedListener, View.OnTo
 */
 
 
-
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+}
 
 
 
@@ -1251,8 +1262,4 @@ override fun logOut(view: View){
         }
     }
     */
-
-
-
-
 }

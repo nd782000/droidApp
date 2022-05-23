@@ -387,9 +387,7 @@
             android:ems="10"
             android:inputType="numberDecimal"
             android:imeOptions="actionDone"
-            android:textCursorDrawable="@null"
             android:text=""
-            android:textColorHighlight ="@color/colorTextSelected"
             app:layout_constraintTop_toBottomOf="@id/usage_quantity_tv"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline11"/>

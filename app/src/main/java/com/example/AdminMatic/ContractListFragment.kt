@@ -258,13 +258,12 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
     override fun onContractCellClickListener(data:Contract) {
         //Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
+        myView.hideKeyboard()
 
         data.let {
             val directions = ContractListFragmentDirections.navigateToContract(data)
             myView.findNavController().navigate(directions)
         }
-
-
     }
 
 

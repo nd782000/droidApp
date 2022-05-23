@@ -559,10 +559,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             woItem!!.charge = (position + 1).toString()
         }
 
-
-
-
-
     }
 
 

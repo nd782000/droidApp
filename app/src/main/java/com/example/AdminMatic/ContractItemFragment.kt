@@ -1,13 +1,17 @@
 package com.example.AdminMatic
 
-import android.opengl.Visibility
+import android.app.AlertDialog
+import android.content.res.Configuration
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,11 +20,11 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_contract_list.*
-import kotlinx.android.synthetic.main.fragment_work_order.*
+import kotlinx.android.synthetic.main.fragment_item_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import kotlin.math.roundToInt
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,9 +36,17 @@ interface ContractTaskCellClickListener {
     fun onContractTaskCellClickListener(data:ContractTask)
 }
 
+interface SearchItemCellClickListener {
+    fun onSearchItemCellClickListener(data:SearchItem)
+}
 
-class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
+
+class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchItemCellClickListener, AdapterView.OnItemSelectedListener {
     private var addMode: Boolean? = null
+    private var editMode: Boolean? = false
+    private var editsMade: Boolean = false
+    private var itemsList: MutableList<Item> = mutableListOf()
+    private var chargeTypeArray:Array<String> = arrayOf("No Charge", "Flat", "T & M")
 
     private  var contractItem: ContractItem? = null
 
@@ -44,11 +56,14 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
 
     lateinit var  pgsBar: ProgressBar
 
-
+    private lateinit var allCl: ConstraintLayout
     private lateinit var contractItemSearch: SearchView
+    private lateinit var contractItemRecycler: RecyclerView
     private lateinit var hideQtySwitch: Switch
     private lateinit var taxableSwitch: Switch
     private lateinit var chargeSpinner: Spinner
+
+
     private lateinit var qtyEt: EditText
     private lateinit var priceEt: EditText
     private lateinit var totalEt: EditText
@@ -81,6 +96,28 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.contract_item_number, contractItem!!.ID)
         }
 
+        val onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button event
+                println("handleOnBackPressed")
+                if(editsMade){
+                    println("edits made")
+                    val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
+                    builder.setTitle("Unsaved Changes")
+                    builder.setMessage("Go back without saving?")
+                    builder.setPositiveButton("YES") { _, _ ->
+                        parentFragmentManager.popBackStackImmediate()
+                    }
+                    builder.setNegativeButton("NO") { _, _ ->
+                    }
+                    builder.show()
+                }else{
+                    parentFragmentManager.popBackStackImmediate()
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         return myView
     }
 
@@ -88,12 +125,15 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
         super.onViewCreated(view, savedInstanceState)
         println("Contract Item View")
 
+        //Todo: Make search view recycler appear when search is focused
 
         pgsBar = view.findViewById(R.id.progress_bar)
         pgsBar.visibility = View.INVISIBLE
 
-
+        allCl = myView.findViewById(R.id.all_cl)
         contractItemSearch = myView.findViewById(R.id.contract_item_search)
+        contractItemRecycler = myView.findViewById(R.id.contract_item_search_rv)
+        //contractItemRecycler.visibility = View.GONE
         hideQtySwitch = myView.findViewById(R.id.contract_item_hide_qty_switch)
         taxableSwitch = myView.findViewById(R.id.contract_item_taxable_switch)
         chargeSpinner = myView.findViewById(R.id.contract_item_charge_spinner)
@@ -105,6 +145,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
 
         if (addMode == true) {
             recycler.visibility = View.GONE
+            editMode = true
         }
         else {
             contractItemSearch.isEnabled = false
@@ -146,28 +187,227 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
         }
 
         qtyEt.setText(contractItem!!.qty)
+
         priceEt.setText(contractItem!!.price)
         totalEt.setText(contractItem!!.total)
 
 
+        // Set up fields
 
 
-        val chargeName:String = when (contractItem!!.chargeType) {
-            "1" -> {
-                getString(R.string.contract_charge_nc)
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            myView.context,
+            android.R.layout.simple_spinner_dropdown_item, chargeTypeArray
+        )
+        adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
+        chargeSpinner.adapter = adapter
+        chargeSpinner.setSelection(contractItem!!.chargeType.toInt() - 1)
+        chargeSpinner.onItemSelectedListener = this@ContractItemFragment
+
+        hideQtySwitch.setOnCheckedChangeListener { _, isChecked ->
+            editsMade = true
+            if (isChecked) {
+                contractItem!!.hideUnits = "1"
             }
-            "2" -> {
-                getString(R.string.contract_charge_fl)
-            }
-            "3" -> {
-                getString(R.string.contract_charge_tm)
-            }
-            else -> {
-                ""
+            else {
+                contractItem!!.hideUnits = "0"
             }
         }
 
+        taxableSwitch.setOnCheckedChangeListener { _, isChecked ->
+            editsMade = true
+            if (isChecked) {
+                contractItem!!.taxType = "1"
+            }
+            else {
+                contractItem!!.taxType = "0"
+            }
+        }
+
+        qtyEt.setRawInputType(Configuration.KEYBOARD_12KEY)
+        qtyEt.setSelectAllOnFocus(true)
+        qtyEt.setBackgroundResource(R.drawable.text_view_layout)
+        qtyEt.setOnEditorActionListener { _, actionId, _ ->
+
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+
+                qtyEt.clearFocus()
+                myView.hideKeyboard()
+                editsMade = true
+
+                if (qtyEt.text.toString() != "") {
+                    val costInput = qtyEt.text.toString().toDouble()
+                    val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
+                    contractItem!!.qty = costInputTrimmed.toString()
+                    qtyEt.setText(costInputTrimmed.toString())
+                }
+                else {
+                    contractItem!!.qty = "0.00"
+                    qtyEt.setText("0.00")
+                }
+                setTotalText()
+                true
+            } else {
+                false
+            }
+        }
+
+        priceEt.setRawInputType(Configuration.KEYBOARD_12KEY)
+        priceEt.setSelectAllOnFocus(true)
+        priceEt.setBackgroundResource(R.drawable.text_view_layout)
+        priceEt.setOnEditorActionListener { _, actionId, _ ->
+
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+
+                priceEt.clearFocus()
+                myView.hideKeyboard()
+                editsMade = true
+
+                if (priceEt.text.toString() != "") {
+                    val costInput = priceEt.text.toString().toDouble()
+                    val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
+                    contractItem!!.price = costInputTrimmed.toString()
+                    priceEt.setText(costInputTrimmed.toString())
+                }
+                else {
+                    contractItem!!.price = "0.00"
+                    priceEt.setText("0.00")
+                }
+                setTotalText()
+                true
+            } else {
+                false
+            }
+        }
+
+        getItems()
+
     }
+
+    private fun getItems(){
+        println("getItems")
+
+
+        // println("pgsBar = $pgsBar")
+
+
+        showProgressView()
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/items.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+        //val preferences =
+        //this.requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
+        // val session = preferences.getString("sessionKey","")
+        //val companyUnique = preferences.getString("companyUnique","")
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                //Log.d("Response", response)
+
+                println("Response $response")
+
+                hideProgressView()
+
+
+                try {
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        val items: JSONArray = parentObject.getJSONArray("items")
+                        println("items = $items")
+                        println("items count = ${items.length()}")
+
+
+
+                        val gson = GsonBuilder().create()
+                        itemsList = gson.fromJson(items.toString() , Array<Item>::class.java).toMutableList()
+
+
+                        val searchItemsList = mutableListOf<SearchItem>()
+                        itemsList.forEachIndexed {index, element ->
+                            searchItemsList.add(SearchItem(element.name, index))
+                        }
+
+
+                        contractItemRecycler.apply {
+                            layoutManager = LinearLayoutManager(activity)
+
+
+                            adapter = activity?.let {
+                                SearchItemsAdapter(
+                                    searchItemsList,
+                                    context,
+                                    this@ContractItemFragment
+                                )
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            contractItemRecycler.addItemDecoration(itemDecoration)
+
+
+                            (adapter as SearchItemsAdapter).notifyDataSetChanged()
+
+                            // Remember to CLEAR OUT old items before appending in the new ones
+
+                            // ...the data has come back, add new items to your adapter...
+
+                            // Now we call setRefreshing(false) to signal refresh has finished
+
+
+                            contractItemSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+                                override fun onQueryTextSubmit(query: String?): Boolean {
+                                    //customerRecyclerView.visibility = View.GONE
+                                    return false
+                                }
+
+                                override fun onQueryTextChange(newText: String?): Boolean {
+                                    println("onQueryTextChange = $newText")
+                                    (adapter as SearchItemsAdapter).filter.filter(newText)
+                                    if(newText == ""){
+                                        contractItemRecycler.visibility = View.GONE
+                                    }else{
+                                        contractItemRecycler.visibility = View.VISIBLE
+                                    }
+
+                                    return false
+                                }
+
+                            })
+
+                        }
+                    }
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                println("params = $params")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
+
+
 
     override fun onContractTaskCellClickListener(data:ContractTask) {
         println("Clicked on contract task #${data.ID}")
@@ -175,11 +415,44 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener {
         //myView.findNavController().navigate(directions)
     }
 
+    override fun onSearchItemCellClickListener(data:SearchItem) {
+        println("Clicked on item #${data.index}")
+        contractItemSearch.setQuery(itemsList[data.index!!].name, false)
+        contractItemSearch.clearFocus()
+        contractItem!!.itemID = itemsList[data.index!!].ID
+        contractItemRecycler.visibility = View.GONE
+
+        //Todo: fetch default price here
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        println("onNothingSelected")
+    }
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        println("onItemSelected position = $position")
+        editsMade = true
+
+        if (contractItem != null){
+            contractItem!!.chargeType = (position + 1).toString()
+        }
+    }
+
+    private fun setTotalText() {
+        if (contractItem!!.price == null || priceEt.text.toString() == "") {
+            return
+        }
+        val totalCost = (contractItem!!.qty.toDouble() * contractItem!!.price!!.toDouble())
+        contractItem!!.total = String.format("%.2f", totalCost)
+        totalEt.setText(contractItem!!.total)
+    }
+
     fun showProgressView() {
+        allCl.visibility = View.INVISIBLE
         pgsBar.visibility = View.VISIBLE
     }
 
     fun hideProgressView() {
+        allCl.visibility = View.VISIBLE
         pgsBar.visibility = View.INVISIBLE
     }
 
