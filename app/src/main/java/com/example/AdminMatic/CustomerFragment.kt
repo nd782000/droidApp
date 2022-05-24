@@ -459,12 +459,12 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         queue.add(postRequest1)
     }
 
-    override fun onWorkOrderCellClickListener(data:WorkOrder) {
+    override fun onWorkOrderCellClickListener(data:WorkOrder, listIndex:Int) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
-            val directions = CustomerFragmentDirections.navigateCustomerToWorkOrder(it)
+            val directions = CustomerFragmentDirections.navigateCustomerToWorkOrder(it, -1)
             myView.findNavController().navigate(directions)
         }
     }

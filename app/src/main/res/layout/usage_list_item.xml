@@ -124,17 +124,9 @@
                     android:layout_height="50dp"
                     android:layout_marginHorizontal="3dp"
                     android:ems="10"
-                    android:textCursorDrawable="@null"
                     android:inputType="textPersonName"
-                    android:textColorHighlight ="@color/colorTextSelected"
-
-
-
                     android:focusable="false"
                     android:focusableInTouchMode="true"
-
-
-
                     android:textAlignment="center"
                     app:layout_constraintLeft_toRightOf="@+id/start_guide"
                     app:layout_constraintRight_toRightOf="parent"

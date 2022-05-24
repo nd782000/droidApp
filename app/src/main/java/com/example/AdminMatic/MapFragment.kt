@@ -78,10 +78,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         pgsBar = view.findViewById(R.id.progressBar)
         refreshBtn = view.findViewById(R.id.map_refresh_btn)
 
-        refreshBtn.setOnClickListener{
-            //refreshWorkOrders()
-        }
-
         mapFragment!!.getMapAsync(this)
 
         hideProgressView()
@@ -101,7 +97,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         var newMarker: Marker?
         var bitmapDescriptor: BitmapDescriptor?
 
-
+        googleMapGlobal.clear()
 
         if (mode == 0) { // Work orders
 
@@ -109,14 +105,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 return
             }
 
-            googleMapGlobal.setOnInfoWindowClickListener { marker ->
-                val directions =
-                    WorkOrderListFragmentDirections.navigateToWorkOrder(pinMapWorkOrder[marker])
-                myView.findNavController().navigate(directions)
-            }
-
             globalWorkOrdersList!!.forEach {
-
+                println("Marker: $it: ${it.lat}, ${it.lng}")
                 bitmapDescriptor = when (it.status) {
                     "0" -> {
                         BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_skip)
@@ -144,14 +134,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 pinMapWorkOrder[newMarker] = it
             }
 
+            googleMapGlobal.setOnInfoWindowClickListener { marker ->
+                val targetWorkOrder = pinMapWorkOrder[marker]
+                val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(targetWorkOrder, globalWorkOrdersList!!.indexOf(targetWorkOrder))
+                myView.findNavController().navigate(directions)
+            }
+
             refreshBtn.setOnClickListener {
                 (activity as MainActivity?)!!.refreshWorkOrders()
             }
         }
         else { // Leads
+
             if (globalLeadList.isNullOrEmpty()) {
                 return
             }
+
 
             googleMapGlobal.setOnInfoWindowClickListener { marker ->
                 val directions =
@@ -194,6 +192,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         val builder = LatLngBounds.Builder()
+        println("Marker List Size: ${markerList.size}")
         for (marker in markerList) {
             builder.include(marker.position)
         }
@@ -201,8 +200,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
 
         googleMapGlobal.moveCamera(cu)
-
-
 
     }
 

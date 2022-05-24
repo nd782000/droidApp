@@ -165,6 +165,12 @@
     <string name="no_permission_payroll">You don\'t have permission to add payroll.</string>
     <string name="no_permission_schedule_edit">You don\'t have permission to edit work orders.</string>
 
+    <!--Usage stuff-->
+    <string name="usage_from">From:</string>
+    <string name="usage_to">To:</string>
+    <string name="usage_footer_text">Totals - Jobs: %1$d, Hours: %2$d</string>
+    <string name="xs_usage">%1$s\'s Usage</string>
+
     <string name="add_equipment">Add Equipment</string>
     <string name="add_item">Add Item</string>
     <string name="edit_fields">Edit Fields</string>

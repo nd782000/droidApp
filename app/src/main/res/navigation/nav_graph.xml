@@ -215,6 +215,19 @@
         <action
             android:id="@+id/navigateEmployeeToImage"
             app:destination="@id/imageFragment" />
+        <action
+            android:id="@+id/navigateEmployeeToUsage"
+            app:destination="@id/usageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/usageFragment"
+        android:name="com.example.AdminMatic.UsageFragment"
+        android:label="fragment_usage"
+        tools:layout="@layout/fragment_usage" >
+        <argument
+            android:name="employee"
+            app:argType="com.example.AdminMatic.Employee"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/payrollFragment"
@@ -235,6 +248,9 @@
             android:name="workOrder"
             app:argType="com.example.AdminMatic.WorkOrder"
             app:nullable="true" />
+        <argument
+            android:name="listIndex"
+            app:argType="integer"/>
         <action
             android:id="@+id/navigateWorkOrderToLead"
             app:destination="@id/leadFragment" />

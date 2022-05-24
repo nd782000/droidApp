@@ -33,9 +33,7 @@ interface WoItemCellClickListener {
 }
 
 class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
-    // TODO: Rename and change types of parameters
-    //private var param1: String? = null
-    private var param2: String? = null
+    private var listIndex: Int = -1
 
     private  var workOrder: WorkOrder? = null
 
@@ -77,10 +75,9 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         super.onCreate(savedInstanceState)
         arguments?.let {
             workOrder = it.getParcelable("workOrder")
-            param2 = it.getString(ARG_PARAM2)
+            listIndex = it.getInt("listIndex")
         }
     }
-
 
 
     override fun onCreateView(
@@ -97,6 +94,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
         myView = inflater.inflate(R.layout.fragment_work_order, container, false)
 
+        println("Work Order: $workOrder")
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder #${workOrder!!.woID}"
 
@@ -109,10 +107,12 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         super.onViewCreated(view, savedInstanceState)
         println("WorkOrder View")
 
+        println("lat: ${workOrder!!.lat}")
+        println("lng: ${workOrder!!.lng}")
 
         pgsBar = myView.findViewById(R.id.progress_bar)
 
-         stackFragment = StackFragment(2,workOrder!!.woID,this)
+        stackFragment = StackFragment(2,workOrder!!.woID,this)
 
         val ft = childFragmentManager.beginTransaction()
         ft.add(R.id.work_order_cl, stackFragment, "stackFrag")
@@ -160,7 +160,8 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
         getWorkOrder()
-
+        println("lat: ${workOrder!!.lat}")
+        println("lng: ${workOrder!!.lng}")
         scheduleTxt.text = workOrder!!.dateNice
 
     }
@@ -183,8 +184,56 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         println("parentObject = $parentObject")
 
                         val gson = GsonBuilder().create()
-                        workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
-                        println(workOrder)
+                        /*
+                        Elements fetched by current get/workOrder.php:
+                        woID
+                        customer
+                        custName
+                        custAddress
+                        title
+                        status
+                        skipped
+                        urgent
+                        charge
+                        chargeName
+                        invoice
+                        timeType
+                        date
+                        dateRaw
+                        deadline
+                        prompt
+                        crews
+                        mainCrew
+                        salesRep
+                        salesRepName
+                        recID
+                        items
+                        progress
+                        totalPrice
+                        totalCost
+                        totalPriceRaw
+                        totalCostRaw
+                        profit
+                        profitAmount
+                        notes
+                        dateAdded
+                        addedBy
+                        customerID
+                        allowImages
+                        nextPlannedDate
+
+                         */
+
+                        // Copy missing elements over from the original work order (temp band aid fix until PHP script is fixed)
+                        val workOrderNew = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
+                        workOrderNew.statusName = workOrder!!.statusName
+                        workOrderNew.dateNice = workOrder!!.dateNice
+                        workOrderNew.locked = workOrder!!.locked
+                        workOrderNew.daySort = workOrder!!.daySort
+                        workOrderNew.lat = workOrder!!.lat
+                        workOrderNew.lng= workOrder!!.lng
+                        workOrder = workOrderNew
+
 
                         setStatus(workOrder!!.status)
                         titleTxt.text = workOrder!!.title
@@ -292,6 +341,10 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
             workOrder!!.status = item!!.itemId.toString()
 
+            if (listIndex >= 0) {
+                GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder!!)
+            }
+
             setStatus(workOrder!!.status)
             Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT)
                 .show()
@@ -315,7 +368,6 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
-
                         hideProgressView()
 
                         /* Here 'response' is a String containing the response you received from the website... */

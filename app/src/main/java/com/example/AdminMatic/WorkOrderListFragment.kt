@@ -35,7 +35,7 @@ import java.util.*
 
 
 interface WorkOrderCellClickListener {
-    fun onWorkOrderCellClickListener(data:WorkOrder)
+    fun onWorkOrderCellClickListener(data:WorkOrder, listIndex:Int)
 }
 
 
@@ -88,11 +88,15 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         ((activity as AppCompatActivity).supportActionBar?.customView!!
             .findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.woList)
 
-    if (globalWorkOrdersList == null) {
-        val emptyList: MutableList<WorkOrder> = mutableListOf()
+        if (globalWorkOrdersList == null) {
+            val emptyList: MutableList<WorkOrder> = mutableListOf()
+            adapter = WorkOrdersAdapter(emptyList, this.myView.context,this)
+        }
+        else {
+            (adapter).notifyDataSetChanged()
+        }
 
-        adapter = WorkOrdersAdapter(emptyList, this.myView.context,this)
-    }
+
 
         return myView
     }
@@ -103,7 +107,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         //need to wait for this function to initialize views
         println("onViewCreated")
 
-        scheduleSpinnerPosition = 2
+
 
 
         (activity as MainActivity?)!!.setWorkOrderList(this)
@@ -141,7 +145,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         if (globalWorkOrdersList == null) {
 
             println("globalWorkOrdersList = null")
-
+            scheduleSpinnerPosition = 2
 
             scheduleSpinner.setBackgroundResource(R.drawable.text_view_layout)
 
@@ -214,7 +218,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             //if(activity != null){
 
             //}
-
+            println("AAAAAAAAAAAAAAAAA $scheduleSpinnerPosition")
             scheduleSpinner.setTag(R.id.pos, scheduleSpinnerPosition)
             scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
 
@@ -414,11 +418,11 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
     }
 
-    override fun onWorkOrderCellClickListener(data:WorkOrder) {
+    override fun onWorkOrderCellClickListener(data:WorkOrder, listIndex:Int) {
         println("Cell clicked with workOrder: ${data.woID}")
 
         data.let {
-            val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(it)
+            val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(it, 0)
             myView.findNavController().navigate(directions)
         }
     }
@@ -826,8 +830,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 empID = ""
                 crewBtn.text = getString(R.string.crews_everyone)
             }
-
-
         }
     }
 

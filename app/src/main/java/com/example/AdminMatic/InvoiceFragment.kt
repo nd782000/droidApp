@@ -92,7 +92,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
 
     override fun newWorkOrderView(_workOrder: WorkOrder) {
         println("newWorkOrderView $_workOrder")
-        val directions = InvoiceFragmentDirections.navigateInvoiceToWorkOrder(_workOrder)
+        val directions = InvoiceFragmentDirections.navigateInvoiceToWorkOrder(_workOrder, -1)
         myView.findNavController().navigate(directions)
     }
 
