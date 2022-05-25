@@ -422,7 +422,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         println("Cell clicked with workOrder: ${data.woID}")
 
         data.let {
-            val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(it, 0)
+            val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(it, listIndex)
             myView.findNavController().navigate(directions)
         }
     }
