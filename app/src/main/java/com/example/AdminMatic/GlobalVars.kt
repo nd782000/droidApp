@@ -51,8 +51,11 @@ class GlobalVars: Application() {
 
         var customerList: MutableList<Customer>? = null
 
+        //Todo: Wire alternate formats into localization system whenever that's in place
         val dateFormatterPHP: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") //format from the php
         val dateFormatterShort: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yy") //format to display
+        val dateFormatterMonthDay: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd") //format to display
+        val dateFormatterShortDashes: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd-yy") //format to display
         val dateFormatterYYYYMMDD: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd") //format to display
 
         val moneyFormatter: NumberFormat = DecimalFormat("#,###.00")

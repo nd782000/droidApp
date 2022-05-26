@@ -1,10 +1,7 @@
 package com.example.AdminMatic
 
-import android.opengl.Visibility
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -13,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_image_upload.view.*
+import kotlin.math.abs
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -41,6 +39,10 @@ class ImageFragment : Fragment() {
     private lateinit var likesTextView:TextView
     private lateinit var custNameTextView:TextView
     private lateinit var detailsTextView:TextView
+
+
+
+
 
 
 
@@ -75,6 +77,21 @@ class ImageFragment : Fragment() {
         pgsBar = view.findViewById(R.id.progress_bar)
 
         imageView = myView.findViewById(R.id.image_details_iv)
+        val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDown(event: MotionEvent): Boolean { return true }
+            override fun onFling(event1: MotionEvent, event2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                if (abs(velocityX) > abs(velocityY)) {
+                    if (velocityX > 0) {
+                        println("right swipe")
+                    }
+                    else {
+                        println("left swipe")
+                    }
+                }
+                return true
+            }
+        })
+        imageView.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
 
 
         println("image path = ${GlobalVars.mediumBase + image!!.fileName}")
@@ -100,6 +117,7 @@ class ImageFragment : Fragment() {
 
         detailsTextView  = myView.findViewById(R.id.image_details_tv)
         detailsTextView.text = image!!.description
+
 
     }
 

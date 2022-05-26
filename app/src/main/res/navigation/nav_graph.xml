@@ -228,6 +228,9 @@
             android:name="employee"
             app:argType="com.example.AdminMatic.Employee"
             app:nullable="true" />
+        <action
+            android:id="@+id/navigateUsageToWorkOrder"
+            app:destination="@id/workOrderFragment" />
     </fragment>
     <fragment
         android:id="@+id/payrollFragment"
@@ -249,8 +252,13 @@
             app:argType="com.example.AdminMatic.WorkOrder"
             app:nullable="true" />
         <argument
+            android:name="workOrderID"
+            app:argType="string"
+            android:defaultValue=""/>
+        <argument
             android:name="listIndex"
-            app:argType="integer"/>
+            app:argType="integer"
+            android:defaultValue="-1"/>
         <action
             android:id="@+id/navigateWorkOrderToLead"
             app:destination="@id/leadFragment" />

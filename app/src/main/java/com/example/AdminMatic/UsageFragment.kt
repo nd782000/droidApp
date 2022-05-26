@@ -18,18 +18,24 @@ import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.time.LocalDate
+import java.time.ZoneOffset
+import java.util.HashMap
 
+interface EmployeeUsageCellClickListener {
+    fun onWoItemCellClickListener(data:Usage)
+}
 
-class UsageFragment : Fragment() {
+class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
 
     private  var employee: Employee? = null
 
     lateinit  var globalVars:GlobalVars
-    private lateinit var timePicker: TimePickerHelper
+    private lateinit var datePicker: DatePickerHelper
     lateinit var myView:View
 
     lateinit var  pgsBar: ProgressBar
@@ -38,7 +44,12 @@ class UsageFragment : Fragment() {
     private lateinit var fromEditText: EditText
     private lateinit var toEditText: EditText
     private lateinit var usageRecycler: RecyclerView
+    private lateinit var footerText: TextView
 
+    private var dateFrom: LocalDate = LocalDate.now(ZoneOffset.UTC)
+    private var dateTo: LocalDate = LocalDate.now(ZoneOffset.UTC)
+    private var dateFromDB = dateFrom.format(GlobalVars.dateFormatterYYYYMMDD)
+    private var dateToDB = dateTo.format(GlobalVars.dateFormatterYYYYMMDD)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,40 +82,134 @@ class UsageFragment : Fragment() {
         allCl = view.findViewById(R.id.all_cl)
 
         usageRecycler = view.findViewById(R.id.usage_recycler_view)
+        footerText = view.findViewById(R.id.usage_footer_tv)
+
 
         fromEditText = myView.findViewById(R.id.usage_from_et)
-        toEditText = myView.findViewById(R.id.usage_to_et)
-
         fromEditText.setBackgroundResource(R.drawable.text_view_layout)
-
+        fromEditText.setText(dateFrom.format(GlobalVars.dateFormatterShortDashes))
         fromEditText.setOnClickListener {
-            val h = 0
-            val m = 0
-            timePicker = TimePickerHelper(com.example.AdminMatic.myView.context, false, true)
-            timePicker.showDialog(h, m, object : TimePickerHelper.Callback {
-                override fun onTimeSelected(hourOfDay: Int, minute: Int) {
-
-                    println("hourOfDay = $hourOfDay")
-                    println("minute = $minute")
-
-                    val current = LocalDate.now()
-
-                    val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "$hourOfDay"
-                    val minuteStr = if (minute < 10) "0${minute}" else "$minute"
-
-                    val startString = "$current $hourStr:$minuteStr:00"
-                    println("startString is  $startString")
-
+            datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
+            datePicker.showDialog(dateFrom.year, dateFrom.monthValue-1, dateFrom.dayOfMonth, object : DatePickerHelper.Callback {
+                override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+                    dateFrom = LocalDate.of(year, month+1, dayOfMonth)
+                    fromEditText.setText(dateFrom.format(GlobalVars.dateFormatterShortDashes))
+                    dateFromDB = dateFrom.format(GlobalVars.dateFormatterYYYYMMDD)
+                    getUsage()
                 }
             })
         }
 
 
-        hideProgressView()
-        //getServiceInfo()
+        toEditText = myView.findViewById(R.id.usage_to_et)
+        toEditText.setBackgroundResource(R.drawable.text_view_layout)
+        toEditText.setText(dateTo.format(GlobalVars.dateFormatterShortDashes))
+        toEditText.setOnClickListener {
+            datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
+            datePicker.showDialog(dateTo.year, dateTo.monthValue-1, dateTo.dayOfMonth, object : DatePickerHelper.Callback {
+                override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+                    dateTo = LocalDate.of(year, month+1, dayOfMonth)
+                    toEditText.setText(dateTo.format(GlobalVars.dateFormatterShortDashes))
+                    dateToDB = dateTo.format(GlobalVars.dateFormatterYYYYMMDD)
+                    getUsage()
+                }
+            })
+        }
 
+        hideProgressView()
+        getUsage()
     }
 
+    private fun getUsage(){
+        println("getUsage")
+
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/usageByEmp.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                //Log.d("Response", response)
+
+                println("Response $response")
+                hideProgressView()
+                try {
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        val employees:JSONArray = parentObject.getJSONArray("usages")
+
+
+                        val gson = GsonBuilder().create()
+                        val usageList = gson.fromJson(employees.toString() , Array<Usage>::class.java).toMutableList()
+
+                        //employeeCountTv.text = getString(R.string.x_active_employees, employeesList.size)
+
+                        usageRecycler.apply {
+                            layoutManager = LinearLayoutManager(activity)
+
+                            adapter = activity?.let {
+                                employeeUsageAdapter(usageList,
+                                    it, this@UsageFragment)
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            usageRecycler.addItemDecoration(itemDecoration)
+
+
+                            var totalHours = 0.0
+                            usageList.forEach {
+                                totalHours += it.qty.toDouble()
+                            }
+
+                            footerText.text = getString(R.string.usage_footer_text, usageList.size, totalHours)
+
+                            (adapter as employeeUsageAdapter).notifyDataSetChanged()
+
+                        }
+                    }
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+                // var intent:Intent = Intent(applicationContext,MainActivity2::class.java)
+                // startActivity(intent)
+            },
+            Response.ErrorListener { // error
+                // Log.e("VOLLEY", error.toString())
+                // Log.d("Error.Response", error())
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["startDate"] = dateFromDB
+                params["endDate"] = dateToDB
+                params["empID"] = employee!!.ID
+                println("params = $params")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
+
+    override fun onWoItemCellClickListener(data:Usage) {
+        println("Cell clicked with usage: ${data.custName}")
+        data.let {
+            val directions = UsageFragmentDirections.navigateUsageToWorkOrder(null)
+            directions.workOrderID = it.woID
+            myView.findNavController().navigate(directions)
+        }
+    }
 
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE

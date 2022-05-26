@@ -464,7 +464,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
-            val directions = CustomerFragmentDirections.navigateCustomerToWorkOrder(it, -1)
+            val directions = CustomerFragmentDirections.navigateCustomerToWorkOrder(it)
             myView.findNavController().navigate(directions)
         }
     }

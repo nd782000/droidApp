@@ -3,12 +3,12 @@ package com.example.AdminMatic
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.view.View.OnTouchListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
@@ -27,6 +27,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.util.*
+import kotlin.math.abs
 
 
 interface  LogOut{
@@ -934,6 +935,94 @@ fun View.hideKeyboard() {
 }
 
 
+class SwipeListener : OnTouchListener {
+    private val minDistance = 100
+    private var downX = 0f
+    private var downY = 0f
+    private var upX = 0f
+    private var upY = 0f
+    var v: View? = null
+    override fun onTouch(v: View, event: MotionEvent): Boolean {
+        this.v = v
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                downX = event.x
+                downY = event.y
+                return true
+            }
+            MotionEvent.ACTION_UP -> {
+                upX = event.x
+                upY = event.y
+                val deltaX = downX - upX
+                val deltaY = downY - upY
+
+                //HORIZONTAL SCROLL
+                if (abs(deltaX) > abs(deltaY)) {
+                    if (abs(deltaX) > minDistance) {
+                        // left or right
+                        if (deltaX < 0) {
+                            onLeftToRightSwipe()
+                            return true
+                        }
+                        if (deltaX > 0) {
+                            onRightToLeftSwipe()
+                            return true
+                        }
+                    } else {
+                        //not long enough swipe...
+                        return false
+                    }
+                } else {
+                    if (abs(deltaY) > minDistance) {
+                        // top or down
+                        if (deltaY < 0) {
+                            onTopToBottomSwipe()
+                            return true
+                        }
+                        if (deltaY > 0) {
+                            onBottomToTopSwipe()
+                            return true
+                        }
+                    } else {
+                        //not long enough swipe...
+                        return false
+                    }
+                }
+                return false
+            }
+        }
+        return false
+    }
+
+    fun onLeftToRightSwipe() {
+        Toast.makeText(
+            v!!.context, "left to right",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    fun onRightToLeftSwipe() {
+        Toast.makeText(
+            v!!.context, "right to left",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    fun onTopToBottomSwipe() {
+        Toast.makeText(
+            v!!.context, "top to bottom",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    fun onBottomToTopSwipe() {
+        Toast.makeText(
+            v!!.context, "bottom to top",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+}
+
 
 
 class MainActivity : AppCompatActivity(), LogOut, Callbacks {
@@ -959,7 +1048,6 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
 
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.

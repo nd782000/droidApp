@@ -34,7 +34,7 @@ interface WoItemCellClickListener {
 
 class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     private var listIndex: Int = -1
-
+    private var workOrderID: String? = ""
     private  var workOrder: WorkOrder? = null
 
     lateinit var globalVars:GlobalVars
@@ -63,6 +63,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     private lateinit var profitPercentTxt:TextView
     private lateinit var profitBar:ProgressBar
 
+    private lateinit var allCL: ConstraintLayout
     private lateinit var statusCustCL:ConstraintLayout
     private lateinit var dataCL:ConstraintLayout
     private lateinit var footerCL:ConstraintLayout
@@ -75,7 +76,9 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         super.onCreate(savedInstanceState)
         arguments?.let {
             workOrder = it.getParcelable("workOrder")
+            workOrderID = it.getString("workOrderID")
             listIndex = it.getInt("listIndex")
+
         }
     }
 
@@ -96,7 +99,6 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
         println("Work Order: $workOrder")
 
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder #${workOrder!!.woID}"
 
         // Inflate the layout for this fragment
         return myView
@@ -107,35 +109,11 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         super.onViewCreated(view, savedInstanceState)
         println("WorkOrder View")
 
-        println("lat: ${workOrder!!.lat}")
-        println("lng: ${workOrder!!.lng}")
-
         pgsBar = myView.findViewById(R.id.progress_bar)
-
-        stackFragment = StackFragment(2,workOrder!!.woID,this)
-
-        val ft = childFragmentManager.beginTransaction()
-        ft.add(R.id.work_order_cl, stackFragment, "stackFrag")
-        ft.commitAllowingStateLoss()
-
-        statusBtn = myView.findViewById(R.id.status_btn)
-        statusBtn.setOnClickListener{
-            println("status btn clicked")
-            showStatusMenu()
-        }
-
+        allCL = myView.findViewById(R.id.all_cl)
         customerBtn = myView.findViewById(R.id.customer_btn)
-        customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
-        customerBtn.setOnClickListener{
-            println("customer btn clicked")
+        statusBtn = myView.findViewById(R.id.status_btn)
 
-
-            val customer = Customer(workOrder!!.customer!!)
-            val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer.ID)
-            myView.findNavController().navigate(directions)
-
-
-        }
 
         titleTxt = myView.findViewById(R.id.title_val_tv)
         scheduleTxt = myView.findViewById(R.id.schedule_val_tv)
@@ -158,16 +136,18 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         itemRecyclerView = myView.findViewById(R.id.work_order_items_rv)
 
 
-
         getWorkOrder()
-        println("lat: ${workOrder!!.lat}")
-        println("lng: ${workOrder!!.lng}")
-        scheduleTxt.text = workOrder!!.dateNice
 
     }
 
     private fun getWorkOrder(){
         println("getWorkOrder")
+
+        var woID = workOrderID
+        if (workOrder != null) {
+            woID = workOrder!!.woID
+        }
+
         showProgressView()
         var urlString = "https://www.adminmatic.com/cp/app/functions/get/workOrder.php"
         val currentTimestamp = System.currentTimeMillis()
@@ -225,7 +205,8 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                          */
 
                         // Copy missing elements over from the original work order (temp band aid fix until PHP script is fixed)
-                        val workOrderNew = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
+
+                        /*val workOrderNew = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
                         workOrderNew.statusName = workOrder!!.statusName
                         workOrderNew.dateNice = workOrder!!.dateNice
                         workOrderNew.locked = workOrder!!.locked
@@ -233,6 +214,9 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         workOrderNew.lat = workOrder!!.lat
                         workOrderNew.lng= workOrder!!.lng
                         workOrder = workOrderNew
+
+                         */
+                        workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
 
 
                         setStatus(workOrder!!.status)
@@ -305,7 +289,34 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                             (adapter as WoItemsAdapter).notifyDataSetChanged()
                         }
 
+
+
+                        stackFragment = StackFragment(2,workOrder!!.woID,this)
+
+                        val ft = childFragmentManager.beginTransaction()
+                        ft.add(R.id.work_order_cl, stackFragment, "stackFrag")
+                        ft.commitAllowingStateLoss()
+
+                        statusBtn.setOnClickListener{
+                            println("status btn clicked")
+                            showStatusMenu()
+                        }
+
+                        customerBtn.setOnClickListener{
+                            println("customer btn clicked")
+                            val customer = Customer(workOrder!!.customer!!)
+                            val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer.ID)
+                            myView.findNavController().navigate(directions)
+                        }
+                        customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
+
+                        println("lat: ${workOrder!!.lat}")
+                        println("lng: ${workOrder!!.lng}")
+                        scheduleTxt.text = workOrder!!.dateNice
+                        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder #${workOrder!!.woID}"
+
                         workOrder!!.setEmps()
+
                         hideProgressView()
                     }
 
@@ -321,7 +332,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["woID"] = workOrder!!.woID
+                params["woID"] = woID.toString()
                 println("params = $params")
                 return params
             }
@@ -488,20 +499,12 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
         println("showProgressView")
         pgsBar.visibility = View.VISIBLE
-        statusCustCL.visibility = View.INVISIBLE
-        dataCL.visibility = View.INVISIBLE
-        footerCL.visibility = View.INVISIBLE
-        headerCL.visibility = View.INVISIBLE
-        itemRecyclerView.visibility = View.INVISIBLE
+        allCL.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
-        statusCustCL.visibility = View.VISIBLE
-        dataCL.visibility = View.VISIBLE
-        footerCL.visibility = View.VISIBLE
-        headerCL.visibility = View.VISIBLE
-        itemRecyclerView.visibility = View.VISIBLE
+        allCL.visibility = View.VISIBLE
     }
 
 

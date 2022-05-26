@@ -268,7 +268,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
             val directions = EmployeeListFragmentDirections.navigateToEmployee(it)
             myView.findNavController().navigate(directions)
         }
-        println("Cell clicked with employee: ${data.name}")
+        println("Cell clicked with employee: ${data.fName}")
     }
 
 

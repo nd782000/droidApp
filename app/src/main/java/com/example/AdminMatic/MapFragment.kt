@@ -136,7 +136,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             googleMapGlobal.setOnInfoWindowClickListener { marker ->
                 val targetWorkOrder = pinMapWorkOrder[marker]
-                val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(targetWorkOrder, globalWorkOrdersList!!.indexOf(targetWorkOrder))
+                val directions = WorkOrderListFragmentDirections.navigateToWorkOrder(targetWorkOrder)
+                directions.listIndex = globalWorkOrdersList!!.indexOf(targetWorkOrder)
                 myView.findNavController().navigate(directions)
             }
 

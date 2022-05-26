@@ -430,7 +430,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
     override fun newWorkOrderView(_workOrder: WorkOrder) {
         println("newWorkOrderView $_workOrder")
-        val directions = LeadFragmentDirections.navigateLeadToWorkOrder(_workOrder, -1)
+        val directions = LeadFragmentDirections.navigateLeadToWorkOrder(_workOrder)
         myView.findNavController().navigate(directions)
     }
 
