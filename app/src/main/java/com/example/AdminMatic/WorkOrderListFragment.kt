@@ -93,6 +93,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             adapter = WorkOrdersAdapter(emptyList, this.myView.context,this)
         }
         else {
+            adapter = WorkOrdersAdapter(globalWorkOrdersList!!, this.myView.context,this)
             (adapter).notifyDataSetChanged()
         }
 
@@ -218,7 +219,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             //if(activity != null){
 
             //}
-            println("AAAAAAAAAAAAAAAAA $scheduleSpinnerPosition")
             scheduleSpinner.setTag(R.id.pos, scheduleSpinnerPosition)
             scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
 

@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.content.res.TypedArray
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
@@ -10,28 +11,21 @@ import androidx.fragment.app.Fragment
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_image_upload.view.*
+import java.time.LocalDate
 import kotlin.math.abs
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ImageFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ImageFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    //private var param1: String? = null
-    private var param2: String? = null
 
-    private  var image: Image? = null
+
+
+    private var image: Image? = null
+    //private var imageList:MutableList<Image>? = null
+    private lateinit var imageList:Array<Image>
+    private var imageListIndex:Int = 0
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
+
 
     lateinit var pgsBar: ProgressBar
     lateinit var imageView:ImageView
@@ -41,16 +35,14 @@ class ImageFragment : Fragment() {
     private lateinit var detailsTextView:TextView
 
 
-
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            image = it.getParcelable("image")
-            param2 = it.getString(ARG_PARAM2)
+            //image = it.getParcelable("image")
+            //var imageListRaw : TypedArray = it.getParcelable("imageList")!!
+            imageList = (it.getParcelableArray("imageList") as Array<Image>?)!!
+            imageListIndex = it.getInt("imageListIndex")
+
         }
     }
 
@@ -63,7 +55,6 @@ class ImageFragment : Fragment() {
         myView = inflater.inflate(R.layout.fragment_image, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = image!!.name
 
         return myView
     }
@@ -71,10 +62,11 @@ class ImageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        println("image = ${image!!.ID}")
 
 
+        // Todo:
         pgsBar = view.findViewById(R.id.progress_bar)
+        //pgsBar.visibility = View.INVISIBLE
 
         imageView = myView.findViewById(R.id.image_details_iv)
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
@@ -83,9 +75,19 @@ class ImageFragment : Fragment() {
                 if (abs(velocityX) > abs(velocityY)) {
                     if (velocityX > 0) {
                         println("right swipe")
+                        imageListIndex--
+                        if (imageListIndex < 0) {
+                            imageListIndex = imageList.size-1
+                        }
+                        getImage()
                     }
                     else {
                         println("left swipe")
+                        imageListIndex++
+                        if (imageListIndex >= imageList.size) {
+                            imageListIndex = 0
+                        }
+                        getImage()
                     }
                 }
                 return true
@@ -93,7 +95,18 @@ class ImageFragment : Fragment() {
         })
         imageView.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
 
+        getImage()
 
+    }
+
+    private fun getImage() {
+
+        println("ImageList.size: ${imageList.size}")
+        println("ImageListIndex: $imageListIndex")
+
+        image = imageList[imageListIndex]
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = image!!.name
+        println("image = ${image!!.ID}")
         println("image path = ${GlobalVars.mediumBase + image!!.fileName}")
         Picasso.with(context)
             .load(GlobalVars.mediumBase + image!!.fileName)
@@ -105,7 +118,7 @@ class ImageFragment : Fragment() {
         println("image.likes = ${image!!.likes}")
         if (image!!.likes!! != "0"){
             likeView.visibility = View.VISIBLE
-           // val likeIcon = resources.getDrawable(R.drawable.ic_liked,null)
+            // val likeIcon = resources.getDrawable(R.drawable.ic_liked,null)
             //likeView.background = likeIcon
         }
 
@@ -116,28 +129,8 @@ class ImageFragment : Fragment() {
         custNameTextView.text = image!!.customerName
 
         detailsTextView  = myView.findViewById(R.id.image_details_tv)
-        detailsTextView.text = image!!.description
-
-
+        val imageDate = LocalDate.parse(image!!.dateAdded, GlobalVars.dateFormatterPHP)
+        detailsTextView.text = getString(R.string.image_description, image!!.createdByName, imageDate.format(GlobalVars.dateFormatterShort), image!!.description)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ImageFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ImageFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

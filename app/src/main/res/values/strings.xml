@@ -86,6 +86,7 @@
     <string name="locate">Locate</string>
     <string name="work_order">Work Order</string>
     <string name="work_order_item">Work Order Item</string>
+    <string name="work_order_title">#%1$s - %2$s</string>
     <string name="view_employee_schedule">View ______s Schedule</string>
     <string name="schedule_settings">Schedule Settings</string>
     <string name="yourUsageFrom">Your usage from:</string>
@@ -174,6 +175,12 @@
     <string name="usage_header_customer">Customer</string>
     <string name="usage_header_date">Date</string>
     <string name="usage_header_qty">Qty</string>
+
+    <!--Image fragment stuff-->
+    <string name="image_list">Image List</string>
+    <string name="x_likes">x%1$s Likes</string>
+    <string name="image_description">Uploaded by %1$s on %2$s - %3$s</string>
+
 
 
     <string name="add_equipment">Add Equipment</string>
@@ -307,8 +314,7 @@
     <string name="new_service_next_miles_km">Next (Miles/Km.):</string>
     <string name="new_service_next_engine_hours">Next (Engine Hours):</string>
 
-    <string name="x_likes">x%1$s Likes</string>
-    <string name="image_list">Image List</string>
+
 
     <string name="new_service_instructions">Instructions:</string>
 

@@ -398,7 +398,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
     override fun onImageCellClickListener(data:Image) {
         data.let {
-            val directions = EmployeeFragmentDirections.navigateEmployeeToImage(it)
+            val directions = EmployeeFragmentDirections.navigateEmployeeToImage(imageList.toTypedArray(), imageList.indexOf(it))
             myView.findNavController().navigate(directions)
         }
     }

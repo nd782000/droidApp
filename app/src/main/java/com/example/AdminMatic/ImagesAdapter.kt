@@ -52,7 +52,7 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
         holder.bind(image)
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
 
         //text highlighting for second string
         if (queryText.isNotEmpty() && queryText != "" && filterList[position].customerName != null) {
@@ -122,7 +122,7 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
     override fun getItemCount(): Int{
        // print("getItemCount isSearching = ${isSearching.toString()}")
        // if (isSearching){
-            print("getItemCount = ${filterList.size}")
+            //print("getItemCount = ${filterList.size}")
             return filterList.size
        // }else{
            // print("getItemCount = ${list.size}")
@@ -132,8 +132,6 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
         //return 100
 
     }
-
-
 
 
     override fun getFilter(): Filter {

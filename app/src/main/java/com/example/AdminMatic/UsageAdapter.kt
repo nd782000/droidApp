@@ -59,10 +59,10 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             // Lock this cell if the values are already filled and it's a different person than the logged in employee
             usage.locked = false;
             if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID
-            && usage.start != null
-            && usage.start != "0000-00-00 00:00:00"
-            && usage.stop != null
-            && usage.stop!= "0000-00-00 00:00:00") {
+                && usage.start != null
+                && usage.start != "0000-00-00 00:00:00"
+                && usage.stop != null
+                && usage.stop!= "0000-00-00 00:00:00") {
                 usage.locked = true
                 val lock:ImageView = holder.itemView.findViewById(R.id.imageViewLockedLabor)
                 lock.visibility = View.VISIBLE
@@ -201,7 +201,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     woItem.vendors.forEach {
                         if (it.prefered == "1") {
                             vendorSelectText.text = it.name
-                            usageEditListener.editCost(position,it.cost!!.toDouble(),EditorInfo.IME_ACTION_DONE, false)
+                            usageEditListener.editCost(position,it.cost!!,EditorInfo.IME_ACTION_DONE, false)
                             usageEditListener.editVendor(position, it.ID)
                         }
                     }
@@ -235,7 +235,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                         // Update cost from the selected vendor
                         woItem.vendors.forEach { v->
                             if (v.ID.toInt() == it.itemId) {
-                                usageEditListener.editCost(position,v.cost!!.toDouble(),EditorInfo.IME_ACTION_DONE, true)
+                                usageEditListener.editCost(position,v.cost!!,EditorInfo.IME_ACTION_DONE, true)
                             }
                         }
 
@@ -249,10 +249,6 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     popUp.show()
                 }
             }
-
-
-
-
 
             /*
             val vendorSearch:Spinner = holder.itemView.findViewById(R.id.usage_vendor_spinner)
@@ -325,9 +321,9 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                         quantityTxt.clearFocus()
 
 
-                        val qtyInput = quantityTxt.text.toString().toDouble()
-                        val qtyInputTrimmed = (qtyInput * 100.0).roundToInt() / 100.0
-                        usageEditListener.editQty(position, qtyInputTrimmed, actionId)
+                        //val qtyInput = quantityTxt.text.toString().toDouble()
+                        //val qtyInputTrimmed = (qtyInput * 100.0).roundToInt() / 100.0
+                        usageEditListener.editQty(position, quantityTxt.text.toString(), actionId)
 
 
                         true
@@ -364,12 +360,13 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                         unitCostTxt.clearFocus()
 
                         if (unitCostTxt.text.toString() != "") {
-                            val costInput = unitCostTxt.text.toString().toDouble()
-                            val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
-                            usageEditListener.editCost(position, costInputTrimmed, actionId, true)
+                            //val costInput = unitCostTxt.text.toString().toDouble()
+                            //val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
+                            usageEditListener.editCost(position, unitCostTxt.text.toString(), actionId, true)
+                            //usageEditListener.editCost(position, "7,9", actionId, true)
                         }
                         else {
-                            usageEditListener.editCost(position, 0.0, actionId, true)
+                            usageEditListener.editCost(position, "0.0", actionId, true)
                         }
 
 
@@ -404,7 +401,6 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     .into(receiptImageView)                       //Your image view object.
             }
             if (!usage.locked!!) {
-
                 receiptImageView.setOnClickListener{
                     if (usage.ID == "0") {
                         globalVars.simpleAlert(myView.context, "Submit Usage","Please submit usage before attempting to add a receipt.")
@@ -452,13 +448,13 @@ class UsageViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     var mInitialized = false
 
     //private var thumbView:ImageView? = null
-   // private var empPic:ImageView? = null
+    // private var empPic:ImageView? = null
 
 
 
     init {
         mNameView = itemView.findViewById(R.id.usage_emp_name_tv)
-       // empPic = itemView.findViewById(R.id.usage_emp_iv)
+        // empPic = itemView.findViewById(R.id.usage_emp_iv)
 
     }
 

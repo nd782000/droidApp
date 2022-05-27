@@ -425,9 +425,18 @@
         android:label="fragment_image"
         tools:layout="@layout/fragment_image" >
         <argument
+            android:name="imageList"
+            app:argType="com.example.AdminMatic.Image[]"
+            app:nullable="true" />
+        <argument
+            android:name="imageListIndex"
+            app:argType="integer" />
+        <!--
+        <argument
             android:name="image"
             app:argType="com.example.AdminMatic.Image"
-            app:nullable="true" />
+            android:defaultValue="null" />
+            -->
     </fragment>
     <fragment
         android:id="@+id/equipmentFragment"

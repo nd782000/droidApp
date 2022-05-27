@@ -248,6 +248,10 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
         getImages()
     }
 
+    fun getImagesList():MutableList<Image> {
+        return imageList
+    }
+
     private fun getImages(){
         println("getImages")
 
@@ -361,7 +365,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
     override fun onImageCellClickListener(data:Image) {
         data.let {
-            val directions = ImageListFragmentDirections.navigateToImage(it)
+            val directions = ImageListFragmentDirections.navigateToImage(imageList.toTypedArray(), imageList.indexOf(it))
             myView.findNavController().navigate(directions)
         }
     }
@@ -374,9 +378,6 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
          getImages()
     }
 */
-
-
-
 
 
 

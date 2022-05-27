@@ -910,7 +910,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
     override fun onImageCellClickListener(data:Image) {
         data.let { data_ ->
-            val directions = CustomerFragmentDirections.navigateCustomerToImage(data_)
+            val directions = CustomerFragmentDirections.navigateCustomerToImage(imageList.toTypedArray(), imageList.indexOf(data))
             myView.findNavController().navigate(directions)
         }
     }

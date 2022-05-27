@@ -114,6 +114,9 @@ class WorkOrdersAdapter(
 
         val serviceStatusImageView: ImageView = holder.itemView.findViewById(R.id.list_wo_status_icon_image_view)
 
+        val mTitleView:TextView = holder.itemView.findViewById(R.id.list_title)
+        mTitleView.text = context.getString(R.string.work_order_title, workOrder.woID, workOrder.title)
+
         when (workOrder.status) {
             "1"-> Picasso.with(context)
                 .load(R.drawable.ic_not_started)
@@ -211,20 +214,16 @@ class WorkOrdersAdapter(
 class WorkOrderViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.work_order_list_item, parent, false)) {
     private var mNameView: TextView? = null
-    private var mTitleView: TextView? = null
-
-
+    //private var mTitleView: TextView? = null
 
     init {
         mNameView = itemView.findViewById(R.id.list_name)
-        mTitleView = itemView.findViewById(R.id.list_title)
-
+        //mTitleView = itemView.findViewById(R.id.list_title)
     }
 
     fun bind(workOrder: WorkOrder) {
         mNameView?.text = workOrder.custName!!
-        mTitleView?.text = workOrder.title
-
+        //mTitleView?.text = workOrder.title
     }
 
 

@@ -37,6 +37,7 @@ interface  LogOut{
 interface Callbacks{
     fun refreshWorkOrder()
     fun refreshImages()
+    fun getImagesList():MutableList<Image>
     fun refreshWorkOrders()
     fun refreshLeads()
 }
@@ -935,95 +936,6 @@ fun View.hideKeyboard() {
 }
 
 
-class SwipeListener : OnTouchListener {
-    private val minDistance = 100
-    private var downX = 0f
-    private var downY = 0f
-    private var upX = 0f
-    private var upY = 0f
-    var v: View? = null
-    override fun onTouch(v: View, event: MotionEvent): Boolean {
-        this.v = v
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                downX = event.x
-                downY = event.y
-                return true
-            }
-            MotionEvent.ACTION_UP -> {
-                upX = event.x
-                upY = event.y
-                val deltaX = downX - upX
-                val deltaY = downY - upY
-
-                //HORIZONTAL SCROLL
-                if (abs(deltaX) > abs(deltaY)) {
-                    if (abs(deltaX) > minDistance) {
-                        // left or right
-                        if (deltaX < 0) {
-                            onLeftToRightSwipe()
-                            return true
-                        }
-                        if (deltaX > 0) {
-                            onRightToLeftSwipe()
-                            return true
-                        }
-                    } else {
-                        //not long enough swipe...
-                        return false
-                    }
-                } else {
-                    if (abs(deltaY) > minDistance) {
-                        // top or down
-                        if (deltaY < 0) {
-                            onTopToBottomSwipe()
-                            return true
-                        }
-                        if (deltaY > 0) {
-                            onBottomToTopSwipe()
-                            return true
-                        }
-                    } else {
-                        //not long enough swipe...
-                        return false
-                    }
-                }
-                return false
-            }
-        }
-        return false
-    }
-
-    fun onLeftToRightSwipe() {
-        Toast.makeText(
-            v!!.context, "left to right",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    fun onRightToLeftSwipe() {
-        Toast.makeText(
-            v!!.context, "right to left",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    fun onTopToBottomSwipe() {
-        Toast.makeText(
-            v!!.context, "top to bottom",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    fun onBottomToTopSwipe() {
-        Toast.makeText(
-            v!!.context, "bottom to top",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-}
-
-
 
 class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
@@ -1238,6 +1150,11 @@ override fun logOut(view: View){
         this.mapFragment = _mapFragment!!
     }
 
+    fun setImageList(_imageListFragment:ImageListFragment?){
+        println("setImageList")
+        this.imageListFragment = _imageListFragment!!
+    }
+
 
     fun updateMap(){
         println("updateMap")
@@ -1273,9 +1190,12 @@ override fun logOut(view: View){
         //navController.popBackStack(R.id.logInFragment, false)
     }
 
-    fun setImageList(_imageListFragment:ImageListFragment?){
-        println("setImageList")
-        this.imageListFragment = _imageListFragment!!
+    override fun getImagesList():MutableList<Image> {
+        if(imageListFragment != null){
+            println("fragments not null ")
+            return imageListFragment!!.getImagesList()
+        }
+        return mutableListOf()
     }
 
     override fun refreshImages() {
@@ -1307,7 +1227,7 @@ override fun logOut(view: View){
         //firstFragment.MyMethod()
 
         if(imageListFragment != null){
-            println("fragments not null ")
+            println("fragment's not null ")
             imageListFragment!!.refreshImages()
         }
 

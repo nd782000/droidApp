@@ -106,90 +106,95 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
                 when (item!!.itemId) {
                     R.id.menu1 -> {
                         //Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-
+                        // Todo: reorganize these ugly nested ifs
                         if (GlobalVars.permissions!!.scheduleEdit == "0") {
                             globalVars.simpleAlert(myView.context, context.getString(R.string.access_denied), context.getString(R.string.no_permission_schedule_edit))
                         }
                         else {
 
                             if (filterList.size > 1) {
+                                if (woItem.usageQty == "0.00") {
 
-                                val builder = AlertDialog.Builder(myView.context)
-                                builder.setTitle(context.getString(R.string.dialogue_delete_wo_item_title))
-                                builder.setMessage(context.getString(R.string.dialogue_delete_wo_item_body))
-                                builder.setPositiveButton(context.getString(R.string.yes)) { _, _ ->
+                                    val builder = AlertDialog.Builder(myView.context)
+                                    builder.setTitle(context.getString(R.string.dialogue_delete_wo_item_title))
+                                    builder.setMessage(context.getString(R.string.dialogue_delete_wo_item_body))
+                                    builder.setPositiveButton(context.getString(R.string.yes)) { _, _ ->
 
-                                    var urlString =
-                                        "https://www.adminmatic.com/cp/app/functions/delete/workOrderItem.php"
+                                        var urlString =
+                                            "https://www.adminmatic.com/cp/app/functions/delete/workOrderItem.php"
 
-                                    val currentTimestamp = System.currentTimeMillis()
-                                    println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-                                    urlString = "$urlString?cb=$currentTimestamp"
-                                    val queue = Volley.newRequestQueue(myView.context)
+                                        val currentTimestamp = System.currentTimeMillis()
+                                        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+                                        urlString = "$urlString?cb=$currentTimestamp"
+                                        val queue = Volley.newRequestQueue(myView.context)
 
-                                    val postRequest1: StringRequest = object : StringRequest(
-                                        Method.POST, urlString,
-                                        Response.Listener { response -> // response
-                                            //Log.d("Response", response)
+                                        val postRequest1: StringRequest = object : StringRequest(
+                                            Method.POST, urlString,
+                                            Response.Listener { response -> // response
+                                                //Log.d("Response", response)
 
-                                            println("Response $response")
+                                                println("Response $response")
 
-                                            filterList.removeAt(position)
-                                            notifyDataSetChanged()
+                                                filterList.removeAt(position)
+                                                notifyDataSetChanged()
 
-                                            /*
-                                        try {
-                                            val parentObject = JSONObject(response)
-                                            println("parentObject = $parentObject")
-                                            val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
-                                            println("workOrders = $workOrders")
-                                            println("workOrders count = ${workOrders.length()}")
+                                                /*
+                                            try {
+                                                val parentObject = JSONObject(response)
+                                                println("parentObject = $parentObject")
+                                                val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
+                                                println("workOrders = $workOrders")
+                                                println("workOrders count = ${workOrders.length()}")
 
-                                            if (GlobalVars.globalWorkOrdersList != null) {
-                                                GlobalVars.globalWorkOrdersList!!.clear()
+                                                if (GlobalVars.globalWorkOrdersList != null) {
+                                                    GlobalVars.globalWorkOrdersList!!.clear()
+                                                }
+
+
+                                                val gson = GsonBuilder().create()
+
+                                                GlobalVars.globalWorkOrdersList =
+                                                    gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
+                                                        .toMutableList()
+
+                                                /* Here 'response' is a String containing the response you received from the website... */
+                                            } catch (e: JSONException) {
+                                                println("JSONException")
+                                                e.printStackTrace()
                                             }
 
+                                             */
 
-                                            val gson = GsonBuilder().create()
+                                            },
+                                            Response.ErrorListener { // error
 
-                                            GlobalVars.globalWorkOrdersList =
-                                                gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
-                                                    .toMutableList()
 
-                                            /* Here 'response' is a String containing the response you received from the website... */
-                                        } catch (e: JSONException) {
-                                            println("JSONException")
-                                            e.printStackTrace()
+                                                // Log.e("VOLLEY", error.toString())
+                                                // Log.d("Error.Response", error())
+                                            }
+                                        ) {
+                                            override fun getParams(): Map<String, String> {
+                                                val params: MutableMap<String, String> = HashMap()
+                                                params["companyUnique"] =
+                                                    GlobalVars.loggedInEmployee!!.companyUnique
+                                                params["sessionKey"] =
+                                                    GlobalVars.loggedInEmployee!!.sessionKey
+                                                params["workOrderID"] = woItem.woID
+                                                params["workOrderItemID"] = woItem.ID
+                                                println("params = $params")
+                                                return params
+                                            }
                                         }
-
-                                         */
-
-                                        },
-                                        Response.ErrorListener { // error
-
-
-                                            // Log.e("VOLLEY", error.toString())
-                                            // Log.d("Error.Response", error())
-                                        }
-                                    ) {
-                                        override fun getParams(): Map<String, String> {
-                                            val params: MutableMap<String, String> = HashMap()
-                                            params["companyUnique"] =
-                                                GlobalVars.loggedInEmployee!!.companyUnique
-                                            params["sessionKey"] =
-                                                GlobalVars.loggedInEmployee!!.sessionKey
-                                            params["workOrderID"] = woItem.woID
-                                            params["workOrderItemID"] = woItem.ID
-                                            println("params = $params")
-                                            return params
-                                        }
+                                        queue.add(postRequest1)
                                     }
-                                    queue.add(postRequest1)
-                                }
-                                builder.setNegativeButton(context.getString(R.string.no)) { _, _ ->
+                                    builder.setNegativeButton(context.getString(R.string.no)) { _, _ ->
 
+                                    }
+                                    builder.show()
                                 }
-                                builder.show()
+                                else {
+                                    globalVars.simpleAlert(myView.context,context.getString(R.string.dialogue_usage_exists_title),context.getString(R.string.dialogue_usage_exists_body))
+                                }
                             }
                             else {
                                 globalVars.simpleAlert(myView.context,context.getString(R.string.dialogue_only_wo_item_title),context.getString(R.string.dialogue_only_wo_item_body))
