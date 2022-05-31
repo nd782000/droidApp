@@ -110,9 +110,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
         // println("pgsBar = $pgsBar")
 
-
         showProgressView()
-
 
         var urlString = "https://www.adminmatic.com/cp/app/functions/get/contracts.php"
 

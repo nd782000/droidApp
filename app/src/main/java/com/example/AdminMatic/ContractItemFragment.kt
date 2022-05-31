@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -24,6 +25,8 @@ import kotlinx.android.synthetic.main.fragment_item_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import android.text.InputType
+import androidx.navigation.findNavController
 import kotlin.math.roundToInt
 
 // TODO: Rename parameter arguments, choose names that match
@@ -57,11 +60,12 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
     lateinit var  pgsBar: ProgressBar
 
     private lateinit var allCl: ConstraintLayout
-    private lateinit var contractItemSearch: SearchView
+    private lateinit var contractItemSearch: androidx.appcompat.widget.SearchView
     private lateinit var contractItemRecycler: RecyclerView
-    private lateinit var hideQtySwitch: Switch
-    private lateinit var taxableSwitch: Switch
+    private lateinit var hideQtySwitch: SwitchCompat
+    private lateinit var taxableSwitch: SwitchCompat
     private lateinit var chargeSpinner: Spinner
+    private lateinit var submitBtn: Button
 
 
     private lateinit var qtyEt: EditText
@@ -137,15 +141,18 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         hideQtySwitch = myView.findViewById(R.id.contract_item_hide_qty_switch)
         taxableSwitch = myView.findViewById(R.id.contract_item_taxable_switch)
         chargeSpinner = myView.findViewById(R.id.contract_item_charge_spinner)
+        submitBtn = myView.findViewById(R.id.contract_item_submit_btn)
         qtyEt = myView.findViewById(R.id.contract_item_qty_val_et)
         priceEt = myView.findViewById(R.id.contract_item_price_val_et)
         totalEt = myView.findViewById(R.id.contract_item_total_val_et)
         recycler = myView.findViewById(R.id.contract_item_tasks_rv)
 
+        //contractItemSearch.isSubmitButtonEnabled = false
 
         if (addMode == true) {
             recycler.visibility = View.GONE
             editMode = true
+
         }
         else {
             contractItemSearch.isEnabled = false
@@ -280,6 +287,19 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
             }
         }
 
+
+        submitBtn.setOnClickListener {
+            println("Crew Click")
+
+            if (contractItem!!.itemID.isEmpty() || contractItem!!.qty.isEmpty() || contractItem!!.price.isNullOrEmpty()) {
+                globalVars.simpleAlert(myView.context,getString(R.string.dialogue_fields_missing_title),getString(R.string.dialogue_fields_missing_body))
+            }
+            else {
+                //submitContractItem()
+            }
+        }
+
+
         getItems()
 
     }
@@ -357,12 +377,6 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
                             (adapter as SearchItemsAdapter).notifyDataSetChanged()
 
-                            // Remember to CLEAR OUT old items before appending in the new ones
-
-                            // ...the data has come back, add new items to your adapter...
-
-                            // Now we call setRefreshing(false) to signal refresh has finished
-
 
                             contractItemSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
                                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
@@ -387,6 +401,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                             })
 
                         }
+                        editsMade = false
                     }
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -417,12 +432,18 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
     override fun onSearchItemCellClickListener(data:SearchItem) {
         println("Clicked on item #${data.index}")
-        contractItemSearch.setQuery(itemsList[data.index!!].name, false)
+        editsMade=true
+        contractItemSearch.setQuery(itemsList[data.index].name, false)
         contractItemSearch.clearFocus()
-        contractItem!!.itemID = itemsList[data.index!!].ID
+        contractItem!!.itemID = itemsList[data.index].ID
         contractItemRecycler.visibility = View.GONE
 
-        //Todo: fetch default price here
+        if (itemsList[data.index].price != "") {
+            priceEt.setText(itemsList[data.index].price)
+            contractItem!!.price = itemsList[data.index].price
+            setTotalText()
+        }
+
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -438,7 +459,8 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
     }
 
     private fun setTotalText() {
-        if (contractItem!!.price == null || priceEt.text.toString() == "") {
+        //Return if any fields are null, or if
+        if (contractItem!!.price.isNullOrBlank() || contractItem!!.qty.isBlank() ) {
             return
         }
         val totalCost = (contractItem!!.qty.toDouble() * contractItem!!.price!!.toDouble())

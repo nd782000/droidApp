@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/image_likes_header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"
+            android:background="@color/background">
+
+            <ImageView
+                android:id="@+id/image_likes_iv"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_margin="5dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="TODO" />
+
+
+            <TextView
+                android:id="@+id/image_likes_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="7dp"
+                android:ellipsize="end"
+                android:text="gfdgfd"
+                app:layout_constraintLeft_toRightOf="@id/image_likes_iv"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <TextView
+                android:id="@+id/image_likes_by_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="7dp"
+                android:text="gfdgfd"
+                app:layout_constraintLeft_toRightOf="@id/image_likes_iv"
+                app:layout_constraintTop_toBottomOf="@id/image_likes_title_tv"/>
+            <TextView
+                android:id="@+id/image_likes_on_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="7dp"
+                android:text="gfdgfd"
+                app:layout_constraintLeft_toRightOf="@id/image_likes_iv"
+                app:layout_constraintTop_toBottomOf="@id/image_likes_by_tv"/>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/image_likes_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/image_likes_footer_layout"
+            app:layout_constraintTop_toBottomOf="@id/image_likes_header_layout"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/image_likes_footer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/background">
+
+            <TextView
+                android:id="@+id/image_likes_footer_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginVertical="5dp"
+                android:text="@string/usage_to"
+                android:gravity="center_vertical"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/button"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

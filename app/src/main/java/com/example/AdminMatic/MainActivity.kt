@@ -410,8 +410,8 @@ data class Image(val ID: String,
                  val type:String?,
                  val tags:String?,
                  val index:String?,
-                 val liked:String?,
-                 val likes:String?
+                 var liked:String?,
+                 var likes:String?
 ): Parcelable{
     override fun toString(): String {
         return customerName ?: ID

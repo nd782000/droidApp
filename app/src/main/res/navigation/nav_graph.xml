@@ -431,12 +431,22 @@
         <argument
             android:name="imageListIndex"
             app:argType="integer" />
-        <!--
+        <action
+            android:id="@+id/navigateImageToImageLikes"
+            app:destination="@id/imageLikesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageLikesFragment"
+        android:name="com.example.AdminMatic.ImageLikesFragment"
+        android:label="fragment_image_likes"
+        tools:layout="@layout/fragment_image" >
         <argument
             android:name="image"
             app:argType="com.example.AdminMatic.Image"
-            android:defaultValue="null" />
-            -->
+            app:nullable="false" />
+        <action
+            android:id="@+id/navigateImageLikesToEmployee"
+            app:destination="@id/employeeFragment"/>
     </fragment>
     <fragment
         android:id="@+id/equipmentFragment"

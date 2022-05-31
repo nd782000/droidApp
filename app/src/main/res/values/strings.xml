@@ -179,7 +179,13 @@
     <!--Image fragment stuff-->
     <string name="image_list">Image List</string>
     <string name="x_likes">x%1$s Likes</string>
+    <string name="one_like">x1 Like</string>
+
     <string name="image_description">Uploaded by %1$s on %2$s - %3$s</string>
+    <string name="image_likes_header">Image Likes</string>
+    <string name="image_likes_by">By %1$s</string>
+    <string name="image_likes_on">On %1$s</string>
+    <string name="image_likes_count">%1$s Like(s)</string>
 
 
 
@@ -372,7 +378,8 @@
     <string name="dialogue_usage_exists_body">You must delete any usage before deleting this item.</string>
     <string name="dialogue_add_contract_item_title">Add Item?</string>
     <string name="dialogue_add_contract_item_body">The customer may have already seen this contract. Are you sure you want to add an item?</string>
-
+    <string name="dialogue_fields_missing_title">Fields Missing</string>
+    <string name="dialogue_fields_missing_body">Please fill out all the fields before submitting.</string>
 
 
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>

@@ -1331,7 +1331,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-
+/*
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -1351,4 +1351,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 }
             }
     }
+
+ */
 }

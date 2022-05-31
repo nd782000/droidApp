@@ -8,9 +8,18 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.AdminMatic.R
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_image_list.*
 import kotlinx.android.synthetic.main.fragment_image_upload.view.*
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.time.LocalDate
 import kotlin.math.abs
 
@@ -62,7 +71,9 @@ class ImageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        // Cache images
+        Picasso.with(context).load(R.drawable.ic_liked).fetch()
+        Picasso.with(context).load(R.drawable.ic_unliked).fetch()
 
         // Todo:
         pgsBar = view.findViewById(R.id.progress_bar)
@@ -95,8 +106,114 @@ class ImageFragment : Fragment() {
         })
         imageView.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
 
+        likeView  = myView.findViewById(R.id.like_iv)
+        likeView.setOnClickListener {
+            var likeCount:Int? = image!!.likes?.toInt()
+            if (image!!.liked == "1") {
+                image!!.liked = "0"
+                if (likeCount != null) {
+                    likeCount--
+                }
+                Picasso.with(context).load(R.drawable.ic_unliked).into(likeView)
+                setLiked(false)
+            }
+            else {
+                image!!.liked = "1"
+                if (likeCount != null) {
+                    likeCount++
+                }
+                Picasso.with(context).load(R.drawable.ic_liked).into(likeView)
+                setLiked(true)
+            }
+            image!!.likes = likeCount.toString()
+            setLikesViewText()
+        }
+
+        likesTextView = myView.findViewById(R.id.likes_tv)
+        likesTextView.setOnClickListener {
+            if (image!!.likes != "0") {
+                image.let {
+                    val directions = ImageFragmentDirections.navigateImageToImageLikes(image!!)
+                    myView.findNavController().navigate(directions)
+                }
+            }
+        }
+
         getImage()
 
+    }
+
+    private fun setLikesViewText() {
+        if (image!!.likes == "1") {
+            likesTextView.text = getString(R.string.one_like)
+        }
+        else {
+            likesTextView.text = getString(R.string.x_likes, image!!.likes)
+        }
+    }
+
+    private fun setLiked(liked:Boolean) {
+        println("getImages")
+
+        //showProgressView()
+
+        likeView.isClickable = false
+        likeView.isFocusable = false
+
+        var urlString:String
+        if (liked) {
+            urlString = "https://www.adminmatic.com/cp/app/functions/new/like.php"
+        }
+        else {
+            urlString = "https://www.adminmatic.com/cp/app/functions/delete/like.php"
+        }
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(myView.context)
+
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                //Log.d("Response", response)
+
+                println("Response $response")
+                likeView.isClickable = true
+                likeView.isFocusable = true
+
+                //hideProgressView()
+
+                try {
+                    if (isResumed) {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                    }
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["empID"] = GlobalVars.loggedInEmployee!!.ID
+                params["imageID"] = image!!.ID
+
+                println("params = $params")
+                return params
+            }
+        }
+        queue.add(postRequest1)
     }
 
     private fun getImage() {
@@ -114,7 +231,6 @@ class ImageFragment : Fragment() {
             //.centerCrop()                        //optional
             .into(imageView)                        //Your image view object.
 
-        likeView  = myView.findViewById(R.id.like_iv)
         println("image.likes = ${image!!.likes}")
         if (image!!.likes!! != "0"){
             likeView.visibility = View.VISIBLE
@@ -122,8 +238,13 @@ class ImageFragment : Fragment() {
             //likeView.background = likeIcon
         }
 
-        likesTextView  = myView.findViewById(R.id.likes_tv)
-        likesTextView.text = getString(R.string.x_likes, image!!.likes)
+        if (image!!.liked == "1") {
+            Picasso.with(context)
+                .load(R.drawable.ic_liked)
+                .into(likeView)
+        }
+
+        setLikesViewText()
 
         custNameTextView  = myView.findViewById(R.id.image_customer_tv)
         custNameTextView.text = image!!.customerName
