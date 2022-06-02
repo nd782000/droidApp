@@ -77,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/palePurple"
+                    android:background="@color/mainMenuItemBackground"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -85,7 +85,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="25dp"
-                        android:src="@drawable/ic_employees" />
+                        android:src="@drawable/ic_employees"
+                        app:tint="@color/iconTint"/>
 
                     <TextView
                         android:id="@+id/textView6"
@@ -108,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/palePurple"
+                    android:background="@color/mainMenuItemBackground"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -116,7 +117,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="25dp"
-                        android:src="@drawable/ic_customers" />
+                        android:src="@drawable/ic_customers"
+                        app:tint="@color/iconTint"/>
 
                     <TextView
                         android:id="@+id/textView7"
@@ -144,7 +146,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/palePurple"
+                    android:background="@color/mainMenuItemBackground"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -152,7 +154,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="25dp"
-                        android:src="@drawable/ic_vendors" />
+                        android:src="@drawable/ic_vendors"
+                        app:tint="@color/iconTint"/>
 
                     <TextView
                         android:id="@+id/tit_vendors"
@@ -175,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/palePurple"
+                    android:background="@color/mainMenuItemBackground"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -183,7 +186,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="25dp"
-                        android:src="@drawable/ic_items" />
+                        android:src="@drawable/ic_items"
+                        app:tint="@color/iconTint"/>
 
                     <TextView
                         android:id="@+id/tit_item"
@@ -211,7 +215,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/palePurple"
+                    android:background="@color/mainMenuItemBackground"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -219,7 +223,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="25dp"
-                        android:src="@drawable/ic_leads" />
+                        android:src="@drawable/ic_leads"
+                        app:tint="@color/iconTint"/>
 
                     <TextView
                         android:id="@+id/tit_leads"
@@ -242,7 +247,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/palePurple"
+                    android:background="@color/mainMenuItemBackground"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -250,7 +255,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="25dp"
-                        android:src="@drawable/ic_contracts" />
+                        android:src="@drawable/ic_contracts"
+                        app:tint="@color/iconTint"/>
 
                     <TextView
                         android:id="@+id/tit_contracts"
@@ -278,7 +284,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/palePurple"
+                    android:background="@color/mainMenuItemBackground"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -286,7 +292,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="25dp"
-                        android:src="@drawable/ic_schedule" />
+                        android:src="@drawable/ic_schedule"
+                        app:tint="@color/iconTint"/>
 
                     <TextView
                         android:id="@+id/tit_schedule"
@@ -309,7 +316,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/palePurple"
+                    android:background="@color/mainMenuItemBackground"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -317,7 +324,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="25dp"
-                        android:src="@drawable/ic_invoices" />
+                        android:src="@drawable/ic_invoices"
+                        app:tint="@color/iconTint"/>
 
                     <TextView
                         android:id="@+id/tit_invoices"
@@ -345,7 +353,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/palePurple"
+                    android:background="@color/mainMenuItemBackground"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -353,7 +361,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="25dp"
-                        android:src="@drawable/ic_images" />
+                        android:src="@drawable/ic_images"
+                        app:tint="@color/iconTint"/>
 
                     <TextView
                         android:id="@+id/tit_image"
@@ -376,7 +385,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/palePurple"
+                    android:background="@color/mainMenuItemBackground"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -384,7 +393,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="25dp"
-                        android:src="@drawable/ic_equipment" />
+                        android:src="@drawable/ic_equipment"
+                        app:tint="@color/iconTint"/>
 
                     <TextView
                         android:id="@+id/tit_equipment"

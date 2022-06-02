@@ -51,7 +51,6 @@
         android:layout_marginRight="16dp"
         android:text="&#8942;"
         android:textAlignment="center"
-        android:textAppearance="?android:textAppearanceLarge"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintRight_toRightOf="parent"

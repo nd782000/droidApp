@@ -9,8 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="link">#FF0000FF</color>
 
-    <color name="background">#FFF8E6</color>
-    <color name="backgroundPure">#FFFFFF</color>
+    <color name="background">#222222</color>
+    <!-- For any cases where you need to manually set the default system background color to a higher element-->
+    <color name="backgroundPure">#000000</color>
     <color name="button">#005100</color>
 
     <color name="colorPrimary">#009000</color>
@@ -28,13 +29,16 @@
     <color name="colorSplashScreen">#2A70DA</color>
     <color name="colorTextSelected">#2A70DA</color>
 
-    <color name="editTextBackground">#ffffff</color>
+    <color name="editTextBackground">#282828</color>
     <color name="editTextBorder">#505050</color>
 
-    <color name="mainMenuItemBackground">#fbeaff</color>
-    <color name="iconTint">#391144</color>
-    <color name="colorTitle">#005100</color>
-    <color name="colorRecyclerHeader">#e6e6e6</color>
+    <color name="mainMenuItemBackground">#333333</color>
+    <color name="iconTint">#63426c</color>
+    <color name="colorTitle">#009000</color>
+    <color name="colorRecyclerHeader">#292929</color>
+
+
+
 
 </resources>
 

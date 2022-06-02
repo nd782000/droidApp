@@ -77,7 +77,6 @@
         android:layout_margin="8dp"
         android:text="&#8942;"
         android:textAlignment="center"
-        android:textAppearance="?android:textAppearanceLarge"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintRight_toRightOf="parent"

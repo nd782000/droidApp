@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <TextView
         android:id="@+id/service_name_txt"
@@ -15,7 +16,7 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/service_name"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorTitle"
         android:textSize="28sp"
         android:textStyle="bold"
         android:layout_marginTop="8dp"
@@ -45,7 +46,6 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/service_type"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         android:layout_marginTop="8dp"
 
@@ -62,7 +62,6 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/service_due"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         android:layout_marginTop="8dp"
 
@@ -79,7 +78,6 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/service_frequency"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         android:layout_marginTop="4dp"
 
@@ -97,7 +95,6 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/service_by"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         android:layout_marginTop="4dp"
 
@@ -115,7 +112,6 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/instructions"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="14sp"
         android:layout_marginTop="4dp"
 
@@ -131,7 +127,6 @@
         android:ellipsize="end"
         android:paddingHorizontal="8dp"
         android:singleLine="true"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="14sp"
         android:layout_marginTop="4dp"
 
@@ -163,7 +158,6 @@
                 android:paddingHorizontal="4dp"
                 android:singleLine="true"
                 android:text="@string/current_date"
-                android:textColor="@color/colorPrimaryDark"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"
 
@@ -200,7 +194,6 @@
                 android:paddingHorizontal="4dp"
                 android:singleLine="true"
                 android:text="@string/next_date"
-                android:textColor="@color/colorPrimaryDark"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"
 
@@ -231,7 +224,6 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/completion_notes"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="14sp"
         android:layout_marginTop="4dp"
 

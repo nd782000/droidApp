@@ -176,11 +176,21 @@
     <string name="usage_header_date">Date</string>
     <string name="usage_header_qty">Qty</string>
 
+    <!--shifts stuff-->
+    <string name="xs_shifts">%1$s\'s Shifts</string>
+    <string name="xs_shifts_for">%1$s\'s shifts for:</string>
+    <string name="shifts_this_week">This Week</string>
+    <string name="shifts_next_week">Next Week</string>
+    <string name="shifts_header_date">Date</string>
+    <string name="shifts_header_start">Start</string>
+    <string name="shifts_header_stop">Stop</string>
+    <string name="shifts_header_qty">Qty</string>
+    <string name="shifts_footer_text">Totals - Shifts: %1$d, Hours: %2$.2f</string>
+
     <!--Image fragment stuff-->
     <string name="image_list">Image List</string>
     <string name="x_likes">x%1$s Likes</string>
     <string name="one_like">x1 Like</string>
-
     <string name="image_description">Uploaded by %1$s on %2$s - %3$s</string>
     <string name="image_likes_header">Image Likes</string>
     <string name="image_likes_by">By %1$s</string>

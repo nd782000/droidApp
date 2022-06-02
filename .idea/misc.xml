@@ -11,15 +11,18 @@
         <entry key="../../../../layout/custom_preview.xml" value="0.5432291666666667" />
         <entry key="..\:/Users/Zach/.gradle/caches/transforms-3/df84c482c8ef3cca6f4301971cfef15d/transformed/appcompat-1.2.0/res/layout/support_simple_spinner_dropdown_item.xml" value="0.1685185185185185" />
         <entry key="..\:/Users/Zach/AppData/Local/Android/Sdk/platforms/android-30/data/res/layout/simple_spinner_dropdown_item.xml" value="0.3134057971014493" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/drawable/button_layout.xml" value="0.1545" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/drawable/ic_splash_icon.xml" value="0.3245" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/drawable/ic_splash_screen.xml" value="0.204" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/drawable/splash_screen.xml" value="0.25" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/drawable/text_view_layout.xml" value="0.1545" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/activity_main.xml" value="0.23097826086956522" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/contact_list_item.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/contract_item_list_item.xml" value="0.3134057971014493" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/contract_item_task_list_item.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/contract_list_item.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/contract_task_list_item.xml" value="0.24818840579710144" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/customer_list_item.xml" value="0.1" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/department_header.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/employee_list_item.xml" value="0.22" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/employee_usage_list_item.xml" value="0.24818840579710144" />
@@ -32,6 +35,7 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_contract_list.xml" value="0.29936594202898553" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_crews.xml" value="0.29936594202898553" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_customer.xml" value="0.33" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_customer_list.xml" value="0.1" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_departments.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_employee.xml" value="0.1" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_employee_list.xml" value="0.29936594202898553" />
@@ -40,6 +44,7 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_equipment_list.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_image.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_image_likes.xml" value="0.25" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_image_list.xml" value="0.1" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_image_upload.xml" value="0.15648148148148147" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_inspection.xml" value="0.2418478260869565" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_invoice.xml" value="0.24818840579710144" />
@@ -53,21 +58,30 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_service.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_service.xml" value="0.2612359550561798" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_service_inspection.xml" value="0.2418478260869565" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_shifts.xml" value="0.24818840579710144" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_stack.xml" value="0.14629629629629629" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_usage.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_usage_entry.xml" value="0.1" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_vendor.xml" value="0.1" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_vendor.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_wo_item.xml" value="0.23097826086956522" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_work_order.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_work_order_list.xml" value="0.33" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/image_list_item.xml" value="0.24048913043478262" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/image_upload_image_list_item.xml" value="0.24048913043478262" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/invoice_list_item.xml" value="0.24048913043478262" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/item_list_item.xml" value="0.24048913043478262" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/lead_list_item.xml" value="0.33" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/lead_task_list_item.xml" value="0.24048913043478262" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/list_item_button.xml" value="0.24818840579710144" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/search_list_item.xml" value="0.22" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/service_history_list_item.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/service_inspection_list_item.xml" value="0.2418478260869565" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/service_list_item.xml" value="0.25815217391304346" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/shift_list_item.xml" value="0.24818840579710144" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/task_list_item.xml" value="0.24048913043478262" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/usage_list_item.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/usage_material_list_item.xml" value="0.1648148148148148" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/vendor_list_item.xml" value="0.24048913043478262" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/wo_item_list_item.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/work_order_list_item.xml" value="0.23097826086956522" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/delete_menu.xml" value="0.25" />

@@ -45,7 +45,7 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/customer_name"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorTitle"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -323,6 +323,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:text="Add"
+            android:background="@color/background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />

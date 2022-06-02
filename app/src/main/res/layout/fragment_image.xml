@@ -71,7 +71,6 @@
             android:layout_marginStart="4dp"
             android:text="10 Likes"
             android:textSize="18sp"
-            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="@+id/like_iv"
             app:layout_constraintStart_toEndOf="@+id/like_iv"
             app:layout_constraintTop_toTopOf="@+id/like_iv" />
@@ -85,7 +84,6 @@
             android:layout_marginStart="10dp"
             android:text="Customer with Long Name and then some"
             android:textAlignment="textEnd"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/likes_tv"
@@ -101,7 +99,6 @@
             android:lines="3"
             android:maxLines="3"
             android:textSize="14sp"
-            android:textColor="@color/colorPrimaryDark"
             android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

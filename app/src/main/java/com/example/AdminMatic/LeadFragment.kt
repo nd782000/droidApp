@@ -185,7 +185,12 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                             salesRepTxt.text = lead!!.repName!!
                         }
                         if(lead!!.requestedByCust != null){
-                            requestedByTxt.text = lead!!.requestedByCust!!
+                            if (lead!!.requestedByCust!! == "1") {
+                                requestedByTxt.text = getString(R.string.yes)
+                            }
+                            else {
+                                requestedByTxt.text = getString(R.string.no)
+                            }
                         }
                         if(lead!!.description != null){
                             descriptionTxt.text = lead!!.description!!

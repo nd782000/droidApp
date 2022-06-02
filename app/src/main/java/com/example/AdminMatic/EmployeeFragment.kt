@@ -67,6 +67,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
     private lateinit var payrollBtn:Button
     private lateinit var usageBtn:Button
+    private lateinit var shiftsBtn:Button
 
 
     lateinit var adapter:ImagesAdapter
@@ -186,10 +187,17 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
             myView.findNavController().navigate(directions)
         }
 
-        payrollBtn = view.findViewById((R.id.usage_btn))
-        payrollBtn.setOnClickListener{
+        usageBtn = view.findViewById((R.id.usage_btn))
+        usageBtn.setOnClickListener{
             println("usage btn clicked")
             val directions = EmployeeFragmentDirections.navigateEmployeeToUsage(employee)
+            myView.findNavController().navigate(directions)
+        }
+
+        shiftsBtn = view.findViewById((R.id.shifts_btn))
+        shiftsBtn.setOnClickListener{
+            println("shifts btn clicked")
+            val directions = EmployeeFragmentDirections.navigateEmployeeToShifts(employee)
             myView.findNavController().navigate(directions)
         }
 

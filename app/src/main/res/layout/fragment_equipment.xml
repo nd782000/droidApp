@@ -14,6 +14,7 @@
         android:id="@+id/equipment_top_cl"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:background="@color/background"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -48,7 +49,7 @@
             android:paddingHorizontal="4dp"
             android:singleLine="true"
             android:text="@string/equipment_name"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorTitle"
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toRightOf="@+id/equipment_pic_iv"
@@ -70,7 +71,7 @@
             android:paddingHorizontal="4dp"
             android:singleLine="true"
             android:text="@string/equipment_type"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorTitle"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/equipment_pic_iv"
@@ -89,7 +90,7 @@
             android:paddingHorizontal="4dp"
             android:singleLine="true"
             android:text="@string/equipment_crew"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorTitle"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/equipment_pic_iv"
@@ -105,6 +106,7 @@
         android:id="@+id/equipment_menu_cl"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:background="@color/background"
         app:layout_constraintBottom_toTopOf="@+id/emp_container_cl"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/equipment_top_cl"
@@ -149,7 +151,7 @@
                 android:paddingHorizontal="4dp"
                 android:singleLine="true"
                 android:text="@string/current_service_check"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/colorTitle"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toTopOf="parent"
@@ -236,7 +238,7 @@
         android:layout_width="match_parent"
 
         android:layout_height="0dp"
-        android:background="@color/white"
+
         app:layout_constraintBottom_toTopOf="@+id/emp_footer_cl"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/equipment_table_tl"
@@ -289,7 +291,7 @@
         android:id="@+id/emp_footer_cl"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/white"
+        android:background="@color/background"
 
 
         app:layout_constraintBottom_toBottomOf="parent">

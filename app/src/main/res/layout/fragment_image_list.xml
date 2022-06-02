@@ -63,7 +63,7 @@
         android:id="@+id/image_footer_cl"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/white"
+        android:background="@color/background"
 
 
         app:layout_constraintBottom_toBottomOf="parent">

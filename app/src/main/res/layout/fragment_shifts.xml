@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/shifts_week_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"
+            android:background="@color/background">
+
+            <Spinner
+                android:id="@+id/shifts_week_spinner"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginVertical="5dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:focusable="false"
+                android:focusableInTouchMode="true"
+                android:textAlignment="center"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/shifts_week_lbl_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:paddingRight="10dp"
+                android:text="hgfdhfgd"
+                android:gravity="center_vertical"
+                android:textSize="18dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/shifts_week_spinner"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/shifts_header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            app:layout_constraintTop_toBottomOf="@id/shifts_week_layout"
+            android:background="@color/colorPrimary">
+            <TextView
+                android:id="@+id/header_date_tv"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="12dp"
+                android:gravity="center_vertical"
+                android:text="@string/shifts_header_date"
+                android:textSize="14sp"
+                android:textColor="@color/design_default_color_on_primary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/header_qty_tv"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="15dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/design_default_color_on_primary"
+                android:text="@string/usage_header_qty"
+                android:textSize="14sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/header_stop_tv"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="39dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/design_default_color_on_primary"
+                android:text="@string/shifts_header_stop"
+                android:textSize="14sp"
+                app:layout_constraintRight_toLeftOf="@id/header_qty_tv"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/header_start_tv"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="39dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/design_default_color_on_primary"
+                android:text="@string/shifts_header_start"
+                android:textSize="14sp"
+                app:layout_constraintRight_toLeftOf="@id/header_stop_tv"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/shifts_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/shifts_footer_layout"
+            app:layout_constraintTop_toBottomOf="@id/shifts_header_layout"
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_editor_absoluteX="52dp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/shifts_footer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/background">
+
+            <TextView
+                android:id="@+id/shifts_footer_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginVertical="5dp"
+                android:text="@string/usage_to"
+                android:gravity="center_vertical"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/button"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

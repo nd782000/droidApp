@@ -284,6 +284,7 @@
         android:id="@+id/usage_material_cl"
         android:layout_width="match_parent"
         android:layout_height="300dp"
+        android:background="@color/background"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView

@@ -232,9 +232,25 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 
 
 
+        val optionsBtn = holder.itemView.findViewById<ImageView>(R.id.task_status_iv)
+        when (task.status) {
+            "0" -> {
+                Picasso.with(context).load(R.drawable.ic_not_started).into(optionsBtn)
+            }
+            "1" -> {
+                Picasso.with(context).load(R.drawable.ic_in_progress).into(optionsBtn)
+            }
+            "2" -> {
+                Picasso.with(context).load(R.drawable.ic_done).into(optionsBtn)
+            }
+            "3" -> {
+                Picasso.with(context).load(R.drawable.ic_canceled).into(optionsBtn)
+            }
+        }
 
+        //TODO: Complete functionality here
         //options btn click
-        holder.itemView.findViewById<ImageView>(R.id.task_status_iv).setOnClickListener {
+        optionsBtn.setOnClickListener {
             println("status click")
 
             val popUp = PopupMenu(myView.context,holder.itemView)
@@ -244,10 +260,10 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 
             //val d:Drawable? = resize(context.getDrawable(R.drawable.ic_in_progress)!!)
 
-            popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_not_started)!!,context)!!, context.getString(R.string.not_started)))
-            popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_in_progress)!!,context)!!, context.getString(R.string.in_progress)))
-            popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_done)!!,context)!!, context.getString(R.string.finished)))
-            popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context)!!, context.getString(R.string.canceled)))
+            popUp.menu.add(0, 0, 1,globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_not_started)!!,context)!!, context.getString(R.string.not_started)))
+            popUp.menu.add(0, 1, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_in_progress)!!,context)!!, context.getString(R.string.in_progress)))
+            popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_done)!!,context)!!, context.getString(R.string.finished)))
+            popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context)!!, context.getString(R.string.canceled)))
 
             // menu.add(0, 1, 1, menuIconWithText(getResources().getDrawable(R.mipmap.user_2), getResources().getString(R.string.action_profile)));
 
@@ -259,7 +275,7 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
                 task.status = item!!.itemId.toString()
                 Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
 
-                if (item.itemId == 2 || item.itemId == 3) {
+                if (item.itemId == 5 || item.itemId == 6) {
                     println("prompt for image upload")
 
                     val builder = AlertDialog.Builder(myView.context)
