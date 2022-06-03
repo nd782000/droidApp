@@ -23,7 +23,9 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import org.w3c.dom.Text
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.HashMap
 
 
@@ -84,6 +86,9 @@ class ShiftViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     private var mStopView: TextView? = null
     private var mQtyView: TextView? = null
 
+    val dateFormatterDate: DateTimeFormatter = DateTimeFormatter.ofPattern("M/dd (EEE)")
+    val dateFormatterTime: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+
     init {
         mDateView = itemView.findViewById(R.id.list_shift_date_tv)
         mStartView = itemView.findViewById(R.id.list_shift_start_tv)
@@ -92,10 +97,24 @@ class ShiftViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
     fun bind(shift: Shift) {
-        mDateView?.text = "fuck"
-        mStartView?.text = shift.startTime
-        mStopView?.text = shift.stopTime
-        mQtyView?.text = shift.qty
+
+        val startTime : LocalDateTime = LocalDateTime.parse(shift.startTime, GlobalVars.dateFormatterPHP)
+        mDateView?.text = startTime.format(dateFormatterDate)
+
+
+        if (shift.ID == "0") { // empty slot
+            mStartView?.text = "-----"
+            mStopView?.text = "-----"
+            mQtyView?.text = "-----"
+        }
+        else {
+            mStartView?.text = startTime.format(dateFormatterTime)
+            val endTime : LocalDateTime = LocalDateTime.parse(shift.endTime, GlobalVars.dateFormatterPHP)
+            mStopView?.text = endTime.format(dateFormatterTime)
+            mQtyView?.text = shift.shiftQty
+        }
+
+
     }
 
 }

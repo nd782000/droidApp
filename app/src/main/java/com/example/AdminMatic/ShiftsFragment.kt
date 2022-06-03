@@ -23,8 +23,11 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.time.LocalDate
+import java.time.OffsetDateTime
+import java.time.OffsetTime
 import java.time.ZoneOffset
-import java.util.HashMap
+import java.time.temporal.WeekFields
+import java.util.*
 
 
 class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
@@ -32,7 +35,6 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private  var employee: Employee? = null
 
     lateinit  var globalVars:GlobalVars
-    private lateinit var datePicker: DatePickerHelper
     lateinit var myView:View
 
     lateinit var  pgsBar: ProgressBar
@@ -45,10 +47,19 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private var weekSpinnerPosition: Int = 0
 
-    private var dateFrom: LocalDate = LocalDate.now(ZoneOffset.UTC)
-    private var dateTo: LocalDate = LocalDate.now(ZoneOffset.UTC).plusDays(7)
-    private var dateFromDB = dateFrom.format(GlobalVars.dateFormatterYYYYMMDD)
-    private var dateToDB = dateTo.format(GlobalVars.dateFormatterYYYYMMDD)
+
+    private lateinit var dateFrom: OffsetDateTime
+    private lateinit var dateTo: OffsetDateTime
+
+    private var dateFromDB: String = ""
+    private var dateToDB: String = ""
+
+
+
+
+    private var shifts = mutableListOf<Shift>()
+    private lateinit var shiftsJSON: JSONObject
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,8 +113,12 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
         weekSpinner.adapter = adapter
         weekSpinner.onItemSelectedListener = this@ShiftsFragment
 
-        hideProgressView()
-        getShifts()
+        weekSpinner.setSelection(0)
+
+
+
+
+
     }
 
     private fun getShifts(){
@@ -128,36 +143,18 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 hideProgressView()
                 try {
                     if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        val shifts:JSONArray = parentObject.getJSONArray("shifts")
+                        //val parentObject = JSONObject(response)
 
-                        val gson = GsonBuilder().create()
-                        val shiftsList = gson.fromJson(shifts.toString() , Array<Shift>::class.java).toMutableList()
+                        shiftsJSON = JSONObject(response)
 
-                        //employeeCountTv.text = getString(R.string.x_active_employees, employeesList.size)
-
-                        recyclerView.apply {
-                            layoutManager = LinearLayoutManager(activity)
-
-                            adapter = activity?.let {
-                                ShiftsAdapter(shiftsList,it)
-                            }
-
-                            val itemDecoration: RecyclerView.ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            recyclerView.addItemDecoration(itemDecoration)
+                        parseShiftsJSON()
 
 
-                            var totalHours = 0.0
-                            shiftsList.forEach {
-                                totalHours += it.qty!!.toDouble()
-                            }
+                        //val shifts:JSONArray = parentObject.getJSONArray("shifts")
 
-                            footerText.text = getString(R.string.usage_footer_text, shiftsList.size, totalHours)
+                        //val gson = GsonBuilder().create()
+                        //val shiftsList = gson.fromJson(shifts.toString() , Array<Shift>::class.java).toMutableList()
 
-                            (adapter as employeeUsageAdapter).notifyDataSetChanged()
-
-                        }
                     }
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -186,6 +183,55 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
         queue.add(postRequest1)
     }
 
+    private fun parseShiftsJSON() {
+
+        shifts.clear()
+        var numberOfValidShifts = 0
+
+        for (day in 0..6) {
+
+            val gson = GsonBuilder().create()
+
+            try {
+                val iShifts = shiftsJSON["shifts"] as JSONObject
+                val iDay = iShifts["$day"] as JSONObject
+                shifts.add(gson.fromJson(iDay.toString(), Shift::class.java))
+                numberOfValidShifts++
+
+            } catch (e: Exception) {
+                val startTime = dateFrom.plusDays(day.toLong()).format(GlobalVars.dateFormatterPHP)
+                shifts.add(Shift("0", employee!!.ID, startTime, startTime,"", "","0.00"))
+            }
+
+        }
+
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(activity)
+
+            adapter = activity?.let {
+                ShiftsAdapter(shifts, it)
+            }
+
+            val itemDecoration: RecyclerView.ItemDecoration =
+                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+            recyclerView.addItemDecoration(itemDecoration)
+
+
+            var totalHours = 0.0
+            shifts.forEach {
+                totalHours += it.shiftQty!!.toDouble()
+            }
+
+            footerText.text = getString(R.string.shifts_footer_text, numberOfValidShifts, totalHours)
+
+            (adapter as ShiftsAdapter).notifyDataSetChanged()
+
+        }
+
+        hideProgressView()
+
+    }
+
     override fun onNothingSelected(parent: AdapterView<*>?) {
         println("onNothingSelected")
     }
@@ -201,6 +247,21 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         weekSpinnerPosition = position
         weekSpinner.setTag(R.id.pos, position)
+
+
+        dateFrom = LocalDate.now(ZoneOffset.UTC).with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atTime(OffsetTime.MIN)
+        dateTo = dateFrom.plusDays(6)
+
+        if (position == 1) { // next week
+            println("Next Week")
+            dateFrom = dateFrom.plusDays(7)
+            dateTo = dateTo.plusDays(7)
+        }
+
+        dateFromDB = dateFrom.format(GlobalVars.dateFormatterYYYYMMDD)
+        dateToDB = dateTo.format(GlobalVars.dateFormatterYYYYMMDD)
+
+        getShifts()
 
     }
     

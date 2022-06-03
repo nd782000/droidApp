@@ -571,10 +571,10 @@ data class Shift(
     var empID: String,
 
     var startTime: String? = "",
-    var stopTime: String? = "",
+    var endTime: String? = "",
     var status: String? = "",
     var comment: String? = "",
-    var qty: String? = ""
+    var shiftQty: String? = ""
 
 ): Parcelable{
     override fun toString(): String {

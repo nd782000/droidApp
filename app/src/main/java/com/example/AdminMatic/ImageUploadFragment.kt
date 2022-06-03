@@ -47,10 +47,7 @@ import io.fotoapparat.log.logcat
 import io.fotoapparat.result.transformer.scaled
 import io.fotoapparat.selector.*
 import io.fotoapparat.view.CameraView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_customer_list.*
 import kotlinx.android.synthetic.main.fragment_image_upload.*
-import kotlinx.android.synthetic.main.fragment_payroll.view.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -60,11 +57,6 @@ import java.util.*
 
 
 private const val LOGGING_TAG = "AdminMatic"
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//private const val ARG_PARAM1 = "param1"
-//private const val ARG_PARAM2 = "param2"
 
 private  var mode: String = "GALLERY"
 private  var images: Array<Image> = arrayOf()
@@ -94,38 +86,7 @@ private val mRetryPolicy: RetryPolicy = DefaultRetryPolicy(
 //private val cameraRequest = 1888
 
 
-/*
-
-var woID:String = ""
-var woItemID:String = ""
-var attachmentID:String = ""
-var leadID:String = ""
-var leadTaskID:String = ""
-var taskID:String = ""
-var taskStatus:String = ""
-var albumID:String = ""
-var contractID:String = ""
-var contractItemID:String = ""
-var contractTaskID:String = ""
-
-
-var customerID:String = ""
-var customerName:String = ""
-
-var equipmentID:String = ""
-*/
-
-
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ImageUpload.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetImagePicker.OnImagesSelectedListener{
-    // TODO: Rename and change types of parameters
-    //private var param1: String? = null
-    //private var param2: String? = null
 
     //private var mode: String? = null
     //private var customer: Customer? = null
@@ -205,11 +166,31 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             equipmentID = it.getString("equipmentID")!!
             usageID = it.getString("usageID")!!
 
+            /*
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                reverseOrientationObserver = context?.let { it1 ->
+                    ReverseOrientationObserver(it1) {
+                        fotoapparat.stop()
+                        fotoapparat.start()
+                        println("fuck")
+                    }
+                }
+            }
 
+             */
 
             println("images.count = ${images.count()}")
         }
     }
+
+    /*
+    override fun onDestroy() {
+        super.onDestroy()
+        reverseOrientationObserver?.quit()
+        reverseOrientationObserver = null
+    }
+
+     */
 
     override fun onCreateView(
 
@@ -538,6 +519,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
     private fun takePicture(){
 
+
         val cl = LayoutInflater.from(this.context).inflate(R.layout.image_upload_image_list_item, image_upload_prep_selected_images_ll, false) as ConstraintLayout
         cl.id = selectedUris.count()
 
@@ -614,6 +596,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
         println("photo name = photo_$tsLong.jpg")
 
+
+
         photoResult
             .toBitmap(scaled(scaleFactor = 0.25f))
             .whenAvailable { photo ->
@@ -665,11 +649,6 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
                         */
-
-
-
-
-
 
 
                         selectedUris.add(uri)
@@ -739,16 +718,20 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                 ExifInterface.ORIENTATION_UNDEFINED)
 
-            var rotatedBitmap: Bitmap? = null
-            when (orientation) {
-                ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = bMap
-
-                ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotate(bMap, 270f)
-
-                ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap = rotate(bMap, 180f)
-
-                ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap = rotate(bMap, 90f)
-                else -> rotatedBitmap = bMap
+            val rotatedBitmap: Bitmap = when (orientation) {
+                ExifInterface.ORIENTATION_NORMAL -> {
+                    bMap
+                }
+                ExifInterface.ORIENTATION_ROTATE_90 -> {
+                    rotate(bMap, 90f)
+                }
+                ExifInterface.ORIENTATION_ROTATE_180 -> {
+                    rotate(bMap, 180f)
+                }
+                ExifInterface.ORIENTATION_ROTATE_270 -> {
+                    rotate(bMap, 270f)
+                }
+                else -> bMap
             }
 
             //Update the input file with the new bytes.
@@ -958,7 +941,7 @@ private  fun saveTask(){
 
         var count = 0
         selectedUris.forEach { uri ->
-
+            uri.path?.let { handleRotation(it) }
             println("uri# $count")
             println("views = ${image_upload_prep_selected_images_ll.childCount}")
             val cl = image_upload_prep_selected_images_ll.findViewById<ConstraintLayout>(count)
@@ -1108,7 +1091,7 @@ private  fun saveTask(){
 
 
         val postRequest1: StringRequest = object : StringRequest(
-            Method.POST, urlString,
+            POST, urlString,
             Response.Listener { response -> // response
 
                 println("Response $response")
@@ -1216,6 +1199,7 @@ private  fun saveTask(){
         allCL.visibility = View.VISIBLE
     }
 
+    /*
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -1228,7 +1212,6 @@ private  fun saveTask(){
 
        private const val IMAGE_PICK_CODE = 999
 
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstanceFromCustomer(customer: Customer) =
             ImageUploadFragment().apply {
@@ -1240,9 +1223,10 @@ private  fun saveTask(){
                     putParcelable("customer",customer)
                 }
             }
-
-
     }
+
+     */
+
 }
 
 
