@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.IOException
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.OffsetTime
@@ -192,11 +193,27 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
             val gson = GsonBuilder().create()
 
+
+
             try {
                 val iShifts = shiftsJSON["shifts"] as JSONObject
                 val iDay = iShifts["$day"] as JSONObject
+                val iStartTime = iDay["startTime"]
+
                 shifts.add(gson.fromJson(iDay.toString(), Shift::class.java))
-                numberOfValidShifts++
+
+                // Catch for a broken entry and treat as empty
+                // If not broken, increment count of valid shifts
+                // Todo: find out if you can manually throw an exception here instead of duplicating code
+                if (shifts[day].startTime == null) {
+                    val startTime = dateFrom.plusDays(day.toLong()).format(GlobalVars.dateFormatterPHP)
+                    shifts[day] = Shift("0", employee!!.ID, startTime, startTime,"", "","0.00")
+                }
+                else {
+                    numberOfValidShifts++
+                }
+
+
 
             } catch (e: Exception) {
                 val startTime = dateFrom.plusDays(day.toLong()).format(GlobalVars.dateFormatterPHP)
