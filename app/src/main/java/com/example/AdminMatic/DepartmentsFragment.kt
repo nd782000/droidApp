@@ -19,12 +19,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-
 
 class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCellClickListener {
 
@@ -362,14 +356,14 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                                 // If the crew group already exists, add the equipment to its list
                                 if (ec.name == e.crewName) {
                                     found = true
-                                    ec.equips!!.add(e)
+                                    ec.equips.add(e)
                                 }
                             }
                             // If not, make and add it with the current equipment added to it
                             if (!found) {
-                                val newEquipmentCrew: EquipmentCrew =
+                                val newEquipmentCrew =
                                     EquipmentCrew(e.crewName, e.crewColor)
-                                newEquipmentCrew.equips!!.add(e)
+                                newEquipmentCrew.equips.add(e)
                                 equipmentCrewList.add(newEquipmentCrew)
                             }
                         }

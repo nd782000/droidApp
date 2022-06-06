@@ -188,7 +188,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
 
 
-                            (adapter as EquipmentAdapter).notifyDataSetChanged();
+                            //(adapter as EquipmentAdapter).notifyDataSetChanged();
 
                             // Remember to CLEAR OUT old items before appending in the new ones
 

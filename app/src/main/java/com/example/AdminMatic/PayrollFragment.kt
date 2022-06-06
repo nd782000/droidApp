@@ -2,12 +2,9 @@ package com.example.AdminMatic
 
 //import androidx.test.core.app.ApplicationProvider.getApplicationContext
 
-import android.app.TimePickerDialog
 import android.content.Context
 import android.content.res.Configuration
-import android.opengl.Visibility
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +14,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.AdminMatic.R
 import com.android.volley.Response
@@ -25,36 +21,17 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.employeeList
 import com.google.gson.GsonBuilder
-import kotlinx.android.parcel.Parcelize
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.Double.parseDouble
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
-
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PayrollFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
-
 
 
 
 class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
-    // TODO: Rename and change types of parameters
-    //private var param1: String? = null
-    private var param2: String? = null
 
     lateinit  var globalVars:GlobalVars
     private  var employee: Employee? = null
@@ -97,7 +74,6 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         super.onCreate(savedInstanceState)
         arguments?.let {
             employee = it.getParcelable("employee")
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -491,12 +467,12 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
             println("cal.time = formatter.parse(currentPayroll!!.startTime!!) as Date")
 
-            val sdf:SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
 
 
             cal = Calendar.getInstance()
 
-            cal.time = sdf.parse(currentPayroll!!.startTime!!)
+            cal.time = sdf.parse(currentPayroll.startTime!!)
             h = cal.get(Calendar.HOUR_OF_DAY)
             m = cal.get(Calendar.MINUTE)
         }
@@ -560,7 +536,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
             } else {
 
                 println("cal.time = formatter.parse(currentPayroll!!.stopTime!!) as Date")
-                val sdf: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
                 cal = Calendar.getInstance()
 
                 cal.time = sdf.parse(currentPayroll.stopTime!!)
@@ -796,23 +772,4 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PayrollFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PayrollFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

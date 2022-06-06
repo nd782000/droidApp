@@ -707,8 +707,8 @@ data class Usage(var ID:String,
 data class Vendor(val ID: String,
                   val name: String,
                   val mainAddr:String?,
-                  val lng:String,
-                  val lat:String?,
+                  var lng:String?,
+                  var lat:String?,
                   val website:String?,
                   val mainPhone:String?,
                   val balance:String?,
@@ -910,7 +910,6 @@ class SpinnerInteractionListener : AdapterView.OnItemSelectedListener, View.OnTo
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
 
     }
 
@@ -947,7 +946,7 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
     //lateinit var  hostFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_GlobalVarExample);
+        setTheme(R.style.Theme_GlobalVarExample)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         pgsBar = this.findViewById(R.id.progressBar)
@@ -1006,10 +1005,8 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
     fun getVisibleFragment(): Fragment? {
         val fragmentManager: FragmentManager = this@MainActivity.supportFragmentManager
         val fragments: List<Fragment> = fragmentManager.fragments
-        if (fragments != null) {
-            for (fragment in fragments) {
-                if (fragment != null && fragment.isVisible) return fragment
-            }
+        for (fragment in fragments) {
+            if (fragment.isVisible) return fragment
         }
         return null
     }

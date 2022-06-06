@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import kotlinx.android.synthetic.main.customer_list_item.view.*
 import java.util.*
-
 
 
 class CustomersAdapter(private val list: MutableList<Customer>, private val cellClickListener: CustomerCellClickListener): RecyclerView.Adapter<CustomerViewHolder>(), Filterable {

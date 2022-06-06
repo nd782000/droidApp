@@ -204,7 +204,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
 
 
-                            (adapter as LeadsAdapter).notifyDataSetChanged();
+                            //(adapter as LeadsAdapter).notifyDataSetChanged();
 
                             // Remember to CLEAR OUT old items before appending in the new ones
 

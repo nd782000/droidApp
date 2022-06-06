@@ -11,30 +11,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
-import com.google.gson.GsonBuilder
-
-import kotlinx.android.synthetic.main.fragment_equipment_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_equipment_list.customerSwipeContainer
-import kotlinx.android.synthetic.main.fragment_equipment_list.*
 import kotlinx.android.synthetic.main.fragment_new_service.*
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 

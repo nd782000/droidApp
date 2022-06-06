@@ -155,7 +155,7 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
 
 
-                            (adapter as ServiceInspectionAdapter).notifyDataSetChanged()
+                            //(adapter as ServiceInspectionAdapter).notifyDataSetChanged()
                             println(adapter!!.itemCount)
 
                         }

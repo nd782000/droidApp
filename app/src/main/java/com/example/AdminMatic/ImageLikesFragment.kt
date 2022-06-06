@@ -150,7 +150,7 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
                             recyclerView.addItemDecoration(itemDecoration)
 
 
-                            (adapter as EmployeesAdapter).notifyDataSetChanged()
+                            //(adapter as EmployeesAdapter).notifyDataSetChanged()
 
                         }
                     }

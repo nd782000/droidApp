@@ -335,7 +335,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
 
-                (adapter as CustomersAdapter).notifyDataSetChanged()
+                //(adapter as CustomersAdapter).notifyDataSetChanged()
 
                 // Remember to CLEAR OUT old items before appending in the new ones
 
@@ -1025,20 +1025,24 @@ private  fun saveTask(){
                     }
                     params["createdBy"] = GlobalVars.loggedInEmployee!!.ID
 
-                    if(mode == "LEADTASK"){
-                        params["leadTask"] = taskID
-                        params["contractTask"] = ""
-                        params["task"] = ""
-                    }else if(mode == "CONTRACTTASK"){
-                        params["leadTask"] = ""
-                        params["contractTask"] = taskID
-                        params["task"] = ""
-                    }else{
-                        params["leadTask"] = ""
-                        params["contractTask"] = ""
-                        params["task"] = taskID
+                    when (mode) {
+                        "LEADTASK" -> {
+                            params["leadTask"] = taskID
+                            params["contractTask"] = ""
+                            params["task"] = ""
+                        }
+                        "CONTRACTTASK" -> {
+                            params["leadTask"] = ""
+                            params["contractTask"] = taskID
+                            params["task"] = ""
+                        }
+                        else -> {
+                            params["leadTask"] = ""
+                            params["contractTask"] = ""
+                            params["task"] = taskID
+                        }
                     }
-                    //params["task"] = taskID
+
 
                     params["woID"] = woID
 

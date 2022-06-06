@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlin.contracts.contract
 
 
 class ContractItemAdapter(list: MutableList<ContractItem>, private val context: Context, private val cellClickListener: ContractItemCellClickListener, private val buttonClickListener: AddContractItemButtonListener) : RecyclerView.Adapter<ContractItemViewHolder>() {
@@ -35,26 +33,25 @@ class ContractItemAdapter(list: MutableList<ContractItem>, private val context: 
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContractItemViewHolder {
-        val itemView: View
-        if (viewType == R.layout.contract_item_list_item) {
-            itemView = LayoutInflater.from(parent.context).inflate(R.layout.contract_item_list_item, parent, false)
+        val itemView: View = if (viewType == R.layout.contract_item_list_item) {
+            LayoutInflater.from(parent.context).inflate(R.layout.contract_item_list_item, parent, false)
         } else {
-            itemView = LayoutInflater.from(parent.context).inflate(R.layout.list_item_button, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.list_item_button, parent, false)
         }
         return ContractItemViewHolder(itemView)
     }
 
 
-    private var listener: LogOut? = null
+    //private var listener: LogOut? = null
 
 
     override fun onBindViewHolder(holder: ContractItemViewHolder, position: Int) {
 
         if (position == filterList.size) {
             holder.mButton!!.text = context.getString(R.string.add_item)
-            holder.mButton!!.setOnClickListener(View.OnClickListener {
+            holder.mButton!!.setOnClickListener {
                 buttonClickListener.onAddContractItemButtonListener()
-            })
+            }
         } else {
             val contractItem: ContractItem = filterList[position]
             holder.mNameView!!.text = contractItem.name

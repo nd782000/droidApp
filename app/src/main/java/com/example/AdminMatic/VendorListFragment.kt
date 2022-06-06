@@ -191,7 +191,7 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
 
 
 
-                            (adapter as VendorsAdapter).notifyDataSetChanged()
+                            //(adapter as VendorsAdapter).notifyDataSetChanged()
 
                             // Remember to CLEAR OUT old items before appending in the new ones
 

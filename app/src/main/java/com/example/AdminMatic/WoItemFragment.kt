@@ -2,12 +2,12 @@ package com.example.AdminMatic
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -21,17 +21,6 @@ import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [WoItemFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 
 
 interface TaskCellClickListener {
@@ -47,8 +36,7 @@ interface TaskCellClickListener {
 
 class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSelectedListener {
     // TODO: Rename and change types of parameters
-    //private var param1: String? = null
-    private var param2: String? = null
+
 
 
     private  var woItem: WoItem? = null
@@ -72,11 +60,11 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     private lateinit var chargeSpinner:Spinner
 
     private lateinit var hideCl:ConstraintLayout
-    private lateinit var hideQtySwitch:Switch
+    private lateinit var hideQtySwitch: SwitchCompat
     private lateinit var qtyEditTxt:EditText
 
     private lateinit var taxCl:ConstraintLayout
-    private lateinit var taxableSwitch:Switch
+    private lateinit var taxableSwitch:SwitchCompat
     private lateinit var priceEditTxt:EditText
 
     private lateinit var totalCl:ConstraintLayout
@@ -96,7 +84,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     private lateinit var profitPercentTxt:TextView
     private lateinit var profitBar:ProgressBar
 
-
+    private lateinit var statusBtn:ImageButton
     private lateinit var submitBtn:Button
 
 
@@ -109,7 +97,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         arguments?.let {
             woItem = it.getParcelable("woItem")
             workOrder = it.getParcelable("workOrder")!!
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -160,24 +147,19 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         descriptionCl = myView.findViewById(R.id.wo_item_description_cl)
         descriptionTv = myView.findViewById(R.id.wo_item_description_tv)
         usageBtn = myView.findViewById(R.id.wo_item_usage_btn)
+        statusBtn = myView.findViewById(R.id.status_btn)
 
         println("Work Order Item Customer: ${workOrder.customer}")
         usageBtn.setOnClickListener{
-
-
 
             if (woItem != null){
                 val directions = WoItemFragmentDirections.navigateToUsageEntry(woItem!!,workOrder)
                 myView.findNavController().navigate(directions)
             }
 
-
-
-
-
-            //al directions = WorkOrderFragmentDirections.navigateToWoItem(data)
-
-
+        }
+        statusBtn.setOnClickListener{
+            showStatusMenu()
         }
         profitCl = myView.findViewById(R.id.wo_item_profit_cl)
         priceTxt = myView.findViewById(R.id.price_tv)
@@ -192,6 +174,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         if (woItem == null){
             //fillProfitCl()
             hideProgressView()
+
 
         }else{
             getWoItem()
@@ -218,7 +201,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
     private fun fillProfitCl() {
         var totalPrice = 0.0
-        var totalCost = 0.0
+        //var totalCost = 0.0
 
 
         woItem!!.usage.forEach {
@@ -271,6 +254,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                         woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
                         descriptionTv.text = woItem!!.empDesc
 
+                        setStatus(woItem!!.status)
 
                         val taskJSON: JSONArray = parentObject.getJSONArray("tasks")
                         val taskList = gson.fromJson(taskJSON.toString(), Array<Task>::class.java)
@@ -296,7 +280,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
 
 
-                            (adapter as TasksAdapter).notifyDataSetChanged()
+                            //(adapter as TasksAdapter).notifyDataSetChanged()
                         }
                         fillProfitCl()
                         hideProgressView()
@@ -358,10 +342,102 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"", it.ID,"${it.task}","","", "")
             myView.findNavController().navigate(directions)
         }
-
-
     }
 
+    private fun showStatusMenu(){
+        println("showStatusMenu")
+
+        val popUp = PopupMenu(myView.context,statusBtn)
+        popUp.inflate(R.menu.task_status_menu)
+        popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_not_started)!!,myView.context), myView.context.getString(R.string.not_started)))
+        popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_in_progress)!!,myView.context), myView.context.getString(R.string.in_progress)))
+        popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_done)!!,myView.context), myView.context.getString(R.string.finished)))
+        popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_canceled)!!,myView.context), myView.context.getString(R.string.finished)))
+
+        //todo: continue testing
+
+        popUp.setOnMenuItemClickListener { item: MenuItem? ->
+
+            woItem!!.status = item!!.itemId.toString()
+
+
+            setStatus(woItem!!.status)
+            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT)
+                .show()
+
+            showProgressView()
+
+            var urlString = "https://www.adminmatic.com/cp/app/functions/update/workOrderItem.php"
+
+            val currentTimestamp = System.currentTimeMillis()
+            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+            urlString = "$urlString?cb=$currentTimestamp"
+            val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
+
+
+
+            val postRequest1: StringRequest = object : StringRequest(
+                Method.POST, urlString,
+                Response.Listener { response -> // response
+
+                    println("Response $response")
+
+                    try {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        hideProgressView()
+
+                        /* Here 'response' is a String containing the response you received from the website... */
+                    } catch (e: JSONException) {
+                        println("JSONException")
+                        e.printStackTrace()
+                    }
+                },
+                Response.ErrorListener { // error
+
+                }
+            ) {
+                override fun getParams(): Map<String, String> {
+                    val params: MutableMap<String, String> = java.util.HashMap()
+                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                    params["status"] = woItem!!.status
+                    //params["workOrderID"] = woItem!!.woID
+                    params["workOrderItemID"] = woItem!!.ID
+                    println("params = $params")
+                    return params
+                }
+            }
+            queue.add(postRequest1)
+            true
+        }
+
+
+        popUp.gravity = Gravity.START
+        popUp.show()
+    }
+
+    private fun setStatus(status: String) {
+        println("setStatus")
+        when(status) {
+            "1" -> {
+                println("1")
+                statusBtn.setBackgroundResource(R.drawable.ic_not_started)
+            }
+            "2" -> {
+                println("2")
+                statusBtn.setBackgroundResource(R.drawable.ic_in_progress)
+            }
+            "3" -> {
+                println("3")
+                statusBtn.setBackgroundResource(R.drawable.ic_done)
+            }
+            "4" -> {
+                println("4")
+                statusBtn.setBackgroundResource(R.drawable.ic_canceled)
+            }
+        }
+    }
 
     override fun showProgressView() {
 
@@ -575,10 +651,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 */
 
 
-
-
-
-
     private fun setViewAndChildrenEnabled(
         view: View,
         enabled: Boolean
@@ -592,25 +664,4 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         }
     }
 
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment WoItemFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            WoItemFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

@@ -1188,6 +1188,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                         globalVars.playSaveSound(myView.context)
 
                         hideProgressView()
+
+                        //todo: prompt to update wo status
+
                     }
 
                 } catch (e: JSONException) {
@@ -1327,30 +1330,4 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         TODO("Not yet implemented")
     }
 
-
-
-
-
-/*
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UsageEntryFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UsageEntryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
-
- */
 }

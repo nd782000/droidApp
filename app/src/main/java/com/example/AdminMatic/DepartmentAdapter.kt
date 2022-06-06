@@ -19,7 +19,7 @@ class DepartmentAdapter(list: MutableList<Department>, private val context: Cont
     : RecyclerView.Adapter<DepartmentViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
-    val cCL = cellClickListener
+    private val cCL = cellClickListener
 
     var filterList:MutableList<Department> = emptyList<Department>().toMutableList()
 

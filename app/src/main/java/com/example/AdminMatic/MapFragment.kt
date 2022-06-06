@@ -30,7 +30,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var mapFragment : SupportMapFragment?=null
     private val pinMapWorkOrder = HashMap<Marker?, WorkOrder>()
     private val pinMapLead = HashMap<Marker?, Lead>()
-    lateinit var googleMapGlobal:GoogleMap
+    private lateinit var googleMapGlobal:GoogleMap
 
     //Todo: change to an enum maybe, currently 0 = work orders and 1 = leads
     var mode:Int = 0

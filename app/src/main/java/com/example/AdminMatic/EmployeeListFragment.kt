@@ -26,7 +26,6 @@ import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import org.w3c.dom.Text
 
 
 interface EmployeeCellClickListener {
@@ -193,7 +192,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
 
 
 
-                            (adapter as EmployeesAdapter).notifyDataSetChanged()
+                            //(adapter as EmployeesAdapter).notifyDataSetChanged()
 
                             // Remember to CLEAR OUT old items before appending in the new ones
 

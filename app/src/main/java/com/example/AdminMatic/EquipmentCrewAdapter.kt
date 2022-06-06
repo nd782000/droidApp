@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color.parseColor
 import android.graphics.drawable.ColorDrawable

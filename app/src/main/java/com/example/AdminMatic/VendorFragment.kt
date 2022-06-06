@@ -1,56 +1,30 @@
 package com.example.AdminMatic
 
+
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.AdminMatic.R
-
-
-
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
-
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [VendorFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
-
-
-
 
 
 class VendorFragment : Fragment() {
@@ -149,17 +123,22 @@ class VendorFragment : Fragment() {
         vendorAddressBtn.setOnClickListener {
             println("map btn clicked ${vendor!!.mainAddr}")
 
-            var lng:String = ""
-            var lat:String = ""
-            if(vendor!!.lng != null && vendor!!.lat != null){
-                lng = vendor!!.lng!!
-                lat = vendor!!.lat!!
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("geo:0,0?q="+lng+","+lat+" (" + vendor!!.name + ")")
-                )
-                startActivity(intent)
+            var lng = "0"
+            var lat = "-"
+
+            if (vendor!!.lng != null) {
+                lng = vendor!!.lng.toString()
             }
+            if (vendor!!.lat != null) {
+                lat = vendor!!.lat.toString()
+            }
+
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("geo:0,0?q="+lng+","+lat+" (" + vendor!!.name + ")")
+            )
+            startActivity(intent)
+
         }
 
         vendorAddressBtnTxt = myView.findViewById(R.id.vendor_address_btn_tv)
@@ -179,7 +158,7 @@ class VendorFragment : Fragment() {
             mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
 
             mMap.clear() //clear old markers
-
+            println("BBBBBBBBBB ${vendor!!.lat}")
 
             if(vendor!!.lat != null && vendor!!.lng != null && vendor!!.lat != "0" && vendor!!.lng != "0"){
 
@@ -241,8 +220,6 @@ class VendorFragment : Fragment() {
 
                     hideProgressView()
 
-
-                    //Todo: figure out why the vendor is coming in null
                     try {
                         if (isResumed) {
                             val parentObject = JSONObject(response)
@@ -254,6 +231,12 @@ class VendorFragment : Fragment() {
                             val vendorArray = gson.fromJson(parentObject.toString() ,VendorArray::class.java)
 
                             vendor = vendorArray.vendors[0]
+                            if (vendor!!.lat == null) {
+                                vendor!!.lat = "0"
+                            }
+                            if (vendor!!.lng == null) {
+                                vendor!!.lng = "0"
+                            }
 
                             populateVendorView()
                         }
@@ -298,6 +281,7 @@ class VendorFragment : Fragment() {
         vendorBodyCl.visibility = View.VISIBLE
     }
 
+    /*
     private fun bitmapDescriptorFromVector(context: Context?, vectorResId: Int): BitmapDescriptor {
         val vectorDrawable = ContextCompat.getDrawable(context!!, vectorResId)
         vectorDrawable!!.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
@@ -307,6 +291,8 @@ class VendorFragment : Fragment() {
         vectorDrawable.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
+
+     */
 
 
 

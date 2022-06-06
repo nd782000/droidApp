@@ -121,7 +121,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                     R.color.colorAccent,
                     R.color.colorPrimaryDark
                 )
-                (adapter as CustomersAdapter).notifyDataSetChanged()
+                //(adapter as CustomersAdapter).notifyDataSetChanged()
 
                 // Remember to CLEAR OUT old items before appending in the new ones
 

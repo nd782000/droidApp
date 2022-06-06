@@ -28,11 +28,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CustomerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickListener, WorkOrderCellClickListener, InvoiceCellClickListener, ImageCellClickListener {
 
     lateinit  var customerID: String
@@ -151,7 +147,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
     }
 
-    fun getCustomer(){
+    private fun getCustomer(){
        // println("getCustomer = ${customer!!.ID}")
         showProgressView()
 
@@ -611,7 +607,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                         adapter.filterList = imageList
 
-                        (adapter as ImagesAdapter).notifyDataSetChanged();
+                        //(adapter as ImagesAdapter).notifyDataSetChanged();
 
                         imagesLoaded = true
 
@@ -657,7 +653,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         queue.add(postRequest1)
     }
 
-
+    /*
     fun RecyclerView.onScrollToEnd(
         onScrollNearEnd: (Unit) -> Unit
     ) = addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -668,11 +664,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         }
     })
 
-
-
-
-
-
+     */
 
 
 
@@ -909,7 +901,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
     override fun onImageCellClickListener(data:Image) {
-        data.let { data_ ->
+        data.let {
             val directions = CustomerFragmentDirections.navigateCustomerToImage(imageList.toTypedArray(), imageList.indexOf(data))
             myView.findNavController().navigate(directions)
         }

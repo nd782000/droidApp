@@ -94,8 +94,7 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
                 holder.itemView.list_lead_name_tv.text = spannable
             } else {
                 if(!customerView){
-                    //Todo: figure out how to pull strings from Resources within an adapter
-                    holder.itemView.list_lead_name_tv.text = filterList[position].custName!! + " #" + filterList[position].ID
+                    holder.itemView.list_lead_name_tv.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
                     holder.itemView.list_lead_description_tv.text = filterList[position].description!!
                     holder.itemView.list_lead_date_tv.text = daysAged
                 }else{
@@ -105,7 +104,7 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
             }
         } else {
             if(!customerView){
-                holder.itemView.list_lead_name_tv.text = filterList[position].custName!! + " #" + filterList[position].ID
+                holder.itemView.list_lead_name_tv.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
                 holder.itemView.list_lead_description_tv.text = filterList[position].description!!
                 holder.itemView.list_lead_date_tv.text = daysAged
             }else{

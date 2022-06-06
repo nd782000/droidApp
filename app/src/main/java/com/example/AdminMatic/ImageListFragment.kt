@@ -315,7 +315,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
                         adapter.filterList = imageList
 
-                        (adapter as ImagesAdapter).notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
 
                         imagesLoaded = true
                     }

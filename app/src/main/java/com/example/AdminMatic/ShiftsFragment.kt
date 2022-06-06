@@ -1,13 +1,13 @@
 package com.example.AdminMatic
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,14 +15,9 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_employee_list.*
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.IOException
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.OffsetTime
@@ -198,7 +193,7 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
             try {
                 val iShifts = shiftsJSON["shifts"] as JSONObject
                 val iDay = iShifts["$day"] as JSONObject
-                val iStartTime = iDay["startTime"]
+                //val iStartTime = iDay["startTime"]
 
                 shifts.add(gson.fromJson(iDay.toString(), Shift::class.java))
 
@@ -241,7 +236,7 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
             footerText.text = getString(R.string.shifts_footer_text, numberOfValidShifts, totalHours)
 
-            (adapter as ShiftsAdapter).notifyDataSetChanged()
+            //(adapter as ShiftsAdapter).notifyDataSetChanged()
 
         }
 

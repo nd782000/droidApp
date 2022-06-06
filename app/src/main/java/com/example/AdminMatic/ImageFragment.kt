@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.content.res.TypedArray
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
@@ -13,11 +12,7 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_image_list.*
-import kotlinx.android.synthetic.main.fragment_image_upload.view.*
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.time.LocalDate
@@ -75,7 +70,6 @@ class ImageFragment : Fragment() {
         Picasso.with(context).load(R.drawable.ic_liked).fetch()
         Picasso.with(context).load(R.drawable.ic_unliked).fetch()
 
-        // Todo:
         pgsBar = view.findViewById(R.id.progress_bar)
         //pgsBar.visibility = View.INVISIBLE
 
@@ -160,12 +154,10 @@ class ImageFragment : Fragment() {
         likeView.isClickable = false
         likeView.isFocusable = false
 
-        var urlString:String
-        if (liked) {
-            urlString = "https://www.adminmatic.com/cp/app/functions/new/like.php"
-        }
-        else {
-            urlString = "https://www.adminmatic.com/cp/app/functions/delete/like.php"
+        var urlString:String = if (liked) {
+            "https://www.adminmatic.com/cp/app/functions/new/like.php"
+        } else {
+            "https://www.adminmatic.com/cp/app/functions/delete/like.php"
         }
 
         val currentTimestamp = System.currentTimeMillis()

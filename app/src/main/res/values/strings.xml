@@ -18,6 +18,7 @@
     <string name="employees">Employees</string>
     <string name="customer">Customer</string>
     <string name="customers">Customers</string>
+    <string name="customer_button">%1$s %2$s</string>
     <string name="vendor">Vendor</string>
     <string name="vendor_list">Vendor List</string>
     <string name="item">Item</string>
@@ -87,6 +88,7 @@
     <string name="work_order">Work Order</string>
     <string name="work_order_item">Work Order Item</string>
     <string name="work_order_title">#%1$s - %2$s</string>
+    <string name="work_order_number">Work Order #%1$s</string>
     <string name="view_employee_schedule">View ______s Schedule</string>
     <string name="schedule_settings">Schedule Settings</string>
     <string name="yourUsageFrom">Your usage from:</string>
@@ -207,6 +209,7 @@
     <string name="vendors">Vendors</string>
     <string name="contracts">Contracts</string>
     <string name="contract">Contract</string>
+    <string name="name_number">%1$s #%2$s</string>
     <string name="add_new_contract">Add New Contract</string>
     <string name="txt_equipment_dummy">No Description Provided</string>
     <string name="view_service_lists">View Service Lists</string>
@@ -379,6 +382,7 @@
     <string name="crews_name">Crews (%1$s)</string>
     <string name="other">Other</string>
     <string name="select_vendor">Select Vendor</string>
+    <string name="existing_vendor">Existing Vendor</string>
 
     <string name="dialogue_delete_wo_item_title">Delete Item?</string>
     <string name="dialogue_delete_wo_item_body">Are you sure you want to delete this item?</string>

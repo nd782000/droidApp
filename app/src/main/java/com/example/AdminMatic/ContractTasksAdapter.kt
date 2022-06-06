@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlin.contracts.contract
 
 
 class ContractTasksAdapter(list: MutableList<ContractTask>, private val context: Context, private val cellClickListener: ContractTaskCellClickListener) : RecyclerView.Adapter<ContractTaskViewHolder>() {

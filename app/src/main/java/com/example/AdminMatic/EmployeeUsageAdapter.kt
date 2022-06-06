@@ -1,33 +1,17 @@
 package com.example.AdminMatic
 
-import android.app.AlertDialog
 import android.content.Context
-import android.provider.Settings
-import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupMenu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.wo_item_list_item.view.*
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import org.w3c.dom.Text
 import java.time.LocalDateTime
-import java.util.HashMap
 
 
-class employeeUsageAdapter(list: MutableList<Usage>, private val context: Context, private val cellClickListener: EmployeeUsageCellClickListener) : RecyclerView.Adapter<EmployeeUsageViewHolder>() {
+class EmployeeUsageAdapter(list: MutableList<Usage>, private val context: Context, private val cellClickListener: EmployeeUsageCellClickListener) : RecyclerView.Adapter<EmployeeUsageViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
@@ -45,7 +29,7 @@ class employeeUsageAdapter(list: MutableList<Usage>, private val context: Contex
         return EmployeeUsageViewHolder(inflater, parent)
     }
 
-    private var listener: LogOut? = null
+    //private var listener: LogOut? = null
 
 
 

@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,12 +21,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 
 interface WoItemCellClickListener {
@@ -286,7 +281,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                             val itemDecoration: RecyclerView.ItemDecoration =
                                 DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
                             itemRecyclerView.addItemDecoration(itemDecoration)
-                            (adapter as WoItemsAdapter).notifyDataSetChanged()
+                            //(adapter as WoItemsAdapter).notifyDataSetChanged()
                         }
 
 
@@ -308,12 +303,13 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                             val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer.ID)
                             myView.findNavController().navigate(directions)
                         }
-                        customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
+                        //customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
+                        customerBtn.text = getString(R.string.customer_button, workOrder!!.custName, workOrder!!.custAddress)
 
                         println("lat: ${workOrder!!.lat}")
                         println("lng: ${workOrder!!.lng}")
                         scheduleTxt.text = workOrder!!.dateNice
-                        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = "WorkOrder #${workOrder!!.woID}"
+                        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.work_order_number, workOrder!!.woID)
 
                         workOrder!!.setEmps()
 
@@ -345,9 +341,9 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
         val popUp = PopupMenu(myView.context,statusBtn)
         popUp.inflate(R.menu.task_status_menu)
-        popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_not_started)!!,myView.context)!!, myView.context.getString(R.string.not_started)))
-        popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_in_progress)!!,myView.context)!!, myView.context.getString(R.string.in_progress)))
-        popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_done)!!,myView.context)!!, myView.context.getString(R.string.finished)))
+        popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_not_started)!!,myView.context), myView.context.getString(R.string.not_started)))
+        popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_in_progress)!!,myView.context), myView.context.getString(R.string.in_progress)))
+        popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_done)!!,myView.context), myView.context.getString(R.string.finished)))
         popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
             workOrder!!.status = item!!.itemId.toString()
@@ -507,24 +503,4 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         allCL.visibility = View.VISIBLE
     }
 
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment workOrderFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            WorkOrderFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

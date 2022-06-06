@@ -9,7 +9,7 @@ public class BounceScrollView extends ScrollView
 {
     private static final int MAX_Y_OVERSCROLL_DISTANCE = 100;
 
-    private Context mContext;
+    private final Context mContext;
     private int mMaxYOverscrollDistance;
 
     public BounceScrollView(Context context)

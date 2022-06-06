@@ -123,7 +123,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
             //for item animations
             // recyclerView.itemAnimator = SlideInUpAnimator()
 
-            (adapter as EquipmentDetailAdapter).notifyDataSetChanged()
+            //(adapter as EquipmentDetailAdapter).notifyDataSetChanged()
 
             // Remember to CLEAR OUT old items before appending in the new ones
 

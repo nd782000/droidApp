@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.solver.state.State
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -94,7 +93,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         }
         else {
             adapter = WorkOrdersAdapter(globalWorkOrdersList!!, this.myView.context,this)
-            (adapter).notifyDataSetChanged()
+            //(adapter).notifyDataSetChanged()
         }
 
 
@@ -380,7 +379,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
 
 
-            (adapter as WorkOrdersAdapter).notifyDataSetChanged()
+            //(adapter as WorkOrdersAdapter).notifyDataSetChanged()
 
             // Remember to CLEAR OUT old items before appending in the new ones
 
@@ -889,24 +888,4 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     }
 
 
-
-
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            WorkOrderListFragment().apply {
-
-            }
-    }
 }

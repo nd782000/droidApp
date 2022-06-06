@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,19 +21,12 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-
 interface ServiceCellClickListener {
     fun onServiceCellClickListener(data:EquipmentService)
 }
 
 
 class EquipmentFragment : Fragment(), ServiceCellClickListener {
-    private var param2: String? = null
 
     private  var equipment: Equipment? = null
 
@@ -63,7 +57,6 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         super.onCreate(savedInstanceState)
         arguments?.let {
             equipment = it.getParcelable("equipment")
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -314,16 +307,17 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
         val popUp = PopupMenu(myView.context,statusBtn)
         popUp.inflate(R.menu.task_status_menu)
-        popUp.menu.add(0, 0, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_online)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_online)))
-        popUp.menu.add(0, 1, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_needs_repair)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_needs_repair)))
-        popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_broken)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_broken)))
-        popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_winterized)!!,myView.context)!!, myView.context.getString(R.string.equipment_status_winterized)))
-        popUp.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+        popUp.menu.add(0, 0, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_online)!!,myView.context), myView.context.getString(R.string.equipment_status_online)))
+        popUp.menu.add(0, 1, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_needs_repair)!!,myView.context), myView.context.getString(R.string.equipment_status_needs_repair)))
+        popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_broken)!!,myView.context), myView.context.getString(R.string.equipment_status_broken)))
+        popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_winterized)!!,myView.context), myView.context.getString(R.string.equipment_status_winterized)))
+        popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
             equipment!!.status = item!!.itemId.toString()
 
             setStatus(equipment!!.status)
-            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
+            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT)
+                .show()
 
 
             showProgressView()
@@ -376,7 +370,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             true
 
 
-        })
+        }
 
         popUp.gravity = Gravity.START
         popUp.show()

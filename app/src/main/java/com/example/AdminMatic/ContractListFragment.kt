@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -22,14 +21,10 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-
-import kotlinx.android.synthetic.main.fragment_contract_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_contract_list.customerSwipeContainer
 import kotlinx.android.synthetic.main.fragment_contract_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-
 
 
 interface ContractCellClickListener {
@@ -46,7 +41,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
     lateinit var  pgsBar: ProgressBar
     lateinit var recyclerView: RecyclerView
     lateinit var searchView:androidx.appcompat.widget.SearchView
-    lateinit var footerCL:androidx.constraintlayout.widget.ConstraintLayout
+    private lateinit var footerCL:androidx.constraintlayout.widget.ConstraintLayout
     lateinit var swipeRefresh:SwipeRefreshLayout
     lateinit var contractCountText:TextView
 
@@ -191,7 +186,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
 
 
-                            (adapter as ContractsAdapter).notifyDataSetChanged();
+                            //(adapter as ContractsAdapter).notifyDataSetChanged();
 
                             // Remember to CLEAR OUT old items before appending in the new ones
 

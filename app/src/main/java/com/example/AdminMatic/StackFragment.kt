@@ -27,11 +27,8 @@ import java.time.OffsetTime
 import java.time.ZoneOffset
 import java.util.HashMap
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
+//Todo: more memory leak warnings, investigate how to refactor
 lateinit var stackView:View
          var type:Int = 1
          var ID:String = ""
@@ -55,6 +52,7 @@ var workOrdersList:MutableList<WorkOrder>? = null
 var invoicesList:MutableList<Invoice>? = null
 
 
+/*
 var datesArray:Array<String> = arrayOf(
     "All Dates (${GlobalVars.loggedInEmployee!!.fName})",
     "All Dates (Everyone)",
@@ -73,12 +71,12 @@ var datesArray:Array<String> = arrayOf(
     "This Year (${GlobalVars.loggedInEmployee!!.fName})",
     "This Year (Everyone)")
 
+ */
 
 
-class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) : Fragment(){
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragment(){
+
 
 
     /*constructor(_type: Int, _ID: String):{
@@ -100,13 +98,12 @@ class StackFragment(val _type: Int, val _ID: String, _delegate: StackDelegate) :
         println("ID = $ID")
     }
 
+    /*
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
+
+     */
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {

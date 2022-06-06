@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.*
@@ -15,9 +14,7 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -155,7 +152,7 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
                             layoutManager = LinearLayoutManager(activity)
 
                             adapter = activity?.let {
-                                employeeUsageAdapter(usageList,
+                                EmployeeUsageAdapter(usageList,
                                     it, this@UsageFragment)
                             }
 
@@ -171,7 +168,7 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
 
                             footerText.text = getString(R.string.usage_footer_text, usageList.size, totalHours)
 
-                            (adapter as employeeUsageAdapter).notifyDataSetChanged()
+                            (adapter as EmployeeUsageAdapter).notifyDataSetChanged()
 
                         }
                     }

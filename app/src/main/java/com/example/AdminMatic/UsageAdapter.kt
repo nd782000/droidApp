@@ -2,22 +2,23 @@ package com.example.AdminMatic
 
 import android.content.Context
 import android.content.res.Configuration
-import android.provider.Settings
-import android.renderscript.ScriptGroup
 import android.text.InputType
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.*
-import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.wo_item_list_item.view.*
-import java.util.Collections.copy
-import kotlin.math.roundToInt
 
 
 class UsageAdapter(private val list: MutableList<Usage>, private val context: Context,private val usageEditListener: UsageEditListener, private val woItem:WoItem, private val workOrder:WorkOrder)
@@ -57,7 +58,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             //labor type
 
             // Lock this cell if the values are already filled and it's a different person than the logged in employee
-            usage.locked = false;
+            usage.locked = false
             if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID
                 && usage.start != null
                 && usage.start != "0000-00-00 00:00:00"
@@ -140,7 +141,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             val totalTxt:TextView = holder.itemView.findViewById(R.id.usage_total_tv)
 
 
-            totalTxt.text = usage.qty!! + " Hours"
+            totalTxt.text = context.getString(R.string.usage_hours, usage.qty)
 
 
 
@@ -154,7 +155,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 if (!usage.locked!!) {
                     popUp.inflate(R.menu.task_status_menu)
 
-                    popUp.menu.add(0, usage.ID.toInt(), 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context), context.getString(R.string.delete)))
+                    popUp.menu.add(0, usage.ID.toInt(), 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(context, R.drawable.ic_canceled)!!,context), context.getString(R.string.delete)))
 
                     popUp.setOnMenuItemClickListener {
                         usageEditListener.deleteUsage(position)
@@ -173,7 +174,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             //material type
             laborCl.isVisible = false
 
-            usage.locked = false;
+            usage.locked = false
             if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID
                 && usage.vendor != null
                 && usage.qty!= "0.00"
@@ -193,10 +194,10 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
             when (usage.vendor) {
                 "0" -> {
-                    vendorSelectText.text = "Other"
+                    vendorSelectText.text = context.getString(R.string.other)
                 }
                 "", null -> {
-                    vendorSelectText.text = "Select Vendor"
+                    vendorSelectText.text = context.getString(R.string.select_vendor)
 
                     woItem.vendors.forEach {
                         if (it.prefered == "1") {
@@ -208,7 +209,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
                 }
                 else -> {
-                    vendorSelectText.text = "Existing Vendor!"
+                    vendorSelectText.text = context.getString(R.string.existing_vendor)
 
                     woItem.vendors.forEach {
                         if (it.ID == usage.vendor) {
@@ -388,7 +389,8 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 totalCostTxt.text = usage.totalCost!!
             }
             if(usage.totalCost == ""){
-                totalCostTxt.text = "0.00"
+                usage.totalCost = "0.00"
+                totalCostTxt.text = usage.totalCost
             }
 
             val receiptImageView:ImageView = holder.itemView.findViewById(R.id.usage_receipt_iv)
@@ -445,7 +447,7 @@ class UsageViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.usage_list_item, parent, false)) {
     private var mNameView: TextView? = null
     // This is used to tell the recycler to skip its first "onItemSelected" call so it doesn't go off automatically on load
-    var mInitialized = false
+    //var mInitialized = false
 
     //private var thumbView:ImageView? = null
     // private var empPic:ImageView? = null

@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
@@ -96,10 +97,10 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
             //val d:Drawable? = resize(context.getDrawable(R.drawable.ic_in_progress)!!)
 
-            popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_not_started)!!,context), context.getString(R.string.not_started)))
-            popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_in_progress)!!,context), context.getString(R.string.in_progress)))
-            popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_done)!!,context), context.getString(R.string.finished)))
-            popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(context.getDrawable(R.drawable.ic_canceled)!!,context), context.getString(R.string.canceled)))
+            popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(context, R.drawable.ic_not_started)!!,context), context.getString(R.string.not_started)))
+            popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(context, R.drawable.ic_in_progress)!!,context), context.getString(R.string.in_progress)))
+            popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(context, R.drawable.ic_done)!!,context), context.getString(R.string.finished)))
+            popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(context, R.drawable.ic_canceled)!!,context), context.getString(R.string.canceled)))
 
            // menu.add(0, 1, 1, menuIconWithText(getResources().getDrawable(R.mipmap.user_2), getResources().getString(R.string.action_profile)));
 
@@ -119,19 +120,19 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
                     builder.setMessage("Do you want to upload a task image now?")
 //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
-                    builder.setPositiveButton(android.R.string.yes) { _, _ ->
+                    builder.setPositiveButton(android.R.string.ok) { _, _ ->
                         Toast.makeText(
                             myView.context,
-                            android.R.string.yes, Toast.LENGTH_SHORT
+                            android.R.string.ok, Toast.LENGTH_SHORT
                         ).show()
 
                         cellClickListener.uploadImage(task)
                     }
 
-                    builder.setNegativeButton(android.R.string.no) { _, _ ->
+                    builder.setNegativeButton(android.R.string.cancel) { _, _ ->
                         Toast.makeText(
                             myView.context,
-                            android.R.string.no, Toast.LENGTH_SHORT
+                            android.R.string.cancel, Toast.LENGTH_SHORT
                         ).show()
                     }
 

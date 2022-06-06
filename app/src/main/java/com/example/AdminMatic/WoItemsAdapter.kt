@@ -2,7 +2,6 @@ package com.example.AdminMatic
 
 import android.app.AlertDialog
 import android.content.Context
-import android.provider.Settings
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -10,19 +9,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wo_item_list_item.view.*
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.util.HashMap
 
 
 class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, private val cellClickListener: WoItemCellClickListener) : RecyclerView.Adapter<WoItemViewHolder>() {
@@ -47,7 +40,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
         return WoItemViewHolder(inflater, parent)
     }
 
-    private var listener: LogOut? = null
+    //private var listener: LogOut? = null
 
 
 

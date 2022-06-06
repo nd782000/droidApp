@@ -25,15 +25,7 @@ import kotlinx.android.synthetic.main.fragment_item_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import android.text.InputType
-import androidx.navigation.findNavController
 import kotlin.math.roundToInt
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 
 interface ContractTaskCellClickListener {
     fun onContractTaskCellClickListener(data:ContractTask)
@@ -188,7 +180,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                 val itemDecoration: RecyclerView.ItemDecoration =
                     DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
                 recycler.addItemDecoration(itemDecoration)
-                (adapter as ContractTasksAdapter).notifyDataSetChanged()
+                //(adapter as ContractTasksAdapter).notifyDataSetChanged()
             }
 
         }
@@ -250,7 +242,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                 }
                 else {
                     contractItem!!.qty = "0.00"
-                    qtyEt.setText("0.00")
+                    qtyEt.setText(contractItem!!.qty)
                 }
                 setTotalText()
                 true
@@ -278,7 +270,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                 }
                 else {
                     contractItem!!.price = "0.00"
-                    priceEt.setText("0.00")
+                    priceEt.setText(contractItem!!.price)
                 }
                 setTotalText()
                 true
@@ -375,7 +367,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                             contractItemRecycler.addItemDecoration(itemDecoration)
 
 
-                            (adapter as SearchItemsAdapter).notifyDataSetChanged()
+                            //(adapter as SearchItemsAdapter).notifyDataSetChanged()
 
 
                             contractItemSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
