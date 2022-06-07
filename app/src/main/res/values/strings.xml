@@ -394,7 +394,16 @@
     <string name="dialogue_add_contract_item_body">The customer may have already seen this contract. Are you sure you want to add an item?</string>
     <string name="dialogue_fields_missing_title">Fields Missing</string>
     <string name="dialogue_fields_missing_body">Please fill out all the fields before submitting.</string>
-
+    <!--
+    <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>
+    <string name="dialogue_update_wo_in_progress_body">Would you also like to set the work order status to in progress?</string>
+    <string name="dialogue_update_wo_finished_title">Update Work Order Status?</string>
+    <string name="dialogue_update_wo_finished_body">Would you also like to set the work order status to finished?</string>
+    <string name="dialogue_update_wo_item_in_progress_title">Update Work Order Statuses?</string>
+    <string name="dialogue_update_wo_item_in_progress_body">Would you also like to set the work order and item statuses to in progress?</string>
+    <string name="dialogue_update_wo_item_finished_title">Update Work Order Statuses?</string>
+    <string name="dialogue_update_wo_item_finished_body">Would you also like to set the work order and item statuses to finished?</string>
+    -->
 
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
 

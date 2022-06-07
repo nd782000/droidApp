@@ -541,12 +541,16 @@
             android:name="woItem"
             app:argType="com.example.AdminMatic.WoItem"
             app:nullable="true" />
-        <action
-            android:id="@+id/navigateToUsageEntry"
-            app:destination="@id/usageEntryFragment" />
         <argument
             android:name="workOrder"
             app:argType="com.example.AdminMatic.WorkOrder" />
+        <argument
+            android:name="listIndex"
+            app:argType="integer"
+            android:defaultValue="-1"/>
+        <action
+            android:id="@+id/navigateToUsageEntry"
+            app:destination="@id/usageEntryFragment" />
         <action
             android:id="@+id/navigateWoItemToImageUpload"
             app:destination="@id/imageUpload" />

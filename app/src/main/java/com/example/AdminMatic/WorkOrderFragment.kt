@@ -448,6 +448,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
             val directions = WorkOrderFragmentDirections.navigateToWoItem(it, workOrder!!)
+            directions.listIndex = listIndex
 
             myView.findNavController().navigate(directions)
 

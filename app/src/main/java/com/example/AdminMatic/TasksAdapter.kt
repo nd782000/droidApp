@@ -205,10 +205,11 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
                             // println("payroll = ${payrollJSON.toString()}")
                             // println("payroll count = ${payrollJSON.length()}")
 
+                            cellClickListener.hideProgressView()
 
                             // getPayroll()
 
-                            cellClickListener.getWoItem()
+                            cellClickListener.getWoItem(true)
 
 
                             /* Here 'response' is a String containing the response you received from the website... */

@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.*
@@ -26,8 +27,10 @@ import org.json.JSONObject
 interface TaskCellClickListener {
     fun onTaskCellClickListener(data:Task)
     fun showProgressView()
-    fun getWoItem()
+    fun hideProgressView()
+    fun getWoItem(taskUpdated:Boolean)
     fun uploadImage(_task:Task)
+    fun checkForWoStatus()
 
 }
 
@@ -35,21 +38,18 @@ interface TaskCellClickListener {
 
 
 class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSelectedListener {
-    // TODO: Rename and change types of parameters
-
 
 
     private  var woItem: WoItem? = null
     lateinit  var workOrder:WorkOrder
     lateinit  var globalVars:GlobalVars
-
-
-
-
+    private var listIndex: Int = -1
 
 
 
     lateinit var myView:View
+
+    private lateinit var allCL: ConstraintLayout
 
     private lateinit var  pgsBar: ProgressBar
 
@@ -97,6 +97,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         arguments?.let {
             woItem = it.getParcelable("woItem")
             workOrder = it.getParcelable("workOrder")!!
+            listIndex = it.getInt("listIndex")
         }
     }
 
@@ -125,6 +126,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
 
         pgsBar = view.findViewById(R.id.progress_bar)
+        allCL = view.findViewById(R.id.all_cl)
 
         woItemSearch = myView.findViewById(R.id.wo_item_search)
         estCl = myView.findViewById(R.id.wo_item_est_cl)
@@ -171,13 +173,13 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         submitBtn = myView.findViewById(R.id.wo_item_submit_btn)
 
 
-        if (woItem == null){
+        if (woItem == null) {
             //fillProfitCl()
+            setUpViews()
             hideProgressView()
-
-
-        }else{
-            getWoItem()
+        }
+        else{
+            getWoItem(false)
         }
 
 
@@ -218,7 +220,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         profitBar.progress = 100 - profitPercent
     }
 
-    override fun getWoItem(){
+    override fun getWoItem(taskUpdated: Boolean){
         println("get woItem")
 
 
@@ -283,7 +285,12 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                             //(adapter as TasksAdapter).notifyDataSetChanged()
                         }
                         fillProfitCl()
+                        setUpViews()
                         hideProgressView()
+                        if (taskUpdated) {
+                            checkForWoStatus()
+                        }
+
                     }
 
 
@@ -313,6 +320,41 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         queue.add(postRequest1)
 
 
+    }
+
+    override fun checkForWoStatus() {
+
+        //Plug the new woitem status into the workOrder object
+        workOrder.items!!.forEach {
+            if (it.ID == woItem!!.ID) {
+                it.status = woItem!!.status
+            }
+        }
+
+        // If wo status is "not started" and any items are in progress, prompt to change
+        if (workOrder.status == "1") {
+            workOrder.items!!.forEach {
+                if (it.status == "2") {
+                    updateWorkOrderStatus(woItem!!.status)
+                    return
+                }
+            }
+        }
+
+        // If wo status is "not started" or "in progress" and all items are finished, prompt to change
+        if (workOrder.status == "1" || workOrder.status == "2") {
+            var allFinished = true
+            workOrder.items!!.forEach {
+                println("AAAAAAAAAA ${it.status}")
+                if (it.status == "1" || it.status == "2") { // canceled counts as complete
+                    allFinished = false
+                }
+            }
+
+            if (allFinished && workOrder.status != "3") {
+                updateWorkOrderStatus(woItem!!.status)
+            }
+        }
     }
 
     override fun uploadImage(_task:Task){
@@ -352,13 +394,13 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_not_started)!!,myView.context), myView.context.getString(R.string.not_started)))
         popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_in_progress)!!,myView.context), myView.context.getString(R.string.in_progress)))
         popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_done)!!,myView.context), myView.context.getString(R.string.finished)))
-        popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_canceled)!!,myView.context), myView.context.getString(R.string.finished)))
+        popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_canceled)!!,myView.context), myView.context.getString(R.string.canceled)))
 
-        //todo: continue testing
 
         popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
             woItem!!.status = item!!.itemId.toString()
+
 
 
             setStatus(woItem!!.status)
@@ -367,7 +409,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
             showProgressView()
 
-            var urlString = "https://www.adminmatic.com/cp/app/functions/update/workOrderItem.php"
+            var urlString = "https://www.adminmatic.com/cp/app/functions/update/workOrderItemStatus.php"
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -385,7 +427,12 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
+
                         hideProgressView()
+
+                        checkForWoStatus()
+
+
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {
@@ -402,8 +449,9 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                     params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                     params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                     params["status"] = woItem!!.status
-                    //params["workOrderID"] = woItem!!.woID
-                    params["workOrderItemID"] = woItem!!.ID
+                    params["woID"] = workOrder.woID
+                    params["woItemID"] = woItem!!.ID
+                    params["empID"] = GlobalVars.loggedInEmployee!!.ID
                     println("params = $params")
                     return params
                 }
@@ -415,6 +463,58 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         popUp.gravity = Gravity.START
         popUp.show()
+    }
+
+    private fun updateWorkOrderStatus(newStatus: String) {
+        println("Updating work order status to $newStatus")
+        workOrder.status = newStatus
+
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/update/workOrderStatus.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    if (listIndex >= 0) {
+                        GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder)
+                    }
+                    hideProgressView()
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = java.util.HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["status"] = workOrder.status
+                params["woID"] = workOrder.woID
+                params["empID"] = GlobalVars.loggedInEmployee!!.ID
+                println("params = $params")
+                return params
+            }
+        }
+        queue.add(postRequest1)
     }
 
     private fun setStatus(status: String) {
@@ -444,9 +544,9 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         println("showProgressView")
 
         pgsBar.visibility = View.VISIBLE
+        allCL.visibility = View.INVISIBLE
 
-
-        woItemSearch.visibility = View.INVISIBLE
+        /*
         estCl.visibility = View.INVISIBLE
         hideCl.visibility = View.INVISIBLE
         taxCl.visibility = View.INVISIBLE
@@ -458,14 +558,19 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         profitCl.visibility = View.INVISIBLE
         submitBtn.visibility = View.INVISIBLE
 
+         */
+
 
 
     }
 
-     fun hideProgressView() {
+    override fun hideProgressView() {
+        println("hideProgressView")
+        pgsBar.visibility = View.INVISIBLE
+        allCL.visibility = View.VISIBLE
+    }
 
-
-
+    fun setUpViews() {
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             myView.context,
             android.R.layout.simple_spinner_dropdown_item, chargeTypeArray
@@ -474,8 +579,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
         chargeSpinner.adapter = adapter
-
-
 
 
         if (woItem == null){
@@ -532,7 +635,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             if (editMode){
                 println("editMode = true")
 
-               // woItemSearch.isEnabled = true
+                // woItemSearch.isEnabled = true
                 //woItemSearch.isClickable = true
                 setViewAndChildrenEnabled(woItemSearch,true)
                 estEditTxt.isEnabled = true
@@ -612,14 +715,9 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 tasksRv.visibility = View.GONE
                 descriptionCl.visibility = View.VISIBLE
             }
-
-
-
-
-
         }
-
     }
+
 
 
     //spinner delegates
