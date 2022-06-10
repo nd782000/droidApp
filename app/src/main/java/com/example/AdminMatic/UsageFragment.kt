@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
@@ -117,6 +116,11 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
         getUsage()
     }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("usage")
+    }
+
     private fun getUsage(){
         println("getUsage")
 
@@ -127,7 +131,6 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -138,41 +141,39 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
                 println("Response $response")
                 hideProgressView()
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        val employees:JSONArray = parentObject.getJSONArray("usages")
+                    val parentObject = JSONObject(response)
+                    val employees:JSONArray = parentObject.getJSONArray("usages")
 
 
-                        val gson = GsonBuilder().create()
-                        val usageList = gson.fromJson(employees.toString() , Array<Usage>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    val usageList = gson.fromJson(employees.toString() , Array<Usage>::class.java).toMutableList()
 
-                        //employeeCountTv.text = getString(R.string.x_active_employees, employeesList.size)
+                    //employeeCountTv.text = getString(R.string.x_active_employees, employeesList.size)
 
-                        usageRecycler.apply {
-                            layoutManager = LinearLayoutManager(activity)
+                    usageRecycler.apply {
+                        layoutManager = LinearLayoutManager(activity)
 
-                            adapter = activity?.let {
-                                EmployeeUsageAdapter(usageList,
-                                    it, this@UsageFragment)
-                            }
-
-                            val itemDecoration: RecyclerView.ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            usageRecycler.addItemDecoration(itemDecoration)
-
-
-                            var totalHours = 0.0
-                            usageList.forEach {
-                                totalHours += it.qty.toDouble()
-                            }
-
-                            footerText.text = getString(R.string.usage_footer_text, usageList.size, totalHours)
-
-                            (adapter as EmployeeUsageAdapter).notifyDataSetChanged()
-
+                        adapter = activity?.let {
+                            EmployeeUsageAdapter(usageList,
+                                it, this@UsageFragment)
                         }
+
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        usageRecycler.addItemDecoration(itemDecoration)
+
+
+                        var totalHours = 0.0
+                        usageList.forEach {
+                            totalHours += it.qty.toDouble()
+                        }
+
+                        footerText.text = getString(R.string.usage_footer_text, usageList.size, totalHours)
+
+                        (adapter as EmployeeUsageAdapter).notifyDataSetChanged()
+
                     }
-                    /* Here 'response' is a String containing the response you received from the website... */
+
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
@@ -196,7 +197,8 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "usage"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onWoItemCellClickListener(data:Usage) {

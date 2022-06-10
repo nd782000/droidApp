@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.*
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONException
@@ -201,6 +199,11 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("woItem")
+    }
+
     private fun fillProfitCl() {
         var totalPrice = 0.0
         //var totalCost = 0.0
@@ -234,7 +237,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -243,59 +245,50 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
                 println("Response $response")
 
-
-
-
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
 
-                        val gson = GsonBuilder().create()
-                        woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
-                        descriptionTv.text = woItem!!.empDesc
+                    val gson = GsonBuilder().create()
+                    woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
+                    descriptionTv.text = woItem!!.empDesc
 
-                        setStatus(woItem!!.status)
+                    setStatus(woItem!!.status)
 
-                        val taskJSON: JSONArray = parentObject.getJSONArray("tasks")
-                        val taskList = gson.fromJson(taskJSON.toString(), Array<Task>::class.java)
-                            .toMutableList()
+                    val taskJSON: JSONArray = parentObject.getJSONArray("tasks")
+                    val taskList = gson.fromJson(taskJSON.toString(), Array<Task>::class.java)
+                        .toMutableList()
 
-                        tasksRv.apply {
-                            layoutManager = LinearLayoutManager(activity)
-                            adapter = activity?.let {
-                                TasksAdapter(
-                                    taskList,
-                                    it,
-                                    this@WoItemFragment,
-                                    woItem as WoItem
-                                )
-                            }
-
-                            val itemDecoration: RecyclerView.ItemDecoration =
-                                DividerItemDecoration(
-                                    myView.context,
-                                    DividerItemDecoration.VERTICAL
-                                )
-                            tasksRv.addItemDecoration(itemDecoration)
-
-
-
-                            //(adapter as TasksAdapter).notifyDataSetChanged()
-                        }
-                        fillProfitCl()
-                        setUpViews()
-                        hideProgressView()
-                        if (taskUpdated) {
-                            checkForWoStatus()
+                    tasksRv.apply {
+                        layoutManager = LinearLayoutManager(activity)
+                        adapter = activity?.let {
+                            TasksAdapter(
+                                taskList,
+                                it,
+                                requireActivity().application,
+                                this@WoItemFragment,
+                                woItem as WoItem
+                            )
                         }
 
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(
+                                myView.context,
+                                DividerItemDecoration.VERTICAL
+                            )
+                        tasksRv.addItemDecoration(itemDecoration)
+
+
+
+                        //(adapter as TasksAdapter).notifyDataSetChanged()
                     }
-
-
-
-
+                    fillProfitCl()
+                    setUpViews()
+                    hideProgressView()
+                    if (taskUpdated) {
+                        checkForWoStatus()
+                    }
 
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -317,7 +310,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "woItem"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
 
 
     }
@@ -414,9 +408,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
             urlString = "$urlString?cb=$currentTimestamp"
-            val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
-
-
 
             val postRequest1: StringRequest = object : StringRequest(
                 Method.POST, urlString,
@@ -431,8 +422,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                         hideProgressView()
 
                         checkForWoStatus()
-
-
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {
@@ -456,7 +445,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                     return params
                 }
             }
-            queue.add(postRequest1)
+            postRequest1.tag = "woItem"
+            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
             true
         }
 
@@ -476,7 +466,6 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -514,7 +503,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "woItem"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     private fun setStatus(status: String) {

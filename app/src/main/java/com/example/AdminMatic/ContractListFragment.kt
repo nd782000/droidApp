@@ -18,7 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_contract_list.*
@@ -95,9 +94,12 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
         getContracts()
 
-
     }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("contractList")
+    }
 
     private fun getContracts(){
         println("getContracts")
@@ -112,7 +114,6 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
 
         //val preferences =
@@ -130,93 +131,91 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
                 hideProgressView()
 
-
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val contracts:JSONArray = parentObject.getJSONArray("contracts")
-                        println("contracts = $contracts")
-                        println("contracts count = ${contracts.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val contracts:JSONArray = parentObject.getJSONArray("contracts")
+                    println("contracts = $contracts")
+                    println("contracts count = ${contracts.length()}")
 
 
 
-                        val gson = GsonBuilder().create()
-                        val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
 
-                        contractCountText.text = getString(R.string.x_active_contracts, contractsList.size)
-
-
-                        list_recycler_view.apply {
-                            layoutManager = LinearLayoutManager(activity)
+                    contractCountText.text = getString(R.string.x_active_contracts, contractsList.size)
 
 
-                            adapter = activity?.let {
-                                ContractsAdapter(contractsList, context,this@ContractListFragment)
-                            }
-
-                            val itemDecoration: ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            recyclerView.addItemDecoration(itemDecoration)
-
-                            //for item animations
-                            // recyclerView.itemAnimator = SlideInUpAnimator()
+                    list_recycler_view.apply {
+                        layoutManager = LinearLayoutManager(activity)
 
 
-
-                            // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
-                            // Setup refresh listener which triggers new data loading
-                            // Setup refresh listener which triggers new data loading
-                            swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
-                                // Make sure you call swipeContainer.setRefreshing(false)
-                                // once the network request has completed successfully.
-                                //fetchTimelineAsync(0)
-                                searchView.setQuery("", false)
-                                searchView.clearFocus()
-                                getContracts()
-                            }
-                            // Configure the refreshing colors
-                            // Configure the refreshing colors
-                            swipeRefresh.setColorSchemeResources(
-                                R.color.button,
-                                R.color.black,
-                                R.color.colorAccent,
-                                R.color.colorPrimaryDark
-                            )
-
-
-
-                            //(adapter as ContractsAdapter).notifyDataSetChanged();
-
-                            // Remember to CLEAR OUT old items before appending in the new ones
-
-                            // ...the data has come back, add new items to your adapter...
-
-                            // Now we call setRefreshing(false) to signal refresh has finished
-                            customerSwipeContainer.isRefreshing = false
-
-                            // Toast.makeText(activity,"${contractsList.count()} Contracts Loaded",Toast.LENGTH_SHORT).show()
-
-
-
-                            //search listener
-                            contracts_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-
-                                override fun onQueryTextSubmit(query: String?): Boolean {
-                                    return false
-                                }
-
-                                override fun onQueryTextChange(newText: String?): Boolean {
-                                    println("onQueryTextChange = $newText")
-                                    (adapter as ContractsAdapter).filter.filter(newText)
-                                    return false
-                                }
-
-                            })
+                        adapter = activity?.let {
+                            ContractsAdapter(contractsList, context,this@ContractListFragment)
                         }
+
+                        val itemDecoration: ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        recyclerView.addItemDecoration(itemDecoration)
+
+                        //for item animations
+                        // recyclerView.itemAnimator = SlideInUpAnimator()
+
+
+
+                        // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+                        // Setup refresh listener which triggers new data loading
+                        // Setup refresh listener which triggers new data loading
+                        swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                            // Make sure you call swipeContainer.setRefreshing(false)
+                            // once the network request has completed successfully.
+                            //fetchTimelineAsync(0)
+                            searchView.setQuery("", false)
+                            searchView.clearFocus()
+                            getContracts()
+                        }
+                        // Configure the refreshing colors
+                        // Configure the refreshing colors
+                        swipeRefresh.setColorSchemeResources(
+                            R.color.button,
+                            R.color.black,
+                            R.color.colorAccent,
+                            R.color.colorPrimaryDark
+                        )
+
+
+
+                        //(adapter as ContractsAdapter).notifyDataSetChanged();
+
+                        // Remember to CLEAR OUT old items before appending in the new ones
+
+                        // ...the data has come back, add new items to your adapter...
+
+                        // Now we call setRefreshing(false) to signal refresh has finished
+                        customerSwipeContainer.isRefreshing = false
+
+                        // Toast.makeText(activity,"${contractsList.count()} Contracts Loaded",Toast.LENGTH_SHORT).show()
+
+
+
+                        //search listener
+                        contracts_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+
+                            override fun onQueryTextSubmit(query: String?): Boolean {
+                                return false
+                            }
+
+                            override fun onQueryTextChange(newText: String?): Boolean {
+                                println("onQueryTextChange = $newText")
+                                (adapter as ContractsAdapter).filter.filter(newText)
+                                return false
+                            }
+
+                        })
                     }
+
 
 
 
@@ -246,7 +245,8 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "contractList"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onContractCellClickListener(data:Contract) {

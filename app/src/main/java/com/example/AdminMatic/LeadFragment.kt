@@ -14,16 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_work_order.*
 import org.json.JSONException
 import org.json.JSONObject
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 
 interface LeadTaskCellClickListener {
@@ -36,8 +30,6 @@ interface LeadTaskCellClickListener {
 
 
 class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
-    //private var param1: String? = null
-    private var param2: String? = null
 
     private  var lead: Lead? = null
 
@@ -70,7 +62,6 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         super.onCreate(savedInstanceState)
         arguments?.let {
             lead = it.getParcelable("lead")
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -145,8 +136,13 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         getLead()
     }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("lead")
+    }
 
-   override fun getLead(){
+
+    override fun getLead(){
         println("getLead")
 
         showProgressView()
@@ -154,90 +150,88 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
+
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
             Response.Listener { response -> // response
                 println("Response $response")
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
-                        val gson = GsonBuilder().create()
-                        //var leadJSONObject:JSONObject
-                        //leadJSONObject = gson.fromJson(parentObject["leads"].toString() , JSONObject::class.java)
+                    val gson = GsonBuilder().create()
+                    //var leadJSONObject:JSONObject
+                    //leadJSONObject = gson.fromJson(parentObject["leads"].toString() , JSONObject::class.java)
 
-                        val leadsArray:Array<Lead> = gson.fromJson(parentObject["leads"].toString() , Array<Lead>::class.java)
-                        //var leadsArray:Array<Lead> = leadJSONObject["leads"] as Array<Lead>
-                        //leadJSONObject = gson.fromJson(parentObject.toString(), )
-                        lead = leadsArray[0]
-                        //lead.tasks =
+                    val leadsArray:Array<Lead> = gson.fromJson(parentObject["leads"].toString() , Array<Lead>::class.java)
+                    //var leadsArray:Array<Lead> = leadJSONObject["leads"] as Array<Lead>
+                    //leadJSONObject = gson.fromJson(parentObject.toString(), )
+                    lead = leadsArray[0]
+                    //lead.tasks =
 
-                        setStatus(lead!!.statusID)
+                    setStatus(lead!!.statusID)
 
-                        if(lead!!.dateNice != null){
-                            scheduleTxt.text = lead!!.dateNice!!
-                        }
-                        if(lead!!.deadlineNice != null){
-                            deadlineTxt.text = lead!!.deadlineNice!!
-                        }
-                        if(lead!!.repName != null){
-                            salesRepTxt.text = lead!!.repName!!
-                        }
-                        if(lead!!.requestedByCust != null){
-                            if (lead!!.requestedByCust!! == "1") {
-                                requestedByTxt.text = getString(R.string.yes)
-                            }
-                            else {
-                                requestedByTxt.text = getString(R.string.no)
-                            }
-                        }
-                        if(lead!!.description != null){
-                            descriptionTxt.text = lead!!.description!!
-                        }
-
-                       // var leadObj:JSONObject = parentObject["leads"][0] as JSONObject
-                       // var taskJSON: JSONArray = parentObject[0].getJSONArray("tasks")
-                       // val taskList = gson.fromJson(taskJSON.toString() , Array<Task>::class.java).toMutableList()
-
-
-                        //var leadTaskJSON: JSONArray = leadsArray[0].getJSONArray("tasks")
-                        //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
-
-                       // var woItemJSON: JSONArray = parentObject.getJSONArray("items")
-                        //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
-
-
-                       // var leadTaskJSON: JSONArray = parentObject.getJSONArray("tasks")
-                       // val taskList = gson.fromJson(leadTaskJSON.toString() , Array<Task>::class.java).toMutableList()
-                        println("lead.cust = ${lead!!.custName!!}")
-                       // if(lead!!.tasks != null && ){
-                           // println("tasks 1 = ${lead!!.tasks!![0].task}")
-                       // }
-
-
-                        taskRecyclerView.apply {
-                            layoutManager = LinearLayoutManager(activity)
-                            adapter = activity?.let {
-                                LeadTasksAdapter(
-                                    lead!!.tasks!!.toMutableList(),
-                                    it,
-                                    this@LeadFragment,
-                                    lead as Lead
-                                )
-                            }
-
-                            val itemDecoration: RecyclerView.ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            taskRecyclerView.addItemDecoration(itemDecoration)
-
-
-
-                            //(adapter as LeadTasksAdapter).notifyDataSetChanged()
-                        }
-                        hideProgressView()
+                    if(lead!!.dateNice != null){
+                        scheduleTxt.text = lead!!.dateNice!!
                     }
+                    if(lead!!.deadlineNice != null){
+                        deadlineTxt.text = lead!!.deadlineNice!!
+                    }
+                    if(lead!!.repName != null){
+                        salesRepTxt.text = lead!!.repName!!
+                    }
+                    if(lead!!.requestedByCust != null){
+                        if (lead!!.requestedByCust!! == "1") {
+                            requestedByTxt.text = getString(R.string.yes)
+                        }
+                        else {
+                            requestedByTxt.text = getString(R.string.no)
+                        }
+                    }
+                    if(lead!!.description != null){
+                        descriptionTxt.text = lead!!.description!!
+                    }
+
+                   // var leadObj:JSONObject = parentObject["leads"][0] as JSONObject
+                   // var taskJSON: JSONArray = parentObject[0].getJSONArray("tasks")
+                   // val taskList = gson.fromJson(taskJSON.toString() , Array<Task>::class.java).toMutableList()
+
+
+                    //var leadTaskJSON: JSONArray = leadsArray[0].getJSONArray("tasks")
+                    //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
+
+                   // var woItemJSON: JSONArray = parentObject.getJSONArray("items")
+                    //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
+
+
+                   // var leadTaskJSON: JSONArray = parentObject.getJSONArray("tasks")
+                   // val taskList = gson.fromJson(leadTaskJSON.toString() , Array<Task>::class.java).toMutableList()
+                    println("lead.cust = ${lead!!.custName!!}")
+                   // if(lead!!.tasks != null && ){
+                       // println("tasks 1 = ${lead!!.tasks!![0].task}")
+                   // }
+
+
+                    taskRecyclerView.apply {
+                        layoutManager = LinearLayoutManager(activity)
+                        adapter = activity?.let {
+                            LeadTasksAdapter(
+                                lead!!.tasks!!.toMutableList(),
+                                it, requireActivity().application,
+                                this@LeadFragment,
+                                lead as Lead
+                            )
+                        }
+
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        taskRecyclerView.addItemDecoration(itemDecoration)
+
+
+
+                        //(adapter as LeadTasksAdapter).notifyDataSetChanged()
+                    }
+                    hideProgressView()
 
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -256,8 +250,8 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                 return params
             }
         }
-        queue.add(postRequest1)
-
+        postRequest1.tag = "lead"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
 
     }
 
@@ -311,7 +305,6 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
             urlString = "$urlString?cb=$currentTimestamp"
-            val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
 
 
             val postRequest1: StringRequest = object : StringRequest(
@@ -321,12 +314,10 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                     println("Response $response")
 
                     try {
-                        if (isResumed) {
-                            val parentObject = JSONObject(response)
-                            println("parentObject = $parentObject")
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
-                            hideProgressView()
-                        }
+                        hideProgressView()
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {
@@ -349,7 +340,8 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                     return params
                 }
             }
-            queue.add(postRequest1)
+            postRequest1.tag = "lead"
+            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
             true
         }
         popUp.gravity = Gravity.START

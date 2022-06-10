@@ -18,7 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.dateFormatterYYYYMMDD
 import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
@@ -236,92 +235,86 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         super.onAttach(context)
     }
 
-
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("woList")
+    }
 
 
      fun getWorkOrders(){
         println("getWorkOrders")
 
+        showProgressView()
 
-            showProgressView()
+        var urlString = "https://www.adminmatic.com/cp/app/functions/get/workOrders.php"
 
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
 
-            var urlString = "https://www.adminmatic.com/cp/app/functions/get/workOrders.php"
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                //Log.d("Response", response)
 
-            val currentTimestamp = System.currentTimeMillis()
-            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-            urlString = "$urlString?cb=$currentTimestamp"
-            val queue = Volley.newRequestQueue(myView.context)
+                println("Response $response")
 
-            val postRequest1: StringRequest = object : StringRequest(
-                Method.POST, urlString,
-                Response.Listener { response -> // response
-                    //Log.d("Response", response)
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
+                    println("workOrders = $workOrders")
+                    println("workOrders count = ${workOrders.length()}")
 
-                    println("Response $response")
-
-
-
-                    try {
-                        if (isResumed) {
-                            val parentObject = JSONObject(response)
-                            println("parentObject = $parentObject")
-                            val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
-                            println("workOrders = $workOrders")
-                            println("workOrders count = ${workOrders.length()}")
-
-                            if (globalWorkOrdersList != null) {
-                                globalWorkOrdersList!!.clear()
-                            }
-
-
-                            val gson = GsonBuilder().create()
-
-                            globalWorkOrdersList =
-                                gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
-                                    .toMutableList()
-
-                            (activity as MainActivity?)!!.updateMap()
-
-                            countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
-
-                            if (this.isVisible){
-                                layoutViews()
-                            }
-
-                            updateScheduleInfo(scheduleSpinnerPosition)
-                        }
-
-                        /* Here 'response' is a String containing the response you received from the website... */
-                    } catch (e: JSONException) {
-                        println("JSONException")
-                        e.printStackTrace()
+                    if (globalWorkOrdersList != null) {
+                        globalWorkOrdersList!!.clear()
                     }
 
-                },
-                Response.ErrorListener { // error
 
+                    val gson = GsonBuilder().create()
 
-                    // Log.e("VOLLEY", error.toString())
-                    // Log.d("Error.Response", error())
+                    globalWorkOrdersList =
+                        gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
+                            .toMutableList()
+
+                    (activity as MainActivity?)!!.updateMap()
+
+                    countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+
+                    if (this.isVisible){
+                        layoutViews()
+                    }
+
+                    updateScheduleInfo(scheduleSpinnerPosition)
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
                 }
-            ) {
-                override fun getParams(): Map<String, String> {
-                    val params: MutableMap<String, String> = HashMap()
-                    params["companyUnique"] = loggedInEmployee!!.companyUnique
-                    params["sessionKey"] = loggedInEmployee!!.sessionKey
-                    params["employeeID"] = empID
-                    params["startDate"] = startDateDB
-                    params["endDate"] = endDateDB
-                    params["active"] = "1"
-                    params["custID"] = ""
 
+            },
+            Response.ErrorListener { // error
 
-                    println("params = $params")
-                    return params
-                }
             }
-            queue.add(postRequest1)
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = loggedInEmployee!!.companyUnique
+                params["sessionKey"] = loggedInEmployee!!.sessionKey
+                params["employeeID"] = empID
+                params["startDate"] = startDateDB
+                params["endDate"] = endDateDB
+                params["active"] = "1"
+                params["custID"] = ""
+
+
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "woList"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
 
     }
 

@@ -100,7 +100,11 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
         getInspectionItems()
 
+    }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("serviceInspection")
     }
 
     private fun getInspectionItems() {
@@ -111,7 +115,6 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -124,41 +127,39 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val questions:JSONArray = parentObject.getJSONArray("questions")
-                        println("questions = $questions")
-                        //println("questions count = ${questions.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val questions:JSONArray = parentObject.getJSONArray("questions")
+                    println("questions = $questions")
+                    //println("questions count = ${questions.length()}")
 
-                        val gson = GsonBuilder().create()
-                        questionsList = gson.fromJson(questions.toString(), Array<InspectionQuestion>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    questionsList = gson.fromJson(questions.toString(), Array<InspectionQuestion>::class.java).toMutableList()
 
-                        service_inspection_recycler_view.apply {
-                            layoutManager = LinearLayoutManager(activity)
+                    service_inspection_recycler_view.apply {
+                        layoutManager = LinearLayoutManager(activity)
 
-                            adapter = activity?.let {
-                                ServiceInspectionAdapter(
-                                    questionsList,
-                                    this@ServiceInspectionFragment
-                                )
-                            }
-
-
-                            val itemDecoration: ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            recyclerView.addItemDecoration(itemDecoration)
-
-                            //for item animations
-                            // recyclerView.itemAnimator = SlideInUpAnimator()
-
-
-
-
-                            //(adapter as ServiceInspectionAdapter).notifyDataSetChanged()
-                            println(adapter!!.itemCount)
-
+                        adapter = activity?.let {
+                            ServiceInspectionAdapter(
+                                questionsList,
+                                this@ServiceInspectionFragment
+                            )
                         }
+
+
+                        val itemDecoration: ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        recyclerView.addItemDecoration(itemDecoration)
+
+                        //for item animations
+                        // recyclerView.itemAnimator = SlideInUpAnimator()
+
+
+
+
+                        //(adapter as ServiceInspectionAdapter).notifyDataSetChanged()
+                        println(adapter!!.itemCount)
+
                     }
 
 
@@ -189,7 +190,8 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "serviceInspection"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     private fun submitInspection() {

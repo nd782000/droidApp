@@ -14,7 +14,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_image_list.*
@@ -186,20 +185,10 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                     R.color.colorPrimaryDark
                 )
 
-
-
                 //(adapter as ImagesAdapter).notifyDataSetChanged();
-
 
                 //Change the boolean isLoading to false
                 //  scrollListener.setLoaded()
-
-
-
-
-
-
-
 
                 //search listener
                 images_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
@@ -219,21 +208,14 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                     }
 
                 })
-
-
-
-
-
             }
-
-
-
-
             getImages()
         }
+    }
 
-
-
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("imageList")
     }
 
     fun refreshImages(){
@@ -276,9 +258,6 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
-
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -291,36 +270,32 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val images: JSONArray = parentObject.getJSONArray("images")
-                        println("images = $images")
-                        println("images count = ${images.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val images: JSONArray = parentObject.getJSONArray("images")
+                    println("images = $images")
+                    println("images count = ${images.length()}")
 
 
-                        val gson = GsonBuilder().create()
-                        loadMoreImageList =
-                            gson.fromJson(images.toString(), Array<Image>::class.java)
-                                .toMutableList()
-                        println("loadMoreImageList count = ${loadMoreImageList.count()}")
-                        imageList.addAll(loadMoreImageList)
-                        println("imageList count = ${imageList.count()}")
+                    val gson = GsonBuilder().create()
+                    loadMoreImageList =
+                        gson.fromJson(images.toString(), Array<Image>::class.java)
+                            .toMutableList()
+                    println("loadMoreImageList count = ${loadMoreImageList.count()}")
+                    imageList.addAll(loadMoreImageList)
+                    println("imageList count = ${imageList.count()}")
 
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false
+                    // Now we call setRefreshing(false) to signal refresh has finished
+                    customerSwipeContainer.isRefreshing = false
 
-                        // Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
-
-
-                        adapter.filterList = imageList
-
-                        adapter.notifyDataSetChanged();
-
-                        imagesLoaded = true
-                    }
+                    // Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 
 
+                    adapter.filterList = imageList
+
+                    adapter.notifyDataSetChanged()
+
+                    imagesLoaded = true
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -346,7 +321,8 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "imageList"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
 

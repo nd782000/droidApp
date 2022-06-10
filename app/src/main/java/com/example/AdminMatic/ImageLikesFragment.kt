@@ -1,16 +1,15 @@
 package com.example.AdminMatic
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,14 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import org.w3c.dom.Text
 import java.time.LocalDate
 
 
@@ -96,7 +93,10 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
 
     }
 
-
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("imageLikes")
+    }
 
 
     private fun getLikes() {
@@ -109,8 +109,6 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -121,40 +119,37 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
                 hideProgressView()
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        val employees: JSONArray = parentObject.getJSONArray("employees")
+                    val parentObject = JSONObject(response)
+                    val employees: JSONArray = parentObject.getJSONArray("employees")
 
-                        val gson = GsonBuilder().create()
-                        val employeesList =
-                            gson.fromJson(employees.toString(), Array<Employee>::class.java)
-                                .toMutableList()
-
+                    val gson = GsonBuilder().create()
+                    val employeesList =
+                        gson.fromJson(employees.toString(), Array<Employee>::class.java)
+                            .toMutableList()
 
 
-                        recyclerView.apply {
-                            layoutManager = LinearLayoutManager(activity)
 
-                            adapter = activity?.let {
-                                EmployeesAdapter(
-                                    employeesList,
-                                    it, this@ImageLikesFragment
-                                )
-                            }
+                    recyclerView.apply {
+                        layoutManager = LinearLayoutManager(activity)
 
-                            val itemDecoration: RecyclerView.ItemDecoration =
-                                DividerItemDecoration(
-                                    myView.context,
-                                    DividerItemDecoration.VERTICAL
-                                )
-                            recyclerView.addItemDecoration(itemDecoration)
-
-
-                            //(adapter as EmployeesAdapter).notifyDataSetChanged()
-
+                        adapter = activity?.let {
+                            EmployeesAdapter(
+                                employeesList,
+                                it, this@ImageLikesFragment
+                            )
                         }
+
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(
+                                myView.context,
+                                DividerItemDecoration.VERTICAL
+                            )
+                        recyclerView.addItemDecoration(itemDecoration)
+
+
+                        //(adapter as EmployeesAdapter).notifyDataSetChanged()
+
                     }
-                    /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
@@ -165,7 +160,6 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
                 // startActivity(intent)
             },
             Response.ErrorListener { // error
-
 
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
@@ -180,7 +174,8 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "imageLikes"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onEmployeeCellClickListener(data:Employee) {

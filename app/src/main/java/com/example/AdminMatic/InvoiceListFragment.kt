@@ -19,18 +19,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-
-import kotlinx.android.synthetic.main.fragment_invoice_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_invoice_list.customerSwipeContainer
 import kotlinx.android.synthetic.main.fragment_invoice_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-
-
 
 
 interface InvoiceCellClickListener {
@@ -99,7 +93,11 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
         getInvoices()
 
+    }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("invoiceList")
     }
 
 
@@ -118,8 +116,6 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
         //val preferences =
         //this.requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
@@ -138,99 +134,90 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val invoices:JSONArray = parentObject.getJSONArray("invoices")
-                        println("invoices = $invoices")
-                        println("invoices count = ${invoices.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val invoices:JSONArray = parentObject.getJSONArray("invoices")
+                    println("invoices = $invoices")
+                    println("invoices count = ${invoices.length()}")
 
 
 
-                        val gson = GsonBuilder().create()
-                        val invoicesList = gson.fromJson(invoices.toString() , Array<Invoice>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    val invoicesList = gson.fromJson(invoices.toString() , Array<Invoice>::class.java).toMutableList()
 
 
-                        list_recycler_view.apply {
-                            layoutManager = LinearLayoutManager(activity)
+                    list_recycler_view.apply {
+                        layoutManager = LinearLayoutManager(activity)
 
 
-                            adapter = activity?.let {
-                                InvoicesAdapter(
-                                    invoicesList,
-                                    this@InvoiceListFragment
-                                )
-                            }
-
-                            val itemDecoration: ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            recyclerView.addItemDecoration(itemDecoration)
-
-                            //for item animations
-                            // recyclerView.itemAnimator = SlideInUpAnimator()
-
-
-
-                            // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
-                            // Setup refresh listener which triggers new data loading
-                            // Setup refresh listener which triggers new data loading
-                            swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
-                                // Make sure you call swipeContainer.setRefreshing(false)
-                                // once the network request has completed successfully.
-                                //fetchTimelineAsync(0)
-                                searchView.setQuery("", false)
-                                searchView.clearFocus()
-                                getInvoices()
-                            }
-                            // Configure the refreshing colors
-                            // Configure the refreshing colors
-                            swipeRefresh.setColorSchemeResources(
-                                R.color.button,
-                                R.color.black,
-                                R.color.colorAccent,
-                                R.color.colorPrimaryDark
+                        adapter = activity?.let {
+                            InvoicesAdapter(
+                                invoicesList,
+                                this@InvoiceListFragment
                             )
-
-
-
-                            //(adapter as InvoicesAdapter).notifyDataSetChanged()
-
-                            // Remember to CLEAR OUT old items before appending in the new ones
-
-                            // ...the data has come back, add new items to your adapter...
-
-                            // Now we call setRefreshing(false) to signal refresh has finished
-                            customerSwipeContainer.isRefreshing = false
-
-                          //  Toast.makeText(activity,"${invoicesList.count()} Invoices Loaded",Toast.LENGTH_SHORT).show()
-
-
-
-                            //search listener
-                            invoices_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-
-                                override fun onQueryTextSubmit(query: String?): Boolean {
-                                    return false
-                                }
-
-                                override fun onQueryTextChange(newText: String?): Boolean {
-                                    println("onQueryTextChange = $newText")
-                                    (adapter as InvoicesAdapter).filter.filter(newText)
-                                    return false
-                                }
-
-                            })
-
-
-
-
-
                         }
+
+                        val itemDecoration: ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        recyclerView.addItemDecoration(itemDecoration)
+
+                        //for item animations
+                        // recyclerView.itemAnimator = SlideInUpAnimator()
+
+
+
+                        // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+                        // Setup refresh listener which triggers new data loading
+                        // Setup refresh listener which triggers new data loading
+                        swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                            // Make sure you call swipeContainer.setRefreshing(false)
+                            // once the network request has completed successfully.
+                            //fetchTimelineAsync(0)
+                            searchView.setQuery("", false)
+                            searchView.clearFocus()
+                            getInvoices()
+                        }
+                        // Configure the refreshing colors
+                        // Configure the refreshing colors
+                        swipeRefresh.setColorSchemeResources(
+                            R.color.button,
+                            R.color.black,
+                            R.color.colorAccent,
+                            R.color.colorPrimaryDark
+                        )
+
+
+
+                        //(adapter as InvoicesAdapter).notifyDataSetChanged()
+
+                        // Remember to CLEAR OUT old items before appending in the new ones
+
+                        // ...the data has come back, add new items to your adapter...
+
+                        // Now we call setRefreshing(false) to signal refresh has finished
+                        customerSwipeContainer.isRefreshing = false
+
+                      //  Toast.makeText(activity,"${invoicesList.count()} Invoices Loaded",Toast.LENGTH_SHORT).show()
+
+
+
+                        //search listener
+                        invoices_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+
+                            override fun onQueryTextSubmit(query: String?): Boolean {
+                                return false
+                            }
+
+                            override fun onQueryTextChange(newText: String?): Boolean {
+                                println("onQueryTextChange = $newText")
+                                (adapter as InvoicesAdapter).filter.filter(newText)
+                                return false
+                            }
+
+                        })
                     }
-
-
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -258,7 +245,8 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "invoiceList"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onInvoiceCellClickListener(data:Invoice) {
@@ -270,7 +258,6 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
             myView.findNavController().navigate(directions)
         }
     }
-
 
 
     fun showProgressView() {

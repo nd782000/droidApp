@@ -256,10 +256,13 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
         empSpinner.onItemSelectedListener = this@PayrollFragment
 
-
         getPayroll()
 
+    }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("payroll")
     }
 
     private fun getPayroll(){
@@ -275,7 +278,6 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -284,84 +286,79 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
                 println("Response $response")
 
-
-
-
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                        println("payroll = $payrollJSON")
-                        println("payroll count = ${payrollJSON.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                    println("payroll = $payrollJSON")
+                    println("payroll count = ${payrollJSON.length()}")
 
 
 
-                        val gson = GsonBuilder().create()
-                        val payrollList = gson.fromJson(payrollJSON.toString() , Array<Payroll>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    val payrollList = gson.fromJson(payrollJSON.toString() , Array<Payroll>::class.java).toMutableList()
 
-                         currentPayroll = payrollList[payrollList.count() - 1]
+                     currentPayroll = payrollList[payrollList.count() - 1]
 
-                        if (currentPayroll.startTimeShort != null && currentPayroll.startTimeShort != "No Time" && currentPayroll.startTimeShort != ""){
-                            println("currentPayroll.startTimeShort = ${currentPayroll.startTimeShort!!}")
-
-
-                           startTxt.setText(currentPayroll.startTimeShort!!)
-                        }else{
-                            startTxt.setText(getString(R.string.no_time))
-                        }
-
-                        if (currentPayroll.stopTimeShort != null && currentPayroll.stopTimeShort != "No Time" && currentPayroll.stopTimeShort != "") {
-                            stopTxt.setText(currentPayroll.stopTimeShort!!)
-                        }else{
-                            stopTxt.setText(getString(R.string.no_time))
-                        }
-                        if (currentPayroll.lunch != null) {
-                            breakTxt.setText(currentPayroll.lunch!!)
-                        }else{
-                            breakTxt.setText("0")
-                        }
-
-                        if (currentPayroll.total != null) {
-                            totalTxt.text = currentPayroll.total!!
-                        }else{
-                            totalTxt.text = getString(R.string.zero_hours)
-                        }
-                        val combinedTotal: String? = parentObject.getString("combinedTotal")
-                        println("payroll = $combinedTotal")
-                        if (combinedTotal != null) {
-                            combinedTotalTxt.text = combinedTotal
-                        }else{
-                            combinedTotalTxt.text = getString(R.string.zero_hours)
-                        }
-
-                        //var pendingString: String =
-                       // println("pendingString = ${parentObject.getString("verified")}")
-                        if (currentPayroll.verified !="0") {
-                            //pendingTxt.text = "Pending Shift"
-                            pendingTxt.visibility = View.GONE
-
-                            //combinedPendingTxt.text = "Excludes Pending"
-                            combinedPendingTxt.visibility = View.GONE
-                        }else{
-                            pendingTxt.visibility = View.VISIBLE
-                            combinedPendingTxt.visibility = View.VISIBLE
-                        }
+                    if (currentPayroll.startTimeShort != null && currentPayroll.startTimeShort != "No Time" && currentPayroll.startTimeShort != ""){
+                        println("currentPayroll.startTimeShort = ${currentPayroll.startTimeShort!!}")
 
 
-
-                        firstLoad = true
-
-                        println("currentPayroll.appCreatedBy = ${currentPayroll.appCreatedBy}")
-
-                        if (currentPayroll.appCreatedBy == GlobalVars.loggedInEmployee!!.ID || currentPayroll.appCreatedBy == "0" && currentPayroll.createdBy == "0" || currentPayroll.startTime == "No Time"){
-                            unlockInputs()
-                        }else{
-                            lockInputs()
-                        }
-
-                        hideProgressView()
+                       startTxt.setText(currentPayroll.startTimeShort!!)
+                    }else{
+                        startTxt.setText(getString(R.string.no_time))
                     }
+
+                    if (currentPayroll.stopTimeShort != null && currentPayroll.stopTimeShort != "No Time" && currentPayroll.stopTimeShort != "") {
+                        stopTxt.setText(currentPayroll.stopTimeShort!!)
+                    }else{
+                        stopTxt.setText(getString(R.string.no_time))
+                    }
+                    if (currentPayroll.lunch != null) {
+                        breakTxt.setText(currentPayroll.lunch!!)
+                    }else{
+                        breakTxt.setText("0")
+                    }
+
+                    if (currentPayroll.total != null) {
+                        totalTxt.text = currentPayroll.total!!
+                    }else{
+                        totalTxt.text = getString(R.string.zero_hours)
+                    }
+                    val combinedTotal: String? = parentObject.getString("combinedTotal")
+                    println("payroll = $combinedTotal")
+                    if (combinedTotal != null) {
+                        combinedTotalTxt.text = combinedTotal
+                    }else{
+                        combinedTotalTxt.text = getString(R.string.zero_hours)
+                    }
+
+                    //var pendingString: String =
+                   // println("pendingString = ${parentObject.getString("verified")}")
+                    if (currentPayroll.verified !="0") {
+                        //pendingTxt.text = "Pending Shift"
+                        pendingTxt.visibility = View.GONE
+
+                        //combinedPendingTxt.text = "Excludes Pending"
+                        combinedPendingTxt.visibility = View.GONE
+                    }else{
+                        pendingTxt.visibility = View.VISIBLE
+                        combinedPendingTxt.visibility = View.VISIBLE
+                    }
+
+
+
+                    firstLoad = true
+
+                    println("currentPayroll.appCreatedBy = ${currentPayroll.appCreatedBy}")
+
+                    if (currentPayroll.appCreatedBy == GlobalVars.loggedInEmployee!!.ID || currentPayroll.appCreatedBy == "0" && currentPayroll.createdBy == "0" || currentPayroll.startTime == "No Time"){
+                        unlockInputs()
+                    }else{
+                        lockInputs()
+                    }
+
+                    hideProgressView()
 
 
 
@@ -385,7 +382,8 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "payroll"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     private fun start(){

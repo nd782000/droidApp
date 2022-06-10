@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import org.json.JSONArray
@@ -296,6 +295,11 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("contractItem")
+    }
+
     private fun getItems(){
         println("getItems")
 
@@ -311,13 +315,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
-
-        //val preferences =
-        //this.requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
-        // val session = preferences.getString("sessionKey","")
-        //val companyUnique = preferences.getString("companyUnique","")
+        //val queue = Volley.newRequestQueue(myView.context)
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -331,70 +329,70 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val items: JSONArray = parentObject.getJSONArray("items")
-                        println("items = $items")
-                        println("items count = ${items.length()}")
+
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val items: JSONArray = parentObject.getJSONArray("items")
+                    println("items = $items")
+                    println("items count = ${items.length()}")
 
 
 
-                        val gson = GsonBuilder().create()
-                        itemsList = gson.fromJson(items.toString() , Array<Item>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    itemsList = gson.fromJson(items.toString() , Array<Item>::class.java).toMutableList()
 
 
-                        val searchItemsList = mutableListOf<SearchItem>()
-                        itemsList.forEachIndexed {index, element ->
-                            searchItemsList.add(SearchItem(element.name, index))
+                    val searchItemsList = mutableListOf<SearchItem>()
+                    itemsList.forEachIndexed {index, element ->
+                        searchItemsList.add(SearchItem(element.name, index))
+                    }
+
+
+                    contractItemRecycler.apply {
+                        layoutManager = LinearLayoutManager(activity)
+
+
+                        adapter = activity?.let {
+                            SearchItemsAdapter(
+                                searchItemsList,
+                                context,
+                                this@ContractItemFragment
+                            )
                         }
 
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        contractItemRecycler.addItemDecoration(itemDecoration)
 
-                        contractItemRecycler.apply {
-                            layoutManager = LinearLayoutManager(activity)
+
+                        //(adapter as SearchItemsAdapter).notifyDataSetChanged()
 
 
-                            adapter = activity?.let {
-                                SearchItemsAdapter(
-                                    searchItemsList,
-                                    context,
-                                    this@ContractItemFragment
-                                )
+                        contractItemSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+                            override fun onQueryTextSubmit(query: String?): Boolean {
+                                //customerRecyclerView.visibility = View.GONE
+                                return false
                             }
 
-                            val itemDecoration: RecyclerView.ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            contractItemRecycler.addItemDecoration(itemDecoration)
-
-
-                            //(adapter as SearchItemsAdapter).notifyDataSetChanged()
-
-
-                            contractItemSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
-                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-                                override fun onQueryTextSubmit(query: String?): Boolean {
-                                    //customerRecyclerView.visibility = View.GONE
-                                    return false
+                            override fun onQueryTextChange(newText: String?): Boolean {
+                                println("onQueryTextChange = $newText")
+                                (adapter as SearchItemsAdapter).filter.filter(newText)
+                                if(newText == ""){
+                                    contractItemRecycler.visibility = View.GONE
+                                }else{
+                                    contractItemRecycler.visibility = View.VISIBLE
                                 }
 
-                                override fun onQueryTextChange(newText: String?): Boolean {
-                                    println("onQueryTextChange = $newText")
-                                    (adapter as SearchItemsAdapter).filter.filter(newText)
-                                    if(newText == ""){
-                                        contractItemRecycler.visibility = View.GONE
-                                    }else{
-                                        contractItemRecycler.visibility = View.VISIBLE
-                                    }
+                                return false
+                            }
 
-                                    return false
-                                }
+                        })
 
-                            })
-
-                        }
-                        editsMade = false
                     }
+                    editsMade = false
+
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
@@ -411,7 +409,8 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "contractItem"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
 

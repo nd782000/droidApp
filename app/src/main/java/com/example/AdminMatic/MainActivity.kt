@@ -3,12 +3,12 @@ package com.example.AdminMatic
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.*
-import android.view.View.OnTouchListener
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
@@ -18,6 +18,8 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.AdminMatic.BuildConfig
 import com.AdminMatic.R
+import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -27,7 +29,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.util.*
-import kotlin.math.abs
 
 
 interface  LogOut{
@@ -932,6 +933,43 @@ class SpinnerInteractionListener : AdapterView.OnItemSelectedListener, View.OnTo
 fun View.hideKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
+
+class VolleyRequestQueue constructor(context: Context) {
+    companion object {
+        @Volatile
+        private var INSTANCE: VolleyRequestQueue? = null
+        fun getInstance(context: Context) =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: VolleyRequestQueue(context).also {
+                    INSTANCE = it
+                }
+            }
+    }
+    /*
+    val imageLoader: ImageLoader by lazy {
+        ImageLoader(requestQueue,
+            object : ImageLoader.ImageCache {
+                private val cache = LruCache<String, Bitmap>(20)
+                override fun getBitmap(url: String): Bitmap {
+                    return cache.get(url)
+                }
+                override fun putBitmap(url: String, bitmap: Bitmap) {
+                    cache.put(url, bitmap)
+                }
+            })
+    }
+
+     */
+    val requestQueue: RequestQueue by lazy {
+        // applicationContext is key, it keeps you from leaking the
+        // Activity or BroadcastReceiver if someone passes one in.
+        Volley.newRequestQueue(context.applicationContext)
+    }
+    fun <T> addToRequestQueue(req: Request<T>) {
+        requestQueue.add(req)
+    }
 }
 
 

@@ -34,7 +34,6 @@ import com.android.volley.Request.Method.POST
 import com.android.volley.Response
 import com.android.volley.RetryPolicy
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.google.gson.GsonBuilder
 import com.kroegerama.imgpicker.BottomSheetImagePicker
@@ -498,6 +497,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
     override fun onStop() {
         super.onStop()
         fotoapparat.stop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("imageUpload")
     }
 
 
@@ -884,24 +884,21 @@ private  fun saveTask(){
     val currentTimestamp = System.currentTimeMillis()
     println("urlString = ${"$urlString?cb=$currentTimestamp"}")
     urlString = "$urlString?cb=$currentTimestamp"
-    val queue = Volley.newRequestQueue(myView.context)
     val postRequest1: StringRequest = object : StringRequest(
         POST, urlString,
         Response.Listener { response -> // response
             println("Response $response")
             try {
-                if (isResumed) {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                val parentObject = JSONObject(response)
+                println("parentObject = $parentObject")
 
-                    val gson = GsonBuilder().create()
-
-
-                    taskID = gson.fromJson(parentObject["leadTaskID"].toString() , String::class.java)
+                val gson = GsonBuilder().create()
 
 
-                    uploadImage()
-                }
+                taskID = gson.fromJson(parentObject["leadTaskID"].toString() , String::class.java)
+
+
+                uploadImage()
 
 
             } catch (e: JSONException) {
@@ -924,7 +921,8 @@ private  fun saveTask(){
             return params
         }
     }
-    queue.add(postRequest1)
+    postRequest1.tag = "imageUpload"
+    VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
 }
 
     private fun uploadImage() {
@@ -1069,16 +1067,13 @@ private  fun saveTask(){
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
             )
             //send request
-            Volley.newRequestQueue(this.context).cache.clear()
-            Volley.newRequestQueue(this.context).add(request)
+            request.tag = "imageUpload"
+            VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cache.clear()
+            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(request)
 
             count += 1
 
         }
-
-
-
-
 
 
     }
@@ -1091,8 +1086,6 @@ private  fun saveTask(){
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
         val postRequest1: StringRequest = object : StringRequest(
             POST, urlString,
@@ -1101,42 +1094,40 @@ private  fun saveTask(){
                 println("Response $response")
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
-                        val gson = GsonBuilder().create()
-                        val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
+                    val gson = GsonBuilder().create()
+                    val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
 
-                        val customer = customerArray.customers[0]
+                    val customer = customerArray.customers[0]
 
-                        if (customer.allowImages == "0") {
-                            customerAllowImages = false
-                        }
-
-                        if (selectedFromRecycler) {
-                            if (customerAllowImages) {
-                                customerID = newCustomerID
-                                customerSearchView.setQuery(queriedCustomer!!.sysname, false)
-                                customerRecyclerView.visibility = View.GONE
-
-                                //val imm = (activity as MainActivity?).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                //imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
-                                hideSoftKeyboard((activity as MainActivity?)!!)
-
-
-                                println("selcted cust = ${queriedCustomer!!.ID}")
-                            }
-                            else {
-                                globalVars.simpleAlert(myView.context,getString(R.string.no_image_collection),getString(R.string.no_image_collection_error))
-                                customerAllowImages = true
-                                customerID = ""
-                                customerSearchView.setQuery("", false)
-                                customerRecyclerView.visibility = View.GONE
-                            }
-                        }
-                        hideProgressView()
+                    if (customer.allowImages == "0") {
+                        customerAllowImages = false
                     }
+
+                    if (selectedFromRecycler) {
+                        if (customerAllowImages) {
+                            customerID = newCustomerID
+                            customerSearchView.setQuery(queriedCustomer!!.sysname, false)
+                            customerRecyclerView.visibility = View.GONE
+
+                            //val imm = (activity as MainActivity?).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            //imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
+                            hideSoftKeyboard((activity as MainActivity?)!!)
+
+
+                            println("selcted cust = ${queriedCustomer!!.ID}")
+                        }
+                        else {
+                            globalVars.simpleAlert(myView.context,getString(R.string.no_image_collection),getString(R.string.no_image_collection_error))
+                            customerAllowImages = true
+                            customerID = ""
+                            customerSearchView.setQuery("", false)
+                            customerRecyclerView.visibility = View.GONE
+                        }
+                    }
+                    hideProgressView()
 
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -1159,7 +1150,8 @@ private  fun saveTask(){
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "imageUpload"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
 

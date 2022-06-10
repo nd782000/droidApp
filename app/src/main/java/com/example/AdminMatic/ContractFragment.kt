@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
@@ -188,6 +187,11 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("contract")
+    }
+
     private fun showStatusMenu(){
         println("showStatusMenu")
 
@@ -217,8 +221,6 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
             urlString = "$urlString?cb=$currentTimestamp"
-            val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
-
 
             val postRequest1: StringRequest = object : StringRequest(
                 Method.POST, urlString,
@@ -227,12 +229,11 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
                     println("Response $response")
 
                     try {
-                        if (isResumed) {
-                            val parentObject = JSONObject(response)
-                            println("parentObject = $parentObject")
 
-                            hideProgressView()
-                        }
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+
+                        hideProgressView()
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {
@@ -285,7 +286,8 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
                 }
             }
-            queue.add(postRequest1)
+            postRequest1.tag = "contract"
+            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
             true
         }
         popUp.gravity = Gravity.START
@@ -347,7 +349,6 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -360,33 +361,32 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
 
-                        val gson = GsonBuilder().create()
-                        val contractNew = gson.fromJson(parentObject.toString() , Contract::class.java)
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
-                        contract = contractNew
+                    val gson = GsonBuilder().create()
+                    val contractNew = gson.fromJson(parentObject.toString() , Contract::class.java)
 
-                        recycler.apply {
-                            layoutManager = LinearLayoutManager(activity)
-                            adapter = activity?.let {
-                                ContractItemAdapter(
-                                    contract!!.items!!.toMutableList(),
-                                    context,
-                                    this@ContractFragment,
-                                    this@ContractFragment
-                                )
-                            }
+                    contract = contractNew
 
-                            val itemDecoration: RecyclerView.ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            recycler.addItemDecoration(itemDecoration)
-                            (adapter as ContractItemAdapter).notifyDataSetChanged()
+                    recycler.apply {
+                        layoutManager = LinearLayoutManager(activity)
+                        adapter = activity?.let {
+                            ContractItemAdapter(
+                                contract!!.items!!.toMutableList(),
+                                context,
+                                this@ContractFragment,
+                                this@ContractFragment
+                            )
                         }
-                        hideProgressView()
+
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        recycler.addItemDecoration(itemDecoration)
+                        (adapter as ContractItemAdapter).notifyDataSetChanged()
                     }
+                    hideProgressView()
 
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -408,7 +408,8 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "contract"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onContractItemCellClickListener(data:ContractItem) {

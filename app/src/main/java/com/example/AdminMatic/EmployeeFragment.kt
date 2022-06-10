@@ -19,7 +19,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_employee_list.*
@@ -94,6 +93,11 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     override fun onDetach() {
         super.onDetach()
         listener = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("employee")
     }
 
 
@@ -284,9 +288,6 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
-
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -357,7 +358,8 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "employee"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
 

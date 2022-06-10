@@ -164,12 +164,13 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
         }
         */
 
-
-
-
-
         getStack()
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("stack")
     }
 
     fun getWorkOrderSpinner():Spinner{
@@ -228,7 +229,6 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -238,328 +238,326 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                 println("Response $response")
 
                 try {
-                    if (isResumed) {
-                        val gson = GsonBuilder().create()
+                    val gson = GsonBuilder().create()
 
 
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
 
-                        val leadsJSON: JSONArray = parentObject.getJSONArray("leads")
-                        println("leadsJSON = $leadsJSON")
-                        println("leadsJSON count = ${leadsJSON.length()}")
-                        leadsList = gson.fromJson(leadsJSON.toString() , Array<Lead>::class.java).toMutableList()
+                    val leadsJSON: JSONArray = parentObject.getJSONArray("leads")
+                    println("leadsJSON = $leadsJSON")
+                    println("leadsJSON count = ${leadsJSON.length()}")
+                    leadsList = gson.fromJson(leadsJSON.toString() , Array<Lead>::class.java).toMutableList()
 
-                        val dummyLead = Lead()
-                        dummyLead.description = "Select Leads"
-                        leadsList!!.add(0,dummyLead)
+                    val dummyLead = Lead()
+                    dummyLead.description = "Select Leads"
+                    leadsList!!.add(0,dummyLead)
 
-                        leadTxt.text = getString(R.string.leads_amount, leadsJSON.length())
+                    leadTxt.text = getString(R.string.leads_amount, leadsJSON.length())
 
-                        val contractsJSON: JSONArray = parentObject.getJSONArray("contracts")
-                        println("contractsJSON = $contractsJSON")
-                        println("contractsJSON count = ${contractsJSON.length()}")
-                        contractsList = gson.fromJson(contractsJSON.toString() , Array<Contract>::class.java).toMutableList()
-                        //leadsList.add(0,"Leads(${leadsList.count()})")
+                    val contractsJSON: JSONArray = parentObject.getJSONArray("contracts")
+                    println("contractsJSON = $contractsJSON")
+                    println("contractsJSON count = ${contractsJSON.length()}")
+                    contractsList = gson.fromJson(contractsJSON.toString() , Array<Contract>::class.java).toMutableList()
+                    //leadsList.add(0,"Leads(${leadsList.count()})")
 
-                        val dummyContract = Contract()
-                        dummyContract.title = "Select Contracts"
-                        contractsList!!.add(0,dummyContract)
+                    val dummyContract = Contract()
+                    dummyContract.title = "Select Contracts"
+                    contractsList!!.add(0,dummyContract)
 
-                        contractTxt.text = getString(R.string.contracts_amount, contractsJSON.length())
-
-
-
-                        val workOrdersJSON: JSONArray = parentObject.getJSONArray("workOrders")
-                        println("workOrdersJSON = $workOrdersJSON")
-                        println("workOrdersJSON count = ${workOrdersJSON.length()}")
-                        workOrdersList = gson.fromJson(workOrdersJSON.toString() , Array<WorkOrder>::class.java).toMutableList()
-                        val dummyWorkOrder = WorkOrder()
-                        dummyWorkOrder.title = "Select WorkOrders"
-
-                        workOrdersList!!.add(0,dummyWorkOrder)
-
-                       // leadsList.add(0,"Leads(${leadsList.count()})")
-                        workOrderTxt.text = getString(R.string.work_orders_amount, workOrdersJSON.length())
-
-                        val invoicesJSON: JSONArray = parentObject.getJSONArray("invoices")
-                        println("invoicesJSON = $invoicesJSON")
-
-                        println("invoicesJSON count = ${invoicesJSON.length()}")
-                        invoicesList = gson.fromJson(invoicesJSON.toString() , Array<Invoice>::class.java).toMutableList()
-                        //leadsList.add(0,"Leads(${leadsList.count()})")
-
-                        val dummyInvoice = Invoice()
-                        dummyInvoice.title = "Select Invoices"
-                        invoicesList!!.add(0,dummyInvoice)
-
-                        invoiceTxt.text = getString(R.string.invoices_amount, invoicesJSON.length())
-
-
-                        val leadAdapter: ArrayAdapter<Lead> = ArrayAdapter<Lead>(
-                            myView.context,
-                            android.R.layout.simple_spinner_dropdown_item, leadsList!!
-                        )
-                        leadAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-                        leadSpinner.adapter = leadAdapter
-                       /// leadSpinner.setSpinnerText("Leads(${leadsList!!.count()})")
-
-                        val contractAdapter: ArrayAdapter<Contract> = ArrayAdapter<Contract>(
-                            myView.context,
-                            android.R.layout.simple_spinner_dropdown_item, contractsList!!
-                        )
-                        contractAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-                        contractSpinner.adapter = contractAdapter
-                        //contractSpinner.setSpinnerText("Contracts(${contractsList!!.count()})")
-
-                        val workOrderAdapter: ArrayAdapter<WorkOrder> = ArrayAdapter<WorkOrder>(
-                            requireContext(),
-                            android.R.layout.simple_spinner_dropdown_item, workOrdersList!!
-                        )
-                        workOrderAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-                        workOrderSpinner.adapter = workOrderAdapter
-
-                        val invoiceAdapter: ArrayAdapter<Invoice> = ArrayAdapter<Invoice>(
-                            myView.context,
-                            android.R.layout.simple_spinner_dropdown_item, invoicesList!!
-                        )
-                        invoiceAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-                        invoiceSpinner.adapter = invoiceAdapter
+                    contractTxt.text = getString(R.string.contracts_amount, contractsJSON.length())
 
 
 
-                    //Listeners
+                    val workOrdersJSON: JSONArray = parentObject.getJSONArray("workOrders")
+                    println("workOrdersJSON = $workOrdersJSON")
+                    println("workOrdersJSON count = ${workOrdersJSON.length()}")
+                    workOrdersList = gson.fromJson(workOrdersJSON.toString() , Array<WorkOrder>::class.java).toMutableList()
+                    val dummyWorkOrder = WorkOrder()
+                    dummyWorkOrder.title = "Select WorkOrders"
 
-                        //leads
-                        if (leadsJSON.length() > 0) {
-                            leadSpinner.setSelection(0, false)
+                    workOrdersList!!.add(0,dummyWorkOrder)
 
-                            if (leadsJSON.length() == 1) {
+                   // leadsList.add(0,"Leads(${leadsList.count()})")
+                    workOrderTxt.text = getString(R.string.work_orders_amount, workOrdersJSON.length())
 
-                                leadTxt.setOnClickListener {
-                                    // your code to run when the user clicks on the TextView
-                                    println("leadSpinner click")
-                                    val lead: Lead = gson.fromJson(
-                                        leadsJSON[0].toString(),
-                                        Lead::class.java
-                                    )
-                                    println("lead = $lead")
+                    val invoicesJSON: JSONArray = parentObject.getJSONArray("invoices")
+                    println("invoicesJSON = $invoicesJSON")
 
-                                    delegate.newLeadView(lead)
-                                }
+                    println("invoicesJSON count = ${invoicesJSON.length()}")
+                    invoicesList = gson.fromJson(invoicesJSON.toString() , Array<Invoice>::class.java).toMutableList()
+                    //leadsList.add(0,"Leads(${leadsList.count()})")
 
-                            } else {
-                                leadSpinner.onItemSelectedListener =
-                                    object : AdapterView.OnItemSelectedListener {
-                                        override fun onItemSelected(
-                                            parent: AdapterView<*>,
-                                            view: View,
-                                            position: Int,
-                                            id: Long
-                                        ) {
-                                            println("onItemSelected position = $position id = $id")
+                    val dummyInvoice = Invoice()
+                    dummyInvoice.title = "Select Invoices"
+                    invoicesList!!.add(0,dummyInvoice)
 
-                                            if (position != 0){
+                    invoiceTxt.text = getString(R.string.invoices_amount, invoicesJSON.length())
 
 
-                                                val lead: Lead = gson.fromJson(
-                                                    leadsJSON[position - 1].toString(),
-                                                    Lead::class.java
-                                                )
-                                                println("lead = $lead")
+                    val leadAdapter: ArrayAdapter<Lead> = ArrayAdapter<Lead>(
+                        myView.context,
+                        android.R.layout.simple_spinner_dropdown_item, leadsList!!
+                    )
+                    leadAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
+                    leadSpinner.adapter = leadAdapter
+                   /// leadSpinner.setSpinnerText("Leads(${leadsList!!.count()})")
+
+                    val contractAdapter: ArrayAdapter<Contract> = ArrayAdapter<Contract>(
+                        myView.context,
+                        android.R.layout.simple_spinner_dropdown_item, contractsList!!
+                    )
+                    contractAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
+                    contractSpinner.adapter = contractAdapter
+                    //contractSpinner.setSpinnerText("Contracts(${contractsList!!.count()})")
+
+                    val workOrderAdapter: ArrayAdapter<WorkOrder> = ArrayAdapter<WorkOrder>(
+                        requireContext(),
+                        android.R.layout.simple_spinner_dropdown_item, workOrdersList!!
+                    )
+                    workOrderAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
+                    workOrderSpinner.adapter = workOrderAdapter
+
+                    val invoiceAdapter: ArrayAdapter<Invoice> = ArrayAdapter<Invoice>(
+                        myView.context,
+                        android.R.layout.simple_spinner_dropdown_item, invoicesList!!
+                    )
+                    invoiceAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
+                    invoiceSpinner.adapter = invoiceAdapter
 
 
-                                                delegate.newLeadView(lead)
-                                            }
-                                        }
 
-                                        override fun onNothingSelected(parent: AdapterView<*>) {
+                //Listeners
 
-                                        }
-                                    }
+                    //leads
+                    if (leadsJSON.length() > 0) {
+                        leadSpinner.setSelection(0, false)
+
+                        if (leadsJSON.length() == 1) {
+
+                            leadTxt.setOnClickListener {
+                                // your code to run when the user clicks on the TextView
+                                println("leadSpinner click")
+                                val lead: Lead = gson.fromJson(
+                                    leadsJSON[0].toString(),
+                                    Lead::class.java
+                                )
+                                println("lead = $lead")
+
+                                delegate.newLeadView(lead)
                             }
 
-                        }else{
-                            //leadTxt.isEnabled = false
-                            //leadTxt.isClickable = false
-                            leadSpinner.isEnabled = false
-                            leadSpinner.isClickable = false
-                        }
+                        } else {
+                            leadSpinner.onItemSelectedListener =
+                                object : AdapterView.OnItemSelectedListener {
+                                    override fun onItemSelected(
+                                        parent: AdapterView<*>,
+                                        view: View,
+                                        position: Int,
+                                        id: Long
+                                    ) {
+                                        println("onItemSelected position = $position id = $id")
 
-                        //contracts
-                        if (contractsJSON.length() > 0) {
-                            contractSpinner.setSelection(0, false)
-
-                            if (contractsJSON.length() == 1) {
-
-                                contractTxt.setOnClickListener {
-                                    // your code to run when the user clicks on the TextView
-                                    println("contractSpinner click")
-                                    val contract: Contract = gson.fromJson(
-                                        contractsJSON[0].toString(),
-                                        Contract::class.java
-                                    )
-                                    println("contract = $contract")
-
-                                    delegate.newContractView(contract)
-                                }
-
-                            } else {
-                                contractSpinner.onItemSelectedListener =
-                                    object : AdapterView.OnItemSelectedListener {
-                                        override fun onItemSelected(
-                                            parent: AdapterView<*>,
-                                            view: View,
-                                            position: Int,
-                                            id: Long
-                                        ) {
-                                            println("onItemSelected position = $position id = $id")
-
-                                            if (position != 0){
-                                                // var contract:WorkOrder = gson.fromJson(contractsJSON[position],WorkOrder)
-
-                                                val contract: Contract = gson.fromJson(
-                                                    contractsJSON[position - 1].toString(),
-                                                    Contract::class.java
-                                                )
-                                                println("contract = $contract")
+                                        if (position != 0){
 
 
-                                                delegate.newContractView(contract)
-                                            }
-                                        }
+                                            val lead: Lead = gson.fromJson(
+                                                leadsJSON[position - 1].toString(),
+                                                Lead::class.java
+                                            )
+                                            println("lead = $lead")
 
-                                        override fun onNothingSelected(parent: AdapterView<*>) {
 
+                                            delegate.newLeadView(lead)
                                         }
                                     }
-                            }
 
-                        }else{
-                            //leadTxt.isEnabled = false
-                            //leadTxt.isClickable = false
-                            contractSpinner.isEnabled = false
-                            contractSpinner.isClickable = false
-                        }
+                                    override fun onNothingSelected(parent: AdapterView<*>) {
 
-
-                        //work orders
-                        if (workOrdersJSON.length() > 0) {
-                            workOrderSpinner.setSelection(0, false)
-
-                            if (workOrdersJSON.length() == 1) {
-
-                                workOrderTxt.setOnClickListener {
-                                    // your code to run when the user clicks on the TextView
-                                    println("workOrderSpinner click")
-                                    val workOrder: WorkOrder = gson.fromJson(
-                                        workOrdersJSON[0].toString(),
-                                        WorkOrder::class.java
-                                    )
-                                    println("workOrder = $workOrder")
-
-                                    delegate.newWorkOrderView(workOrder)
-                                }
-
-                            } else {
-                                workOrderSpinner.onItemSelectedListener =
-                                    object : AdapterView.OnItemSelectedListener {
-                                        override fun onItemSelected(
-                                            parent: AdapterView<*>,
-                                            view: View,
-                                            position: Int,
-                                            id: Long
-                                        ) {
-                                            println("onItemSelected position = $position id = $id")
-
-                                            if (position != 0){
-                                                // var workOrder:WorkOrder = gson.fromJson(workOrdersJSON[position],WorkOrder)
-
-                                                val workOrder: WorkOrder = gson.fromJson(
-                                                    workOrdersJSON[position - 1].toString(),
-                                                    WorkOrder::class.java
-                                                )
-                                                println("workOrder = $workOrder")
-
-
-                                                delegate.newWorkOrderView(workOrder)
-                                            }
-                                        }
-
-                                        override fun onNothingSelected(parent: AdapterView<*>) {
-
-                                        }
                                     }
-                            }
-
-                        }else{
-                            //leadTxt.isEnabled = false
-                            //leadTxt.isClickable = false
-                            workOrderSpinner.isEnabled = false
-                            workOrderSpinner.isClickable = false
-                        }
-
-                        //invoices
-                        if (invoicesJSON.length() > 0) {
-                            invoiceSpinner.setSelection(0, false)
-
-                            if (invoicesJSON.length() == 1) {
-
-                                invoiceTxt.setOnClickListener {
-                                    // your code to run when the user clicks on the TextView
-                                    println("invoiceSpinner click")
-                                    val invoice: Invoice = gson.fromJson(
-                                            invoicesJSON[0].toString(),
-                                        Invoice::class.java
-                                    )
-                                    println("invoice = $invoice")
-
-                                    delegate.newInvoiceView(invoice)
                                 }
-
-                            } else {
-                                invoiceSpinner.onItemSelectedListener =
-                                    object : AdapterView.OnItemSelectedListener {
-                                        override fun onItemSelected(
-                                            parent: AdapterView<*>,
-                                            view: View,
-                                            position: Int,
-                                            id: Long
-                                        ) {
-                                            println("onItemSelected position = $position id = $id")
-
-                                            if (position != 0){
-
-                                                val invoice: Invoice = gson.fromJson(
-                                                    invoicesJSON[position - 1].toString(),
-                                                    Invoice::class.java
-                                                )
-                                                println("invoice = $invoice")
-
-
-                                                delegate.newInvoiceView(invoice)
-                                            }
-                                        }
-
-                                        override fun onNothingSelected(parent: AdapterView<*>) {
-
-                                        }
-                                    }
-                            }
-
-                        }else{
-                            //leadTxt.isEnabled = false
-                            //leadTxt.isClickable = false
-                            invoiceSpinner.isEnabled = false
-                            invoiceSpinner.isClickable = false
                         }
 
-
-
-
-                       // delegate.setListeners()
+                    }else{
+                        //leadTxt.isEnabled = false
+                        //leadTxt.isClickable = false
+                        leadSpinner.isEnabled = false
+                        leadSpinner.isClickable = false
                     }
+
+                    //contracts
+                    if (contractsJSON.length() > 0) {
+                        contractSpinner.setSelection(0, false)
+
+                        if (contractsJSON.length() == 1) {
+
+                            contractTxt.setOnClickListener {
+                                // your code to run when the user clicks on the TextView
+                                println("contractSpinner click")
+                                val contract: Contract = gson.fromJson(
+                                    contractsJSON[0].toString(),
+                                    Contract::class.java
+                                )
+                                println("contract = $contract")
+
+                                delegate.newContractView(contract)
+                            }
+
+                        } else {
+                            contractSpinner.onItemSelectedListener =
+                                object : AdapterView.OnItemSelectedListener {
+                                    override fun onItemSelected(
+                                        parent: AdapterView<*>,
+                                        view: View,
+                                        position: Int,
+                                        id: Long
+                                    ) {
+                                        println("onItemSelected position = $position id = $id")
+
+                                        if (position != 0){
+                                            // var contract:WorkOrder = gson.fromJson(contractsJSON[position],WorkOrder)
+
+                                            val contract: Contract = gson.fromJson(
+                                                contractsJSON[position - 1].toString(),
+                                                Contract::class.java
+                                            )
+                                            println("contract = $contract")
+
+
+                                            delegate.newContractView(contract)
+                                        }
+                                    }
+
+                                    override fun onNothingSelected(parent: AdapterView<*>) {
+
+                                    }
+                                }
+                        }
+
+                    }else{
+                        //leadTxt.isEnabled = false
+                        //leadTxt.isClickable = false
+                        contractSpinner.isEnabled = false
+                        contractSpinner.isClickable = false
+                    }
+
+
+                    //work orders
+                    if (workOrdersJSON.length() > 0) {
+                        workOrderSpinner.setSelection(0, false)
+
+                        if (workOrdersJSON.length() == 1) {
+
+                            workOrderTxt.setOnClickListener {
+                                // your code to run when the user clicks on the TextView
+                                println("workOrderSpinner click")
+                                val workOrder: WorkOrder = gson.fromJson(
+                                    workOrdersJSON[0].toString(),
+                                    WorkOrder::class.java
+                                )
+                                println("workOrder = $workOrder")
+
+                                delegate.newWorkOrderView(workOrder)
+                            }
+
+                        } else {
+                            workOrderSpinner.onItemSelectedListener =
+                                object : AdapterView.OnItemSelectedListener {
+                                    override fun onItemSelected(
+                                        parent: AdapterView<*>,
+                                        view: View,
+                                        position: Int,
+                                        id: Long
+                                    ) {
+                                        println("onItemSelected position = $position id = $id")
+
+                                        if (position != 0){
+                                            // var workOrder:WorkOrder = gson.fromJson(workOrdersJSON[position],WorkOrder)
+
+                                            val workOrder: WorkOrder = gson.fromJson(
+                                                workOrdersJSON[position - 1].toString(),
+                                                WorkOrder::class.java
+                                            )
+                                            println("workOrder = $workOrder")
+
+
+                                            delegate.newWorkOrderView(workOrder)
+                                        }
+                                    }
+
+                                    override fun onNothingSelected(parent: AdapterView<*>) {
+
+                                    }
+                                }
+                        }
+
+                    }else{
+                        //leadTxt.isEnabled = false
+                        //leadTxt.isClickable = false
+                        workOrderSpinner.isEnabled = false
+                        workOrderSpinner.isClickable = false
+                    }
+
+                    //invoices
+                    if (invoicesJSON.length() > 0) {
+                        invoiceSpinner.setSelection(0, false)
+
+                        if (invoicesJSON.length() == 1) {
+
+                            invoiceTxt.setOnClickListener {
+                                // your code to run when the user clicks on the TextView
+                                println("invoiceSpinner click")
+                                val invoice: Invoice = gson.fromJson(
+                                        invoicesJSON[0].toString(),
+                                    Invoice::class.java
+                                )
+                                println("invoice = $invoice")
+
+                                delegate.newInvoiceView(invoice)
+                            }
+
+                        } else {
+                            invoiceSpinner.onItemSelectedListener =
+                                object : AdapterView.OnItemSelectedListener {
+                                    override fun onItemSelected(
+                                        parent: AdapterView<*>,
+                                        view: View,
+                                        position: Int,
+                                        id: Long
+                                    ) {
+                                        println("onItemSelected position = $position id = $id")
+
+                                        if (position != 0){
+
+                                            val invoice: Invoice = gson.fromJson(
+                                                invoicesJSON[position - 1].toString(),
+                                                Invoice::class.java
+                                            )
+                                            println("invoice = $invoice")
+
+
+                                            delegate.newInvoiceView(invoice)
+                                        }
+                                    }
+
+                                    override fun onNothingSelected(parent: AdapterView<*>) {
+
+                                    }
+                                }
+                        }
+
+                    }else{
+                        //leadTxt.isEnabled = false
+                        //leadTxt.isClickable = false
+                        invoiceSpinner.isEnabled = false
+                        invoiceSpinner.isClickable = false
+                    }
+
+
+
+
+                   // delegate.setListeners()
 
 
 
@@ -584,10 +582,8 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                 return params
             }
         }
-        queue.add(postRequest1)
-
-
-
+        postRequest1.tag = "stack"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
 
     }
 

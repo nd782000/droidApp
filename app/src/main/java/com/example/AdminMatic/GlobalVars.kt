@@ -14,13 +14,6 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.ImageSpan
 import com.AdminMatic.R
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.google.gson.GsonBuilder
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -188,6 +181,7 @@ class GlobalVars: Application() {
     }
 
 
+    /*
     private fun getCustomers(){
         println("getCustomers")
 
@@ -294,6 +288,7 @@ class GlobalVars: Application() {
         queue.add(postRequest1)
     }
 
+     */
 
 
 }

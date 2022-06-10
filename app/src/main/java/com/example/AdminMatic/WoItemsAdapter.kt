@@ -13,12 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wo_item_list_item.view.*
 
 
-class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, private val cellClickListener: WoItemCellClickListener) : RecyclerView.Adapter<WoItemViewHolder>() {
+class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, private val appContext: Context, private val cellClickListener: WoItemCellClickListener) : RecyclerView.Adapter<WoItemViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
@@ -119,7 +118,6 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
                                         val currentTimestamp = System.currentTimeMillis()
                                         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
                                         urlString = "$urlString?cb=$currentTimestamp"
-                                        val queue = Volley.newRequestQueue(myView.context)
 
                                         val postRequest1: StringRequest = object : StringRequest(
                                             Method.POST, urlString,
@@ -130,33 +128,6 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
                                                 filterList.removeAt(position)
                                                 notifyDataSetChanged()
-
-                                                /*
-                                            try {
-                                                val parentObject = JSONObject(response)
-                                                println("parentObject = $parentObject")
-                                                val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
-                                                println("workOrders = $workOrders")
-                                                println("workOrders count = ${workOrders.length()}")
-
-                                                if (GlobalVars.globalWorkOrdersList != null) {
-                                                    GlobalVars.globalWorkOrdersList!!.clear()
-                                                }
-
-
-                                                val gson = GsonBuilder().create()
-
-                                                GlobalVars.globalWorkOrdersList =
-                                                    gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
-                                                        .toMutableList()
-
-                                                /* Here 'response' is a String containing the response you received from the website... */
-                                            } catch (e: JSONException) {
-                                                println("JSONException")
-                                                e.printStackTrace()
-                                            }
-
-                                             */
 
                                             },
                                             Response.ErrorListener { // error
@@ -178,7 +149,8 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
                                                 return params
                                             }
                                         }
-                                        queue.add(postRequest1)
+                                        postRequest1.tag = "woItem"
+                                        VolleyRequestQueue.getInstance(appContext).addToRequestQueue(postRequest1)
                                     }
                                     builder.setNegativeButton(context.getString(R.string.no)) { _, _ ->
 

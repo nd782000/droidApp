@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_main_menu.*
@@ -144,6 +143,11 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("departments")
+    }
+
     override fun onEmployeeCellClickListener(data:Employee) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         //Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
@@ -174,46 +178,43 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
             Response.Listener { response -> // response
                 println("Response $response")
                 try {
-                    if (isResumed) {
-                        val gson = GsonBuilder().create()
+                    val gson = GsonBuilder().create()
 
 
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
 
 
-                        val departments:JSONArray = parentObject.getJSONArray("departments")
-                        println("departments = $departments")
-                        println("departments count = ${departments.length()}")
+                    val departments:JSONArray = parentObject.getJSONArray("departments")
+                    println("departments = $departments")
+                    println("departments count = ${departments.length()}")
 
-                        val departmentsList = gson.fromJson(departments.toString() , Array<Department>::class.java).toMutableList()
-                        println("DepartmentsCount = ${departmentsList.count()}")
+                    val departmentsList = gson.fromJson(departments.toString() , Array<Department>::class.java).toMutableList()
+                    println("DepartmentsCount = ${departmentsList.count()}")
 
-                        // Clear empty crews from the view
-                        val depIterator = departmentsList.iterator()
-                        while (depIterator.hasNext()) {
-                            val dep = depIterator.next()
-                            if (dep.emps!!.isEmpty()) {
-                                depIterator.remove()
-                            }
+                    // Clear empty crews from the view
+                    val depIterator = departmentsList.iterator()
+                    while (depIterator.hasNext()) {
+                        val dep = depIterator.next()
+                        if (dep.emps!!.isEmpty()) {
+                            depIterator.remove()
                         }
-
-                        departmentAdapter = DepartmentAdapter(departmentsList, this.myView.context, this@DepartmentsFragment)
-                        println(departmentAdapter.itemCount)
-                        recyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-
-                        departmentCount = departmentsList.size
-
-                        getCrews()
                     }
+
+                    departmentAdapter = DepartmentAdapter(departmentsList, this.myView.context, this@DepartmentsFragment)
+                    println(departmentAdapter.itemCount)
+                    recyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+
+                    departmentCount = departmentsList.size
+
+                    getCrews()
 
 
                 } catch (e: JSONException) {
@@ -235,7 +236,8 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "departments"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
 
@@ -249,7 +251,6 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -257,38 +258,36 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                 println("Response $response")
 
                 try {
-                    if (isResumed) {
-                        val gson = GsonBuilder().create()
+                    val gson = GsonBuilder().create()
 
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
-                        val crews:JSONArray = parentObject.getJSONArray("crews")
-                        println("crews = $crews")
-                        println("crews count = ${crews.length()}")
+                    val crews:JSONArray = parentObject.getJSONArray("crews")
+                    println("crews = $crews")
+                    println("crews count = ${crews.length()}")
 
-                        val crewsList = gson.fromJson(crews.toString() , Array<Crew>::class.java).toMutableList()
+                    val crewsList = gson.fromJson(crews.toString() , Array<Crew>::class.java).toMutableList()
 
 
-                        // Clear empty crews from the view
-                        val crewIterator = crewsList.iterator()
-                        while (crewIterator.hasNext()) {
-                            val crew = crewIterator.next()
-                            if (crew.emps!!.isEmpty()) {
-                                crewIterator.remove()
-                            }
+                    // Clear empty crews from the view
+                    val crewIterator = crewsList.iterator()
+                    while (crewIterator.hasNext()) {
+                        val crew = crewIterator.next()
+                        if (crew.emps!!.isEmpty()) {
+                            crewIterator.remove()
                         }
-
-                        println("CrewsCount = ${crewsList.count()}")
-                        crewCount = crewsList.size
-
-
-                        crewAdapter = CrewAdapter(crewsList, this.myView.context, this@DepartmentsFragment)
-                        println(departmentAdapter.itemCount)
-                        recyclerView.adapter = crewAdapter
-
-                        getEquipmentCrews()
                     }
+
+                    println("CrewsCount = ${crewsList.count()}")
+                    crewCount = crewsList.size
+
+
+                    crewAdapter = CrewAdapter(crewsList, this.myView.context, this@DepartmentsFragment)
+                    println(departmentAdapter.itemCount)
+                    recyclerView.adapter = crewAdapter
+
+                    getEquipmentCrews()
 
 
                 } catch (e: JSONException) {
@@ -310,7 +309,8 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "departments"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     private fun getEquipmentCrews(){
@@ -323,7 +323,6 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -331,61 +330,59 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                 println("Response $response")
 
                 try {
-                    if (isResumed) {
-                        val gson = GsonBuilder().create()
+                    val gson = GsonBuilder().create()
 
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
-                        val equipment: JSONArray = parentObject.getJSONArray("equipment")
-                        println("equipment = $equipment")
-                        println("equipment count = ${equipment.length()}")
+                    val equipment: JSONArray = parentObject.getJSONArray("equipment")
+                    println("equipment = $equipment")
+                    println("equipment count = ${equipment.length()}")
 
 
-                        val equipmentList =
-                            gson.fromJson(equipment.toString(), Array<Equipment>::class.java)
-                                .toMutableList()
+                    val equipmentList =
+                        gson.fromJson(equipment.toString(), Array<Equipment>::class.java)
+                            .toMutableList()
 
-                        val equipmentCrewList = mutableListOf<EquipmentCrew>()
+                    val equipmentCrewList = mutableListOf<EquipmentCrew>()
 
-                        // Todo: alphabetize the list by crew name
-                        // Pack the equipment into a list of equipment crew objects for the adapter
-                        equipmentList.forEach { e ->
-                            var found = false
-                            equipmentCrewList.forEach { ec ->
-                                // If the crew group already exists, add the equipment to its list
-                                if (ec.name == e.crewName) {
-                                    found = true
-                                    ec.equips.add(e)
-                                }
-                            }
-                            // If not, make and add it with the current equipment added to it
-                            if (!found) {
-                                val newEquipmentCrew =
-                                    EquipmentCrew(e.crewName, e.crewColor)
-                                newEquipmentCrew.equips.add(e)
-                                equipmentCrewList.add(newEquipmentCrew)
+                    // Todo: alphabetize the list by crew name
+                    // Pack the equipment into a list of equipment crew objects for the adapter
+                    equipmentList.forEach { e ->
+                        var found = false
+                        equipmentCrewList.forEach { ec ->
+                            // If the crew group already exists, add the equipment to its list
+                            if (ec.name == e.crewName) {
+                                found = true
+                                ec.equips.add(e)
                             }
                         }
-
-
-
-                        println("EquipmentCount = ${equipmentList.count()}")
-                        equipmentCount = equipmentList.size
-
-
-                        equipmentCrewAdapter = EquipmentCrewAdapter(
-                            equipmentCrewList,
-                            this.myView.context,
-                            this@DepartmentsFragment
-                        )
-                        println(departmentAdapter.itemCount)
-
-                        //This is the final PHP get, so set the footer text now
-                        footerText.text = getString(R.string.x_crews, crewCount)
-
-                        hideProgressView()
+                        // If not, make and add it with the current equipment added to it
+                        if (!found) {
+                            val newEquipmentCrew =
+                                EquipmentCrew(e.crewName, e.crewColor)
+                            newEquipmentCrew.equips.add(e)
+                            equipmentCrewList.add(newEquipmentCrew)
+                        }
                     }
+
+
+
+                    println("EquipmentCount = ${equipmentList.count()}")
+                    equipmentCount = equipmentList.size
+
+
+                    equipmentCrewAdapter = EquipmentCrewAdapter(
+                        equipmentCrewList,
+                        this.myView.context,
+                        this@DepartmentsFragment
+                    )
+                    println(departmentAdapter.itemCount)
+
+                    //This is the final PHP get, so set the footer text now
+                    footerText.text = getString(R.string.x_crews, crewCount)
+
+                    hideProgressView()
 
 
 
@@ -409,7 +406,8 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "departments"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
 

@@ -169,7 +169,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-class LeadTasksAdapter(private val list: MutableList<Task>, private val context: Context,private val cellClickListener: LeadTaskCellClickListener, private val lead:Lead)
+class LeadTasksAdapter(private val list: MutableList<Task>, private val context: Context, private val appContext: Context, private val cellClickListener: LeadTaskCellClickListener, private val lead:Lead)
 
     : RecyclerView.Adapter<TaskViewHolder>() {
 
@@ -350,8 +350,6 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
                 val currentTimestamp = System.currentTimeMillis()
                 println("urlString = ${"$urlString?cb=$currentTimestamp"}")
                 urlString = "$urlString?cb=$currentTimestamp"
-                val queue = Volley.newRequestQueue(myView.context)
-
 
                 val postRequest1: StringRequest = object : StringRequest(
                     Method.POST, urlString,
@@ -400,22 +398,14 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
                         return params
                     }
                 }
-                queue.add(postRequest1)
-
-
-
+                postRequest1.tag = "lead"
+                VolleyRequestQueue.getInstance(appContext).addToRequestQueue(postRequest1)
 
                 true
             }
 
-
-
-
             popUp.gravity = Gravity.START
             popUp.show()
-
-
-
 
         }
 

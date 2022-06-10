@@ -85,9 +85,9 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
        //recyclerView.adapter = adapter
         layoutViews()
-
-
     }
+
+
 
 
 

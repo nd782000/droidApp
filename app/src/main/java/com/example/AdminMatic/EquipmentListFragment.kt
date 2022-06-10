@@ -16,17 +16,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-
-import kotlinx.android.synthetic.main.fragment_equipment_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_equipment_list.customerSwipeContainer
 import kotlinx.android.synthetic.main.fragment_equipment_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-
 
 
 interface EquipmentCellClickListener {
@@ -96,7 +91,11 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
         getEquipment()
 
+    }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("equipmentList")
     }
 
 
@@ -115,7 +114,6 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
 
         //val preferences =
@@ -135,89 +133,73 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val equipment:JSONArray = parentObject.getJSONArray("equipment")
-                        println("equipment = $equipment")
-                        println("equipment count = ${equipment.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val equipment:JSONArray = parentObject.getJSONArray("equipment")
+                    println("equipment = $equipment")
+                    println("equipment count = ${equipment.length()}")
 
 
 
-                        val gson = GsonBuilder().create()
-                        val equipmentList = gson.fromJson(equipment.toString() , Array<Equipment>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    val equipmentList = gson.fromJson(equipment.toString() , Array<Equipment>::class.java).toMutableList()
 
 
-                        list_recycler_view.apply {
-                            layoutManager = LinearLayoutManager(activity)
+                    list_recycler_view.apply {
+                        layoutManager = LinearLayoutManager(activity)
 
 
-                            adapter = activity?.let {
-                                EquipmentAdapter(equipmentList,
-                                    it, this@EquipmentListFragment)
-                            }
-
-                            val itemDecoration: ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            recyclerView.addItemDecoration(itemDecoration)
-
-                            //for item animations
-                            // recyclerView.itemAnimator = SlideInUpAnimator()
-
-
-
-                            // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
-                            // Setup refresh listener which triggers new data loading
-                            // Setup refresh listener which triggers new data loading
-                            swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
-                                // Make sure you call swipeContainer.setRefreshing(false)
-                                // once the network request has completed successfully.
-                                //fetchTimelineAsync(0)
-                                searchView.setQuery("", false)
-                                searchView.clearFocus()
-                                getEquipment()
-                            }
-                            // Configure the refreshing colors
-                            // Configure the refreshing colors
-                            swipeRefresh.setColorSchemeResources(
-                                R.color.button,
-                                R.color.black,
-                                R.color.colorAccent,
-                                R.color.colorPrimaryDark
-                            )
-
-
-
-                            //(adapter as EquipmentAdapter).notifyDataSetChanged();
-
-                            // Remember to CLEAR OUT old items before appending in the new ones
-
-                            // ...the data has come back, add new items to your adapter...
-
-                            // Now we call setRefreshing(false) to signal refresh has finished
-                            customerSwipeContainer.isRefreshing = false
-
-                            //  Toast.makeText(activity,"${equipmentList.count()} Equipment Loaded",Toast.LENGTH_SHORT).show()
-
-
-
-                            //search listener
-                            equipment_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-
-                                override fun onQueryTextSubmit(query: String?): Boolean {
-                                    return false
-                                }
-
-                                override fun onQueryTextChange(newText: String?): Boolean {
-                                    println("onQueryTextChange = $newText")
-                                    (adapter as EquipmentAdapter).filter.filter(newText)
-                                    return false
-                                }
-
-                            })
+                        adapter = activity?.let {
+                            EquipmentAdapter(equipmentList,
+                                it, this@EquipmentListFragment)
                         }
+
+                        val itemDecoration: ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        recyclerView.addItemDecoration(itemDecoration)
+
+                        //for item animations
+                        // recyclerView.itemAnimator = SlideInUpAnimator()
+
+                        // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+                        // Setup refresh listener which triggers new data loading
+                        // Setup refresh listener which triggers new data loading
+                        swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                            // Make sure you call swipeContainer.setRefreshing(false)
+                            // once the network request has completed successfully.
+                            //fetchTimelineAsync(0)
+                            searchView.setQuery("", false)
+                            searchView.clearFocus()
+                            getEquipment()
+                        }
+                        // Configure the refreshing colors
+                        // Configure the refreshing colors
+                        swipeRefresh.setColorSchemeResources(
+                            R.color.button,
+                            R.color.black,
+                            R.color.colorAccent,
+                            R.color.colorPrimaryDark
+                        )
+
+                        customerSwipeContainer.isRefreshing = false
+
+
+                        //search listener
+                        equipment_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+
+                            override fun onQueryTextSubmit(query: String?): Boolean {
+                                return false
+                            }
+
+                            override fun onQueryTextChange(newText: String?): Boolean {
+                                println("onQueryTextChange = $newText")
+                                (adapter as EquipmentAdapter).filter.filter(newText)
+                                return false
+                            }
+
+                        })
                     }
 
 
@@ -248,7 +230,8 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "equipmentList"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onEquipmentCellClickListener(data:Equipment) {

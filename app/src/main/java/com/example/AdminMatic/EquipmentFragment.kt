@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
@@ -168,6 +167,11 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("equipment")
+    }
+
 
 
     private fun getServiceInfo(){
@@ -181,7 +185,6 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -189,67 +192,65 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                 println("Response $response")
                 hideProgressView()
                 try {
-                    if (isResumed) {
-                        val gson = GsonBuilder().create()
+                    val gson = GsonBuilder().create()
 
 
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
-                        //current adapter
-                        val services:JSONArray = parentObject.getJSONArray("services")
-                        println("services = $services")
-                        println("services count = ${services.length()}")
+                    //current adapter
+                    val services:JSONArray = parentObject.getJSONArray("services")
+                    println("services = $services")
+                    println("services count = ${services.length()}")
 
-                        val servicesListCurrent = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
-                        println("ServiceCount = ${servicesListCurrent.count()}")
+                    val servicesListCurrent = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
+                    println("ServiceCount = ${servicesListCurrent.count()}")
 
-                        currentServicesAdapter = ServiceAdapter(servicesListCurrent,this.myView.context, false,this)
+                    currentServicesAdapter = ServiceAdapter(servicesListCurrent,this.myView.context, false,this)
 
-                        //history adapter
-                        val servicesHistory:JSONArray = parentObject.getJSONArray("serviceHistory")
-                        println("servicesHistory = $servicesHistory")
-                        println("servicesHistory count = ${servicesHistory.length()}")
+                    //history adapter
+                    val servicesHistory:JSONArray = parentObject.getJSONArray("serviceHistory")
+                    println("servicesHistory = $servicesHistory")
+                    println("servicesHistory count = ${servicesHistory.length()}")
 
-                        val servicesListHistory = gson.fromJson(servicesHistory.toString() , Array<EquipmentService>::class.java).toMutableList()
-                        println("ServiceHistoryCount = ${servicesListHistory.count()}")
+                    val servicesListHistory = gson.fromJson(servicesHistory.toString() , Array<EquipmentService>::class.java).toMutableList()
+                    println("ServiceHistoryCount = ${servicesListHistory.count()}")
 
-                        println(equipment!!.dealer)
+                    println(equipment!!.dealer)
 
-                        historyServicesAdapter = ServiceAdapter(servicesListHistory,this.myView.context, true,this)
-
-
-                        serviceRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-
-                        //currentRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    historyServicesAdapter = ServiceAdapter(servicesListHistory,this.myView.context, true,this)
 
 
+                    serviceRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
 
-                        serviceRecyclerView.adapter = currentServicesAdapter
+                    //currentRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
 
 
 
+                    serviceRecyclerView.adapter = currentServicesAdapter
 
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        serviceRecyclerView.addItemDecoration(itemDecoration)
 
-                        /*
-                        currentRecyclerView.apply {
-                            layoutManager = LinearLayoutManager(activity)
-                            adapter = activity?.let {
-                                ServiceAdapter(servicesList,
-                                    it, this@EquipmentFragment)
-                            }
-                            (adapter as ServiceAdapter).notifyDataSetChanged();
+
+
+                    val itemDecoration: RecyclerView.ItemDecoration =
+                        DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                    serviceRecyclerView.addItemDecoration(itemDecoration)
+
+                    /*
+                    currentRecyclerView.apply {
+                        layoutManager = LinearLayoutManager(activity)
+                        adapter = activity?.let {
+                            ServiceAdapter(servicesList,
+                                it, this@EquipmentFragment)
                         }
-
-                         */
-
-                        /* Here 'response' is a String containing the response you received from the website... */
-
-                        // getServicesHistory()
+                        (adapter as ServiceAdapter).notifyDataSetChanged();
                     }
+
+                     */
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+
+                    // getServicesHistory()
 
 
                 } catch (e: JSONException) {
@@ -272,7 +273,8 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "equipment"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onServiceCellClickListener(data:EquipmentService){
@@ -327,8 +329,6 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
             urlString = "$urlString?cb=$currentTimestamp"
-            val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
-
 
             val postRequest1: StringRequest = object : StringRequest(
                 Method.POST, urlString,
@@ -337,12 +337,10 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     println("Response $response")
 
                     try {
-                        if (isResumed) {
-                            val parentObject = JSONObject(response)
-                            println("parentObject = $parentObject")
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
-                            hideProgressView()
-                        }
+                        hideProgressView()
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {
@@ -364,7 +362,8 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     return params
                 }
             }
-            queue.add(postRequest1)
+            postRequest1.tag = "equipment"
+            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
 
 
             true

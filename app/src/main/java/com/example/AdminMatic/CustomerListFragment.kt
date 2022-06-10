@@ -19,7 +19,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import kotlinx.android.synthetic.main.fragment_customer_list.*
 import org.json.JSONException
@@ -31,8 +30,6 @@ interface CustomerCellClickListener {
 
 //great resource fo recyclerView inf
 //https://guides.codepath.com/android/using-the-recyclerview
-
-
 
 
 
@@ -78,6 +75,11 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
         showCustomers()
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("customerList")
     }
 
 
@@ -167,7 +169,6 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -264,7 +265,8 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "customerList"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
 

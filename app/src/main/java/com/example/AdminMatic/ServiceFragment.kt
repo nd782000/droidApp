@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.dateFormatterPHP
 import com.example.AdminMatic.GlobalVars.Companion.dateFormatterShort
 import org.json.JSONException
@@ -174,6 +173,11 @@ class ServiceFragment : Fragment() {
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("service")
+    }
+
     private fun showStatusMenu(){
         println("showStatusMenu")
 
@@ -200,8 +204,6 @@ class ServiceFragment : Fragment() {
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
             urlString = "$urlString?cb=$currentTimestamp"
-            val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
-
 
             val postRequest1: StringRequest = object : StringRequest(
                 Method.POST, urlString,
@@ -210,12 +212,10 @@ class ServiceFragment : Fragment() {
                     println("Response $response")
 
                     try {
-                        if (isResumed) {
-                            val parentObject = JSONObject(response)
-                            println("parentObject = $parentObject")
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
-                            hideProgressView()
-                        }
+                        hideProgressView()
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {
@@ -243,7 +243,8 @@ class ServiceFragment : Fragment() {
                     return params
                 }
             }
-            queue.add(postRequest1)
+            postRequest1.tag = "service"
+            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
             true
         }
 

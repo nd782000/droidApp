@@ -11,7 +11,6 @@ import androidx.navigation.findNavController
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.squareup.picasso.Picasso
 import org.json.JSONException
 import org.json.JSONObject
@@ -137,6 +136,11 @@ class ImageFragment : Fragment() {
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("image")
+    }
+
     private fun setLikesViewText() {
         if (image!!.likes == "1") {
             likesTextView.text = getString(R.string.one_like)
@@ -163,8 +167,6 @@ class ImageFragment : Fragment() {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -179,10 +181,8 @@ class ImageFragment : Fragment() {
                 //hideProgressView()
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                    }
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -205,7 +205,8 @@ class ImageFragment : Fragment() {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "image"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     private fun getImage() {

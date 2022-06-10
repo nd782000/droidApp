@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
@@ -111,10 +110,11 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         weekSpinner.setSelection(0)
 
+    }
 
-
-
-
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("shifts")
     }
 
     private fun getShifts(){
@@ -127,8 +127,6 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -138,21 +136,10 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 println("Response $response")
                 hideProgressView()
                 try {
-                    if (isResumed) {
-                        //val parentObject = JSONObject(response)
+                    shiftsJSON = JSONObject(response)
 
-                        shiftsJSON = JSONObject(response)
+                    parseShiftsJSON()
 
-                        parseShiftsJSON()
-
-
-                        //val shifts:JSONArray = parentObject.getJSONArray("shifts")
-
-                        //val gson = GsonBuilder().create()
-                        //val shiftsList = gson.fromJson(shifts.toString() , Array<Shift>::class.java).toMutableList()
-
-                    }
-                    /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
@@ -176,7 +163,8 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "shifts"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     private fun parseShiftsJSON() {

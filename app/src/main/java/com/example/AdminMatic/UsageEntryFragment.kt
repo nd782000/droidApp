@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.json.JSONException
@@ -34,19 +33,6 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.math.roundToInt
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [UsageEntryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
-
-
 interface UsageEditListener {
     fun deleteUsage(row:Int)
     fun editStart(row:Int)
@@ -61,9 +47,6 @@ interface UsageEditListener {
 
 
 class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSelectedListener {
-    // TODO: Rename and change types of parameters
-    //private var param1: String? = null
-    private var param2: String? = null
 
     private  var woItem: WoItem? = null
     lateinit var workOrder:WorkOrder
@@ -101,8 +84,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         arguments?.let {
             woItem = it.getParcelable("woItem")
             workOrder = it.getParcelable("workOrder")!!
-
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -237,6 +218,11 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
         usageRecyclerView.addItemDecoration(itemDecoration)
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("usageEntry")
     }
 
 
@@ -1166,13 +1152,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         var urlString = "https://www.adminmatic.com/cp/app/functions/update/usage.php"
 
-
-
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -1181,17 +1163,15 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 println("Response $response")
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
 
-                        globalVars.playSaveSound(myView.context)
+                    globalVars.playSaveSound(myView.context)
 
-                        hideProgressView()
+                    hideProgressView()
 
-                        //todo: prompt to update wo status
+                    //todo: prompt to update wo status
 
-                    }
 
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -1213,8 +1193,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 return params
             }
         }
-        queue.add(postRequest1)
-
+        postRequest1.tag = "usageEntry"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
 
     }
 

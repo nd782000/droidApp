@@ -18,7 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_employee_list.*
@@ -139,12 +138,13 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         tabLayout = myView.findViewById(R.id.customer_table_tl)
 
-
-
-
-
         getCustomer()
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("customer")
     }
 
     private fun getCustomer(){
@@ -157,8 +157,6 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
         val postRequest1: StringRequest = object : StringRequest(
                 Method.POST, urlString,
@@ -170,17 +168,15 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
                     try {
-                        if (isResumed) {
-                            val parentObject = JSONObject(response)
-                            println("parentObject = $parentObject")
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
-                            val gson = GsonBuilder().create()
-                            val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
+                        val gson = GsonBuilder().create()
+                        val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
 
-                            customer = customerArray.customers[0]
+                        customer = customerArray.customers[0]
 
-                            getLeads()
-                        }
+                        getLeads()
 
                     } catch (e: JSONException) {
                         println("JSONException")
@@ -203,13 +199,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 return params
             }
         }
-        queue.add(postRequest1)
-
-
-
-
-
-
+        postRequest1.tag = "customer"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
 
@@ -231,8 +222,6 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -245,26 +234,25 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val leads: JSONArray = parentObject.getJSONArray("leads")
-                        println("leads = $leads")
-                        println("leads count = ${leads.length()}")
+
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val leads: JSONArray = parentObject.getJSONArray("leads")
+                    println("leads = $leads")
+                    println("leads count = ${leads.length()}")
 
 
-                        val gson = GsonBuilder().create()
-                        val leadsList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    val leadsList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
 
 
-                        val leadAdapter = LeadsAdapter(leadsList, this.myView.context, this, true)
+                    val leadAdapter = LeadsAdapter(leadsList, this.myView.context, this, true)
 
-                        leadsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                        leadsRecyclerView.adapter = leadAdapter
+                    leadsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    leadsRecyclerView.adapter = leadAdapter
 
-                        //layoutViews()
-                        getContracts()
-                    }
+                    //layoutViews()
+                    getContracts()
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -292,7 +280,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "customer"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
 
@@ -322,8 +311,6 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -332,24 +319,22 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 println("Response $response")
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val contracts: JSONArray = parentObject.getJSONArray("contracts")
-                        println("contracts = $contracts")
-                        println("contracts count = ${contracts.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val contracts: JSONArray = parentObject.getJSONArray("contracts")
+                    println("contracts = $contracts")
+                    println("contracts count = ${contracts.length()}")
 
-                        val gson = GsonBuilder().create()
-                        val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
 
-                        val contractAdapter = ContractsAdapter(contractsList, this.myView.context, this, true)
+                    val contractAdapter = ContractsAdapter(contractsList, this.myView.context, this, true)
 
-                        contractsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                        contractsRecyclerView.adapter = contractAdapter
+                    contractsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    contractsRecyclerView.adapter = contractAdapter
 
-                        //layoutViews()
-                        getWorkOrders()
-                    }
+                    //layoutViews()
+                    getWorkOrders()
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -372,7 +357,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "customer"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onContractCellClickListener(data:Contract) {
@@ -398,7 +384,6 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -408,24 +393,22 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 println("Response $response")
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
-                        println("workOrders = $workOrders")
-                        println("workOrders count = ${workOrders.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
+                    println("workOrders = $workOrders")
+                    println("workOrders count = ${workOrders.length()}")
 
-                        val gson = GsonBuilder().create()
-                        val workOrdersList = gson.fromJson(workOrders.toString() , Array<WorkOrder>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    val workOrdersList = gson.fromJson(workOrders.toString() , Array<WorkOrder>::class.java).toMutableList()
 
-                        val workOrderAdapter = WorkOrdersAdapter(workOrdersList, this.myView.context, this, true)
+                    val workOrderAdapter = WorkOrdersAdapter(workOrdersList, this.myView.context, this, true)
 
-                        workOrdersRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                        workOrdersRecyclerView.adapter = workOrderAdapter
+                    workOrdersRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    workOrdersRecyclerView.adapter = workOrderAdapter
 
-                        //layoutViews()
-                        getInvoices()
-                    }
+                    //layoutViews()
+                    getInvoices()
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -452,7 +435,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "customer"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onWorkOrderCellClickListener(data:WorkOrder, listIndex:Int) {
@@ -475,8 +459,6 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -485,25 +467,23 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 println("Response $response")
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val invoices: JSONArray = parentObject.getJSONArray("invoices")
-                        println("invoices = $invoices")
-                        println("invoices count = ${invoices.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val invoices: JSONArray = parentObject.getJSONArray("invoices")
+                    println("invoices = $invoices")
+                    println("invoices count = ${invoices.length()}")
 
-                        val gson = GsonBuilder().create()
-                        val invoicesList = gson.fromJson(invoices.toString() , Array<Invoice>::class.java).toMutableList()
+                    val gson = GsonBuilder().create()
+                    val invoicesList = gson.fromJson(invoices.toString() , Array<Invoice>::class.java).toMutableList()
 
 
-                        val invoicesAdapter = InvoicesAdapter(invoicesList, this)
+                    val invoicesAdapter = InvoicesAdapter(invoicesList, this)
 
-                        invoicesRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                        invoicesRecyclerView.adapter = invoicesAdapter
+                    invoicesRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    invoicesRecyclerView.adapter = invoicesAdapter
 
-                        layoutViews()
-                       // getImages()
-                    }
+                    layoutViews()
+                   // getImages()
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -528,7 +508,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "customer"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onInvoiceCellClickListener(data:Invoice) {
@@ -539,19 +520,10 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
             val directions = CustomerFragmentDirections.navigateCustomerToInvoice(it)
             myView.findNavController().navigate(directions)
         }
-
-
     }
-
-
 
     private fun getImages(){
         println("getImages")
-
-
-        // println("pgsBar = $pgsBar")
-
-
         showProgressView()
 
         //loadMoreItemsCells = mutableListOf<Image?>()
@@ -569,8 +541,6 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
-
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -584,46 +554,25 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val images:JSONArray = parentObject.getJSONArray("images")
-                        println("images = $images")
-                        println("images count = ${images.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    val images:JSONArray = parentObject.getJSONArray("images")
+                    println("images = $images")
+                    println("images count = ${images.length()}")
 
+                    val gson = GsonBuilder().create()
+                    loadMoreImageList = gson.fromJson(images.toString() , Array<Image>::class.java).toMutableList()
+                    println("loadMoreImageList count = ${loadMoreImageList.count()}")
+                    imageList.addAll(loadMoreImageList)
+                    println("imageList count = ${imageList.count()}")
 
+                    Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 
-                        val gson = GsonBuilder().create()
-                        loadMoreImageList = gson.fromJson(images.toString() , Array<Image>::class.java).toMutableList()
-                        println("loadMoreImageList count = ${loadMoreImageList.count()}")
-                        imageList.addAll(loadMoreImageList)
-                        println("imageList count = ${imageList.count()}")
+                    adapter.filterList = imageList
+                    imagesLoaded = true
+                    imagesRecyclerView.adapter = adapter
 
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                        //customerSwipeContainer.isRefreshing = false;
-
-                        Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
-
-
-                        adapter.filterList = imageList
-
-                        //(adapter as ImagesAdapter).notifyDataSetChanged();
-
-                        imagesLoaded = true
-
-                        imagesRecyclerView.adapter = adapter
-
-                        // recyclerView.apply {
-                        // layoutManager = GridLayoutManager(myView.context, 2)
-
-
-                        // }
-
-                        imagesRecyclerView.layoutManager = GridLayoutManager(myView.context, 2)
-                    }
-
-
-
+                    imagesRecyclerView.layoutManager = GridLayoutManager(myView.context, 2)
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -650,7 +599,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "customer"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     /*

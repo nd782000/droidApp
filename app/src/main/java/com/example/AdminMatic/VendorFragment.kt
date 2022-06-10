@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -79,8 +78,11 @@ class VendorFragment : Fragment() {
 
         getVendor()
 
+    }
 
-
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("vendor")
     }
 
     private fun populateVendorView() {
@@ -209,7 +211,6 @@ class VendorFragment : Fragment() {
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
             println(vendorID)
             urlString = "$urlString?cb=$currentTimestamp"
-            val queue = Volley.newRequestQueue(myView.context)
 
 
             val postRequest1: StringRequest = object : StringRequest(
@@ -221,25 +222,23 @@ class VendorFragment : Fragment() {
                     hideProgressView()
 
                     try {
-                        if (isResumed) {
-                            val parentObject = JSONObject(response)
-                            println("parentObject = $parentObject")
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
 
 
-                            val gson = GsonBuilder().create()
+                        val gson = GsonBuilder().create()
 
-                            val vendorArray = gson.fromJson(parentObject.toString() ,VendorArray::class.java)
+                        val vendorArray = gson.fromJson(parentObject.toString() ,VendorArray::class.java)
 
-                            vendor = vendorArray.vendors[0]
-                            if (vendor!!.lat == null) {
-                                vendor!!.lat = "0"
-                            }
-                            if (vendor!!.lng == null) {
-                                vendor!!.lng = "0"
-                            }
-
-                            populateVendorView()
+                        vendor = vendorArray.vendors[0]
+                        if (vendor!!.lat == null) {
+                            vendor!!.lat = "0"
                         }
+                        if (vendor!!.lng == null) {
+                            vendor!!.lng = "0"
+                        }
+
+                        populateVendorView()
 
 
                     } catch (e: JSONException) {
@@ -262,7 +261,8 @@ class VendorFragment : Fragment() {
                     return params
                 }
             }
-            queue.add(postRequest1)
+            postRequest1.tag = "vendor"
+            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
 
         }
         else {
