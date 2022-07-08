@@ -20,7 +20,8 @@ import java.time.LocalDateTime
 
 class ServiceFragment : Fragment() {
 
-    private  var service: EquipmentService? = null
+    private var service: EquipmentService? = null
+    private var historyMode = false
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
@@ -49,6 +50,7 @@ class ServiceFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             service = it.getParcelable("service")
+            historyMode = it.getBoolean("historyMode")
         }
     }
 
@@ -99,8 +101,8 @@ class ServiceFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
-                service!!.notes = s.toString()
-                println("${service!!.notes}")
+                service!!.completionNotes = s.toString()
+                println("${service!!.completionNotes}")
             }
         })
 
@@ -232,7 +234,7 @@ class ServiceFragment : Fragment() {
                     params["ID"] = service!!.ID
                     params["completeValue"] = service!!.completionMileage.toString()
                     params["completedBy"] = GlobalVars.loggedInEmployee!!.ID
-                    params["completionNotes"] = service!!.notes.toString()
+                    params["completionNotes"] = service!!.completionNotes.toString()
                     params["nextValue"] = service!!.nextValue.toString()
                     params["status"] = service!!.status.toString()
                     params["type"] = service!!.type

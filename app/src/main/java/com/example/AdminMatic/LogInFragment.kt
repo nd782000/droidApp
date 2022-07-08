@@ -448,8 +448,10 @@ class LogInFragment : Fragment() {
 
                     println("accounting permissions = ${GlobalVars.permissions!!.accounting}")
 
+                    getStyles()
 
-                    myView.findNavController().navigate(R.id.navigateToMainMenu)
+
+
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -482,7 +484,60 @@ class LogInFragment : Fragment() {
 
     }
 
+    private fun getStyles(){
+        println("getStyles")
 
+        var urlString = "https://www.adminmatic.com/cp/json/settings/$companyUnique/mainStyles.json"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+
+                    // Todo: finish storing and wiring in these color values
+                    myView.findNavController().navigate(R.id.navigateToMainMenu)
+
+
+
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+
+
+            },
+            Response.ErrorListener { // error
+
+                // Log.e("VOLLEY", error.toString())
+                // Log.d("Error.Response", error())
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = companyUnique!!
+                //params["empID"] = loggedInEmpID!!
+                params["sessionKey"] = sessionKey!!
+
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "logIn"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+
+    }
 
 
 

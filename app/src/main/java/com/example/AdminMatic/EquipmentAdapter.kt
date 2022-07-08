@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso
 
 
 
-class EquipmentAdapter(private val list: MutableList<Equipment>, private val context: Context,private val cellClickListener: EquipmentCellClickListener)
+class EquipmentAdapter(private val list: MutableList<Equipment>, private val context: Context, private val cellClickListener: EquipmentCellClickListener)
 
     : RecyclerView.Adapter<EquipmentViewHolder>(), Filterable {
 

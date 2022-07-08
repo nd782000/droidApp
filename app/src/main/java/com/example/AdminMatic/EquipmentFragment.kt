@@ -27,9 +27,9 @@ interface ServiceCellClickListener {
 
 class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
-    private  var equipment: Equipment? = null
+    private var equipment: Equipment? = null
 
-    lateinit  var globalVars:GlobalVars
+    lateinit var globalVars:GlobalVars
     lateinit var myView:View
 
     lateinit var  pgsBar: ProgressBar
@@ -135,7 +135,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             myView.findNavController().navigate(directions)
         }
 
-        setStatus(equipment!!.status)
+        //setStatus(equipment!!.status)
 
 
 
@@ -198,6 +198,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
 
+
                     //current adapter
                     val services:JSONArray = parentObject.getJSONArray("services")
                     println("services = $services")
@@ -223,9 +224,12 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
                     serviceRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
 
-                    //currentRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
 
+                    //status
+                    val equipmentJSON:JSONObject = parentObject.getJSONObject("equipment")
 
+                    equipment = gson.fromJson(equipmentJSON.toString(), Equipment::class.java)
+                    setStatus(equipment!!.status)
 
                     serviceRecyclerView.adapter = currentServicesAdapter
 
@@ -280,12 +284,17 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     override fun onServiceCellClickListener(data:EquipmentService){
         println("onServiceCellClickListener ${data.ID}")
 
+        var historyMode = false
+        if (tableMode == "HISTORY") {
+            historyMode = true
+        }
+
         if (data.type == "4") { // Go to the special inspection fragment if the service type is inspection
-            val directions = EquipmentFragmentDirections.navigateToServiceInspection(data)
+            val directions = EquipmentFragmentDirections.navigateToServiceInspection(data, equipment, historyMode)
             myView.findNavController().navigate(directions)
         }
         else {
-            val directions = EquipmentFragmentDirections.navigateToService(data)
+            val directions = EquipmentFragmentDirections.navigateToService(data, historyMode)
             myView.findNavController().navigate(directions)
         }
 

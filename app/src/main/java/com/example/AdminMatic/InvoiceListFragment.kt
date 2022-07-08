@@ -65,7 +65,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
         val emptyList:MutableList<Invoice> = mutableListOf()
 
-        adapter = InvoicesAdapter(emptyList, this)
+        adapter = InvoicesAdapter(emptyList, com.example.AdminMatic.myView.context, this)
 
 
 
@@ -152,7 +152,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
                         adapter = activity?.let {
                             InvoicesAdapter(
-                                invoicesList,
+                                invoicesList, it,
                                 this@InvoiceListFragment
                             )
                         }

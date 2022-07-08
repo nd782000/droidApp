@@ -331,7 +331,7 @@ data class EquipmentService(
     var completionDate: String? = "",
     var completionMileage: String? = "",
     var completedBy: String? = "",
-    var notes: String? = "",
+    var completionNotes: String? = "",
     var currentValue: String? = "",
     var nextValue: String? = "",
     var serviceDue: Boolean? = false

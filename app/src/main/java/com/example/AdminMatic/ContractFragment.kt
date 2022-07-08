@@ -176,6 +176,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         notesTv.text = contract!!.notes
         notesTv.movementMethod = ScrollingMovementMethod()
         //Todo: maybe find a way to add the comma to money numbers without having to cast to a double
+        // We also need to consider how this will be handled for other regions with other forms of currency
         priceTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(contract!!.total!!.toDouble()))
 
 

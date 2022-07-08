@@ -477,7 +477,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     val invoicesList = gson.fromJson(invoices.toString() , Array<Invoice>::class.java).toMutableList()
 
 
-                    val invoicesAdapter = InvoicesAdapter(invoicesList, this)
+                    val invoicesAdapter = InvoicesAdapter(invoicesList, com.example.AdminMatic.myView.context, this)
 
                     invoicesRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
                     invoicesRecyclerView.adapter = invoicesAdapter

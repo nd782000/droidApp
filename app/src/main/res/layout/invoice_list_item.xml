@@ -4,47 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="64dp"
     android:layout_gravity="center_horizontal">
 
+    <ImageView
+        android:id="@+id/list_invoice_status_icon_iv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:layout_marginTop="6dp"
+        android:padding="5dp"
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/ic_images"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/list_cust_name"
-        android:layout_width="wrap_content"
+        android:id="@+id/list_invoice_name_tv"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingLeft="16dp"
-        android:text="@string/customer"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="8dp"
+        android:text="@string/sysname"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/list_title"
-        app:layout_constraintStart_toStartOf="parent"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+
+        app:layout_constraintLeft_toRightOf="@id/list_invoice_status_icon_iv"
+        app:layout_constraintRight_toLeftOf="@+id/list_invoice_price_tv"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+    <TextView
+        android:id="@+id/list_invoice_price_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="8dp"
+        android:text="$100.00"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+    <TextView
+        android:id="@+id/list_invoice_id_tv"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="8dp"
+        android:text="00000"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+
+        app:layout_constraintLeft_toRightOf="@+id/list_invoice_status_icon_iv"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/list_title"
+        android:id="@+id/list_invoice_status_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:text="@string/invoice"
+        android:layout_marginBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="8dp"
+        android:text="00000"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"
 
-        android:translationX="12dp"
-        app:layout_constraintStart_toStartOf="@+id/list_cust_name"
-        app:layout_constraintTop_toBottomOf="@+id/list_cust_name" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/textViewOptions"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginRight="16dp"
-        android:text="&#8942;"
-        android:textAlignment="center"
-        android:textSize="30sp"
+        android:id="@+id/list_invoice_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/frequency"
+        android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/list_cust_name" />
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

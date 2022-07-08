@@ -494,6 +494,10 @@
             android:name="service"
             app:argType="com.example.AdminMatic.EquipmentService"
             app:nullable="true" />
+        <argument
+            android:name="historyMode"
+            app:argType="boolean"
+            app:nullable="false" />
     </fragment>
 
     <fragment
@@ -505,6 +509,14 @@
             android:name="service"
             app:argType="com.example.AdminMatic.EquipmentService"
             app:nullable="true" />
+        <argument
+            android:name="equipment"
+            app:argType="com.example.AdminMatic.Equipment"
+            app:nullable="true" />
+        <argument
+            android:name="historyMode"
+            app:argType="boolean"
+            app:nullable="false" />
     </fragment>
 
     <fragment

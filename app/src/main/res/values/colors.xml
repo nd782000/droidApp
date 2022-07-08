@@ -32,7 +32,7 @@
     <color name="editTextBorder">#505050</color>
 
     <color name="mainMenuItemBackground">#fbeaff</color>
-    <color name="iconTint">#391144</color>
+    <!--<color name="iconTint">#391144</color>-->
     <color name="colorTitle">#005100</color>
     <color name="colorRecyclerHeader">#e6e6e6</color>
 

@@ -7,7 +7,282 @@
     android:layout_height="match_parent"
     tools:context="com.example.AdminMatic.InvoiceFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/all_cl">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/empty_cl"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/background"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Status Cust CL -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/invoice_status_cust_cl"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/empty_cl"
+            android:background="@color/background"
+            >
+
+
+            <ImageView
+                android:id="@+id/invoice_status_iv"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/invoice_customer_btn"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:text=""
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/invoice_status_iv"
+                android:layout_marginHorizontal="3dp"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Data CL -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/invoice_data_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/invoice_status_cust_cl"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:background="@color/background"
+            >
+
+
+
+            <!-- Title -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/invoice_title_cl"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+                <TextView
+                    android:id="@+id/invoice_title_lbl_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/contract_title"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/invoice_title_val_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@+id/invoice_title_lbl_tv"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <!-- Date -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/invoice_charge_cl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/invoice_title_cl"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+                <TextView
+                    android:id="@+id/invoice_date_lbl_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/invoice_date"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/invoice_date_val_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="30dp"
+                    android:maxHeight="100dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@+id/invoice_date_lbl_tv"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            <!-- Charge Type -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/invoice_payment_cl"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                app:layout_constraintTop_toBottomOf="@id/invoice_charge_cl"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+                <TextView
+                    android:id="@+id/invoice_charge_lbl_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/invoice_charge_type"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/invoice_charge_val_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@+id/invoice_charge_lbl_tv"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/invoice_charge_lbl_tv" />
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Sales Rep -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/invoice_sales_rep_cl"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                app:layout_constraintTop_toBottomOf="@id/invoice_payment_cl"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+                <TextView
+                    android:id="@+id/invoice_sales_rep_lbl_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/invoice_sales_rep"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/invoice_sales_rep_val_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@+id/invoice_sales_rep_lbl_tv"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/invoice_items_lbl_tv"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:paddingLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/contract_items"
+            android:textSize="18sp"
+            android:background="@color/background"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/invoice_data_cl" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/invoice_item_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+
+            app:layout_constraintTop_toBottomOf="@+id/invoice_items_lbl_tv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/invoice_footer_cl"/>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/invoice_footer_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            app:layout_constraintTop_toBottomOf="@id/invoice_item_rv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/invoice_subtotal_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginVertical="5dp"
+                android:text=""
+                android:textSize="12sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+            <TextView
+                android:id="@+id/invoice_tax_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginVertical="5dp"
+                android:text=""
+                android:textSize="12sp"
+                app:layout_constraintTop_toBottomOf="@id/invoice_subtotal_tv"
+                app:layout_constraintRight_toRightOf="parent" />
+
+
+
+            <TextView
+                android:id="@+id/invoice_total_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:text=""
+                android:textSize="30sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/invoice_tax_tv"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"

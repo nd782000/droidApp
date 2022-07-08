@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,21 +28,20 @@ import org.json.JSONObject
 
 
 
-interface ServiceInspectionCellClickListener {
-    fun onServiceInspectionCellClickListener(data:InspectionQuestion)
-}
+class ServiceInspectionFragment : Fragment() {
 
+    private var service: EquipmentService? = null
+    private var equipment: Equipment? = null
+    private var historyMode = false
 
-class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener {
-
-    private  var service: EquipmentService? = null
     lateinit var pgsBar: ProgressBar
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
     lateinit var recyclerView: RecyclerView
 
-    private lateinit var  submitBtn: Button
+    private lateinit var submitBtn: Button
+    private lateinit var notesEditText: EditText
 
     lateinit var adapter:ServiceInspectionAdapter
 
@@ -53,6 +54,8 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
         super.onCreate(savedInstanceState)
         arguments?.let {
             service = it.getParcelable("service")
+            equipment = it.getParcelable("equipment")
+            historyMode = it.getBoolean("historyMode")
         }
     }
 
@@ -69,7 +72,7 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
         val emptyList:MutableList<InspectionQuestion> = mutableListOf()
 
-        adapter = ServiceInspectionAdapter(emptyList, this)
+        adapter = ServiceInspectionAdapter(emptyList, historyMode)
 
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Equipment List"
@@ -92,10 +95,31 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
 
         pgsBar = view.findViewById(R.id.progressBar)
         submitBtn = view.findViewById(R.id.service_inspection_submit_btn)
+        notesEditText = view.findViewById(R.id.inspection_notes_editTxt)
+        notesEditText.setText(service!!.completionNotes)
         submitBtn.setOnClickListener{
             println(questionsList[0].answer)
             val gson = GsonBuilder().disableHtmlEscaping().create()
             println("questions = " + gson.toJson(questionsList))
+
+            var unansweredQuestions = false
+            questionsList.forEach {
+                if (it.answer == "0") {
+                    unansweredQuestions = true
+                }
+            }
+
+            if (!unansweredQuestions) {
+                submitInspection()
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.dialogue_fields_missing_title),getString(R.string.dialogue_fields_missing_body))
+            }
+        }
+
+        if (historyMode) {
+            submitBtn.visibility = View.GONE
+            notesEditText.isEnabled = false
         }
 
         getInspectionItems()
@@ -140,22 +164,12 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
                         layoutManager = LinearLayoutManager(activity)
 
                         adapter = activity?.let {
-                            ServiceInspectionAdapter(
-                                questionsList,
-                                this@ServiceInspectionFragment
-                            )
+                            ServiceInspectionAdapter(questionsList, historyMode)
                         }
-
 
                         val itemDecoration: ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
                         recyclerView.addItemDecoration(itemDecoration)
-
-                        //for item animations
-                        // recyclerView.itemAnimator = SlideInUpAnimator()
-
-
-
 
                         //(adapter as ServiceInspectionAdapter).notifyDataSetChanged()
                         println(adapter!!.itemCount)
@@ -208,6 +222,57 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
         val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
 
 
+        if (equipment!!.status != "2") {
+            var shouldUpdateEquipmentStatus = false
+
+            questionsList.forEach {
+                if (it.answer == "2") {
+                    shouldUpdateEquipmentStatus = true
+                }
+            }
+
+            if (shouldUpdateEquipmentStatus) {
+                val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
+                builder.setTitle(R.string.dialogue_inspection_bad_checked_title)
+                builder.setMessage(R.string.dialogue_inspection_bad_checked_body)
+
+                builder.setPositiveButton(R.string.equipment_status_broken) { _, _ ->
+                    Toast.makeText(
+                        com.example.AdminMatic.myView.context,
+                        android.R.string.ok, Toast.LENGTH_SHORT
+                    ).show()
+                    setEquipmentStatus("2")
+                }
+
+                builder.setNegativeButton(R.string.equipment_status_needs_repair) { _, _ ->
+                    Toast.makeText(
+                        com.example.AdminMatic.myView.context,
+                        android.R.string.cancel, Toast.LENGTH_SHORT
+                    ).show()
+                    setEquipmentStatus("1")
+                }
+
+                builder.setNeutralButton(android.R.string.cancel) { _, _ ->
+                    Toast.makeText(
+                        com.example.AdminMatic.myView.context,
+                        android.R.string.cancel, Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                /*
+                builder.setNeutralButton("Maybe") { dialog, which ->
+                    Toast.makeText(myView.context,
+                        "Maybe", Toast.LENGTH_SHORT).show()
+                }
+                */
+
+
+                builder.show()
+                return
+            }
+
+        }
+
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
             Response.Listener { response -> // response
@@ -220,6 +285,8 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
                         println("parentObject = $parentObject")
 
                         hideProgressView()
+
+                        parentFragmentManager.popBackStackImmediate()
                     }
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -235,17 +302,17 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
             override fun getParams(): Map<String, String> {
 
                 val gson = GsonBuilder().disableHtmlEscaping().create()
-                gson.toJson(questionsList)
+                println("Questions List: ${gson.toJson(questionsList)}")
 
                 val params: MutableMap<String, String> = java.util.HashMap()
                 params["ID"] = service!!.ID
                 params["completeValue"] = service!!.completionMileage.toString()
                 params["completedBy"] = loggedInEmployee!!.ID
-                params["completionNotes"] = service!!.notes.toString()
+                params["completionNotes"] = notesEditText.text.toString()
                 params["nextValue"] = service!!.nextValue.toString()
                 params["questions"] = gson.toJson(questionsList)
-                params["status"] = service!!.status.toString()
-                params["type"] = service!!.type
+                params["status"] = "2"
+                params["type"] = "4"
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
 
@@ -254,6 +321,53 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
             }
         }
         queue.add(postRequest1)
+
+    }
+
+    private fun setEquipmentStatus(newStatus: String) {
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/update/equipmentStatus.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+
+                    hideProgressView()
+                    parentFragmentManager.popBackStackImmediate()
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = java.util.HashMap()
+                params["companyUnique"] = loggedInEmployee!!.companyUnique
+                params["sessionKey"] = loggedInEmployee!!.sessionKey
+                params["status"] = newStatus
+                params["equipmentID"] = equipment!!.ID
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "equipment"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     fun showProgressView() {
@@ -264,11 +378,6 @@ class ServiceInspectionFragment : Fragment(), ServiceInspectionCellClickListener
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
         recyclerView.visibility = View.VISIBLE
-    }
-
-    override fun onServiceInspectionCellClickListener(data:InspectionQuestion) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"$data Clicked",Toast.LENGTH_SHORT).show()
     }
 
 }

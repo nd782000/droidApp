@@ -51,7 +51,7 @@ class GlobalVars: Application() {
         val dateFormatterShortDashes: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd-yy") //format to display
         val dateFormatterYYYYMMDD: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd") //format to display
 
-        val moneyFormatter: NumberFormat = DecimalFormat("#,###.00")
+        val moneyFormatter: NumberFormat = DecimalFormat("#,###,##0.00")
     }
 
 
