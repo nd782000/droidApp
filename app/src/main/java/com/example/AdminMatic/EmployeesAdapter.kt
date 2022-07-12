@@ -44,7 +44,7 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
     override fun onBindViewHolder(holder: EmployeeViewHolder, position: Int) {
 
 
-
+        //TODO: add license icons here
 
         val employee: Employee = filterList[position]
         holder.bind(employee)

@@ -12,11 +12,11 @@
     <color name="background">#222222</color>
     <!-- For any cases where you need to manually set the default system background color to a higher element-->
     <color name="backgroundPure">#000000</color>
-    <color name="button">#005100</color>
+    <color name="button">#225CB3</color>
 
-    <color name="colorPrimary">#009000</color>
-    <color name="colorPrimaryDark">#005100</color>
-    <color name="colorAccent">#B0D235</color>
+    <color name="colorPrimary">#2A70DA</color>
+    <color name="colorPrimaryDark">#225CB3</color>
+    <color name="colorAccent">#9FC5FF</color>
     <color name="palePurple">#fbeaff</color>
     <color name="palePurple2">#f5e8f8</color>
     <color name="alphaPurple">#CC391144</color>
@@ -34,7 +34,7 @@
 
     <color name="mainMenuItemBackground">#333333</color>
     <color name="iconTint">#63426c</color>
-    <color name="colorTitle">#009000</color>
+    <color name="colorTitle">#225CB3</color>
     <color name="colorRecyclerHeader">#292929</color>
 
 

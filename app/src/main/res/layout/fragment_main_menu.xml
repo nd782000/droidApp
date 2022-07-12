@@ -77,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/mainMenuItemBackground"
+                    android:background="@color/background"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -95,7 +95,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="@string/employees"
                         android:textAlignment="center"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/gray"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="12sp"
                         android:autoSizeMaxTextSize="30sp"
@@ -111,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/mainMenuItemBackground"
+                    android:background="@color/background"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -129,7 +129,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="@string/customers"
                         android:textAlignment="center"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/gray"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="12sp"
                         android:autoSizeMaxTextSize="30sp"
@@ -150,7 +150,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/mainMenuItemBackground"
+                    android:background="@color/background"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -168,7 +168,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="@string/vendors"
                         android:textAlignment="center"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/gray"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="12sp"
                         android:autoSizeMaxTextSize="30sp"
@@ -184,7 +184,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/mainMenuItemBackground"
+                    android:background="@color/background"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -202,7 +202,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="@string/items"
                         android:textAlignment="center"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/gray"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="12sp"
                         android:autoSizeMaxTextSize="30sp"
@@ -223,7 +223,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/mainMenuItemBackground"
+                    android:background="@color/background"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -241,7 +241,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="@string/leads"
                         android:textAlignment="center"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/gray"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="12sp"
                         android:autoSizeMaxTextSize="30sp"
@@ -257,7 +257,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/mainMenuItemBackground"
+                    android:background="@color/background"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -275,7 +275,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="@string/contracts"
                         android:textAlignment="center"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/gray"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="12sp"
                         android:autoSizeMaxTextSize="30sp"
@@ -296,7 +296,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/mainMenuItemBackground"
+                    android:background="@color/background"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -314,7 +314,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="@string/schedule"
                         android:textAlignment="center"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/gray"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="12sp"
                         android:autoSizeMaxTextSize="30sp"
@@ -330,7 +330,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/mainMenuItemBackground"
+                    android:background="@color/background"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -348,7 +348,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="@string/invoices"
                         android:textAlignment="center"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/gray"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="12sp"
                         android:autoSizeMaxTextSize="30sp"
@@ -369,7 +369,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/mainMenuItemBackground"
+                    android:background="@color/background"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -387,7 +387,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="@string/images"
                         android:textAlignment="center"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/gray"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="12sp"
                         android:autoSizeMaxTextSize="30sp"
@@ -403,7 +403,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/mainMenuItemBackground"
+                    android:background="@color/background"
                     android:clickable="true"
                     android:orientation="vertical">
 
@@ -421,7 +421,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="@string/equipment"
                         android:textAlignment="center"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/gray"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="12sp"
                         android:autoSizeMaxTextSize="30sp"

@@ -221,6 +221,9 @@
         <action
             android:id="@+id/navigateEmployeeToShifts"
             app:destination="@id/shiftsFragment" />
+        <action
+            android:id="@+id/navigateEmployeeToLicenses"
+            app:destination="@id/licensesFragment"/>
     </fragment>
     <fragment
         android:id="@+id/usageFragment"
@@ -240,6 +243,16 @@
         android:name="com.example.AdminMatic.ShiftsFragment"
         android:label="fragment_shifts"
         tools:layout="@layout/fragment_shifts" >
+        <argument
+            android:name="employee"
+            app:argType="com.example.AdminMatic.Employee"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/licensesFragment"
+        android:name="com.example.AdminMatic.LicensesFragment"
+        android:label="fragment_licenses"
+        tools:layout="@layout/fragment_licenses" >
         <argument
             android:name="employee"
             app:argType="com.example.AdminMatic.Employee"

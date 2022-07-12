@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -304,7 +305,8 @@ data class Employee(val ID: String,
                     val dep: String,
                     val salesRep: String,
                     var sessionKey: String,
-                    var companyUnique:String
+                    var companyUnique:String,
+                    var licenses:Array<License>? = null
 ) : Parcelable{
 
     override fun toString(): String {
@@ -1003,7 +1005,7 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
         println("onCreateOptionsMenu")
         menuInflater.inflate(R.menu.menu, menu)
-        menu[menu.size()-1].title = getString(R.string.version, BuildConfig.VERSION_NAME)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         return true
     }
 
@@ -1087,6 +1089,7 @@ override fun logOut(view: View){
         // val queue = Volley.newRequestQueue(myView.context)
         val queue = Volley.newRequestQueue(view.rootView.context)
 
+        //TODO: fix crash with logging out via the nav bar menu
 
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
@@ -1098,11 +1101,27 @@ override fun logOut(view: View){
 
                 try {
 
-                    GlobalVars.loggedInEmployee = null
+
+
                     hideProgressView()
                     val navController = Navigation.findNavController(view)
 
                     navController.popBackStack(R.id.logInFragment, false)
+
+                    // Clear existing data
+                    if (GlobalVars.globalWorkOrdersList != null) {
+                        GlobalVars.globalWorkOrdersList!!.clear()
+                    }
+                    if (GlobalVars.globalLeadList != null) {
+                        GlobalVars.globalLeadList!!.clear()
+                    }
+                    if (GlobalVars.customerList != null) {
+                        GlobalVars.customerList!!.clear()
+                    }
+
+                    GlobalVars.loggedInEmployee = null
+                    GlobalVars.permissions = null
+                    GlobalVars.employeeList = null
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {

@@ -2,17 +2,17 @@ package com.example.AdminMatic
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.AdminMatic.BuildConfig
 import com.AdminMatic.R
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.thumbBase
@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso
 // Todo: Look into refactoring this, it warns about memory leaks but nearly every other file relies on this in the global space
 lateinit var myView:View
 
-
+//menu[menu.size()-1].title = getString(R.string.version, BuildConfig.VERSION_NAME)
 class MainMenuFragment : Fragment() {
 
 
@@ -37,12 +37,32 @@ class MainMenuFragment : Fragment() {
      */
 
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu_menu, menu)
+        menu.findItem(R.id.version_item).title = getString(R.string.version, BuildConfig.VERSION_NAME)
+        super.onCreateOptionsMenu(menu, inflater)
+        ((activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false))
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.send_invoice_item) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+
+    }
 
     @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        setHasOptionsMenu(true)
         // Inflate the layout for this fragment
         myView =  inflater.inflate(R.layout.fragment_main_menu, container, false)
 
@@ -238,5 +258,7 @@ class MainMenuFragment : Fragment() {
 
         return myView
     }
+
+
 
 }

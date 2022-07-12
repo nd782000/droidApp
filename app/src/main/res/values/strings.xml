@@ -200,6 +200,7 @@
     <string name="image_likes_count">%1$s Like(s)</string>
 
     <!--Invoice stuff-->
+    <string name="invoice_header">Invoice #%1$s</string>
     <string name="invoice_syncing">Syncing to QuickBooks</string>
     <string name="invoice_pending">Invoice Pending</string>
     <string name="invoice_final">Final</string>
@@ -214,6 +215,11 @@
     <string name="invoice_subtotal">Subtotal: $%1$s</string>
     <string name="invoice_sales_tax">Sales Tax: $%1$s</string>
 
+    <!--License stuff-->
+    <string name="xs_licenses">%1$s\'s Licenses</string>
+    <string name="license_expires">Expires: #%1$s</string>
+    <string name="license_number">Lic.# %1$s</string>
+    <string name="license_none_recorded">No Recorded Licenses</string>
 
 
 

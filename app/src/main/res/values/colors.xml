@@ -9,19 +9,29 @@
     <color name="white">#FFFFFFFF</color>
     <color name="link">#FF0000FF</color>
 
-    <color name="background">#FFF8E6</color>
+    <!--<color name="background">#FFF8E6</color>-->
+    <color name="background">#f3f4f5</color>
     <color name="backgroundPure">#FFFFFF</color>
-    <color name="button">#005100</color>
+    <color name="button">#225CB3</color>
 
-    <color name="colorPrimary">#009000</color>
-    <color name="colorPrimaryDark">#005100</color>
-    <color name="colorAccent">#B0D235</color>
+    <!--<color name="colorPrimary">#009000</color>-->
+    <!--<color name="colorPrimaryDark">#005100</color>-->
+
+    <color name="colorPrimary">#2A70DA</color>
+    <color name="colorPrimaryDark">#225CB3</color>
+
+    <!--<color name="colorAccent">#B0D235</color>-->
+    <color name="colorAccent">#9FC5FF</color>
+
+
     <color name="palePurple">#fbeaff</color>
     <color name="palePurple2">#f5e8f8</color>
     <color name="alphaPurple">#CC391144</color>
     <color name="paleYellow">#effdbc</color>
     <color name="gray">#5c5c5c</color>
     <color name="paleGray">#e6e6e6</color>
+    <color name="iconTint">#8b8b8b</color>
+
 
     <color name="red">#ff0000</color>
     <color name="usageBtn">#E09E43</color>
@@ -33,7 +43,7 @@
 
     <color name="mainMenuItemBackground">#fbeaff</color>
     <!--<color name="iconTint">#391144</color>-->
-    <color name="colorTitle">#005100</color>
+    <color name="colorTitle">#225CB3</color>
     <color name="colorRecyclerHeader">#e6e6e6</color>
 
 </resources>

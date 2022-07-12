@@ -13,10 +13,8 @@ import android.os.StrictMode
 import android.provider.Settings
 import android.text.method.PasswordTransformationMethod
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.generateViewId
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -27,6 +25,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.AdminMatic.BuildConfig
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -72,6 +71,8 @@ class LogInFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
 
 
         println("login onCreate")
@@ -123,6 +124,16 @@ class LogInFragment : Fragment() {
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        println("HOLY FUCK")
+        ((activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false))
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        println("login onOptionsItemSelected")
+        return super.onOptionsItemSelected(item)
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -132,7 +143,7 @@ class LogInFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-
+        setHasOptionsMenu(true)
 
 
         // Inflate the layout for this fragment

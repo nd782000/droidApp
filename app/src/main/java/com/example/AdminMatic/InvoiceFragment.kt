@@ -1,16 +1,15 @@
 package com.example.AdminMatic
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.get
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,9 +23,10 @@ import kotlinx.android.synthetic.main.fragment_work_order.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.HashMap
+
 
 //TODO: Add "send invoice" functionality
+
 
 class InvoiceFragment : Fragment(), StackDelegate {
 
@@ -41,6 +41,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
 
     private lateinit var customerBtn: Button
     private lateinit var statusImageView: ImageView
+    private lateinit var statusTagImageView: ImageView
 
     lateinit var titleTxt: TextView
     lateinit var dateTxt: TextView
@@ -70,13 +71,21 @@ class InvoiceFragment : Fragment(), StackDelegate {
         myView = inflater.inflate(R.layout.fragment_invoice, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.invoice)
-
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.invoice_header, invoice!!.ID)
+        setHasOptionsMenu(true)
         return myView
     }
 
+
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
+
 
         println("invoice = ${invoice!!.title}")
 
@@ -87,6 +96,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
 
         customerBtn = myView.findViewById(R.id.invoice_customer_btn)
         statusImageView = myView.findViewById(R.id.invoice_status_iv)
+        statusTagImageView = myView.findViewById(R.id.invoice_status_tag_iv)
 
         titleTxt = view.findViewById(R.id.invoice_title_val_tv)
         dateTxt = view.findViewById(R.id.invoice_date_val_tv)
@@ -103,6 +113,24 @@ class InvoiceFragment : Fragment(), StackDelegate {
         ft.commitAllowingStateLoss()
 
         getInvoice()
+
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.invoice_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.send_invoice_item) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
 
     }
 
@@ -160,24 +188,31 @@ class InvoiceFragment : Fragment(), StackDelegate {
                     }
 
                     when (invoice!!.invoiceStatus) {
-                        "0"-> Picasso.with(context)
-                            .load(R.drawable.ic_sync)
-                            .into(statusImageView)
-                        "1"-> Picasso.with(context)
-                            .load(R.drawable.ic_pending)
-                            .into(statusImageView)
-                        "2"-> Picasso.with(context)
-                            .load(R.drawable.ic_done)
-                            .into(statusImageView)
-                        "3"-> Picasso.with(context)
-                            .load(R.drawable.ic_awarded)
-                            .into(statusImageView)
-                        "4"-> Picasso.with(context)
-                            .load(R.drawable.ic_done)
-                            .into(statusImageView)
-                        "5"-> Picasso.with(context)
-                            .load(R.drawable.ic_canceled)
-                            .into(statusImageView)
+                        "0" -> {
+                            Picasso.with(context).load(R.drawable.ic_sync).into(statusImageView)
+                            Picasso.with(context).load(R.drawable.ic_tag_sync).into(statusTagImageView)
+                        }
+                        "1" -> {
+                            Picasso.with(context).load(R.drawable.ic_pending).into(statusImageView)
+                            Picasso.with(context).load(R.drawable.ic_tag_pending).into(statusTagImageView)
+                        }
+                        "2" -> {
+                            Picasso.with(context).load(R.drawable.ic_awarded).into(statusImageView)
+                            Picasso.with(context).load(R.drawable.ic_tag_final).into(statusTagImageView)
+                        }
+                        "3" -> {
+                            Picasso.with(context).load(R.drawable.ic_awarded).into(statusImageView)
+                            Picasso.with(context).load(R.drawable.ic_tag_sent).into(statusTagImageView)
+                        }
+                        "4" -> {
+                            Picasso.with(context).load(R.drawable.ic_done).into(statusImageView)
+                            Picasso.with(context).load(R.drawable.ic_tag_paid).into(statusTagImageView)
+                        }
+                        "5" -> {
+                            Picasso.with(context).load(R.drawable.ic_canceled).into(statusImageView)
+                            Picasso.with(context).load(R.drawable.ic_tag_void).into(statusTagImageView)
+                        }
+
                     }
 
                     salesRepTxt.text = invoice!!.salesRepName

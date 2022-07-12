@@ -251,7 +251,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
     override fun onInvoiceCellClickListener(data:Invoice) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
+        //Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = InvoiceListFragmentDirections.navigateToInvoice(it)

@@ -55,6 +55,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     private lateinit var payrollBtn:Button
     private lateinit var usageBtn:Button
     private lateinit var shiftsBtn:Button
+    private lateinit var licensesBtn:Button
 
 
     lateinit var adapter:ImagesAdapter
@@ -136,6 +137,8 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         println("employee = ${employee!!.name}")
 
 
+
+
         pgsBar = view.findViewById(R.id.progress_bar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
@@ -193,14 +196,17 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
             myView.findNavController().navigate(directions)
         }
 
+        licensesBtn = view.findViewById((R.id.licenses_btn))
+        licensesBtn.setOnClickListener{
+            println("shifts btn clicked")
+            val directions = EmployeeFragmentDirections.navigateEmployeeToLicenses(employee)
+            myView.findNavController().navigate(directions)
+        }
+
 
         logOutBtn = view.findViewById(R.id.log_out_btn)
         logOutBtn.setOnClickListener{
-
-
             listener!!.logOut(myView)
-
-
         }
 
 
