@@ -24,6 +24,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import org.json.JSONException
 import java.time.LocalDateTime
@@ -288,10 +289,13 @@ data class Equipment(val ID: String,
 
 
 @Parcelize
+
 data class Employee(val ID: String,
                     val name: String,
-                    val fName: String,
-                    val lName:String,
+                    @field:SerializedName(value="fName", alternate= ["fname"])
+                    val fname: String,
+                    @field:SerializedName("lName", alternate= ["lname"])
+                    val lname:String,
                     val pic:String,
                     val username: String,
                     val level: String,
@@ -308,6 +312,7 @@ data class Employee(val ID: String,
                     var companyUnique:String,
                     var licenses:Array<License>? = null
 ) : Parcelable{
+
 
     override fun toString(): String {
         return name
@@ -444,15 +449,18 @@ data class Invoice(var ID: String = "0",
 
 
 @Parcelize
-data class Item(val ID: String,
-                val name: String,
-                val typeID:String?,
-                val type:String?,
-                val remQty:String?,
-                val price:String?,
-                val unit:String?,
-                val salesDescription:String?,
-                val tax:String?
+data class Item(
+    var ID: String,
+    val name: String,
+    val typeID:String?,
+    val type:String?,
+    val remQty:String?,
+    val price:String?,
+    val unit:String?,
+    val salesDescription:String?,
+    val tax:String?,
+    var vendors: Array<Vendor>? = null,
+    var workOrders: Array<WorkOrder>? = null
 ): Parcelable{
     override fun toString(): String {
         return name

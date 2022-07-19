@@ -183,7 +183,7 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
             val directions = ImageLikesFragmentDirections.navigateImageLikesToEmployee(it)
             myView.findNavController().navigate(directions)
         }
-        println("Cell clicked with employee: ${data.fName}")
+        println("Cell clicked with employee: ${data.fname}")
     }
 
     fun showProgressView() {

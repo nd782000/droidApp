@@ -160,7 +160,6 @@ class VendorFragment : Fragment() {
             mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
 
             mMap.clear() //clear old markers
-            println("BBBBBBBBBB ${vendor!!.lat}")
 
             if(vendor!!.lat != null && vendor!!.lng != null && vendor!!.lat != "0" && vendor!!.lng != "0"){
 

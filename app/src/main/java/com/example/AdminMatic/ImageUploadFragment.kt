@@ -171,7 +171,6 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
                     ReverseOrientationObserver(it1) {
                         fotoapparat.stop()
                         fotoapparat.start()
-                        println("fuck")
                     }
                 }
             }

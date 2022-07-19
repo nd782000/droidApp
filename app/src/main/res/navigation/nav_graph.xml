@@ -144,9 +144,9 @@
             android:id="@+id/navigateToEquipment"
             app:destination="@id/equipmentFragment" />
         <argument
-            android:name="personal"
-            app:argType="boolean"
-            app:nullable="false" />
+            android:name="employee"
+            app:argType="com.example.AdminMatic.Employee"
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -224,6 +224,9 @@
         <action
             android:id="@+id/navigateEmployeeToLicenses"
             app:destination="@id/licensesFragment"/>
+        <action
+            android:id="@+id/navigateEmployeeToDepartments"
+            app:destination="@id/departmentsFragment"/>
     </fragment>
     <fragment
         android:id="@+id/usageFragment"
@@ -357,6 +360,12 @@
             android:name="item"
             app:argType="com.example.AdminMatic.Item"
             app:nullable="true" />
+        <action
+            android:id="@+id/navigateItemToVendor"
+            app:destination="@id/vendorFragment" />
+        <action
+            android:id="@+id/navigateItemToWorkOrder"
+            app:destination="@id/workOrderFragment" />
     </fragment>
     <fragment
         android:id="@+id/leadFragment"

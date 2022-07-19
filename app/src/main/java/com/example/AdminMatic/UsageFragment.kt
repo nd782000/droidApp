@@ -62,7 +62,7 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
         myView = inflater.inflate(R.layout.fragment_usage, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_usage, employee!!.fName)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_usage, employee!!.fname)
 
 
 

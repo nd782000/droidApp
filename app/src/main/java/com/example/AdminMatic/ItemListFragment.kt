@@ -68,7 +68,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
         val emptyList:MutableList<Item> = mutableListOf()
 
-        adapter = ItemsAdapter(emptyList, this)
+        adapter = ItemsAdapter(emptyList, myView.context, this)
 
 
 
@@ -155,7 +155,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
                         adapter = activity?.let {
                             ItemsAdapter(
-                                itemsList,
+                                itemsList, myView.context,
                                 this@ItemListFragment
                             )
                         }
@@ -253,7 +253,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
     override fun onItemCellClickListener(data:Item) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
+        //Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = ItemListFragmentDirections.navigateToItem(it)
@@ -276,21 +276,4 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
     }
 
 
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CustomerListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ItemListFragment().apply {
-
-            }
-    }
 }

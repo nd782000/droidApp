@@ -1,8 +1,10 @@
 package com.example.AdminMatic
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
@@ -120,18 +122,18 @@ class VendorsAdapter(
             println("menu click")
 
             val popUp = PopupMenu(myView.context,holder.itemView)
-            popUp.inflate(R.menu.options_menu)
+            popUp.inflate(R.menu.vendor_options_menu)
             popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
-                    R.id.menu1 -> {
-                        Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.menu2 -> {
-                        Toast.makeText(myView.context, data.ID, Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.menu3 -> {
-                        Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
+                    R.id.call -> {
+                        if (!data.mainPhone.isNullOrEmpty()) {
+                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.mainPhone))
+                            myView.context.startActivity(intent)
+                        }
+                        else {
+                            Toast.makeText(myView.context, myView.context.getString(R.string.dialogue_no_phone_number), Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
 
@@ -238,13 +240,11 @@ class VendorViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     init {
         mNameView = itemView.findViewById(R.id.list_name)
         mItemString = itemView.findViewById(R.id.list_itemString)
-
     }
 
     fun bind(vendor: Vendor) {
         mNameView?.text = vendor.name
         mItemString?.text = vendor.itemString!!
-
     }
 
 

@@ -12,7 +12,7 @@
         android:id="@+id/list_sysname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:paddingLeft="16dp"
         android:text="@string/sysname"
         android:textSize="18sp"
@@ -28,23 +28,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
+        android:paddingBottom="8dp"
         android:text="@string/mainAddr"
 
         android:translationX="12dp"
         app:layout_constraintStart_toStartOf="@+id/list_sysname"
         app:layout_constraintTop_toBottomOf="@+id/list_sysname" />
-
-    <TextView
-        android:id="@+id/textViewOptions"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginRight="16dp"
-        android:text="&#8942;"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/list_sysname" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

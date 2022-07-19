@@ -6,23 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.google.gson.GsonBuilder
-import org.json.JSONException
-import org.json.JSONObject
-import java.time.LocalDate
-import java.time.OffsetDateTime
-import java.time.OffsetTime
-import java.time.ZoneOffset
-import java.time.temporal.WeekFields
-import java.util.*
 
 
 class LicensesFragment : Fragment() {
@@ -49,7 +37,7 @@ class LicensesFragment : Fragment() {
         myView = inflater.inflate(R.layout.fragment_licenses, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_licenses, employee!!.fName)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_licenses, employee!!.fname)
 
         return myView
     }

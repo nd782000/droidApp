@@ -43,9 +43,6 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
 
     override fun onBindViewHolder(holder: EmployeeViewHolder, position: Int) {
 
-
-        //TODO: add license icons here
-
         val employee: Employee = filterList[position]
         holder.bind(employee)
         //holder.itemView.list_sysname.text = filterList[position].sysname
@@ -92,6 +89,26 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
         holder.itemView.setOnClickListener {
             cellClickListener.onEmployeeCellClickListener(data)
         }
+
+        val linearLayout:LinearLayout = holder.itemView.findViewById(R.id.employee_license_ll)
+        linearLayout.removeAllViews()
+
+        if (employee.licenses != null) {
+            if (employee.licenses!!.isNotEmpty()) {
+                employee.licenses!!.forEach {
+                    val imageView = ImageView(context)
+                    imageView.layoutParams = ViewGroup.LayoutParams(60, 60)
+                    if (it.status == "0") {
+                        Picasso.with(context).load(R.drawable.ic_badge_star_gray).into(imageView)
+                    }
+                    else {
+                        Picasso.with(context).load(R.drawable.ic_badge_star).into(imageView)
+                    }
+                    linearLayout.addView(imageView)
+                }
+            }
+        }
+
 
 
 

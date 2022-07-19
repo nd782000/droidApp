@@ -12,6 +12,7 @@
     <!--<color name="background">#FFF8E6</color>-->
     <color name="background">#f3f4f5</color>
     <color name="backgroundPure">#FFFFFF</color>
+    <color name="backgroundHighlight">#FFFF00</color>
     <color name="button">#225CB3</color>
 
     <!--<color name="colorPrimary">#009000</color>-->
@@ -19,9 +20,9 @@
 
     <color name="colorPrimary">#2A70DA</color>
     <color name="colorPrimaryDark">#225CB3</color>
-
-    <!--<color name="colorAccent">#B0D235</color>-->
     <color name="colorAccent">#9FC5FF</color>
+    <!--<color name="colorAccent">#B0D235</color>-->
+
 
 
     <color name="palePurple">#fbeaff</color>
@@ -34,6 +35,7 @@
 
 
     <color name="red">#ff0000</color>
+    <color name="orange">#ff8400</color>
     <color name="usageBtn">#E09E43</color>
     <color name="colorSplashScreen">#2A70DA</color>
     <color name="colorTextSelected">#2A70DA</color>

@@ -1,8 +1,10 @@
 package com.example.AdminMatic
 
 import android.os.Bundle
+import android.text.InputType
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -217,7 +219,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
 
 
-                    setStatus(workOrder!!.status)
+                    setStatusIcon(workOrder!!.status)
                     titleTxt.text = workOrder!!.title
                     if(workOrder!!.nextPlannedDate != null){
                         scheduleTxt.text = workOrder!!.nextPlannedDate
@@ -312,7 +314,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                     println("lat: ${workOrder!!.lat}")
                     println("lng: ${workOrder!!.lng}")
-                    scheduleTxt.text = workOrder!!.dateNice
+                    //scheduleTxt.text = workOrder!!.dateNice
                     ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.work_order_number, workOrder!!.woID)
 
                     workOrder!!.setEmps()
@@ -348,67 +350,115 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_not_started)!!,myView.context), myView.context.getString(R.string.not_started)))
         popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_in_progress)!!,myView.context), myView.context.getString(R.string.in_progress)))
         popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_done)!!,myView.context), myView.context.getString(R.string.finished)))
+        if (workOrder!!.skipped != null) {
+            popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_canceled)!!,myView.context), myView.context.getString(R.string.skip_visit)))
+        }
         popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
-            workOrder!!.status = item!!.itemId.toString()
+            if (item!!.itemId == 4) { //skipped
 
-            if (listIndex >= 0) {
-                GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder!!)
-            }
-
-            setStatus(workOrder!!.status)
-            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT)
-                .show()
-
-            showProgressView()
-
-            var urlString = "https://www.adminmatic.com/cp/app/functions/update/workOrderStatus.php"
-
-            val currentTimestamp = System.currentTimeMillis()
-            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-            urlString = "$urlString?cb=$currentTimestamp"
-            val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
+                val builder: AlertDialog.Builder = AlertDialog.Builder(myView.context)
+                builder.setTitle(getString(R.string.dialogue_wo_reason_for_skip))
 
 
-            val postRequest1: StringRequest = object : StringRequest(
-                Method.POST, urlString,
-                Response.Listener { response -> // response
+                //Todo: make this use the background resource with correct margins
+                val et = EditText(myView.context)
+                //et.setBackgroundResource(R.drawable.text_view_layout)
+                //et.setPadding(5,0,5,0)
 
-                    println("Response $response")
+                et.inputType = InputType.TYPE_CLASS_TEXT
+                builder.setView(et)
 
-                    try {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        hideProgressView()
+                // Set up the buttons
+                builder.setPositiveButton("OK") { dialog, which ->
+                    // Here you get get input text from the Edittext
+                    workOrder!!.status = item.itemId.toString()
+                    workOrder!!.notes = et.text.toString()
+                    workOrder!!.skipped = "1"
 
-                        /* Here 'response' is a String containing the response you received from the website... */
-                    } catch (e: JSONException) {
-                        println("JSONException")
-                        e.printStackTrace()
+                    if (listIndex >= 0) {
+                        GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder!!)
                     }
-                },
-                Response.ErrorListener { // error
+
+                    setStatusIcon(workOrder!!.status)
+                    updateStatus()
 
                 }
-            ) {
-                override fun getParams(): Map<String, String> {
-                    val params: MutableMap<String, String> = HashMap()
-                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                    params["status"] = workOrder!!.status
-                    params["woID"] = workOrder!!.woID
-                    params["empID"] = GlobalVars.loggedInEmployee!!.ID
-                    println("params = $params")
-                    return params
-                }
+                builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+
+                builder.show()
+
             }
-            queue.add(postRequest1)
+            else {
+                workOrder!!.status = item.itemId.toString()
+
+                if (listIndex >= 0) {
+                    GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder!!)
+                }
+
+                setStatusIcon(workOrder!!.status)
+                updateStatus()
+            }
+
+
+
+
+
             true
         }
         popUp.gravity = Gravity.START
         popUp.show()
     }
 
+
+    private fun updateStatus() {
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/functions/update/workOrderStatus.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    hideProgressView()
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["status"] = workOrder!!.status
+                params["woID"] = workOrder!!.woID
+                params["empID"] = GlobalVars.loggedInEmployee!!.ID
+                params["empName"] = GlobalVars.loggedInEmployee!!.name
+                params["skipped"] = workOrder!!.skipped.toString()
+                params["notes"] = workOrder!!.notes.toString()
+                println("params = $params")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
 
 
     //Stack delegates
@@ -468,7 +518,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
 
-    private fun setStatus(status: String) {
+    private fun setStatusIcon(status: String) {
         println("setStatus")
         when(status) {
             "1" -> {

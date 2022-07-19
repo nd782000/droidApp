@@ -107,44 +107,6 @@ class CustomersAdapter(private val list: MutableList<Customer>, private val cell
 
 
 
-        //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
-            println("menu click")
-
-            val popUp = PopupMenu(myView.context,holder.itemView)
-            popUp.inflate(R.menu.options_menu)
-            popUp.setOnMenuItemClickListener { item: MenuItem? ->
-
-                when (item!!.itemId) {
-                    R.id.menu1 -> {
-                        Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.menu2 -> {
-                        Toast.makeText(myView.context, data.ID, Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.menu3 -> {
-                        Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                true
-            }
-
-
-
-            popUp.show()
-
-            /*
-            fun onClick(view: View?) {
-                println("menu click")
-                //will show popup menu here
-            }*/
-
-
-        }
-
-
-
     }
 
     override fun getItemCount(): Int{

@@ -325,6 +325,11 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             }
         }
 
+        // If you set it to canceled, do nothing and return
+        if (woItem!!.status == "4") {
+            return
+        }
+
         // If wo status is "not started" and any items are in progress, prompt to change
         if (workOrder.status == "1") {
             workOrder.items!!.forEach {
@@ -339,14 +344,13 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         if (workOrder.status == "1" || workOrder.status == "2") {
             var allFinished = true
             workOrder.items!!.forEach {
-                println("AAAAAAAAAA ${it.status}")
                 if (it.status == "1" || it.status == "2") { // canceled counts as complete
                     allFinished = false
                 }
             }
 
             if (allFinished && workOrder.status != "3") {
-                updateWorkOrderStatus(woItem!!.status)
+                updateWorkOrderStatus("3")
             }
         }
     }

@@ -39,13 +39,13 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
     private var departmentCount:Int = 0
     private var crewCount:Int = 0
     private var equipmentCount:Int = 0
-    private var personal : Boolean = false
+    private var employee: Employee? = null
     private var empString = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            personal = it.getBoolean("personal")
+            employee = it.getParcelable("employee")
         }
     }
 
@@ -58,9 +58,8 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
         myView = inflater.inflate(R.layout.fragment_departments, container, false)
 
         globalVars = GlobalVars()
-        if (personal) {
-            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_crews, GlobalVars.loggedInEmployee!!.fName)
-            GlobalVars.loggedInEmployee!!.fName
+        if (employee != null) {
+            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_crews, employee!!.fname)
         }
         else {
             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.crews)
@@ -91,9 +90,8 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                         tableMode = "DEPARTMENTS"
                         recyclerView.adapter = departmentAdapter
                         footerText.text = getString(R.string.x_departments, departmentCount)
-                        if (personal) {
-                            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_departments, GlobalVars.loggedInEmployee!!.fName)
-                            GlobalVars.loggedInEmployee!!.fName
+                        if (employee != null) {
+                            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_departments, employee!!.fname)
                         }
                         else {
                             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.departments)
@@ -104,9 +102,8 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                         recyclerView.adapter = crewAdapter
                         tableMode = "CREWS"
                         footerText.text = getString(R.string.x_crews, crewCount)
-                        if (personal) {
-                            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_crews, GlobalVars.loggedInEmployee!!.fName)
-                            GlobalVars.loggedInEmployee!!.fName
+                        if (employee != null) {
+                            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_crews, employee!!.fname)
                         }
                         else {
                             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.crews)
@@ -116,9 +113,8 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                         recyclerView.adapter = equipmentCrewAdapter
                         tableMode = "EQUIPMENT"
                         footerText.text = getString(R.string.x_equipment, equipmentCount)
-                        if (personal) {
-                            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_equipment, GlobalVars.loggedInEmployee!!.fName)
-                            GlobalVars.loggedInEmployee!!.fName
+                        if (employee != null) {
+                            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_equipment, employee!!.fname)
                         }
                         else {
                             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment)
@@ -134,8 +130,8 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
 
 
-        if (personal) {
-            empString = GlobalVars.loggedInEmployee!!.ID
+        if (employee != null) {
+            empString = employee!!.ID
         }
 
         //tableMode = "DEPARTMENTS"

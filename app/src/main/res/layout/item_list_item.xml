@@ -10,7 +10,7 @@
 
 
     <TextView
-        android:id="@+id/list_name"
+        android:id="@+id/list_item_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -23,18 +23,37 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+    <TextView
+        android:id="@+id/list_item_type_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:paddingLeft="16dp"
+        android:text="Type"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_item_name_tv"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/textViewOptions"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginRight="16dp"
-        android:text="&#8942;"
-        android:textAlignment="center"
-        android:textSize="30sp"
+        android:id="@+id/list_item_price_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:paddingRight="30dp"
+        android:text="Type"
+        android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/list_name" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_item_name_tv"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

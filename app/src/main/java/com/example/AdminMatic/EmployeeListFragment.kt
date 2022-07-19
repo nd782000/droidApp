@@ -19,7 +19,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_employee_list.*
@@ -93,8 +92,10 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
         crewsBtn = view.findViewById(R.id.crews_btn)
 
 
+        //TODO: implement group text message button
+
         crewsBtn.setOnClickListener{
-            val directions = EmployeeListFragmentDirections.navigateToDepartments(false)
+            val directions = EmployeeListFragmentDirections.navigateToDepartments(null)
             myView.findNavController().navigate(directions)
         }
 
@@ -268,7 +269,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
             val directions = EmployeeListFragmentDirections.navigateToEmployee(it)
             myView.findNavController().navigate(directions)
         }
-        println("Cell clicked with employee: ${data.fName}")
+        println("Cell clicked with employee: ${data.fname}")
     }
 
 

@@ -1,11 +1,14 @@
 package com.example.AdminMatic
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.AdminMatic.R
@@ -28,6 +31,8 @@ class ImageFragment : Fragment() {
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
+
+    private var primaryColor: Int = 0
 
 
     lateinit var pgsBar: ProgressBar
@@ -58,6 +63,7 @@ class ImageFragment : Fragment() {
         myView = inflater.inflate(R.layout.fragment_image, container, false)
 
         globalVars = GlobalVars()
+        primaryColor = R.color.colorPrimary
 
         return myView
     }
@@ -100,6 +106,7 @@ class ImageFragment : Fragment() {
         imageView.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
 
         likeView  = myView.findViewById(R.id.like_iv)
+        ImageViewCompat.setImageTintList(likeView, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
         likeView.setOnClickListener {
             var likeCount:Int? = image!!.likes?.toInt()
             if (image!!.liked == "1") {
@@ -108,6 +115,7 @@ class ImageFragment : Fragment() {
                     likeCount--
                 }
                 Picasso.with(context).load(R.drawable.ic_unliked).into(likeView)
+                ImageViewCompat.setImageTintList(likeView, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
                 setLiked(false)
             }
             else {
@@ -116,6 +124,8 @@ class ImageFragment : Fragment() {
                     likeCount++
                 }
                 Picasso.with(context).load(R.drawable.ic_liked).into(likeView)
+                ImageViewCompat.setImageTintList(likeView, null)
+                likeView.colorFilter = null
                 setLiked(true)
             }
             image!!.likes = likeCount.toString()

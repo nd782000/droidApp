@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.employee_list_item.view.*
 import kotlinx.android.synthetic.main.equipment_list_item.view.*
 import java.util.*
 
@@ -83,7 +84,36 @@ class LicenseViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     fun bind(license: License, context: Context) {
         mNameView!!.text = license.name
         mIDView!!.text = context.getString(R.string.license_number, license.number)
-        //TODO: make expired date text (not the full string) red
-        mExpirationView!!.text = context.getString(R.string.license_expires, license.expiration)
+
+        if (license.status == "0" || license.status == "1") { // Expired or near expired status
+
+            var typeColor = context.getColor(R.color.red)
+            if (license.status == "1") { // Near expired
+                typeColor = context.getColor(R.color.orange)
+            }
+
+            val spannable: Spannable = SpannableString(context.getString(R.string.license_expires, license.expiration))
+            val endPos1 = spannable.length
+            val startPos1 = spannable.length - 8
+
+            val colorStateList = ColorStateList(
+                arrayOf(intArrayOf()),
+                intArrayOf(typeColor)
+            )
+            val textAppearanceSpan =
+                TextAppearanceSpan(null, Typeface.NORMAL, -1, colorStateList, null)
+            spannable.setSpan(
+                textAppearanceSpan,
+                startPos1,
+                endPos1,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            mExpirationView!!.text = spannable
+        }
+        else {
+            mExpirationView!!.text = context.getString(R.string.license_expires, license.expiration)
+        }
+
+
     }
 }

@@ -25,7 +25,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.AdminMatic.BuildConfig
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -126,7 +125,6 @@ class LogInFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        println("HOLY FUCK")
         ((activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false))
     }
 
@@ -396,7 +394,7 @@ class LogInFragment : Fragment() {
                     val employee:Employee = Gson().fromJson(parentObject.getJSONObject("employee").toString(), Employee::class.java)
 
                     loggedInEmployee = employee
-                    println("loggedInEmployee.fname = ${loggedInEmployee!!.fName}")
+                    println("loggedInEmployee.fname = ${loggedInEmployee!!.fname}")
 
                     deviceID = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
 
@@ -649,7 +647,7 @@ class LogInFragment : Fragment() {
                         //textView.text = "Device ID: $id"
 
                         deviceID = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
-                        println("loggedInEmployee.fname = ${loggedInEmployee!!.fName}")
+                        println("loggedInEmployee.fname = ${loggedInEmployee!!.fname}")
 
                         sessionKey = loggedInEmployee!!.sessionKey
                         loggedInEmpID = loggedInEmployee!!.sessionKey

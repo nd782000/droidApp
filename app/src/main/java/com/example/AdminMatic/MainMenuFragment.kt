@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -61,6 +60,9 @@ class MainMenuFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        if (!this::globalVars.isInitialized) {
+            globalVars = GlobalVars()
+        }
 
         setHasOptionsMenu(true)
         // Inflate the layout for this fragment
@@ -95,7 +97,7 @@ class MainMenuFragment : Fragment() {
 
 
         val loggedInEmployeeTextView:TextView = myView.findViewById(R.id.logged_in_employee)
-        loggedInEmployeeTextView.text = getString(R.string.welcome_name, loggedInEmployee!!.fName)
+        loggedInEmployeeTextView.text = getString(R.string.welcome_name, loggedInEmployee!!.fname)
 
 
 

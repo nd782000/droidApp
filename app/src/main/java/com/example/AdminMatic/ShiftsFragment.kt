@@ -71,7 +71,7 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
         myView = inflater.inflate(R.layout.fragment_shifts, container, false)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_shifts, employee!!.fName)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_shifts, employee!!.fname)
 
         return myView
     }
@@ -87,7 +87,7 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
         recyclerView = view.findViewById(R.id.shifts_recycler_view)
         footerText = view.findViewById(R.id.shifts_footer_tv)
         spinnerLabelText = view.findViewById(R.id.shifts_week_lbl_tv)
-        spinnerLabelText.text = getString(R.string.xs_shifts_for, employee!!.fName)
+        spinnerLabelText.text = getString(R.string.xs_shifts_for, employee!!.fname)
 
 
         val weekSpinnerArray:Array<String> = arrayOf(

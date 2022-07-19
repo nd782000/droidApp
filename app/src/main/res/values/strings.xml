@@ -217,9 +217,25 @@
 
     <!--License stuff-->
     <string name="xs_licenses">%1$s\'s Licenses</string>
-    <string name="license_expires">Expires: #%1$s</string>
+    <string name="license_expires">Expires: %1$s</string>
     <string name="license_number">Lic.# %1$s</string>
     <string name="license_none_recorded">No Recorded Licenses</string>
+
+    <!--Items stuff-->
+    <string name="item_price_each">$%1$s/%2$s</string>
+    <string name="item_tab_locate">Locate</string>
+    <string name="item_tab_vendors">Vendors</string>
+    <string name="item_tab_work_orders">Work Orders</string>
+    <string name="no_description_provided">No description provided</string>
+    <string name="taxable_yes">Taxable</string>
+    <string name="taxable_no">Not Taxable</string>
+    <string name="item_x_vendors">%1$s Vendors Found with %2$s</string>
+    <string name="item_x_work_orders">%1$s Work Orders Found with %2$s %3$s(s) remaining</string>
+    <string name="item_remaining_qty">Remaining Qty: %1$s %2$s(s)</string>
+    <string name="item_wo_title">%1$s %2$s</string>
+    <string name="item_labor_type">Labor</string>
+    <string name="item_material_type">Material</string>
+    <string name="item_other_type">Other Type</string>
 
 
 
@@ -285,6 +301,7 @@
     <string name="woList">Work Order List</string>
     <string name="in_progress">In Progress</string>
     <string name="finished">Finished</string>
+    <string name="skip_visit">Skip Visit</string>
     <string name="scheduled">Scheduled</string>
     <string name="awarded">Awarded</string>
     <string name="declined">Declined</string>
@@ -419,6 +436,11 @@
     <string name="dialogue_inspection_bad_checked_title">Update Equipment?</string>
     <string name="dialogue_inspection_bad_checked_body">You marked a question to "bad", do you want to update equipment status?</string>
     <string name="dialogue_inspection_bad_checked_needs_service">You marked a question to "bad", do you want to update equipment status?</string>
+    <string name="dialogue_item_no_vendors_title">No Vendors</string>
+    <string name="dialogue_item_no_vendors_body">We do not have any registered vendors in our system.</string>
+    <string name="dialogue_wo_reason_for_skip">Reason for Skip:</string>
+    <string name="dialogue_no_phone_number">No phone number on record</string>
+
     <!--
     <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>
     <string name="dialogue_update_wo_in_progress_body">Would you also like to set the work order status to in progress?</string>

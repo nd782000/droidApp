@@ -52,10 +52,12 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     private lateinit var empPhoneBtnTxt:TextView
     private lateinit var empEmaileBtnTxt:TextView
 
+
     private lateinit var payrollBtn:Button
     private lateinit var usageBtn:Button
     private lateinit var shiftsBtn:Button
     private lateinit var licensesBtn:Button
+    private lateinit var deptsBtn:Button
 
 
     lateinit var adapter:ImagesAdapter
@@ -134,7 +136,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         super.onViewCreated(view, savedInstanceState)
         println("Employee View")
 
-        println("employee = ${employee!!.name}")
+        println("employee = ${employee!!.fname}")
 
 
 
@@ -203,11 +205,26 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
             myView.findNavController().navigate(directions)
         }
 
-
-        logOutBtn = view.findViewById(R.id.log_out_btn)
-        logOutBtn.setOnClickListener{
-            listener!!.logOut(myView)
+        deptsBtn = view.findViewById((R.id.depts_btn))
+        deptsBtn.setOnClickListener{
+            println("shifts btn clicked")
+            val directions = EmployeeFragmentDirections.navigateEmployeeToDepartments(employee)
+            myView.findNavController().navigate(directions)
         }
+
+        // Only show the logout button if this it's you
+        if (employee!!.ID == GlobalVars.loggedInEmployee!!.ID) {
+            logOutBtn = view.findViewById(R.id.log_out_btn)
+            logOutBtn.setOnClickListener{
+                listener!!.logOut(myView)
+            }
+        }
+        else {
+            val footerCl:ConstraintLayout = view.findViewById(R.id.emp_footer_cl)
+            footerCl.visibility = View.GONE
+        }
+
+
 
 
 
@@ -295,6 +312,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
 
+
         val postRequest1: StringRequest = object : StringRequest(
             Method.POST, urlString,
             Response.Listener { response -> // response
@@ -330,6 +348,8 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                             "${imageList.count()} Images Loaded",
                             Toast.LENGTH_SHORT
                         ).show()
+
+                        //employee!!.fName = fName
 
 
                         adapter.filterList = imageList

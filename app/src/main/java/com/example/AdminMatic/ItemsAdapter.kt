@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -8,7 +9,6 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.item_list_item.view.*
 import java.util.*
 
 
-class ItemsAdapter(private val list: MutableList<Item>, private val cellClickListener: ItemCellClickListener)
+class ItemsAdapter(private val list: MutableList<Item>, private val context: Context, private val cellClickListener: ItemCellClickListener)
 
     : RecyclerView.Adapter<ItemViewHolder>(), Filterable {
 
@@ -43,7 +43,7 @@ class ItemsAdapter(private val list: MutableList<Item>, private val cellClickLis
 
 
         val item: Item = filterList[position]
-        holder.bind(item)
+        holder.bind(item, context)
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         println("queryText = $queryText")
@@ -66,12 +66,12 @@ class ItemsAdapter(private val list: MutableList<Item>, private val cellClickLis
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_name.text = spannable
+                holder.itemView.list_item_name_tv.text = spannable
             } else {
-                holder.itemView.list_name.text = filterList[position].name
+                holder.itemView.list_item_name_tv.text = filterList[position].name
             }
         } else {
-            holder.itemView.list_name.text = filterList[position].name
+            holder.itemView.list_item_name_tv.text = filterList[position].name
         }
 
 
@@ -79,45 +79,6 @@ class ItemsAdapter(private val list: MutableList<Item>, private val cellClickLis
         holder.itemView.setOnClickListener {
             cellClickListener.onItemCellClickListener(data)
         }
-
-
-
-        //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
-            println("menu click")
-
-            val popUp = PopupMenu(myView.context,holder.itemView)
-            popUp.inflate(R.menu.options_menu)
-            popUp.setOnMenuItemClickListener { item: MenuItem? ->
-
-                when (item!!.itemId) {
-                    R.id.menu1 -> {
-                        Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.menu2 -> {
-                        Toast.makeText(myView.context, data.ID, Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.menu3 -> {
-                        Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                true
-            }
-
-
-
-            popUp.show()
-
-            /*
-            fun onClick(view: View?) {
-                println("menu click")
-                //will show popup menu here
-            }*/
-
-
-        }
-
 
 
     }
@@ -198,16 +159,26 @@ class ItemsAdapter(private val list: MutableList<Item>, private val cellClickLis
 class ItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.item_list_item, parent, false)) {
     private var mNameView: TextView? = null
+    private var mTypeView: TextView? = null
+    private var mPriceView: TextView? = null
 
 
 
     init {
-        mNameView = itemView.findViewById(R.id.list_name)
-
+        mNameView = itemView.findViewById(R.id.list_item_name_tv)
+        mTypeView = itemView.findViewById(R.id.list_item_type_tv)
+        mPriceView = itemView.findViewById(R.id.list_item_price_tv)
     }
 
-    fun bind(item: Item) {
+    fun bind(item: Item, context:Context) {
         mNameView?.text = item.name
+        mTypeView?.text = item.type
+        if (item.unit != null) {
+            mPriceView?.text = context.getString(R.string.item_price_each, item.price, item.unit)
+        }
+        else {
+            mPriceView?.text = "---"
+        }
 
     }
 

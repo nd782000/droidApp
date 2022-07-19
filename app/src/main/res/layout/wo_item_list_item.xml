@@ -12,28 +12,27 @@
         android:id="@+id/status_icon_iv"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_margin="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="11dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+
         />
 
     <TextView
         android:id="@+id/list_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:gravity="center_vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:gravity="center_vertical"
         android:text="@string/item"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/status_icon_iv"
         app:layout_constraintTop_toTopOf="parent"
 
-         />
+        />
 
     <TextView
         android:id="@+id/list_act_tv"

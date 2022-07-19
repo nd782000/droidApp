@@ -60,9 +60,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
         val mIconView:ImageView = holder.itemView.findViewById(R.id.status_icon_iv)
         when (woItem.status) {
-            "0"-> Picasso.with(context)
-                .load(R.drawable.ic_canceled)
-                .into(mIconView)
+
             "1"-> Picasso.with(context)
                 .load(R.drawable.ic_not_started)
                 .into(mIconView)
@@ -71,6 +69,9 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
                 .into(mIconView)
             "3"-> Picasso.with(context)
                 .load(R.drawable.ic_done)
+                .into(mIconView)
+            "4"-> Picasso.with(context)
+                .load(R.drawable.ic_canceled)
                 .into(mIconView)
 
         }
@@ -187,6 +188,19 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
         }
 
+        /*
+        var descriptionString = ""
+        val iterator = woItem.tasks.iterator()
+        while (iterator.hasNext()) {
+            val item = iterator.next()
+            descriptionString = descriptionString + "- " + item.task
+            if (iterator.hasNext()) {
+                descriptionString += "\n"
+            }
+        }
+        holder.mDescriptionView!!.text = descriptionString
+
+         */
 
 
     }
@@ -211,7 +225,7 @@ class WoItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     private var mNameView: TextView? = null
     private var mEstView: TextView? = null
     private var mActView: TextView? = null
-    private var mDescriptionView: TextView? = null
+    var mDescriptionView: TextView? = null
 
     init {
         mNameView = itemView.findViewById(R.id.list_name)
