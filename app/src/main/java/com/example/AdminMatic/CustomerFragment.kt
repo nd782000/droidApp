@@ -3,9 +3,7 @@ package com.example.AdminMatic
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -114,7 +112,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.customer)
-
+        setHasOptionsMenu(true)
         return myView
     }
 
@@ -147,6 +145,24 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("customer")
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.customer_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.edit_customer_item) {
+            val directions = CustomerFragmentDirections.navigateToNewEditCustomer(customer.ID)
+            myView.findNavController().navigate(directions)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+
+    }
+
     private fun getCustomer(){
        // println("getCustomer = ${customer!!.ID}")
         showProgressView()
@@ -170,6 +186,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
+                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                         val gson = GsonBuilder().create()
                         val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
@@ -237,6 +254,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val leads: JSONArray = parentObject.getJSONArray("leads")
                     println("leads = $leads")
                     println("leads count = ${leads.length()}")
@@ -321,6 +340,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val contracts: JSONArray = parentObject.getJSONArray("contracts")
                     println("contracts = $contracts")
                     println("contracts count = ${contracts.length()}")
@@ -395,6 +416,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
                     println("workOrders = $workOrders")
                     println("workOrders count = ${workOrders.length()}")
@@ -469,6 +492,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val invoices: JSONArray = parentObject.getJSONArray("invoices")
                     println("invoices = $invoices")
                     println("invoices count = ${invoices.length()}")
@@ -556,6 +581,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val images:JSONArray = parentObject.getJSONArray("images")
                     println("images = $images")
                     println("images count = ${images.length()}")

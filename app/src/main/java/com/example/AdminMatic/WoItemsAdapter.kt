@@ -15,6 +15,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.wo_item_list_item.view.*
+import org.json.JSONObject
 
 
 class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, private val appContext: Context, private val cellClickListener: WoItemCellClickListener) : RecyclerView.Adapter<WoItemViewHolder>() {
@@ -88,6 +89,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
         //options btn click
         val optionsTv = holder.itemView.findViewById<TextView>(R.id.textViewOptions)
+
         optionsTv.setOnClickListener {
             println("menu click")
 
@@ -126,6 +128,9 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
                                                 //Log.d("Response", response)
 
                                                 println("Response $response")
+
+                                                val parentObject = JSONObject(response)
+                                                globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                                                 filterList.removeAt(position)
                                                 notifyDataSetChanged()

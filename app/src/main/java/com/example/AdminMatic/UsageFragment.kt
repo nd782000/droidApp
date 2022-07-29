@@ -82,7 +82,6 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
 
 
         fromEditText = myView.findViewById(R.id.usage_from_et)
-        fromEditText.setBackgroundResource(R.drawable.text_view_layout)
         fromEditText.setText(dateFrom.format(GlobalVars.dateFormatterShortDashes))
         fromEditText.setOnClickListener {
             datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
@@ -98,7 +97,6 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
 
 
         toEditText = myView.findViewById(R.id.usage_to_et)
-        toEditText.setBackgroundResource(R.drawable.text_view_layout)
         toEditText.setText(dateTo.format(GlobalVars.dateFormatterShortDashes))
         toEditText.setOnClickListener {
             datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
@@ -142,6 +140,8 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
                 hideProgressView()
                 try {
                     val parentObject = JSONObject(response)
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val employees:JSONArray = parentObject.getJSONArray("usages")
 
 

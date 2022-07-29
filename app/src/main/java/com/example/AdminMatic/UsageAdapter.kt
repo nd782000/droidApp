@@ -349,7 +349,6 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             unitCostTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
             unitCostTxt.setSelectAllOnFocus(true)
 
-            unitCostTxt.setBackgroundResource(R.drawable.text_view_layout)
 
             if (!usage.locked!!) {
                 unitCostTxt.setOnEditorActionListener { _, actionId, _ ->

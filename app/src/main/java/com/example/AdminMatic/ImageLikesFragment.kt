@@ -120,6 +120,8 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
 
                 try {
                     val parentObject = JSONObject(response)
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val employees: JSONArray = parentObject.getJSONArray("employees")
 
                     val gson = GsonBuilder().create()

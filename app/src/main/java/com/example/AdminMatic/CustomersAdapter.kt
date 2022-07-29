@@ -8,7 +8,6 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +16,7 @@ import kotlinx.android.synthetic.main.customer_list_item.view.*
 import java.util.*
 
 
-class CustomersAdapter(private val list: MutableList<Customer>, private val cellClickListener: CustomerCellClickListener): RecyclerView.Adapter<CustomerViewHolder>(), Filterable {
+class CustomersAdapter(private val list: MutableList<Customer>, private val cellClickListener: CustomerCellClickListener, private val searchAddressOnly:Boolean): RecyclerView.Adapter<CustomerViewHolder>(), Filterable {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
@@ -45,37 +44,42 @@ class CustomersAdapter(private val list: MutableList<Customer>, private val cell
         holder.bind(customer)
         println("queryText = $queryText")
         //text highlighting for first string
-        if (queryText.isNotEmpty() && queryText != "") {
 
-            val startPos1: Int = filterList[position].sysname.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
-            val endPos1 = startPos1 + queryText.length
-            if (startPos1 != -1) {
-                val spannable: Spannable = SpannableString(filterList[position].sysname)
-                val colorStateList = ColorStateList(
-                    arrayOf(intArrayOf()),
-                    intArrayOf(Color.parseColor("#005100"))
-                )
-                val textAppearanceSpan =
-                    TextAppearanceSpan(null, Typeface.BOLD, -1, colorStateList, null)
-                spannable.setSpan(
-                    textAppearanceSpan,
-                    startPos1,
-                    endPos1,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                holder.itemView.list_sysname.text = spannable
+        if (!searchAddressOnly) {
+
+            if (queryText.isNotEmpty() && queryText != "") {
+
+                val startPos1: Int = filterList[position].sysname.lowercase(Locale.getDefault())
+                    .indexOf(queryText.lowercase(Locale.getDefault()))
+                val endPos1 = startPos1 + queryText.length
+                if (startPos1 != -1) {
+                    val spannable: Spannable = SpannableString(filterList[position].sysname)
+                    val colorStateList = ColorStateList(
+                        arrayOf(intArrayOf()),
+                        intArrayOf(Color.parseColor("#005100"))
+                    )
+                    val textAppearanceSpan =
+                        TextAppearanceSpan(null, Typeface.BOLD, -1, colorStateList, null)
+                    spannable.setSpan(
+                        textAppearanceSpan,
+                        startPos1,
+                        endPos1,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    holder.itemView.list_sysname.text = spannable
+                } else {
+                    holder.itemView.list_sysname.text = filterList[position].sysname
+                }
             } else {
                 holder.itemView.list_sysname.text = filterList[position].sysname
             }
-        } else {
-            holder.itemView.list_sysname.text = filterList[position].sysname
         }
 
         //text highlighting for second string
         if (queryText.isNotEmpty() && queryText != "") {
 
 
-            val startPos2: Int = filterList[position].mainAddr.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault())
+            val startPos2: Int = filterList[position].mainAddr!!.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault())
             )
             val endPos2 = startPos2 + queryText.length
             if (startPos2 != -1) {
@@ -148,14 +152,28 @@ class CustomersAdapter(private val list: MutableList<Customer>, private val cell
                     for (row in list) {
                         //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
                        // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
-                        if (row.sysname.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.mainAddr.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
 
-                            println("add row")
+                        if (searchAddressOnly) {
+                            if (row.mainAddr!!.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
 
-                            resultList.add(row)
+                                println("add row")
 
-                            println("resultList.count = ${resultList.count()}")
+                                resultList.add(row)
+
+                                println("resultList.count = ${resultList.count()}")
+                            }
                         }
+                        else {
+                            if (row.sysname.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.mainAddr!!.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
+
+                                println("add row")
+
+                                resultList.add(row)
+
+                                println("resultList.count = ${resultList.count()}")
+                            }
+                        }
+
                     }
                     filterList = resultList
                 }

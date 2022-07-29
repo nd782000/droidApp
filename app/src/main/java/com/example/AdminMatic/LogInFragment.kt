@@ -30,6 +30,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.deviceID
 import com.example.AdminMatic.GlobalVars.Companion.employeeList
+import com.example.AdminMatic.GlobalVars.Companion.hearTypes
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.mediumBase
 import com.example.AdminMatic.GlobalVars.Companion.rawBase
@@ -206,9 +207,9 @@ class LogInFragment : Fragment() {
         companyEditText.setSingleLine()
         companyEditText.setPadding(10,0,10,0)
         companyEditText.height = 100
-
-
         companyEditText.setBackgroundResource(R.drawable.text_view_layout)
+
+
 
         companyEditText.id = generateViewId() // Views must have IDs in order to add them to chain later.
         myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(companyEditText)
@@ -388,6 +389,7 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
 
@@ -449,6 +451,7 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val permissions: Permissions = Gson().fromJson(parentObject.toString(), Permissions::class.java)
 
@@ -457,7 +460,9 @@ class LogInFragment : Fragment() {
 
                     println("accounting permissions = ${GlobalVars.permissions!!.accounting}")
 
-                    getStyles()
+
+                    myView.findNavController().navigate(R.id.navigateToMainMenu)
+                    //getStyles()
 
 
 
@@ -511,6 +516,7 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     // Todo: finish storing and wiring in these color values
                     myView.findNavController().navigate(R.id.navigateToMainMenu)
@@ -626,6 +632,8 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    //Todo: re-enable this once PHP is fixed
+                    //globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val errorArray:JSONArray = parentObject.getJSONArray("errorArray")
                     if (errorArray.length() > 0){
@@ -730,12 +738,28 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
+
+                    // Todo: fetch and parse all the data types
 
                     thumbBase = parentObject.getString("thumbBase")
                     mediumBase = parentObject.getString("mediumBase")
                     rawBase = parentObject.getString("rawBase")
+
+                    val gson = GsonBuilder().create()
+                    val hearTypes:JSONArray = parentObject.getJSONArray("hearTypes")
+                    GlobalVars.hearTypes = gson.fromJson(hearTypes.toString() , Array<HearType>::class.java)
+                    println("Hear Types Size: ${GlobalVars.hearTypes!!.size}")
+
+                    GlobalVars.hearTypes!!.forEach {
+                        print(it.ID)
+                        println(it.type)
+                    }
+
                     println("thumbBase= $thumbBase")
+
+
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -787,6 +811,7 @@ class LogInFragment : Fragment() {
 
                 try {
                     val parentObject = JSONObject(response)
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
                     //println("parentObject = ${parentObject.toString()}")
                     //var employees:JSONArray = parentObject.getJSONArray("employees")
                     // println("employees = ${employees.toString()}")
@@ -853,6 +878,8 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     //var customers: JSONObject = parentObject.getJSONObject("customers")
                     val customers: JSONArray = parentObject.getJSONArray("customers")
                     // println("customers = ${customers.toString()}")

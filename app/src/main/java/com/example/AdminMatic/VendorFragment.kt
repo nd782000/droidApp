@@ -17,16 +17,15 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
 
 
-class VendorFragment : Fragment() {
+class VendorFragment : Fragment(), OnMapReadyCallback {
     private  var vendor: Vendor? = null
     private  var vendorID: String? = null
 
@@ -36,7 +35,8 @@ class VendorFragment : Fragment() {
     private lateinit var  pgsBar: ProgressBar
 
 
-    private lateinit var vendorNameTextView:TextView
+    private lateinit var vendorNameTv:TextView
+    private lateinit var vendorBalanceTv:TextView
     private lateinit var vendorPhoneBtn: ConstraintLayout
     private lateinit var vendorWebBtn: ConstraintLayout
     private lateinit var vendorAddressBtn: ConstraintLayout
@@ -44,6 +44,12 @@ class VendorFragment : Fragment() {
     private lateinit var vendorWebBtnTxt:TextView
     private lateinit var vendorAddressBtnTxt:TextView
     private lateinit var vendorBodyCl:ConstraintLayout
+
+    private var mapFragment : SupportMapFragment? = null
+    private lateinit var googleMapGlobal:GoogleMap
+
+    private lateinit var mapCl: ConstraintLayout
+
 
 
 
@@ -66,7 +72,7 @@ class VendorFragment : Fragment() {
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.vendor)
-
+        mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
         return myView
     }
 
@@ -74,9 +80,16 @@ class VendorFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         pgsBar = view.findViewById(R.id.progress_bar)
         vendorBodyCl = view.findViewById(R.id.vendor_body_cl)
+        mapCl = view.findViewById(R.id.vendor_map_cl)
+
+
+
+
+        mapFragment!!.getMapAsync(this)
+
         hideProgressView()
 
-        getVendor()
+        //getVendor()
 
     }
 
@@ -85,9 +98,58 @@ class VendorFragment : Fragment() {
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("vendor")
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        println("map ready")
+        googleMapGlobal = googleMap
+
+        getVendor()
+    }
+
+    private fun updateMap(){
+        println("updateMap")
+
+        googleMapGlobal.clear()
+
+        println(vendor!!.mainAddr)
+        println(" , ")
+
+        if (vendor!!.mainAddr == "" || vendor!!.mainAddr == ", ") {
+            return
+        }
+
+        println(vendor!!.lat)
+        println(vendor!!.lng)
+
+
+        val newMarker: Marker? = googleMapGlobal.addMarker(
+            MarkerOptions()
+                .position(LatLng(vendor!!.lat!!.toDouble(), vendor!!.lng!!.toDouble()))
+                .title(vendor!!.name)
+        )
+
+
+
+        val builder = LatLngBounds.Builder()
+        builder.include(newMarker!!.position)
+        val cu = CameraUpdateFactory.newLatLngZoom(newMarker.position, 16f)
+        googleMapGlobal.moveCamera(cu)
+
+
+        hideProgressView()
+
+    }
+
     private fun populateVendorView() {
-        vendorNameTextView = myView.findViewById(R.id.vendor_name_txt)
-        vendorNameTextView.text = vendor!!.name
+        vendorNameTv = myView.findViewById(R.id.vendor_name_txt)
+        vendorNameTv.text = vendor!!.name
+        vendorBalanceTv = myView.findViewById(R.id.vendor_balance_txt)
+        if (vendor!!.balance == null) {
+            vendor!!.balance = "0"
+        }
+        vendorBalanceTv.text = getString(R.string.vendor_balance, vendor!!.balance)
+        if (GlobalVars.permissions!!.vendorsMoney == "0") {
+            vendorBalanceTv.visibility = View.INVISIBLE
+        }
 
         vendorPhoneBtn = myView.findViewById(R.id.vendor_phone_btn_cl)
         vendorPhoneBtnTxt = myView.findViewById(R.id.vendor_phone_btn_tv)
@@ -95,7 +157,7 @@ class VendorFragment : Fragment() {
 
 
 
-        if(vendor!!.mainPhone != null){
+        if(!vendor!!.mainPhone.isNullOrEmpty()){
             vendorPhoneBtnTxt.text = vendor!!.mainPhone!!
 
             vendorPhoneBtnTxt.setOnClickListener {
@@ -146,14 +208,17 @@ class VendorFragment : Fragment() {
         vendorAddressBtnTxt = myView.findViewById(R.id.vendor_address_btn_tv)
         vendorAddressBtnTxt.text = getString(R.string.no_address_found)
 
-        if (vendor!!.mainAddr != ""){
+        println("Main Address: ${vendor!!.mainAddr}")
+
+        if (vendor!!.mainAddr != "" && vendor!!.mainAddr != ", "){
             vendorAddressBtnTxt.text = vendor!!.mainAddr!!
         }
 
+        updateMap()
 
 
 
-
+        /*
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map_frg) as SupportMapFragment?  //use SuppoprtMapFragment for using in fragment instead of activity  MapFragment = activity   SupportMapFragment = fragment
         mapFragment!!.getMapAsync { mMap ->
@@ -196,6 +261,7 @@ class VendorFragment : Fragment() {
                 )
             }
         }
+        */
     }
 
     private fun getVendor(){
@@ -223,7 +289,7 @@ class VendorFragment : Fragment() {
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
-
+                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                         val gson = GsonBuilder().create()
 

@@ -1,18 +1,21 @@
 package com.example.AdminMatic
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.AdminMatic.R
-import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
 import com.example.AdminMatic.GlobalVars.Companion.globalLeadList
+import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -107,27 +110,59 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             globalWorkOrdersList!!.forEach {
                 println("Marker: $it: ${it.lat}, ${it.lng}")
-                bitmapDescriptor = when (it.status) {
+
+                val markerLayout: View = layoutInflater.inflate(R.layout.map_pin_layout, null)
+
+                val markerImage: ImageView =
+                    markerLayout.findViewById<View>(R.id.marker_image) as ImageView
+                val markerNumber = markerLayout.findViewById<View>(R.id.marker_text) as TextView
+
+                when (it.status) {
                     "0" -> {
-                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_skip)
+                        markerImage.setImageResource(R.drawable.ic_map_pin_skip)
                     }
                     "1" -> {
-                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_not_started)
+                        markerImage.setImageResource(R.drawable.ic_map_pin_not_started)
                     }
                     "2" -> {
-                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_in_progress)
+                        markerImage.setImageResource(R.drawable.ic_map_pin_in_progress)
                     }
                     else -> {
-                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_done)
+                        markerImage.setImageResource(R.drawable.ic_map_pin_done)
                     }
                 }
+
+                if (!it.daySort.isNullOrBlank()) {
+                    markerNumber.text = it.daySort
+                }
+                else {
+                    markerNumber.text = "-"
+                }
+
+                markerLayout.measure(
+                    View.MeasureSpec.makeMeasureSpec(
+                        0,
+                        View.MeasureSpec.UNSPECIFIED
+                    ), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+                markerLayout.layout(0, 0, markerLayout.measuredWidth, markerLayout.measuredHeight)
+
+
+                val bitmap = Bitmap.createBitmap(
+                    markerLayout.measuredWidth,
+                    markerLayout.measuredHeight,
+                    Bitmap.Config.ARGB_8888
+                )
+                val canvas = Canvas(bitmap)
+                markerLayout.draw(canvas)
+
 
                 newMarker = googleMapGlobal.addMarker(
                     MarkerOptions()
                         .position(LatLng(it.lat!!.toDouble(), it.lng!!.toDouble()))
                         .title(it.custName + " - " + it.title)
                         .snippet(it.custAddress)
-                        .icon(bitmapDescriptor)
+                        .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
 
                 )
                 newMarker?.let { it1 -> markerList.add(it1) }
@@ -160,27 +195,52 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             globalLeadList!!.forEach {
 
-                bitmapDescriptor = when (it.statusID) {
+                val markerLayout: View = layoutInflater.inflate(R.layout.map_pin_layout, null)
+
+                val markerImage: ImageView =
+                    markerLayout.findViewById<View>(R.id.marker_image) as ImageView
+                val markerNumber = markerLayout.findViewById<View>(R.id.marker_text) as TextView
+
+                when (it.statusID) {
                     "0" -> {
-                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_skip)
+                        markerImage.setImageResource(R.drawable.ic_map_pin_skip)
                     }
                     "1" -> {
-                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_not_started)
+                        markerImage.setImageResource(R.drawable.ic_map_pin_not_started)
                     }
                     "2" -> {
-                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_in_progress)
+                        markerImage.setImageResource(R.drawable.ic_map_pin_in_progress)
                     }
                     else -> {
-                        BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin_done)
+                        markerImage.setImageResource(R.drawable.ic_map_pin_done)
                     }
                 }
+
+                markerNumber.text = "-"
+
+                markerLayout.measure(
+                    View.MeasureSpec.makeMeasureSpec(
+                        0,
+                        View.MeasureSpec.UNSPECIFIED
+                    ), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+                markerLayout.layout(0, 0, markerLayout.measuredWidth, markerLayout.measuredHeight)
+
+
+                val bitmap = Bitmap.createBitmap(
+                    markerLayout.measuredWidth,
+                    markerLayout.measuredHeight,
+                    Bitmap.Config.ARGB_8888
+                )
+                val canvas = Canvas(bitmap)
+                markerLayout.draw(canvas)
 
                 newMarker = googleMapGlobal.addMarker(
                     MarkerOptions()
                         .position(LatLng(it.lat!!.toDouble(), it.lng!!.toDouble()))
                         .title(it.custName)
                         .snippet(it.description)
-                        .icon(bitmapDescriptor)
+                        .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
 
                 )
                 newMarker?.let { it1 -> markerList.add(it1) }

@@ -208,7 +208,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
         customerSearchView.setQuery(customerName, false)
 
-        adapter = CustomersAdapter(GlobalVars.customerList!!, this)
+        adapter = CustomersAdapter(GlobalVars.customerList!!, this, false)
 
         globalVars = GlobalVars()
 
@@ -321,7 +321,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
                     CustomersAdapter(
                         GlobalVars.customerList!!,
-                        this@ImageUploadFragment
+                        this@ImageUploadFragment,
+                    false
                     )
 
 
@@ -890,6 +891,7 @@ private  fun saveTask(){
             try {
                 val parentObject = JSONObject(response)
                 println("parentObject = $parentObject")
+                globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                 val gson = GsonBuilder().create()
 
@@ -1095,6 +1097,7 @@ private  fun saveTask(){
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val gson = GsonBuilder().create()
                     val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)

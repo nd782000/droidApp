@@ -21,7 +21,18 @@
         <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="android:textColorHighlight">@color/colorTextSelected</item>
         <item name="android:textCursorDrawable">@null</item>
+        <item name="editTextStyle">@style/EditTextStyleRounded</item>
+
+
+
+
     </style>
+
+    <style name="EditTextStyleRounded" parent="@android:style/Widget.EditText">
+        <item name="android:background">@drawable/text_view_layout</item>
+        <item name="android:paddingLeft">5dp</item>
+    </style>
+
 
     <style name="SpinnerTimePickerDialog" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowIsTranslucent">true</item>
@@ -44,8 +55,6 @@
         <item name="android:calendarViewShown">false</item>
         <item name="android:datePickerMode">spinner</item>
     </style>
-
-
 
 
     <style name="Theme.TestDrawer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

@@ -23,6 +23,40 @@
             android:id="@+id/navigateToCustomer"
             app:destination="@id/customerFragment"
             />
+        <action
+            android:id="@+id/navigateToCustomerLookup"
+            app:destination="@id/customerLookupFragment"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/customerLookupFragment"
+        android:name="com.example.AdminMatic.CustomerLookupFragment"
+        android:label="fragment_customer_lookup"
+        tools:layout="@layout/fragment_customer_lookup" >
+        <action
+            android:id="@+id/navigateToCustomer"
+            app:destination="@id/customerFragment"
+            />
+        <action
+            android:id="@+id/navigateToNewCustomer"
+            app:destination="@id/newEditCustomerFragment"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/newEditCustomerFragment"
+        android:name="com.example.AdminMatic.NewEditCustomerFragment"
+        android:label="fragment_new_edit_customer"
+        tools:layout="@layout/fragment_new_edit_customer" >
+        <argument
+            android:name="customerID"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/navigateToCustomer"
+            app:destination="@id/customerFragment"
+            app:popUpTo="@id/customerListFragment"
+            app:popUpToInclusive="false"
+            />
     </fragment>
     <fragment
         android:id="@+id/mainMenuFragment2"
@@ -74,6 +108,9 @@
         <action
             android:id="@+id/navigateToDepartments"
             app:destination="@id/departmentsFragment" />
+        <action
+            android:id="@+id/navigateToGroupText"
+            app:destination="@id/groupTextFragment" />
     </fragment>
     <fragment
         android:id="@+id/vendorListFragment"
@@ -336,6 +373,19 @@
         <action
             android:id="@+id/navigateCustomerToImage"
             app:destination="@id/imageFragment" />
+        <action
+            android:id="@+id/navigateToNewEditCustomer"
+            app:destination="@id/newEditCustomerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupTextFragment"
+        android:name="com.example.AdminMatic.GroupTextFragment"
+        android:label="fragment_group_text"
+        tools:layout="@layout/fragment_group_text" >
+        <argument
+            android:name="employeeList"
+            app:argType="com.example.AdminMatic.Employee[]"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/vendorFragment"

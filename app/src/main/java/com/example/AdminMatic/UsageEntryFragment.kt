@@ -1165,6 +1165,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     globalVars.playSaveSound(myView.context)
 

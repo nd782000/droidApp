@@ -86,6 +86,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     private lateinit var submitBtn:Button
 
 
+
     private var chargeTypeArray:Array<String> = arrayOf("No Charge", "Flat", "T & M")
 
     private var editMode = false
@@ -148,6 +149,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         descriptionTv = myView.findViewById(R.id.wo_item_description_tv)
         usageBtn = myView.findViewById(R.id.wo_item_usage_btn)
         statusBtn = myView.findViewById(R.id.status_btn)
+
 
         println("Work Order Item Customer: ${workOrder.customer}")
         usageBtn.setOnClickListener{
@@ -248,7 +250,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val gson = GsonBuilder().create()
                     woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
@@ -422,6 +424,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
+                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                         hideProgressView()
 
@@ -481,6 +484,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     if (listIndex >= 0) {
                         GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder)
                     }
@@ -709,6 +714,10 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 tasksRv.visibility = View.GONE
                 descriptionCl.visibility = View.VISIBLE
             }
+        }
+
+        if (GlobalVars.permissions!!.scheduleMoney == "0") {
+            profitCl.visibility = View.GONE
         }
     }
 

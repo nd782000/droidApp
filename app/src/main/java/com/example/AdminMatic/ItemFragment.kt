@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -28,7 +29,6 @@ import kotlinx.android.synthetic.main.fragment_work_order.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-
 
 class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, WorkOrderCellClickListener {
 
@@ -106,6 +106,10 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
         itemNameTv.text = item!!.name
         itemPriceTv.text = getString(R.string.item_price_each, item!!.price, item!!.unit)
+        if (GlobalVars.permissions!!.itemsMoney == "0") {
+            itemPriceTv.visibility = View.GONE
+        }
+
 
         if (item!!.salesDescription.isNullOrEmpty()) {
             itemDescriptionTv.text = getString(R.string.no_description_provided)
@@ -187,7 +191,6 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
         getItem()
 
-
     }
 
     private fun updateMap(){
@@ -231,7 +234,12 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
             builder.include(marker.position)
         }
         val bounds = builder.build()
-        val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+        var cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+        if (markerList.size == 1) {
+            // If there's only one pin, zoom out a little
+            cu = CameraUpdateFactory.newLatLngZoom(markerList[0].position, 16f)
+        }
+
 
         googleMapGlobal.moveCamera(cu)
 
@@ -273,13 +281,26 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                 println("Response $response")
 
                 try {
+                   //val testWarnings =
+                   //     "{\"warningArray\":[\"here's a warning\", \"here's another\"],\"errorArray\":[],\"items\":[{\"type\":\"2\",\"name\":\"1 Poly Elbow Connector\",\"purchaseDescription\":\"697\",\"salesDescription\":\"\",\"cost\":\"0.40\",\"price\":\"0.60\",\"tax\":\"1\",\"unit\":\"Piece\",\"remQty\":\"0\",\"description\":\"\",\"workOrders\":[],\"vendors\":[{\"ID\":\"1243\",\"cost\":\"0.40\",\"price\":\"0.60\",\"minQty\":\"0.00\",\"prefered\":\"1\",\"name\":\"Stateline Irrigation\",\"lat\":\"42.66918460\",\"lng\":\"-71.41806220\"}]}]}"
+
                     val parentObject = JSONObject(response)
+                    //val parentObject = JSONObject(testWarnings)
+
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     println("parentObject = $parentObject")
                     val items: JSONArray = parentObject.getJSONArray("items")
                     println("items = $items")
                     println("items count = ${items.length()}")
 
                     val gson = GsonBuilder().create()
+
+
+
+
+
+
                     val itemArray = gson.fromJson(items.toString(), Array<Item>::class.java).toMutableList()
                     item = itemArray[0]
                     item!!.ID = storedItemID

@@ -9,11 +9,15 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
@@ -52,7 +56,7 @@ class WorkOrdersAdapter(
 
 
         val workOrder: WorkOrder = filterList[position]
-        holder.bind(workOrder)
+        holder.bind(workOrder, context)
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         println("queryText = $queryText")
@@ -116,6 +120,8 @@ class WorkOrdersAdapter(
 
         val mTitleView:TextView = holder.itemView.findViewById(R.id.list_title)
         mTitleView.text = context.getString(R.string.work_order_title, workOrder.woID, workOrder.title)
+
+
 
         when (workOrder.status) {
             "1"-> Picasso.with(context)
@@ -214,18 +220,27 @@ class WorkOrdersAdapter(
 class WorkOrderViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.work_order_list_item, parent, false)) {
     private var mNameView: TextView? = null
-    //private var mTitleView: TextView? = null
+    private var mCl: ConstraintLayout? = null
+    private var mDateView: TextView? = null
+    private var mLockIv: ImageView? = null
+
+
 
     init {
         mNameView = itemView.findViewById(R.id.list_name)
-        //mTitleView = itemView.findViewById(R.id.list_title)
+        mCl = itemView.findViewById(R.id.work_order_list_item)
+        mDateView = itemView.findViewById(R.id.list_date)
+        mLockIv = itemView.findViewById(R.id.list_wo_lock_icon_iv)
     }
 
-    fun bind(workOrder: WorkOrder) {
+    fun bind(workOrder: WorkOrder, context: Context) {
         mNameView?.text = workOrder.custName!!
-        //mTitleView?.text = workOrder.title
+        mDateView?.text = workOrder.dateNice
+        if (workOrder.locked == "1") {
+            mLockIv!!.visibility = View.VISIBLE
+            mDateView!!.setTextColor(ContextCompat.getColor(context, R.color.red));
+            mCl!!.background = context.getColor(R.color.backgroundHighlight).toDrawable()
+        }
     }
-
-
 
 }

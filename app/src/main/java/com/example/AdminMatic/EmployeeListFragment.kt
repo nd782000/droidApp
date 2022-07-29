@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -44,9 +45,11 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
     lateinit var searchView: androidx.appcompat.widget.SearchView
     lateinit var swipeRefresh: SwipeRefreshLayout
     lateinit var employeeCountTv: TextView
+    lateinit var allCl: ConstraintLayout
+    private lateinit var employeesList: MutableList<Employee>
 
-    //lateinit var  groupTextBtn: Button
-    private lateinit var  crewsBtn: Button
+    private lateinit var groupTextBtn: Button
+    private lateinit var crewsBtn: Button
 
     lateinit var adapter:EmployeesAdapter
 
@@ -89,13 +92,17 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
         searchView = view.findViewById(R.id.employees_search)
         swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
         employeeCountTv = view.findViewById(R.id.employee_count_textview)
+        allCl = view.findViewById(R.id.all_cl)
+
         crewsBtn = view.findViewById(R.id.crews_btn)
-
-
-        //TODO: implement group text message button
-
         crewsBtn.setOnClickListener{
             val directions = EmployeeListFragmentDirections.navigateToDepartments(null)
+            myView.findNavController().navigate(directions)
+        }
+
+        groupTextBtn = view.findViewById(R.id.group_text_btn)
+        groupTextBtn.setOnClickListener{
+            val directions = EmployeeListFragmentDirections.navigateToGroupText(employeesList.toTypedArray())
             myView.findNavController().navigate(directions)
         }
 
@@ -143,6 +150,8 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     //println("parentObject = ${parentObject.toString()}")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val employees:JSONArray = parentObject.getJSONArray("employees")
                    // println("employees = ${employees.toString()}")
                    // println("employees count = ${employees.length()}")
@@ -150,7 +159,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
 
 
                     val gson = GsonBuilder().create()
-                    val employeesList = gson.fromJson(employees.toString() , Array<Employee>::class.java).toMutableList()
+                    employeesList = gson.fromJson(employees.toString() , Array<Employee>::class.java).toMutableList()
 
                     employeeCountTv.text = getString(R.string.x_active_employees, employeesList.size)
 
@@ -276,14 +285,13 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
 
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE
-        searchView.visibility = View.INVISIBLE
-        recyclerView.visibility = View.INVISIBLE
+        allCl.visibility = View.INVISIBLE
+
     }
 
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
-        searchView.visibility = View.VISIBLE
-        recyclerView.visibility = View.VISIBLE
+        allCl.visibility = View.VISIBLE
     }
 
 }

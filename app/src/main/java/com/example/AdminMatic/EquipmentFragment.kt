@@ -197,6 +197,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
 
                     //current adapter
@@ -348,6 +349,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
+                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                         hideProgressView()
 

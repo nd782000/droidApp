@@ -185,6 +185,7 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
 
 
@@ -258,6 +259,7 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val crews:JSONArray = parentObject.getJSONArray("crews")
                     println("crews = $crews")
@@ -330,6 +332,7 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val equipment: JSONArray = parentObject.getJSONArray("equipment")
                     println("equipment = $equipment")

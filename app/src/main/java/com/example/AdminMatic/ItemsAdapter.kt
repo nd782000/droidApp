@@ -9,6 +9,7 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
@@ -173,11 +174,16 @@ class ItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     fun bind(item: Item, context:Context) {
         mNameView?.text = item.name
         mTypeView?.text = item.type
+
         if (item.unit != null) {
             mPriceView?.text = context.getString(R.string.item_price_each, item.price, item.unit)
         }
         else {
             mPriceView?.text = "---"
+        }
+
+        if (GlobalVars.permissions!!.itemsMoney == "0") {
+            mPriceView?.visibility = View.GONE
         }
 
     }

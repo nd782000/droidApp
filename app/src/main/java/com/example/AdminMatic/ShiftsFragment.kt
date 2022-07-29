@@ -136,6 +136,10 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 println("Response $response")
                 hideProgressView()
                 try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     shiftsJSON = JSONObject(response)
 
                     parseShiftsJSON()

@@ -153,6 +153,8 @@ class ServiceInspectionFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val questions:JSONArray = parentObject.getJSONArray("questions")
                     println("questions = $questions")
                     //println("questions count = ${questions.length()}")
@@ -219,7 +221,6 @@ class ServiceInspectionFragment : Fragment() {
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
 
 
         if (equipment!!.status != "2") {
@@ -280,14 +281,13 @@ class ServiceInspectionFragment : Fragment() {
                 println("Response $response")
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
-                        hideProgressView()
+                    hideProgressView()
 
-                        parentFragmentManager.popBackStackImmediate()
-                    }
+                    parentFragmentManager.popBackStackImmediate()
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -320,7 +320,8 @@ class ServiceInspectionFragment : Fragment() {
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "equipment"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
 
     }
 
@@ -342,6 +343,7 @@ class ServiceInspectionFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     hideProgressView()
                     parentFragmentManager.popBackStackImmediate()

@@ -1,14 +1,15 @@
 package com.example.AdminMatic
 
-//import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,7 +21,9 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
+import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_customer_list.*
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -35,13 +38,15 @@ interface CustomerCellClickListener {
 
 class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
-    lateinit  var globalVars:GlobalVars
-    lateinit var myView:View
-    lateinit var  pgsBar: ProgressBar
-    lateinit var recyclerView: RecyclerView
-    lateinit var searchView:androidx.appcompat.widget.SearchView
-    lateinit var  swipeRefresh:SwipeRefreshLayout
-    lateinit var adapter:CustomersAdapter
+    private lateinit var globalVars: GlobalVars
+    private lateinit var myView: View
+    private lateinit var pgsBar: ProgressBar
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView: androidx.appcompat.widget.SearchView
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var adapter: CustomersAdapter
+    private lateinit var addCustomerBtn: Button
+    private lateinit var allCl: ConstraintLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,11 +57,12 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
         myView = inflater.inflate(R.layout.fragment_customer_list, container, false)
 
 
-        val emptyList:MutableList<Customer> = mutableListOf()
-        adapter = CustomersAdapter(emptyList, this)
+        val emptyList: MutableList<Customer> = mutableListOf()
+        adapter = CustomersAdapter(emptyList, this, false)
         //(activity as AppCompatActivity).supportActionBar?.title = "Customer List"
 
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.customer_list)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text =
+            getString(R.string.customer_list)
 
         // Inflate the layout for this fragment
         return myView
@@ -69,7 +75,13 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.customers_search)
-        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
+        swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
+        addCustomerBtn = view.findViewById(R.id.add_customer_btn)
+        addCustomerBtn.setOnClickListener {
+            val directions = CustomerListFragmentDirections.navigateToCustomerLookup()
+            myView.findNavController().navigate(directions)
+        }
+        allCl = view.findViewById(R.id.all_cl)
 
         //getCustomers()
 
@@ -83,7 +95,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
     }
 
 
-    fun showCustomers(){
+    fun showCustomers() {
         println("showCustomers")
         list_recycler_view.apply {
             layoutManager = LinearLayoutManager(activity)
@@ -91,13 +103,14 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
             hideProgressView()
 
 
-            if(GlobalVars.customerList != null) {
+            if (GlobalVars.customerList != null) {
                 adapter = activity?.let {
 
 
                     CustomersAdapter(
                         GlobalVars.customerList!!,
-                        this@CustomerListFragment
+                        this@CustomerListFragment,
+                        false
                     )
 
 
@@ -158,8 +171,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
     }
 
 
-
-    private fun getCustomers(){
+    private fun getCustomers() {
         println("getCustomers")
 
         showProgressView()
@@ -176,76 +188,16 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                 println("Response $response")
                 hideProgressView()
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        //var customers: JSONObject = parentObject.getJSONObject("customers")
-                        //val customers:JSONArray = parentObject.getJSONArray("customers")
-                        // println("customers = ${customers.toString()}")
-                        // println("customers count = ${customers.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
-                        //val gson = GsonBuilder().create()
-                        //val customersList = gson.fromJson(customers.toString() , Array<Customer>::class.java).toMutableList()
+                    val customers: JSONArray = parentObject.getJSONArray("customers")
 
-                        /*
-                        list_recycler_view.apply {
-                            layoutManager = LinearLayoutManager(activity)
-                            adapter = activity?.let {
-                                CustomersAdapter(customersList,
-                                    it, this@CustomerListFragment)
-                            }
+                    val gson = GsonBuilder().create()
+                    GlobalVars.customerList = gson.fromJson(customers.toString(), Array<Customer>::class.java).toMutableList()
 
-                            val itemDecoration: ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            recyclerView.addItemDecoration(itemDecoration)
-
-
-                            // Setup refresh listener which triggers new data loading
-                            swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
-                                // Make sure you call swipeContainer.setRefreshing(false)
-                                // once the network request has completed successfully.
-                                searchView.setQuery("", false);
-                                searchView.clearFocus();
-                                getCustomers()
-                            }
-                            // Configure the refreshing colors
-                            swipeRefresh.setColorSchemeResources(
-                                R.color.button,
-                                R.color.black,
-                                R.color.colorAccent,
-                                R.color.colorPrimaryDark
-                            )
-                            (adapter as CustomersAdapter).notifyDataSetChanged();
-
-                            // Remember to CLEAR OUT old items before appending in the new ones
-
-                            // Now we call setRefreshing(false) to signal refresh has finished
-                            customerSwipeContainer.isRefreshing = false;
-
-                            Toast.makeText(activity,"${customersList.count()} Customers Loaded",Toast.LENGTH_SHORT).show()
-
-                            //search listener
-                            customers_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-                                override fun onQueryTextSubmit(query: String?): Boolean {
-                                    return false
-                                }
-
-                                override fun onQueryTextChange(newText: String?): Boolean {
-                                    println("onQueryTextChange = $newText")
-                                    (adapter as CustomersAdapter).filter.filter(newText)
-                                    return false
-                                }
-
-                            })
-                        }
-
-                         */
-
-                        showCustomers()
-                    }
-
+                    showCustomers()
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -254,7 +206,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                 }
             },
             Response.ErrorListener { // error
-                 //Log.e("VOLLEY", error.toString())
+                //Log.e("VOLLEY", error.toString())
             }
         ) {
             override fun getParams(): Map<String, String> {
@@ -266,15 +218,12 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
             }
         }
         postRequest1.tag = "customerList"
-        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+        VolleyRequestQueue.getInstance(requireActivity().application)
+            .addToRequestQueue(postRequest1)
     }
 
 
-
-
-
-
-    override fun onCustomerCellClickListener(data:Customer) {
+    override fun onCustomerCellClickListener(data: Customer) {
         println("Cell clicked with customer: ${data.sysname}")
         data.let {
             // val directions = CustomerListFragmentDirections.navigateToCustomer(data)
@@ -285,23 +234,11 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE
-        searchView.visibility = View.INVISIBLE
-        recyclerView.visibility = View.INVISIBLE
+        allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
-        searchView.visibility = View.VISIBLE
-        recyclerView.visibility = View.VISIBLE
+        allCl.visibility = View.VISIBLE
     }
-    /*
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CustomerListFragment().apply {
-
-            }
-    }
-
-     */
 }

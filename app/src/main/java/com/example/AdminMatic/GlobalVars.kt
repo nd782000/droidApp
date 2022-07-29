@@ -13,7 +13,12 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.ImageSpan
+import android.view.View
 import com.AdminMatic.R
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import org.json.JSONArray
+import org.json.JSONObject
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -34,6 +39,7 @@ class GlobalVars: Application() {
         var mediumBase:String? = null
         var rawBase:String? = null
 
+        var hearTypes:Array<HearType>? = null
         var employeeList:Array<Employee>? = null
 
         var globalWorkOrdersList:MutableList<WorkOrder>? = null
@@ -55,10 +61,12 @@ class GlobalVars: Application() {
     }
 
 
+    //private var listener: LogOut? = null
+
+
+
+
     /* helper functions */
-
-
-
     fun playSaveSound(context: Context) {
         val mediaPlayer = MediaPlayer.create(context, R.raw.save)
         mediaPlayer.start()
@@ -178,6 +186,50 @@ class GlobalVars: Application() {
 
 
         builder.show()
+    }
+    
+    
+    fun checkPHPWarningsAndErrors(jsonObject: JSONObject, context:Context, myView_: View) {
+
+        val gson = GsonBuilder().create()
+
+        val warningArray: JSONArray = jsonObject.getJSONArray("warningArray")
+        val errorArray: JSONArray = jsonObject.getJSONArray("errorArray")
+
+
+        val warnings = gson.fromJson(warningArray.toString(), Array<String>::class.java)
+        val errors = gson.fromJson(errorArray.toString(), Array<String>::class.java)
+
+        println("warning size: ${warnings.size}")
+        println("warning size: ${errors.size}")
+
+        if (errors.isNotEmpty()) {
+            playErrorSound(context)
+            var errorString = ""
+            errors.forEach {
+                errorString += it
+                errorString += "\n"
+            }
+            simpleAlert(context, context.getString(R.string.dialogue_php_error), errorString)
+            //Logout
+            val listener = if (context is LogOut) {
+                context
+            } else {
+                throw ClassCastException(
+                    "$context must implement LogOut"
+                )
+            }
+            listener.logOut(myView_)
+        }
+        else if (warnings.isNotEmpty()) {
+            playErrorSound(context)
+            var warningString = ""
+            warnings.forEach {
+                warningString += it
+                warningString += "\n"
+            }
+            simpleAlert(context, context.getString(R.string.dialogue_php_warning), warningString)
+        }
     }
 
 

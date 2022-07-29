@@ -136,6 +136,8 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val invoices:JSONArray = parentObject.getJSONArray("invoices")
                     println("invoices = $invoices")
                     println("invoices count = ${invoices.length()}")

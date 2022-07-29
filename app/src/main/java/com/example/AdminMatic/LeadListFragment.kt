@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -37,18 +38,18 @@ interface LeadCellClickListener {
 class LeadListFragment : Fragment(), LeadCellClickListener {
 
 
-    lateinit  var globalVars:GlobalVars
-    lateinit var myView:View
+    private lateinit var globalVars:GlobalVars
+    private lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-    lateinit var recyclerView: RecyclerView
-    lateinit var searchView:androidx.appcompat.widget.SearchView
-    lateinit var  swipeRefresh:SwipeRefreshLayout
+    private lateinit var pgsBar: ProgressBar
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView:androidx.appcompat.widget.SearchView
+    private lateinit var swipeRefresh:SwipeRefreshLayout
+    private lateinit var allCl: ConstraintLayout
 
     //lateinit var  newLeadBtn: Button
     private lateinit var leadCountTv: TextView
     private lateinit var mapBtn: Button
-    private lateinit var footerCL: androidx.constraintlayout.widget.ConstraintLayout
 
     lateinit var adapter:LeadsAdapter
 
@@ -99,7 +100,8 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
         mapBtn = view.findViewById(R.id.map_btn)
         leadCountTv = view.findViewById(R.id.lead_count_textview)
-        footerCL = view.findViewById(R.id.footer_cl)
+
+        allCl = view.findViewById(R.id.all_cl)
 
         mapBtn.setOnClickListener{
             println("Map button clicked!")
@@ -151,6 +153,8 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val leads:JSONArray = parentObject.getJSONArray("leads")
                     println("leads = $leads")
                     println("leads count = ${leads.length()}")
@@ -280,16 +284,13 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE
-        searchView.visibility = View.INVISIBLE
-        recyclerView.visibility = View.INVISIBLE
-        footerCL.visibility = View.INVISIBLE
+        allCl.visibility = View.INVISIBLE
+
     }
 
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
-        searchView.visibility = View.VISIBLE
-        recyclerView.visibility = View.VISIBLE
-        footerCL.visibility = View.VISIBLE
+        allCl.visibility = View.VISIBLE
     }
 
 

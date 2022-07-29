@@ -327,6 +327,8 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                     if (isResumed) {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
+                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                         val images: JSONArray = parentObject.getJSONArray("images")
                         println("images = $images")
                         println("images count = ${images.length()}")

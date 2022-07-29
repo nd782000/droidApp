@@ -224,7 +224,6 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
         qtyEt.setRawInputType(Configuration.KEYBOARD_12KEY)
         qtyEt.setSelectAllOnFocus(true)
-        qtyEt.setBackgroundResource(R.drawable.text_view_layout)
         qtyEt.setOnEditorActionListener { _, actionId, _ ->
 
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -252,7 +251,6 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
         priceEt.setRawInputType(Configuration.KEYBOARD_12KEY)
         priceEt.setSelectAllOnFocus(true)
-        priceEt.setBackgroundResource(R.drawable.text_view_layout)
         priceEt.setOnEditorActionListener { _, actionId, _ ->
 
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -332,6 +330,8 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val items: JSONArray = parentObject.getJSONArray("items")
                     println("items = $items")
                     println("items count = ${items.length()}")

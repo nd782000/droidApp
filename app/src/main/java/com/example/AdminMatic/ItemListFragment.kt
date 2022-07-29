@@ -139,6 +139,8 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val items:JSONArray = parentObject.getJSONArray("items")
                     println("items = $items")
                     println("items count = ${items.length()}")

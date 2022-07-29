@@ -44,6 +44,7 @@ lateinit var contractSpinner:Spinner
 lateinit var workOrderSpinner:Spinner
 lateinit var invoiceSpinner:Spinner
 
+lateinit  var globalVars:GlobalVars
 
 
 var leadsList:MutableList<Lead>? = null
@@ -110,6 +111,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
         // Inflate the layout for this fragment
 
         println("onCreateView")
+        globalVars = GlobalVars()
         stackView = inflater.inflate(R.layout.fragment_stack, container, false)
         return stackView
     }
@@ -243,6 +245,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
 
                     val leadsJSON: JSONArray = parentObject.getJSONArray("leads")

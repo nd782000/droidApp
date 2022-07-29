@@ -131,19 +131,16 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         startTxt.setOnClickListener {
             editStart()
         }
-        startTxt.setBackgroundResource(R.drawable.text_view_layout)
         stopTxt = myView.findViewById(R.id.stop_edit_txt)
         //stopTxt.ed
         stopTxt.setOnClickListener {
             editStop()
         }
-        stopTxt.setBackgroundResource(R.drawable.text_view_layout)
 
 
         breakTxt = myView.findViewById(R.id.break_edit_txt)
         breakTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
         breakTxt.setSelectAllOnFocus(true)
-        breakTxt.setBackgroundResource(R.drawable.text_view_layout)
 
         breakTxt.setOnEditorActionListener(object : TextView.OnEditorActionListener {
           override  fun onEditorAction(
@@ -289,6 +286,8 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
                     println("payroll = $payrollJSON")
                     println("payroll count = ${payrollJSON.length()}")
@@ -631,7 +630,6 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
-        val queue = Volley.newRequestQueue(myView.context)
 
 
         val postRequest1: StringRequest = object : StringRequest(
@@ -644,16 +642,15 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
 
                 try {
-                    if (isResumed) {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                        println("payroll = $payrollJSON")
-                        println("payroll count = ${payrollJSON.length()}")
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                    println("payroll = $payrollJSON")
+                    println("payroll count = ${payrollJSON.length()}")
 
 
-                        getPayroll()
-                    }
+                    getPayroll()
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -684,7 +681,8 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                 return params
             }
         }
-        queue.add(postRequest1)
+        postRequest1.tag = "payroll"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     fun lockInputs(){

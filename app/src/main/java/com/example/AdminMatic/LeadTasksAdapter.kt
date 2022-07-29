@@ -363,6 +363,8 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
                         try {
                             val parentObject = JSONObject(response)
                             println("parentObject = $parentObject")
+                            globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                             // var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
                             // println("payroll = ${payrollJSON.toString()}")
                             // println("payroll count = ${payrollJSON.length()}")

@@ -20,6 +20,7 @@
     <string name="customers">Customers</string>
     <string name="customer_button">%1$s %2$s</string>
     <string name="vendor">Vendor</string>
+    <string name="vendor_balance">Balance = $%1$s</string>
     <string name="vendor_list">Vendor List</string>
     <string name="item">Item</string>
     <string name="item_list">Item List</string>
@@ -105,6 +106,8 @@
     <string name="crew">Crew</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="select_none">Select None</string>
+    <string name="select_all">Select All</string>
 
     <string name="type">Type</string>
     <string name="status">Status</string>
@@ -236,6 +239,66 @@
     <string name="item_labor_type">Labor</string>
     <string name="item_material_type">Material</string>
     <string name="item_other_type">Other Type</string>
+
+    <!--Group text message stuff-->
+    <string name="group_text">Group Text</string>
+    <string name="group_text_send">Send Message</string>
+    <string name="group_text_send_batch">Send Batch Message (Part %1$d of %2$d)</string>
+    <string name="group_text_body">%1$s ~ AdminMatic Group Message by %2$s</string>
+
+    <!--New Customer stuff-->
+    <string name="add_new_customer">Add New Customer</string>
+    <string name="new_customer_duplicate_message">Enter street address to search existing customers. We want to avoid duplicate customer entries.</string>
+    <string name="new_customer_name">Customer Name</string>
+    <string name="new_customer_is_business">Is this customer a business?</string>
+    <string name="new_customer_name_prefix">Prefix</string>
+    <string name="new_customer_name_first">First</string>
+    <string name="new_customer_name_middle">Middle</string>
+    <string name="new_customer_name_last">Last</string>
+    <string name="new_customer_name_business">Business Name</string>
+    <string name="new_customer_name_system">System Name</string>
+
+    <string name="new_customer_contact_info">Contact Info</string>
+    <string name="new_customer_primary_phone">Primary Phone</string>
+    <string name="new_customer_primary_email">Primary Email</string>
+
+    <string name="new_customer">New Customer</string>
+    <string name="edit_customer">Edit Customer #%1$s</string>
+    <string name="new_customer_job_site_address">Job Site Address</string>
+    <string name="new_customer_billing_address">Billing Address</string>
+    <string name="new_customer_address_street1">Street 1</string>
+    <string name="new_customer_address_street2">Street 2</string>
+    <string name="new_customer_address_street3">Street 3</string>
+    <string name="new_customer_address_street4">Street 4</string>
+    <string name="new_customer_address_city">City</string>
+    <string name="new_customer_address_state">State</string>
+    <string name="new_customer_address_zip">Zip</string>
+    <string name="new_customer_copy_address">Copy from Job Site</string>
+    <string name="new_customer_referral">How did this customer hear about us?</string>
+    <string name="new_customer_referred_by">Referred By:</string>
+    <string name="new_customer_is_active">Is this customer active?</string>
+    <string name="new_customer_referral_angies_list">Angie\'s List</string>
+    <string name="new_customer_referral_facebook">Facebook</string>
+    <string name="new_customer_referral_from_website">From Website</string>
+    <string name="new_customer_referral_google">Google</string>
+    <string name="new_customer_referral_home_advisor">Home Advisor</string>
+    <string name="new_customer_referral_houzz">Houzz</string>
+    <string name="new_customer_referral_newspaper_ad">Newspaper Ad</string>
+    <string name="new_customer_referral_not_specified">Not Specified</string>
+    <string name="new_customer_referral_other">Other</string>
+    <string name="new_customer_referral_truck_advertisement">Truck Advertisement</string>
+    <string name="new_customer_referral_word_of_mouth">Word of Mouth</string>
+    <string name="new_customer_referral_yelp">Yelp</string>
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -423,6 +486,9 @@
     <string name="select_vendor">Select Vendor</string>
     <string name="existing_vendor">Existing Vendor</string>
 
+    <string name="dialogue_error">Error</string>
+    <string name="dialogue_php_error">PHP Error</string>
+    <string name="dialogue_php_warning">PHP Warning</string>
     <string name="dialogue_delete_wo_item_title">Delete Item?</string>
     <string name="dialogue_delete_wo_item_body">Are you sure you want to delete this item?</string>
     <string name="dialogue_only_wo_item_title">Only Item</string>
@@ -440,6 +506,26 @@
     <string name="dialogue_item_no_vendors_body">We do not have any registered vendors in our system.</string>
     <string name="dialogue_wo_reason_for_skip">Reason for Skip:</string>
     <string name="dialogue_no_phone_number">No phone number on record</string>
+    <string name="dialogue_group_text_no_number_title">No Phone Number</string>
+    <string name="dialogue_group_text_no_number_body">%1$s has no phone number on file.</string>
+    <string name="dialogue_group_text_none_selected_title">No Employees Selected</string>
+    <string name="dialogue_group_text_none_selected_body">Select some recipients.</string>
+    <string name="dialogue_group_text_message_empty_title">Message is Empty</string>
+    <string name="dialogue_group_text_message_empty_body">Please enter a message.</string>
+    <string name="dialogue_group_text_send">Send %1$s text(s)?</string>
+    <string name="dialogue_group_text_send_batch">Send %1$d texts? (batch %2$d of %3$d)</string>
+    <string name="dialogue_group_text_stop_batch_title">Stop Batching?</string>
+    <string name="dialogue_group_text_stop_batch_body">Selecting or deselecting employees will stop the batch text currently in process. Are you sure you wish to proceed?</string>
+    <string name="dialogue_sysname_too_long_title">System Name Too Long</string>
+    <string name="dialogue_sysname_too_long_body">The system name can have a maximum of 41 characters.</string>
+    <string name="dialogue_sysname_missing_title">Incomplete Customer</string>
+    <string name="dialogue_sysname_missing_body">Please provide a system name.</string>
+    <string name="dialogue_billing_name_too_long_title">Billing Name Too Long</string>
+    <string name="dialogue_billing_name_too_long_body">The billing name can have a maximum of 31 characters.</string>
+    <string name="dialogue_edits_made_title">Unsaved Changes</string>
+    <string name="dialogue_edits_made_body">Go back without saving?</string>
+
+
 
     <!--
     <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>

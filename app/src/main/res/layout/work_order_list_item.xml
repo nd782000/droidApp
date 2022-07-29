@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout2"
+    android:id="@+id/work_order_list_item"
     android:layout_width="match_parent"
     android:layout_height="75dp"
     android:layout_gravity="center_horizontal">
@@ -20,29 +21,61 @@
 
     <TextView
         android:id="@+id/list_cust_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="7dp"
         android:paddingLeft="16dp"
         android:text="@string/customer"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:singleLine="true"
+        android:ellipsize="end"
         app:layout_constraintBottom_toTopOf="@+id/list_title"
         app:layout_constraintLeft_toRightOf="@+id/list_wo_status_icon_image_view"
+        app:layout_constraintRight_toLeftOf="@id/textViewOptions"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
 
     <TextView
         android:id="@+id/list_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="28dp"
+        android:text="@string/work_order"
+        android:singleLine="true"
+        android:ellipsize="end"
+
+
+        app:layout_constraintLeft_toLeftOf="@+id/list_cust_name"
+        app:layout_constraintTop_toBottomOf="@+id/list_cust_name"
+        app:layout_constraintRight_toLeftOf="@id/textViewOptions"/>
+
+    <ImageView
+        android:id="@+id/list_wo_lock_icon_iv"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_lock"
+        app:tint="@color/red"
+        android:visibility="gone"
+        android:translationX="29dp"
+        app:layout_constraintLeft_toLeftOf="@+id/list_cust_name"
+        app:layout_constraintTop_toTopOf="@+id/list_date"
+        app:layout_constraintBottom_toBottomOf="@+id/list_date"/>
+
+    <TextView
+        android:id="@+id/list_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
+        android:paddingLeft="28dp"
         android:text="@string/work_order"
 
-        android:translationX="12dp"
-        app:layout_constraintStart_toStartOf="@+id/list_cust_name"
-        app:layout_constraintTop_toBottomOf="@+id/list_cust_name" />
+
+        app:layout_constraintLeft_toRightOf="@+id/list_wo_lock_icon_iv"
+        app:layout_constraintTop_toBottomOf="@+id/list_title"/>
+
+
 
     <TextView
         android:id="@+id/textViewOptions"

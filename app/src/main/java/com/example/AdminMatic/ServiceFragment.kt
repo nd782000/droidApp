@@ -216,6 +216,7 @@ class ServiceFragment : Fragment() {
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
+                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                         hideProgressView()
 

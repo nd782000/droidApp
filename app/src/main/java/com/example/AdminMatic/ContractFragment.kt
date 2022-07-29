@@ -234,6 +234,8 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
 
+                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                         hideProgressView()
 
                         /* Here 'response' is a String containing the response you received from the website... */
@@ -365,6 +367,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val gson = GsonBuilder().create()
                     val contractNew = gson.fromJson(parentObject.toString() , Contract::class.java)

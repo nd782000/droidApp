@@ -94,12 +94,14 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
             //(activity as AppCompatActivity).supportActionBar?.title = "Image List"
 
-            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.image_list)
 
 
 
             // Inflate the layout for this fragment
         }
+
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.image_list)
+
 
         return myView
     }
@@ -272,6 +274,9 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
+
                     val images: JSONArray = parentObject.getJSONArray("images")
                     println("images = $images")
                     println("images count = ${images.length()}")

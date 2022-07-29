@@ -138,6 +138,8 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val vendors:JSONArray = parentObject.getJSONArray("vendors")
                     println("vendors = $vendors")
                     println("vendors count = ${vendors.length()}")
@@ -256,7 +258,7 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
 
     override fun onVendorCellClickListener(data:Vendor) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
+        //Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = VendorListFragmentDirections.navigateToVendor(it, "")

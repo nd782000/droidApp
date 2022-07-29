@@ -193,6 +193,7 @@ class ImageFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                 } catch (e: JSONException) {
                     println("JSONException")

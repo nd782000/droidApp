@@ -40,6 +40,7 @@ interface WorkOrderCellClickListener {
 class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterView.OnItemSelectedListener {
 
 
+
     lateinit var myView:View
     private lateinit var  pgsBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
@@ -81,6 +82,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     ): View {
 
         println("onCreateView")
+
+        globalVars = GlobalVars()
         myView = inflater.inflate(R.layout.fragment_work_order_list, container, false)
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!
@@ -261,6 +264,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
                     println("workOrders = $workOrders")
                     println("workOrders count = ${workOrders.length()}")
@@ -276,7 +281,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                         gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
                             .toMutableList()
 
-                    (activity as MainActivity?)!!.updateMap()
+                    //(activity as MainActivity?)!!.updateMap()
 
                     countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
 

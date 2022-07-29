@@ -3,21 +3,22 @@ package com.example.AdminMatic
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.KeyEvent
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.Spinner
+import android.widget.TextView
+import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
-import com.AdminMatic.BuildConfig
 import com.AdminMatic.R
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -31,6 +32,14 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.count
+import kotlin.collections.mutableListOf
+import kotlin.collections.set
 
 
 interface  LogOut{
@@ -203,16 +212,55 @@ data class SearchItem(
 data class Customer(
     var ID: String,
     var sysname: String = "",
-    var mainAddr: String = "",
+
+    var mainAddr: String? = "",
+    var balance: String? = "",
+    var hear: String? = "",
+    var active: String? = "",
+    var fname: String? = "",
+    var mname: String? = "",
+    var lname: String? = "",
+    var companyName: String? = "",
+    var salutation: String? = "",
+    var custNotes: String? = "",
+    var servNotes: String? = "",
+    var allowImages: String? = "",
+
+    var propertySize: String? = "",
+    var lawnSize: String? = "",
+    var gardenSize: String? = "",
+    var drivewaySize: String? = "",
+    var floorSize: String? = "",
+
+    var zone: String? = "",
+    var sort: String? = "",
+
+    var jobStreet1: String? = "",
+    var jobStreet2: String? = "",
+    var jobStreet3: String? = "",
+    var jobStreet4: String? = "",
+    var jobCity: String? = "",
+    var jobZip: String? = "",
+    var jobState: String? = "",
+
+    var billStreet1: String? = "",
+    var billStreet2: String? = "",
+    var billStreet3: String? = "",
+    var billStreet4: String? = "",
+    var billCity: String? = "",
+    var billZip: String? = "",
+    var billState: String? = "",
+
     var phone: String? = "",
     var email: String? = "",
-    var allowImages:String? = "",
-
-    var contacts: Array<Contact> = arrayOf(),
 
     var lng: String? = "",
     var lat: String? = "",
-): Parcelable{
+
+    var contacts: Array<Contact> = arrayOf(),
+
+
+    ): Parcelable{
     override fun toString(): String {
         return sysname
     }
@@ -248,6 +296,18 @@ data class Department(var ID:String,
 ): Parcelable{
     override fun toString(): String {
         return  name
+    }
+}
+
+
+@Parcelize
+data class HearType(var ID:String,
+                    var type: String,
+
+
+): Parcelable{
+    override fun toString(): String {
+        return type
     }
 }
 
@@ -722,7 +782,7 @@ data class Vendor(val ID: String,
                   var lat:String?,
                   val website:String?,
                   val mainPhone:String?,
-                  val balance:String?,
+                  var balance:String?,
                   val cost:String?,
                   val price:String?,
                   val prefered:String?,
@@ -882,6 +942,7 @@ data class Permissions(
     var itemsEdit: String? = "",
     var itemsMoney: String? = "",
     var vendorsEdit: String? = "",
+    var vendorsMoney: String? = "",
     var equipmentEdit: String? = "",
     var filesEdit: String? = "",
     var usageApp: String? = "",
@@ -1069,9 +1130,21 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
         navController.popBackStack(R.id.mainMenuFragment2, false)
     }
 
+    // Used to close software keyboard when enter button is pressed on edit texts
+    internal class DoneOnEditorActionListener : OnEditorActionListener {
+        override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val imm = v.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                v.clearFocus()
+                return true
+            }
+            return false
+        }
+    }
 
 
-override fun logOut(view: View){
+    override fun logOut(view: View){
 
     println("log out on main")
 

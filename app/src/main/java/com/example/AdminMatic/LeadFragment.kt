@@ -158,6 +158,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val gson = GsonBuilder().create()
                     //var leadJSONObject:JSONObject
@@ -316,6 +317,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
+                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                         hideProgressView()
 

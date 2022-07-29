@@ -160,8 +160,13 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             Response.Listener { response -> // response
                 println("Response $response")
                 try {
+
+
+
+                    //val parentObject = JSONObject(fuck)
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val gson = GsonBuilder().create()
                     /*
@@ -214,8 +219,14 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     workOrderNew.lat = workOrder!!.lat
                     workOrderNew.lng= workOrder!!.lng
                     workOrder = workOrderNew
-
                      */
+
+
+
+
+
+
+
                     workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
 
 
@@ -318,6 +329,10 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.work_order_number, workOrder!!.woID)
 
                     workOrder!!.setEmps()
+
+                    if (GlobalVars.permissions!!.scheduleMoney == "0") {
+                        footerCL.visibility = View.GONE
+                    }
 
                     hideProgressView()
 
@@ -431,6 +446,8 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
                     hideProgressView()
 
                     /* Here 'response' is a String containing the response you received from the website... */
