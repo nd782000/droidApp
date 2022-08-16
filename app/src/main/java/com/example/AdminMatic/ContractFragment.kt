@@ -217,7 +217,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
             showProgressView()
 
-            var urlString = "https://www.adminmatic.com/cp/app/functions/update/contract.php"
+            var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/contract.php"
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -347,7 +347,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         showProgressView()
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/contract.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/contract.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

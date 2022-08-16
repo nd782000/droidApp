@@ -134,7 +134,7 @@ class ServiceInspectionFragment : Fragment() {
     private fun getInspectionItems() {
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/inspection.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/inspection.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -216,7 +216,7 @@ class ServiceInspectionFragment : Fragment() {
 
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/update/equipmentServiceComplete.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/equipmentServiceComplete.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -328,7 +328,7 @@ class ServiceInspectionFragment : Fragment() {
     private fun setEquipmentStatus(newStatus: String) {
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/update/equipmentStatus.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/equipmentStatus.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

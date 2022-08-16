@@ -107,6 +107,7 @@ class ImageFragment : Fragment() {
 
         likeView  = myView.findViewById(R.id.like_iv)
         ImageViewCompat.setImageTintList(likeView, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
+
         likeView.setOnClickListener {
             var likeCount:Int? = image!!.likes?.toInt()
             if (image!!.liked == "1") {
@@ -169,9 +170,9 @@ class ImageFragment : Fragment() {
         likeView.isFocusable = false
 
         var urlString:String = if (liked) {
-            "https://www.adminmatic.com/cp/app/functions/new/like.php"
+            "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/new/like.php"
         } else {
-            "https://www.adminmatic.com/cp/app/functions/delete/like.php"
+            "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/delete/like.php"
         }
 
         val currentTimestamp = System.currentTimeMillis()
@@ -243,9 +244,8 @@ class ImageFragment : Fragment() {
         }
 
         if (image!!.liked == "1") {
-            Picasso.with(context)
-                .load(R.drawable.ic_liked)
-                .into(likeView)
+            Picasso.with(context).load(R.drawable.ic_liked).into(likeView)
+            ImageViewCompat.setImageTintList(likeView, null)
         }
 
         setLikesViewText()

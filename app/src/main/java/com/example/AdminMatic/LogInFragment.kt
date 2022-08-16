@@ -25,6 +25,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.AdminMatic.BuildConfig
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -56,6 +57,7 @@ class LogInFragment : Fragment() {
     private lateinit  var passEditText: EditText
     private lateinit  var rememberSwitch: SwitchCompat
     private lateinit  var submitBtn: Button
+    private lateinit  var versionText: TextView
     //private lateinit  var tvDynamic: TextView
 
     var rememberMe:String = "0"
@@ -125,6 +127,9 @@ class LogInFragment : Fragment() {
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.main_menu_menu, menu)
+        menu.findItem(R.id.version_item).title = getString(R.string.version, BuildConfig.VERSION_NAME)
         super.onCreateOptionsMenu(menu, inflater)
         ((activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false))
     }
@@ -238,6 +243,8 @@ class LogInFragment : Fragment() {
         rememberSwitch.text = getString(R.string.remember_me)
         rememberSwitch.id = generateViewId()
 
+
+
         /*
         val colorList = ColorStateList(
             arrayOf(
@@ -274,6 +281,12 @@ class LogInFragment : Fragment() {
         submitBtn.setTextColor(Color.WHITE)
         submitBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP,18f)
         myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(submitBtn)
+
+        versionText = TextView(myView.context)
+        versionText.text = getString(R.string.version, BuildConfig.VERSION_NAME)
+        versionText.gravity = Gravity.CENTER_HORIZONTAL
+        versionText.id = generateViewId()
+        myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(versionText)
 
 
 
@@ -367,6 +380,18 @@ class LogInFragment : Fragment() {
         constraintSet.constrainMinWidth(submitBtn.id,900)
         constraintSet.centerHorizontally(submitBtn.id,ConstraintSet.PARENT_ID)
 
+        constraintSet.connect(
+            versionText.id,
+            ConstraintSet.TOP,
+            submitBtn.id,
+            ConstraintSet.BOTTOM,
+            50
+        )
+
+        constraintSet.constrainWidth(versionText.id,ConstraintSet.WRAP_CONTENT)
+        constraintSet.constrainMinWidth(versionText.id,900)
+        constraintSet.centerHorizontally(versionText.id,ConstraintSet.PARENT_ID)
+
         constraintSet.applyTo(constraintLayout)
     }
 
@@ -374,7 +399,7 @@ class LogInFragment : Fragment() {
         println("getSessionEmp")
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/sessionUser.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/sessionUser.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -436,7 +461,7 @@ class LogInFragment : Fragment() {
         println("getPermissions")
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/permissions.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/permissions.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -615,7 +640,7 @@ class LogInFragment : Fragment() {
         loading()
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/other/login.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/other/login.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -639,11 +664,30 @@ class LogInFragment : Fragment() {
                     if (errorArray.length() > 0){
                         println("log in error ${errorArray[0]}")
                         //Toast.makeText(activity,errorArray[0].toString(),Toast.LENGTH_LONG).show()
+                        val errorString = errorArray[0].toString()
                         context?.let { globalVars.simpleAlert(it,"Error",errorArray[0].toString()) }
                         stopLoading()
-                        companyEditText.setText("")
-                        userEditText.setText("")
-                        passEditText.setText("")
+
+                        // This is a messy way of doing it, especially if we want to have language options in the future
+                        // Should probably send an error code, but this works for now
+                        when (errorString[0]) {
+                            'N' -> { //No company found with that identifier
+                                companyEditText.setText("")
+                            }
+                            'I' -> { //Incorrect login
+                                userEditText.setText("")
+                                passEditText.setText("")
+                            }
+                            'P' -> { //Password incorrect
+                                passEditText.setText("")
+                            }
+                            else -> {
+                                companyEditText.setText("")
+                                userEditText.setText("")
+                                passEditText.setText("")
+                            }
+                        }
+
                     }else{
 
                         println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
@@ -701,6 +745,9 @@ class LogInFragment : Fragment() {
                 params["remember"] = rememberMe
                 params["device"] = globalVars.getDeviceName()
                 params["deviceToken"] = "345"
+                params["phpVersion"] = GlobalVars.phpVersion
+                params["appVersion"] = BuildConfig.VERSION_NAME
+                params["deviceInfo"] = globalVars.getDeviceName()
 
                 params["logins"] = logIns.toString()
 
@@ -716,11 +763,12 @@ class LogInFragment : Fragment() {
     }
 
 
+
     fun getFields(){
-        //"https://www.adminmatic.com/cp/app/functions/get/fields.php"
+        //"https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/fields.php"
         println("getFields")
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/fields.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/fields.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -796,7 +844,7 @@ class LogInFragment : Fragment() {
         println("getEmployees")
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/employees.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/employees.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -864,7 +912,7 @@ class LogInFragment : Fragment() {
 
         //showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/customers.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/customers.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

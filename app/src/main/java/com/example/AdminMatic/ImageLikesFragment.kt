@@ -104,7 +104,7 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
 
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/imageLikes.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/imageLikes.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

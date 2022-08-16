@@ -103,8 +103,14 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         addServiceBtn = myView.findViewById(R.id.add_service_btn)
         addServiceBtn.setOnClickListener{
             println("status btn clicked")
-            val directions = EquipmentFragmentDirections.navigateToNewService(equipment)
-            myView.findNavController().navigate(directions)
+
+            if (GlobalVars.permissions!!.equipmentEdit == "1") {
+                val directions = EquipmentFragmentDirections.navigateToNewService(equipment)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_equipment_edit))
+            }
         }
 
         if (equipment!!.image != null) {
@@ -180,7 +186,10 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/equipment.php"
+
+        //val vendor
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/equipment.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -229,7 +238,8 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     //status
                     val equipmentJSON:JSONObject = parentObject.getJSONObject("equipment")
 
-                    equipment = gson.fromJson(equipmentJSON.toString(), Equipment::class.java)
+                    val equipmentNew = gson.fromJson(equipmentJSON.toString(), Equipment::class.java)
+                    equipment!!.status = equipmentNew.status
                     setStatus(equipment!!.status)
 
                     serviceRecyclerView.adapter = currentServicesAdapter
@@ -334,7 +344,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
             showProgressView()
 
-            var urlString = "https://www.adminmatic.com/cp/app/functions/update/equipmentStatus.php"
+            var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/equipmentStatus.php"
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")

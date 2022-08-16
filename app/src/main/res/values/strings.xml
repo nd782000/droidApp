@@ -10,6 +10,9 @@
     <string name="x_active_employees">%1$d Active Employees</string>
     <string name="x_active_contracts">%1$d Active Contracts</string>
     <string name="x_active_leads">%1$d Active Leads</string>
+    <string name="x_active_vendors">%1$d Active Vendors</string>
+    <string name="x_active_items">%1$d Active Items</string>
+    <string name="x_active_invoices">%1$d Active Invoices</string>
     <string name="numActiveEmployees"># Active Employees</string>
     <string name="numActiveCustomers"># Active Customers</string>
     <string name="numActiveVendors"># Active Vendors</string>
@@ -164,10 +167,13 @@
     <string name="no_permission_invoices">You don\'t have permission to access invoices.</string>
     <string name="no_permission_images">You don\'t have permission to access images.</string>
     <string name="no_permission_customers">You don\'t have permission to access customers.</string>
+    <string name="no_permission_customers_edit">You don\'t have permission to edit customers.</string>
     <string name="no_permission_employees">You don\'t have permission to access employees.</string>
+    <string name="no_permission_employees_edit">You don\'t have permission to edit employees.</string>
     <string name="no_permission_items">You don\'t have permission to access items.</string>
     <string name="no_permission_vendors">You don\'t have permission to access vendors.</string>
     <string name="no_permission_equipment">You don\'t have permission to access equipment.</string>
+    <string name="no_permission_equipment_edit">You don\'t have permission to edit equipment.</string>
     <string name="no_permission_payroll">You don\'t have permission to add payroll.</string>
     <string name="no_permission_schedule_edit">You don\'t have permission to edit work orders.</string>
 
@@ -249,22 +255,35 @@
     <!--New Customer stuff-->
     <string name="add_new_customer">Add New Customer</string>
     <string name="new_customer_duplicate_message">Enter street address to search existing customers. We want to avoid duplicate customer entries.</string>
+    <string name="new_customer_parent">Parent Customer</string>
+    <string name="new_customer_parent_hint">Select a Parent Customer…</string>
+    <string name="new_customer_parent_switch_label">New Job Site for Existing Customer?</string>
     <string name="new_customer_name">Customer Name</string>
     <string name="new_customer_is_business">Is this customer a business?</string>
     <string name="new_customer_name_prefix">Prefix</string>
+    <string name="new_customer_name_prefix_none_selected">Select a Prefix</string>
+    <string name="new_customer_name_prefix_mr">Mr.</string>
+    <string name="new_customer_name_prefix_mrs">Mrs.</string>
+    <string name="new_customer_name_prefix_ms">Ms.</string>
+    <string name="new_customer_name_prefix_miss">Miss.</string>
+    <string name="new_customer_name_prefix_dr">Dr.</string>
+    <string name="new_customer_name_prefix_mr_short">Mr</string>
+    <string name="new_customer_name_prefix_mrs_short">Mrs</string>
+    <string name="new_customer_name_prefix_ms_short">Ms</string>
+    <string name="new_customer_name_prefix_miss_short">Miss</string>
+    <string name="new_customer_name_prefix_dr_short">Dr</string>
     <string name="new_customer_name_first">First</string>
     <string name="new_customer_name_middle">Middle</string>
     <string name="new_customer_name_last">Last</string>
     <string name="new_customer_name_business">Business Name</string>
     <string name="new_customer_name_system">System Name</string>
-
     <string name="new_customer_contact_info">Contact Info</string>
     <string name="new_customer_primary_phone">Primary Phone</string>
     <string name="new_customer_primary_email">Primary Email</string>
-
     <string name="new_customer">New Customer</string>
     <string name="edit_customer">Edit Customer #%1$s</string>
     <string name="new_customer_job_site_address">Job Site Address</string>
+    <string name="new_customer_same_as_job_site_address">Same as Job Site Address</string>
     <string name="new_customer_billing_address">Billing Address</string>
     <string name="new_customer_address_street1">Street 1</string>
     <string name="new_customer_address_street2">Street 2</string>
@@ -289,13 +308,22 @@
     <string name="new_customer_referral_truck_advertisement">Truck Advertisement</string>
     <string name="new_customer_referral_word_of_mouth">Word of Mouth</string>
     <string name="new_customer_referral_yelp">Yelp</string>
+    <string name="new_customer_autofill_sysname">%1$s, %2$s</string>
 
-
-
-
-
-
-
+    <!--New Lead stuff-->
+    <string name="new_lead">New Lead</string>
+    <string name="edit_lead">Edit Lead #%1$s</string>
+    <string name="new_lead_schedule_type">Schedule Type:</string>
+    <string name="new_lead_appointment">Appointment:</string>
+    <string name="new_lead_deadline">Deadline:</string>
+    <string name="new_lead_urgent">Urgent:</string>
+    <string name="new_lead_sales_rep">Sales Rep:</string>
+    <string name="new_lead_requested_by_customer">Requested By Customer:</string>
+    <string name="new_lead_general_description">General Description:</string>
+    <string name="new_lead_customer_hint">Customer…</string>
+    <string name="new_lead_date_hint">Date…</string>
+    <string name="new_lead_time_hint">Time…</string>
+    <string name="new_lead_sales_rep_hint">Sales Rep…</string>
 
 
 

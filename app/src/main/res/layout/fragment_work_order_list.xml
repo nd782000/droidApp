@@ -14,6 +14,7 @@
             android:id="@+id/top_btns"
             android:layout_width="0dp"
             android:layout_height="95dp"
+            android:background="@color/background"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -73,7 +74,7 @@
             android:id="@+id/customerSwipeContainer"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/work_order_count_textview"
+            app:layout_constraintBottom_toTopOf="@id/footer_cl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,51 +88,63 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <TextView
-            android:id="@+id/work_order_count_textview"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/footer_cl"
+            android:background="@color/background"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/add_work_order_btn"
-
-            />
+            app:layout_constraintBottom_toBottomOf="parent">
 
 
-        <Button
-            android:id="@+id/add_work_order_btn"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
+            <TextView
+                android:id="@+id/work_order_count_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:paddingTop="4dp"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/add_work_order_btn"
 
-            android:text="@string/add_work_order"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+                />
 
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/map_btn"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
 
-        <Button
-            android:id="@+id/map_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            <Button
+                android:id="@+id/add_work_order_btn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
 
-            android:layout_marginRight="10dp"
-            android:background="@drawable/ic_map_pin"
-            android:insetTop="12dp"
-            android:insetBottom="12dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="5dp"
-            android:text=""
-            app:iconPadding="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-             />
+                android:text="@string/add_work_order"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/map_btn"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <Button
+                android:id="@+id/map_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+
+                android:layout_marginRight="10dp"
+                android:background="@drawable/ic_map_pin"
+                android:insetTop="12dp"
+                android:insetBottom="12dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                android:text=""
+                app:iconPadding="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                 />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

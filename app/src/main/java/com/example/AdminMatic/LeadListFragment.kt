@@ -49,6 +49,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
     //lateinit var  newLeadBtn: Button
     private lateinit var leadCountTv: TextView
+    private lateinit var addNewLeadBtn: Button
     private lateinit var mapBtn: Button
 
     lateinit var adapter:LeadsAdapter
@@ -99,6 +100,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         searchView = view.findViewById(R.id.leads_search)
         swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
         mapBtn = view.findViewById(R.id.map_btn)
+        addNewLeadBtn = view.findViewById(R.id.new_lead_btn)
         leadCountTv = view.findViewById(R.id.lead_count_textview)
 
         allCl = view.findViewById(R.id.all_cl)
@@ -106,6 +108,12 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         mapBtn.setOnClickListener{
             println("Map button clicked!")
             val directions = LeadListFragmentDirections.navigateToMap(1)
+            myView.findNavController().navigate(directions)
+        }
+
+        addNewLeadBtn.setOnClickListener{
+            println("Map button clicked!")
+            val directions = LeadListFragmentDirections.navigateToNewEditLead(null)
             myView.findNavController().navigate(directions)
         }
         getLeads()
@@ -127,7 +135,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         showProgressView()
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/leads.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/leads.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

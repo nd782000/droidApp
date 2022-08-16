@@ -180,7 +180,7 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
                 cellClickListener.showProgressView()
 
-                var urlString = "https://www.adminmatic.com/cp/app/functions/update/taskStatus.php"
+                var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/taskStatus.php"
 
                 val currentTimestamp = System.currentTimeMillis()
                 println("urlString = ${"$urlString?cb=$currentTimestamp"}")

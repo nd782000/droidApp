@@ -4,40 +4,76 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/images_search"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/all_cl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/text_view_layout"
-        android:textCursorDrawable="@null"
-        android:layout_margin="5dp"
-        app:iconifiedByDefault="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:queryBackground="@null"
+        android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/images_search_cl"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/background">
 
-        android:title="Search"
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/images_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_view_layout"
+                android:textCursorDrawable="@null"
+                android:layout_margin="5dp"
+                app:iconifiedByDefault="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:queryBackground="@null"
+                android:title="Search"
+                app:actionViewClass="android.widget.SearchView"/>
 
-        app:actionViewClass="android.widget.SearchView"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/customerSwipeContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/images_search">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_recycler_view"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/customerSwipeContainer"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            />
+            app:layout_constraintBottom_toTopOf="@id/image_footer_cl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/images_search_cl">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_recycler_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <!-- Footer -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/image_footer_cl"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/background"
+
+
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <Button
+                android:id="@+id/add_images_btn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="5dp"
+                android:text="@string/add_image"
+
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <ProgressBar
@@ -59,28 +95,7 @@
         />
 
 
-    <!-- Footer -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/image_footer_cl"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/background"
 
-
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <Button
-            android:id="@+id/add_images_btn"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="3dp"
-            android:text="Add Image"
-
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

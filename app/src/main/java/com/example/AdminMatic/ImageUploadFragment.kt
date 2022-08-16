@@ -112,7 +112,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
     // private var imageData: ByteArray? = null
-    private val postURL: String = "https://www.adminmatic.com/cp/app/functions/update/image.php"
+    private val postURL: String = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/image.php"
    // private var selectedCustId: String? = null
     //var currentCameraUri :Uri? = null
     var selectedUris: MutableList<Uri> = mutableListOf()
@@ -880,7 +880,7 @@ private  fun saveTask(){
 
     println("save task")
 
-    var urlString = "https://www.adminmatic.com/cp/app/functions/update/leadTask.php"
+    var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/leadTask.php"
     val currentTimestamp = System.currentTimeMillis()
     println("urlString = ${"$urlString?cb=$currentTimestamp"}")
     urlString = "$urlString?cb=$currentTimestamp"
@@ -1082,7 +1082,7 @@ private  fun saveTask(){
 
     private fun getAllowImages(newCustomerID:String, selectedFromRecycler:Boolean) {
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/customer.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/customer.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

@@ -150,7 +150,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         }
 
         showProgressView()
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/workOrder.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/workOrder.php"
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
@@ -429,7 +429,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     private fun updateStatus() {
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/update/workOrderStatus.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/workOrderStatus.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

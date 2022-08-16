@@ -188,7 +188,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
         //type = _type
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/systemStack.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/systemStack.php"
 
         val params: MutableMap<String, String> = HashMap()
 
@@ -334,52 +334,64 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                 //Listeners
 
                     //leads
+
+
+
                     if (leadsJSON.length() > 0) {
-                        leadSpinner.setSelection(0, false)
 
-                        if (leadsJSON.length() == 1) {
+                        if (GlobalVars.permissions!!.leads == "1") {
 
-                            leadTxt.setOnClickListener {
-                                // your code to run when the user clicks on the TextView
-                                println("leadSpinner click")
-                                val lead: Lead = gson.fromJson(
-                                    leadsJSON[0].toString(),
-                                    Lead::class.java
-                                )
-                                println("lead = $lead")
+                            leadSpinner.setSelection(0, false)
 
-                                delegate.newLeadView(lead)
-                            }
+                            if (leadsJSON.length() == 1) {
 
-                        } else {
-                            leadSpinner.onItemSelectedListener =
-                                object : AdapterView.OnItemSelectedListener {
-                                    override fun onItemSelected(
-                                        parent: AdapterView<*>,
-                                        view: View,
-                                        position: Int,
-                                        id: Long
-                                    ) {
-                                        println("onItemSelected position = $position id = $id")
+                                leadTxt.setOnClickListener {
+                                    // your code to run when the user clicks on the TextView
+                                    println("leadSpinner click")
+                                    val lead: Lead = gson.fromJson(
+                                        leadsJSON[0].toString(),
+                                        Lead::class.java
+                                    )
+                                    println("lead = $lead")
 
-                                        if (position != 0){
+                                    delegate.newLeadView(lead)
+                                }
 
+                            } else {
+                                leadSpinner.onItemSelectedListener =
+                                    object : AdapterView.OnItemSelectedListener {
+                                        override fun onItemSelected(
+                                            parent: AdapterView<*>,
+                                            view: View,
+                                            position: Int,
+                                            id: Long
+                                        ) {
+                                            println("onItemSelected position = $position id = $id")
 
-                                            val lead: Lead = gson.fromJson(
-                                                leadsJSON[position - 1].toString(),
-                                                Lead::class.java
-                                            )
-                                            println("lead = $lead")
+                                            if (position != 0) {
 
 
-                                            delegate.newLeadView(lead)
+                                                val lead: Lead = gson.fromJson(
+                                                    leadsJSON[position - 1].toString(),
+                                                    Lead::class.java
+                                                )
+                                                println("lead = $lead")
+
+
+                                                delegate.newLeadView(lead)
+                                            }
+                                        }
+
+                                        override fun onNothingSelected(parent: AdapterView<*>) {
+
                                         }
                                     }
-
-                                    override fun onNothingSelected(parent: AdapterView<*>) {
-
-                                    }
-                                }
+                            }
+                        }
+                        else {
+                            leadTxt.setOnClickListener {
+                                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads))
+                            }
                         }
 
                     }else{
@@ -391,25 +403,28 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                     //contracts
                     if (contractsJSON.length() > 0) {
-                        contractSpinner.setSelection(0, false)
 
-                        if (contractsJSON.length() == 1) {
+                        if (GlobalVars.permissions!!.contracts == "1") {
 
-                            contractTxt.setOnClickListener {
-                                // your code to run when the user clicks on the TextView
-                                println("contractSpinner click")
-                                val contract: Contract = gson.fromJson(
-                                    contractsJSON[0].toString(),
-                                    Contract::class.java
-                                )
-                                println("contract = $contract")
+                            contractSpinner.setSelection(0, false)
 
-                                delegate.newContractView(contract)
+                            if (contractsJSON.length() == 1) {
+
+                                contractTxt.setOnClickListener {
+                                    // your code to run when the user clicks on the TextView
+                                    println("contractSpinner click")
+                                    val contract: Contract = gson.fromJson(
+                                        contractsJSON[0].toString(),
+                                        Contract::class.java
+                                    )
+                                    println("contract = $contract")
+
+                                    delegate.newContractView(contract)
+                                }
+
                             }
-
-                        } else {
-                            contractSpinner.onItemSelectedListener =
-                                object : AdapterView.OnItemSelectedListener {
+                            else {
+                                contractSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>,
                                         view: View,
@@ -418,7 +433,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                                     ) {
                                         println("onItemSelected position = $position id = $id")
 
-                                        if (position != 0){
+                                        if (position != 0) {
                                             // var contract:WorkOrder = gson.fromJson(contractsJSON[position],WorkOrder)
 
                                             val contract: Contract = gson.fromJson(
@@ -436,6 +451,12 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                                     }
                                 }
+                            }
+                        }
+                        else {
+                            contractTxt.setOnClickListener {
+                                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts))
+                            }
                         }
 
                     }else{
@@ -448,25 +469,27 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                     //work orders
                     if (workOrdersJSON.length() > 0) {
-                        workOrderSpinner.setSelection(0, false)
 
-                        if (workOrdersJSON.length() == 1) {
+                        if (GlobalVars.permissions!!.schedule == "1") {
 
-                            workOrderTxt.setOnClickListener {
-                                // your code to run when the user clicks on the TextView
-                                println("workOrderSpinner click")
-                                val workOrder: WorkOrder = gson.fromJson(
-                                    workOrdersJSON[0].toString(),
-                                    WorkOrder::class.java
-                                )
-                                println("workOrder = $workOrder")
+                            workOrderSpinner.setSelection(0, false)
 
-                                delegate.newWorkOrderView(workOrder)
-                            }
+                            if (workOrdersJSON.length() == 1) {
 
-                        } else {
-                            workOrderSpinner.onItemSelectedListener =
-                                object : AdapterView.OnItemSelectedListener {
+                                workOrderTxt.setOnClickListener {
+                                    // your code to run when the user clicks on the TextView
+                                    println("workOrderSpinner click")
+                                    val workOrder: WorkOrder = gson.fromJson(
+                                        workOrdersJSON[0].toString(),
+                                        WorkOrder::class.java
+                                    )
+                                    println("workOrder = $workOrder")
+
+                                    delegate.newWorkOrderView(workOrder)
+                                }
+
+                            } else {
+                                workOrderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>,
                                         view: View,
@@ -475,7 +498,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                                     ) {
                                         println("onItemSelected position = $position id = $id")
 
-                                        if (position != 0){
+                                        if (position != 0) {
                                             // var workOrder:WorkOrder = gson.fromJson(workOrdersJSON[position],WorkOrder)
 
                                             val workOrder: WorkOrder = gson.fromJson(
@@ -493,6 +516,12 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                                     }
                                 }
+                            }
+                        }
+                        else {
+                            workOrderTxt.setOnClickListener {
+                                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_schedule))
+                            }
                         }
 
                     }else{
@@ -504,25 +533,26 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                     //invoices
                     if (invoicesJSON.length() > 0) {
-                        invoiceSpinner.setSelection(0, false)
 
-                        if (invoicesJSON.length() == 1) {
+                        if (GlobalVars.permissions!!.invoices == "1") {
+                            invoiceSpinner.setSelection(0, false)
 
-                            invoiceTxt.setOnClickListener {
-                                // your code to run when the user clicks on the TextView
-                                println("invoiceSpinner click")
-                                val invoice: Invoice = gson.fromJson(
+                            if (invoicesJSON.length() == 1) {
+
+                                invoiceTxt.setOnClickListener {
+                                    // your code to run when the user clicks on the TextView
+                                    println("invoiceSpinner click")
+                                    val invoice: Invoice = gson.fromJson(
                                         invoicesJSON[0].toString(),
-                                    Invoice::class.java
-                                )
-                                println("invoice = $invoice")
+                                        Invoice::class.java
+                                    )
+                                    println("invoice = $invoice")
 
-                                delegate.newInvoiceView(invoice)
-                            }
+                                    delegate.newInvoiceView(invoice)
+                                }
 
-                        } else {
-                            invoiceSpinner.onItemSelectedListener =
-                                object : AdapterView.OnItemSelectedListener {
+                            } else {
+                                invoiceSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>,
                                         view: View,
@@ -531,7 +561,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                                     ) {
                                         println("onItemSelected position = $position id = $id")
 
-                                        if (position != 0){
+                                        if (position != 0) {
 
                                             val invoice: Invoice = gson.fromJson(
                                                 invoicesJSON[position - 1].toString(),
@@ -548,6 +578,12 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                                     }
                                 }
+                            }
+                        }
+                        else {
+                            invoiceTxt.setOnClickListener {
+                                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_invoices))
+                            }
                         }
 
                     }else{

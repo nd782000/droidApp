@@ -122,7 +122,7 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/shifts.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/shifts.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

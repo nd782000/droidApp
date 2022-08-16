@@ -212,7 +212,11 @@ data class SearchItem(
 data class Customer(
     var ID: String,
     var sysname: String = "",
+    var fullname: String = "",
 
+    var parentID: String? = "",
+    var parentName: String? = "",
+    var fullName: String? = "",
     var mainAddr: String? = "",
     var balance: String? = "",
     var hear: String? = "",
@@ -251,7 +255,9 @@ data class Customer(
     var billZip: String? = "",
     var billState: String? = "",
 
+    @field:SerializedName(value="phone", alternate= ["primaryPhone"])
     var phone: String? = "",
+    @field:SerializedName(value="email", alternate= ["primaryEmail"])
     var email: String? = "",
 
     var lng: String? = "",
@@ -330,6 +336,7 @@ data class Equipment(val ID: String,
                      val engineType:String?,
                      val engineTypeName:String?,
                      val mileage:String?,
+                     @field:SerializedName(value="dealer", alternate= ["vendorID"])
                      val dealer:String?,
                      val dealerName:String?,
                      val purchaseDate:String?,
@@ -1144,94 +1151,92 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
     }
 
 
-    override fun logOut(view: View){
+    override fun logOut(view: View) {
 
-    println("log out on main")
-
-
-    val sharedPref = this.getSharedPreferences("pref", Context.MODE_PRIVATE)
-    with (sharedPref.edit()) {
-
-        putString("loggedInEmpID","")
-        putString("sessionKey","")
-        putString("companyUnique","")
-        apply()
-    }
-
-    if (GlobalVars.loggedInEmployee != null){
-        showProgressView()
+        println("log out on main")
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/other/logout.php"
+        val sharedPref = this.getSharedPreferences("pref", Context.MODE_PRIVATE)
+        with (sharedPref.edit()) {
 
-        val currentTimestamp = System.currentTimeMillis()
-        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "$urlString?cb=$currentTimestamp"
-        // val queue = Volley.newRequestQueue(myView.context)
-        val queue = Volley.newRequestQueue(view.rootView.context)
-
-        //TODO: fix crash with logging out via the nav bar menu
-
-        val postRequest1: StringRequest = object : StringRequest(
-            Method.POST, urlString,
-            Response.Listener { response -> // response
-                //Log.d("Response", response)
-
-                println("Response $response")
-
-
-                try {
-
-
-
-                    hideProgressView()
-                    val navController = Navigation.findNavController(view)
-
-                    navController.popBackStack(R.id.logInFragment, false)
-
-                    // Clear existing data
-                    if (GlobalVars.globalWorkOrdersList != null) {
-                        GlobalVars.globalWorkOrdersList!!.clear()
-                    }
-                    if (GlobalVars.globalLeadList != null) {
-                        GlobalVars.globalLeadList!!.clear()
-                    }
-                    if (GlobalVars.customerList != null) {
-                        GlobalVars.customerList!!.clear()
-                    }
-
-                    GlobalVars.loggedInEmployee = null
-                    GlobalVars.permissions = null
-                    GlobalVars.employeeList = null
-
-                    /* Here 'response' is a String containing the response you received from the website... */
-                } catch (e: JSONException) {
-                    println("JSONException")
-                    e.printStackTrace()
-                }
-
-            },
-            Response.ErrorListener { // error
-
-            }
-        ) {
-            override fun getParams(): Map<String, String> {
-                val params: MutableMap<String, String> = HashMap()
-                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-
-                params["deviceID"] = GlobalVars.deviceID!!
-
-                println("params = $params")
-                return params
-            }
+            putString("loggedInEmpID","")
+            putString("sessionKey","")
+            putString("companyUnique","")
+            apply()
         }
-        queue.add(postRequest1)
-    }else{
 
-        val navController = Navigation.findNavController(view)
-        navController.popBackStack(R.id.logInFragment, false)
-    }
+        if (GlobalVars.loggedInEmployee != null){
+            showProgressView()
+
+
+            var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/other/logout.php"
+
+            val currentTimestamp = System.currentTimeMillis()
+            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+            urlString = "$urlString?cb=$currentTimestamp"
+            // val queue = Volley.newRequestQueue(myView.context)
+            val queue = Volley.newRequestQueue(view.rootView.context)
+
+            val postRequest1: StringRequest = object : StringRequest(
+                Method.POST, urlString,
+                Response.Listener { response -> // response
+                    //Log.d("Response", response)
+
+                    println("Response $response")
+
+                    try {
+
+                        hideProgressView()
+                        //val navController = Navigation.findNavController(view)
+
+                        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                        val navController = navHostFragment.navController
+
+                        navController.popBackStack(R.id.logInFragment, false)
+
+                        // Clear existing data
+                        if (GlobalVars.globalWorkOrdersList != null) {
+                            GlobalVars.globalWorkOrdersList!!.clear()
+                        }
+                        if (GlobalVars.globalLeadList != null) {
+                            GlobalVars.globalLeadList!!.clear()
+                        }
+                        if (GlobalVars.customerList != null) {
+                            GlobalVars.customerList!!.clear()
+                        }
+
+                        GlobalVars.loggedInEmployee = null
+                        GlobalVars.permissions = null
+                        GlobalVars.employeeList = null
+
+                        /* Here 'response' is a String containing the response you received from the website... */
+                    } catch (e: JSONException) {
+                        println("JSONException")
+                        e.printStackTrace()
+                    }
+
+                },
+                Response.ErrorListener { // error
+
+                }
+            ) {
+                override fun getParams(): Map<String, String> {
+                    val params: MutableMap<String, String> = HashMap()
+                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+
+                    params["deviceID"] = GlobalVars.deviceID!!
+
+                    println("params = $params")
+                    return params
+                }
+            }
+            queue.add(postRequest1)
+        }else{
+
+            val navController = Navigation.findNavController(view)
+            navController.popBackStack(R.id.logInFragment, false)
+        }
 
 
 

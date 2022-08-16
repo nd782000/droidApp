@@ -40,13 +40,130 @@ class GlobalVars: Application() {
         var rawBase:String? = null
 
         var hearTypes:Array<HearType>? = null
+        var states:Array<String> = arrayOf("Select a State",
+            "AK - Alaska",
+            "AL - Alabama",
+            "AR - Arkansas",
+            "AS - American Samoa",
+            "AZ - Arizona",
+            "CA - California",
+            "CO - Colorado",
+            "CT - Connecticut",
+            "DC - District of Columbia",
+            "DE - Delaware",
+            "FL - Florida",
+            "GA - Georgia",
+            "GU - Guam",
+            "HI - Hawaii",
+            "IA - Iowa",
+            "ID - Idaho",
+            "IL - Illinois",
+            "IN - Indiana",
+            "KS - Kansas",
+            "KY - Kentucky",
+            "LA - Louisiana",
+            "MA - Massachusetts",
+            "MD - Maryland",
+            "ME - Maine",
+            "MI - Michigan",
+            "MN - Minnesota",
+            "MO - Missouri",
+            "MS - Mississippi",
+            "MT - Montana",
+            "NC - North Carolina",
+            "ND - North Dakota",
+            "NE - Nebraska",
+            "NH - New Hampshire",
+            "NJ - New Jersey",
+            "NM - New Mexico",
+            "NV - Nevada",
+            "NY - New York",
+            "OH - Ohio",
+            "OK - Oklahoma",
+            "OR - Oregon",
+            "PA - Pennsylvania",
+            "PR - Puerto Rico",
+            "RI - Rhode Island",
+            "SC - South Carolina",
+            "SD - South Dakota",
+            "TN - Tennessee",
+            "TX - Texas",
+            "UT - Utah",
+            "VA - Virginia",
+            "VI - Virgin Islands",
+            "VT - Vermont",
+            "WA - Washington",
+            "WI - Wisconsin",
+            "WV - West Virginia",
+            "WY - Wyoming")
+
+        var statesShort:Array<String> = arrayOf("Select a State",
+            "AK",
+            "AL",
+            "AR",
+            "AS",
+            "AZ",
+            "CA",
+            "CO",
+            "CT",
+            "DC",
+            "DE",
+            "FL",
+            "GA",
+            "GU",
+            "HI",
+            "IA",
+            "ID",
+            "IL",
+            "IN",
+            "KS",
+            "KY",
+            "LA",
+            "MA",
+            "MD",
+            "ME",
+            "MI",
+            "MN",
+            "MO",
+            "MS",
+            "MT",
+            "NC",
+            "ND",
+            "NE",
+            "NH",
+            "NJ",
+            "NM",
+            "NV",
+            "NY",
+            "OH",
+            "OK",
+            "OR",
+            "PA",
+            "PR",
+            "RI",
+            "SC",
+            "SD",
+            "TN",
+            "TX",
+            "UT",
+            "VA",
+            "VI",
+            "VT",
+            "WA",
+            "WI",
+            "WV",
+            "WY")
+
         var employeeList:Array<Employee>? = null
+
 
         var globalWorkOrdersList:MutableList<WorkOrder>? = null
         var globalLeadList:MutableList<Lead>? = null
         var scheduleSpinnerPosition:Int = 2
 
         var deviceID:String? = null
+
+        var phpVersion:String = "1-0"
 
         var customerList: MutableList<Customer>? = null
 
@@ -239,7 +356,7 @@ class GlobalVars: Application() {
 
         //showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/customers.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/customers.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

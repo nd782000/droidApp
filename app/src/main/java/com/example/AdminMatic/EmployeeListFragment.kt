@@ -125,7 +125,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
         showProgressView()
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/employees.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/employees.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

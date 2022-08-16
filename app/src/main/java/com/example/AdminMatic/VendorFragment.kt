@@ -270,7 +270,7 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
 
 
         if (vendor == null) {
-            var urlString = "https://www.adminmatic.com/cp/app/functions/get/vendor.php"
+            var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/vendor.php"
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")

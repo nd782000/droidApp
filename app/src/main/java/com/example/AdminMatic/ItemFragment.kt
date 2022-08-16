@@ -268,7 +268,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
         // get/item.php is bugged and doesn't store the item ID, so this is a band aid fix for now
         val storedItemID = item!!.ID
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/item.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/item.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

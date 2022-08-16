@@ -32,8 +32,6 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
     lateinit var  pgsBar: ProgressBar
     lateinit var recyclerView: RecyclerView
 
-    // lateinit var  btn: Button
-
     lateinit var adapter:EquipmentDetailAdapter
 
 
@@ -142,8 +140,6 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
     override fun onEquipmentDetailCellClickListener(data:Int) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         if (data == 9) { //vendor cell
-            Toast.makeText(activity, "Vendor Clicked ${equipment!!.dealer}", Toast.LENGTH_SHORT)
-                .show()
             val directions = VendorListFragmentDirections.navigateToVendor(null, equipment!!.dealer)
             myView.findNavController().navigate(directions)
         }

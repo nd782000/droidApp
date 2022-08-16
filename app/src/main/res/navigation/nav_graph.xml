@@ -144,6 +144,19 @@
         <action
             android:id="@+id/navigateToMap"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/navigateToNewEditLead"
+            app:destination="@id/newEditLeadFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newEditLeadFragment"
+        android:name="com.example.AdminMatic.NewEditLeadFragment"
+        android:label="fragment_new_edit_lead"
+        tools:layout="@layout/fragment_new_edit_lead" >
+        <argument
+            android:name="leadID"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/contractListFragment"

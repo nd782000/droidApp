@@ -169,7 +169,7 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/departments.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/departments.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -243,7 +243,7 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/departments.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/departments.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -316,7 +316,7 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/equipmentList.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/equipmentList.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

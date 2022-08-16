@@ -270,7 +270,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         }
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/payroll.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/payroll.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -625,7 +625,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/update/payroll.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/payroll.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

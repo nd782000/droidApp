@@ -104,7 +104,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
         imageList = mutableListOf()
-        adapter = ImagesAdapter(imageList,myView.context, this)
+        adapter = ImagesAdapter(imageList,myView.context, true, this)
 
 
 
@@ -155,8 +155,13 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         val id = item.itemId
 
         if (id == R.id.edit_customer_item) {
-            val directions = CustomerFragmentDirections.navigateToNewEditCustomer(customer.ID)
-            myView.findNavController().navigate(directions)
+            if (GlobalVars.permissions!!.customersEdit == "1") {
+                val directions = CustomerFragmentDirections.navigateToNewEditCustomer(customer.ID)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_customers_edit))
+            }
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -168,7 +173,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         showProgressView()
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/customer.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/customer.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -234,7 +239,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
        //showProgressView()
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/leads.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/leads.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -325,7 +330,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         println("getContracts")
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/contracts.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/contracts.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -400,7 +405,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         println("getWorkOrders")
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/workOrders.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/workOrders.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -477,7 +482,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         println("getInvoices")
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/invoices.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/invoices.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -561,7 +566,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         val limit = 200
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/images.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/images.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

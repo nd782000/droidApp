@@ -143,7 +143,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
         println("getWorkOrder")
 
         showProgressView()
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/invoice.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/invoice.php"
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"

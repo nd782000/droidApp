@@ -201,7 +201,7 @@ class ServiceFragment : Fragment() {
             showProgressView()
 
             var urlString =
-                "https://www.adminmatic.com/cp/app/functions/update/equipmentServiceComplete.php"
+                "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/equipmentServiceComplete.php"
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment_new_customer">
+    android:id="@+id/fragment_new_edit_customer">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,9 +12,7 @@
         android:layout_height="match_parent">
 
 
-
-
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
@@ -26,14 +24,66 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/new_customer_parent_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/new_customer_parent"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/new_customer_parent_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+
+                    app:layout_constraintTop_toBottomOf="@+id/new_customer_parent_tv"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/newt_customer_parent_switch_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/new_customer_parent_switch_label"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toTopOf="@+id/new_customer_parent_switch"
+                    app:layout_constraintBottom_toBottomOf="@+id/new_customer_parent_switch"
+                    app:layout_constraintLeft_toRightOf="@+id/new_customer_parent_switch"
+                    />
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/new_customer_parent_search"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                    android:accessibilityHeading="false"
+                    android:background="@drawable/text_view_layout"
+                    android:visibility="gone"
+                    app:queryHint="@string/new_customer_parent_hint"
+                    app:actionViewClass="android.widget.SearchView"
+                    app:defaultQueryHint='Select Customer'
+                    app:iconifiedByDefault="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/new_customer_parent_switch"
+                    app:queryBackground="@null" />
+
+                <TextView
                     android:id="@+id/new_customer_name_title_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:paddingTop="10dp"
                     android:text="@string/new_customer_name"
                     android:textStyle="bold"
                     android:textSize="18sp"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/new_customer_parent_search"
                     app:layout_constraintLeft_toLeftOf="parent"
                     />
 
@@ -75,16 +125,16 @@
                         android:layout_margin="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-                        <EditText
-                            android:id="@+id/new_customer_name_prefix_et"
+                        <Spinner
+                            android:id="@+id/new_customer_name_prefix_spinner"
                             android:layout_width="200dp"
                             android:layout_height="40dp"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             />
+
+
                         <TextView
                             android:id="@+id/new_customer_name_prefix_title_tv"
                             android:layout_width="wrap_content"
@@ -94,7 +144,7 @@
                             android:textSize="14sp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toLeftOf="@+id/new_customer_name_prefix_et"
+                            app:layout_constraintRight_toLeftOf="@+id/new_customer_name_prefix_spinner"
                             />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -515,13 +565,11 @@
                         android:layout_margin="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-                        <EditText
-                            android:id="@+id/new_customer_address_state_et"
+                        <Spinner
+                            android:id="@+id/new_customer_address_state_spinner"
                             android:layout_width="200dp"
                             android:layout_height="40dp"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             />
@@ -534,7 +582,7 @@
                             android:textSize="14sp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toLeftOf="@+id/new_customer_address_state_et"
+                            app:layout_constraintRight_toLeftOf="@+id/new_customer_address_state_spinner"
                             />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -581,6 +629,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     />
 
+                <!--
                 <Button
                     android:id="@+id/new_customer_copy_address_btn"
                     android:layout_width="match_parent"
@@ -588,14 +637,38 @@
                     android:text="@string/new_customer_copy_address"
                     app:layout_constraintTop_toBottomOf="@id/new_customer_billing_address_title_tv"
                     />
+                -->
 
-                <!-- Job Site Address Linear Layout -->
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/new_customer_billing_same_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:checked="true"
+                    app:layout_constraintTop_toBottomOf="@+id/new_customer_billing_address_title_tv"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/new_customer_copy_billing_switch_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/new_customer_same_as_job_site_address"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toTopOf="@+id/new_customer_billing_same_switch"
+                    app:layout_constraintBottom_toBottomOf="@+id/new_customer_billing_same_switch"
+                    app:layout_constraintLeft_toRightOf="@+id/new_customer_billing_same_switch"
+                    />
+
+                <!-- Billing Address Linear Layout -->
                 <LinearLayout
                     android:id="@+id/new_customer_billing_address_ll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/new_customer_copy_address_btn"
+                    app:layout_constraintTop_toBottomOf="@id/new_customer_billing_same_switch"
                     android:orientation="vertical"
+                    android:visibility="gone"
                     app:layout_constraintLeft_toLeftOf="parent">
 
                     <!-- Billing Street 1 -->
@@ -749,13 +822,11 @@
                         android:layout_margin="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-                        <EditText
-                            android:id="@+id/new_customer_billing_address_state_et"
+                        <Spinner
+                            android:id="@+id/new_customer_billing_address_state_spinner"
                             android:layout_width="200dp"
                             android:layout_height="40dp"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             />
@@ -768,7 +839,7 @@
                             android:textSize="14sp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toLeftOf="@+id/new_customer_billing_address_state_et"
+                            app:layout_constraintRight_toLeftOf="@+id/new_customer_billing_address_state_spinner"
                             />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -825,9 +896,6 @@
                         android:id="@+id/new_customer_referral_spinner"
                         android:layout_width="200dp"
                         android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:singleLine="true"
                         android:background="@drawable/text_view_layout"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -876,14 +944,23 @@
                     app:layout_constraintTop_toBottomOf="@id/new_customer_active_switch_tv"
                     />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/new_customer_parent_search_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:visibility="gone"
+                    android:background="@color/background"
+
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/new_customer_parent_search"
+                    />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        </ScrollView>
-
-
-
+        </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ProgressBar
         android:id="@+id/progress_bar"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"

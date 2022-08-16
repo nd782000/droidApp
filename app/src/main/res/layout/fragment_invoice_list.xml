@@ -4,40 +4,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/invoices_search"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/all_cl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/text_view_layout"
-        android:textCursorDrawable="@null"
-        android:layout_margin="5dp"
-        app:iconifiedByDefault="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:queryBackground="@null"
+        android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/invoices_search_cl"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/background">
 
-        android:title="Search"
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/invoices_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_view_layout"
+                android:textCursorDrawable="@null"
+                android:layout_margin="5dp"
+                app:iconifiedByDefault="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:queryBackground="@null"
+                android:title="Search"
+                app:actionViewClass="android.widget.SearchView"/>
 
-        app:actionViewClass="android.widget.SearchView"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/customerSwipeContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/invoices_search">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_recycler_view"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/customerSwipeContainer"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            />
+            app:layout_constraintBottom_toTopOf="@id/footer_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/invoices_search_cl">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_recycler_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <TextView
+            android:id="@+id/footer_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/background"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:padding="3dp"
+            android:paddingStart="7dp"
+            android:text=""
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <ProgressBar

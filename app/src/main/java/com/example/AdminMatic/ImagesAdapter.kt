@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.image_list_item.view.*
 import java.util.*
 
 
-class ImagesAdapter(private val list: MutableList<Image>, private val context: Context,private val cellClickListener: ImageCellClickListener)
+class ImagesAdapter(private val list: MutableList<Image>, private val context: Context, private val showTitleInsteadOfCustomer: Boolean, private val cellClickListener: ImageCellClickListener)
 
     : RecyclerView.Adapter<ImageViewHolder>(), Filterable {
 
@@ -49,7 +49,7 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
 
 
         val image: Image = filterList[position]
-        holder.bind(image)
+        holder.bind(image, showTitleInsteadOfCustomer)
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         //println("queryText = $queryText")
@@ -61,7 +61,14 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
             val startPos2: Int = filterList[position].customerName!!.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos2 = startPos2 + queryText.length
             if (startPos2 != -1) {
-                val spannable: Spannable = SpannableString(filterList[position].customerName!!)
+
+                val spannable: Spannable = if (showTitleInsteadOfCustomer) {
+                    SpannableString(filterList[position].name)
+                }
+                else {
+                    SpannableString(filterList[position].customerName!!)
+                }
+
                 val colorStateList = ColorStateList(
                     arrayOf(intArrayOf()),
                     intArrayOf(Color.parseColor("#005100"))
@@ -74,16 +81,27 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
                     endPos2,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
+                println("setting name to spannable 1")
                 holder.itemView.list_name.text = spannable
             } else {
 
                 if (filterList[position].customerName != null){
-                    holder.itemView.list_name.text = filterList[position].customerName!!
+                    if (showTitleInsteadOfCustomer) {
+                        holder.itemView.list_name.text = filterList[position].name
+                    }
+                    else {
+                        holder.itemView.list_name.text = filterList[position].customerName!!
+                    }
                 }
             }
         } else {
             if (filterList[position].customerName != null){
-                holder.itemView.list_name.text = filterList[position].customerName!!
+                if (showTitleInsteadOfCustomer) {
+                    holder.itemView.list_name.text = filterList[position].name
+                }
+                else {
+                    holder.itemView.list_name.text = filterList[position].customerName!!
+                }
             }
 
 
@@ -224,12 +242,16 @@ class ImageViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     }
 
-    fun bind(image: Image) {
-        mNameView?.text = image.name
-        if(image.customerName != null){
-            mTypeView?.text = image.customerName
-        }
+    fun bind(image: Image, showTitleInsteadOfCustomer: Boolean) {
 
+
+        if(image.customerName != null && !showTitleInsteadOfCustomer){
+            mNameView?.text = image.customerName
+        }
+        else {
+            println("FUCK ${image.name}")
+            mNameView?.text = image.name
+        }
 
     }
 

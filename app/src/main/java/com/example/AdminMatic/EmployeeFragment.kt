@@ -121,7 +121,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         imageList = mutableListOf()
 
-        adapter = ImagesAdapter(imageList,myView.context, this)
+        adapter = ImagesAdapter(imageList,myView.context, false, this)
 
 
         //(activity as AppCompatActivity).supportActionBar?.title = "Employee"
@@ -306,7 +306,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         val limit = 200
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/images.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/images.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

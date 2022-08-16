@@ -22,8 +22,8 @@ android {
         applicationId "com.adminmatic"
         minSdkVersion 28
         targetSdkVersion 30
-        versionCode 23
-        versionName '1.2.19'
+        versionCode 24
+        versionName '1.2.20'
 
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -67,6 +67,7 @@ dependencies {
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.3.2'
+    implementation 'androidx.core:core:1.6.0'
 
     def nav_version = "2.3.2"
 

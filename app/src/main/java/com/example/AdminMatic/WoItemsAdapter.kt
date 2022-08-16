@@ -116,7 +116,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
                                     builder.setPositiveButton(context.getString(R.string.yes)) { _, _ ->
 
                                         var urlString =
-                                            "https://www.adminmatic.com/cp/app/functions/delete/workOrderItem.php"
+                                            "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/delete/workOrderItem.php"
 
                                         val currentTimestamp = System.currentTimeMillis()
                                         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

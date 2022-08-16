@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_new_edit_lead">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/new_edit_lead_status_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/new_edit_lead_customer_search"
+            app:layout_constraintBottom_toBottomOf="@id/new_edit_lead_customer_search"
+            android:contentDescription="Customer Button" />
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/new_edit_lead_customer_search"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:accessibilityHeading="false"
+            android:background="@drawable/text_view_layout"
+            app:queryHint="@string/new_lead_customer_hint"
+
+            app:actionViewClass="android.widget.SearchView"
+            app:defaultQueryHint='Select Customer'
+            app:iconifiedByDefault="false"
+            app:layout_constraintLeft_toRightOf="@id/new_edit_lead_status_btn"
+
+
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:queryBackground="@null" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/new_edit_lead_customer_search_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/new_edit_lead_customer_search"
+            app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
+        <!-- Schedule Type -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/new_edit_lead_schedule_type_cl"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/new_edit_lead_customer_search">
+
+            <Spinner
+                android:id="@+id/new_edit_lead_schedule_type_spinner"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:singleLine="true"
+                android:background="@drawable/text_view_layout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
+            <TextView
+                android:id="@+id/new_edit_lead_schedule_type_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/new_lead_schedule_type"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Appointment -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/new_edit_lead_appointment_cl"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/new_edit_lead_schedule_type_cl">
+
+            <EditText
+                android:id="@+id/new_edit_lead_appointment_time_et"
+                android:layout_width="97.5dp"
+                android:layout_height="40dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:singleLine="true"
+                android:hint="@string/new_lead_time_hint"
+                android:layout_marginLeft="5dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
+            <EditText
+                android:id="@+id/new_edit_lead_appointment_date_et"
+                android:layout_width="97.5dp"
+                android:layout_height="40dp"
+                android:imeOptions="actionDone"
+                android:inputType="date"
+                android:singleLine="true"
+                android:hint="@string/new_lead_date_hint"
+                android:layout_marginRight="5dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/new_edit_lead_appointment_time_et"
+                />
+            <TextView
+                android:id="@+id/new_edit_lead_appointment_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/new_lead_appointment"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Deadline -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/new_edit_lead_deadline_cl"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/new_edit_lead_appointment_cl">
+
+            <EditText
+                android:id="@+id/new_edit_lead_deadline_et"
+                android:layout_width="97.5dp"
+                android:layout_height="40dp"
+                android:hint="@string/new_lead_date_hint"
+                android:imeOptions="actionDone"
+                android:inputType="date"
+                android:singleLine="true"
+
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                />
+            <TextView
+                android:id="@+id/new_edit_lead_deadline_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/new_lead_deadline"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Urgent -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/new_edit_lead_urgent_cl"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toBottomOf="@id/new_edit_lead_deadline_cl">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/new_edit_lead_urgent_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:checked="false"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/new_edit_lead_urgent_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/new_lead_urgent"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Sales Rep -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/new_edit_lead_sales_rep_cl"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/new_edit_lead_urgent_cl">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/new_edit_lead_sales_rep_search"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:accessibilityHeading="false"
+                android:background="@drawable/text_view_layout"
+                app:queryHint="@string/new_lead_sales_rep_hint"
+                app:actionViewClass="android.widget.SearchView"
+                app:defaultQueryHint='Select Customer'
+                app:iconifiedByDefault="false"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:queryBackground="@null" />
+
+            <TextView
+                android:id="@+id/new_edit_lead_sales_rep_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/new_lead_sales_rep"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/new_edit_lead_sales_rep_search_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/new_edit_lead_sales_rep_cl"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <!-- Requested By Customer -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/new_edit_lead_requested_cl"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toBottomOf="@id/new_edit_lead_sales_rep_cl">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/new_edit_lead_requested_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:checked="false"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/new_edit_lead_requested_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/new_lead_requested_by_customer"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/new_edit_lead_description_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginVertical="12dp"
+            android:text="@string/new_lead_general_description"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/new_edit_lead_requested_cl"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <EditText
+            android:id="@+id/new_edit_lead_description_et"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:gravity="start"
+            android:padding="5dp"
+            app:layout_constraintTop_toBottomOf="@id/new_edit_lead_description_tv"
+            app:layout_constraintBottom_toTopOf="@id/new_edit_lead_submit_btn"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            />
+
+        <Button
+            android:id="@+id/new_edit_lead_submit_btn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+
+            android:text="@string/submit"
+            android:layout_marginHorizontal="5dp"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:visibility="invisible"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/button"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

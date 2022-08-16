@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.*
@@ -42,14 +43,15 @@ interface ImageCellClickListener {
 class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInterface {
 
 
-    lateinit  var globalVars:GlobalVars
+    lateinit var globalVars:GlobalVars
     lateinit var myView:View
     var imagesLoaded:Boolean = false
 
-    lateinit var  pgsBar: ProgressBar
+    lateinit var pgsBar: ProgressBar
     lateinit var recyclerView: RecyclerView
-    lateinit var searchView:androidx.appcompat.widget.SearchView
-    lateinit var  swipeRefresh:SwipeRefreshLayout
+    lateinit var searchView: androidx.appcompat.widget.SearchView
+    lateinit var swipeRefresh: SwipeRefreshLayout
+    lateinit var allCl: ConstraintLayout
 
     private lateinit var addImagesBtn: Button
 
@@ -60,7 +62,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
     lateinit var imageList: MutableList<Image>
     lateinit var loadMoreImageList: MutableList<Image>
-   // lateinit var scrollListener: RecyclerViewLoadMoreScroll
+    //lateinit var scrollListener: RecyclerViewLoadMoreScroll
     //lateinit var mLayoutManager:RecyclerView.LayoutManager
 
     var refreshing = false
@@ -86,7 +88,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
             imageList = mutableListOf()
 
-            adapter = ImagesAdapter(imageList,myView.context, this)
+            adapter = ImagesAdapter(imageList,myView.context, false, this)
 
 
 
@@ -118,7 +120,8 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
             pgsBar = view.findViewById(R.id.progressBar)
             recyclerView = view.findViewById(R.id.list_recycler_view)
             searchView = view.findViewById(R.id.images_search)
-            swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
+            swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
+            allCl = view.findViewById(R.id.all_cl)
 
 
             addImagesBtn = view.findViewById((R.id.add_images_btn))
@@ -255,7 +258,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
         val limit = 200
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/images.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/images.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -366,19 +369,18 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
     fun showProgressView() {
         pgsBar.visibility = View.VISIBLE
-        //searchView.visibility = View.INVISIBLE
-        //recyclerView.visibility = View.INVISIBLE
+        allCl.visibility = View.INVISIBLE
 
-        searchView.alpha = 0.5f
-        recyclerView.alpha = 0.5f
+        //searchView.alpha = 0.5f
+        //recyclerView.alpha = 0.5f
     }
 
     fun hideProgressView() {
         pgsBar.visibility = View.INVISIBLE
-       // searchView.visibility = View.VISIBLE
-        //recyclerView.visibility = View.VISIBLE
-        searchView.alpha = 1.0f
-        recyclerView.alpha = 1.0f
+        allCl.visibility = View.VISIBLE
+
+        //searchView.alpha = 1.0f
+        //recyclerView.alpha = 1.0f
     }
 
 }

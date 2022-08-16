@@ -308,7 +308,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         showProgressView()
 
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/items.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/items.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

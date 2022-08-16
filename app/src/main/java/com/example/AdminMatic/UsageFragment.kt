@@ -124,7 +124,7 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
 
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/usageByEmp.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/usageByEmp.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")

@@ -77,9 +77,15 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
         searchView = view.findViewById(R.id.customers_search)
         swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
         addCustomerBtn = view.findViewById(R.id.add_customer_btn)
+
         addCustomerBtn.setOnClickListener {
-            val directions = CustomerListFragmentDirections.navigateToCustomerLookup()
-            myView.findNavController().navigate(directions)
+            if (GlobalVars.permissions!!.customersEdit == "1") {
+                val directions = CustomerListFragmentDirections.navigateToCustomerLookup()
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_customers_edit))
+            }
         }
         allCl = view.findViewById(R.id.all_cl)
 
@@ -176,7 +182,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
         showProgressView()
 
-        var urlString = "https://www.adminmatic.com/cp/app/functions/get/customers.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/customers.php"
 
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
