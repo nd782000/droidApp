@@ -21,7 +21,6 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.work_order_list_item.view.*
 import java.util.*
 
 
@@ -52,13 +51,12 @@ class WorkOrdersAdapter(
 
     override fun onBindViewHolder(holder: WorkOrderViewHolder, position: Int) {
 
-
-
-
         val workOrder: WorkOrder = filterList[position]
         holder.bind(workOrder, context)
-        //holder.itemView.list_sysname.text = filterList[position].sysname
-        //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
+
+        val listCustName = holder.itemView.findViewById<TextView>(R.id.list_cust_name)
+        val listTitle = holder.itemView.findViewById<TextView>(R.id.list_title)
+
         println("queryText = $queryText")
         //text highlighting for first string
         if (queryText.isNotEmpty() && queryText != "") {
@@ -79,12 +77,12 @@ class WorkOrdersAdapter(
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_cust_name.text = spannable
+                listCustName.text = spannable
             } else {
-                holder.itemView.list_cust_name.text = filterList[position].custName!!
+                listCustName.text = filterList[position].custName!!
             }
         } else {
-            holder.itemView.list_cust_name.text = filterList[position].custName!!
+            listCustName.text = filterList[position].custName!!
         }
 
         //text highlighting for second string
@@ -107,19 +105,19 @@ class WorkOrdersAdapter(
                     endPos2,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_title.text = spannable
+                listTitle.text = spannable
             } else {
-                holder.itemView.list_title.text = filterList[position].title
+                listTitle.text = filterList[position].title
             }
         } else {
-            holder.itemView.list_title.text = filterList[position].title
+            listTitle.text = filterList[position].title
         }
 
 
         val serviceStatusImageView: ImageView = holder.itemView.findViewById(R.id.list_wo_status_icon_image_view)
 
-        val mTitleView:TextView = holder.itemView.findViewById(R.id.list_title)
-        mTitleView.text = context.getString(R.string.work_order_title, workOrder.woID, workOrder.title)
+
+        listTitle.text = context.getString(R.string.work_order_title, workOrder.woID, workOrder.title)
 
 
 

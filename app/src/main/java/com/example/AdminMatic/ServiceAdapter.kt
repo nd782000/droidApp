@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.service_list_item.view.*
 import java.time.LocalDateTime
 
 
@@ -39,16 +38,13 @@ class ServiceAdapter(list: MutableList<EquipmentService>, private val context: C
 
     override fun onBindViewHolder(holder: ServiceViewHolder, position: Int) {
 
-
-
-
         val service: EquipmentService = filterList[position]
         holder.bind(service, context, isHistoryMode)
         println("queryText = $queryText")
         //text highlighting for first string
 
     //if (filterList[position].name != null){
-        holder.itemView.list_service_name.text = filterList[position].name
+        holder.itemView.findViewById<TextView>(R.id.list_service_name).text = filterList[position].name
     //}
 
 

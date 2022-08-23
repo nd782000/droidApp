@@ -17,7 +17,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.wo_item_list_item.view.*
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -56,7 +55,7 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
         //text highlighting for first string
 
 
-        holder.itemView.list_name.text = list[position].task
+        holder.itemView.findViewById<TextView>(R.id.list_name).text = list[position].task
 
 
 

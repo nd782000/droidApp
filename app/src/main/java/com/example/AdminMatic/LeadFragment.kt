@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -12,10 +11,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentLeadBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_work_order.*
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -36,26 +35,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-
     private lateinit var  stackFragment: StackFragment
-
-
-    private lateinit var statusBtn: ImageButton
-    private lateinit var customerBtn: Button
-
-    private lateinit var statusCustCL: ConstraintLayout
-    private lateinit var dataCL: ConstraintLayout
-    lateinit var scheduleTxt:TextView
-    lateinit var deadlineTxt:TextView
-    lateinit var salesRepTxt:TextView
-    lateinit var requestedByTxt:TextView
-    lateinit var descriptionTxt:TextView
-
-    lateinit var taskRecyclerView: RecyclerView
-
-    private lateinit var addTasksBtn: Button
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,17 +45,19 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         }
     }
 
+    private var _binding: FragmentLeadBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-       // return inflater.inflate(R.layout.fragment_lead, container, false)
-        myView = inflater.inflate(R.layout.fragment_lead, container, false)
+        _binding = FragmentLeadBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_number, lead!!.ID)
-
+        setHasOptionsMenu(true)
         return myView
     }
 
@@ -84,9 +66,6 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
         println("lead = ${lead!!.ID}")
 
-
-        pgsBar = view.findViewById(R.id.progress_bar)
-
         stackFragment = StackFragment(0,lead!!.ID,this)
 
         val ft = childFragmentManager.beginTransaction()
@@ -94,15 +73,13 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         ft.commitAllowingStateLoss()
 
 
-        statusBtn = myView.findViewById(R.id.lead_status_btn)
-        statusBtn.setOnClickListener{
+        binding.leadStatusBtn.setOnClickListener{
             println("status btn clicked")
             showStatusMenu()
         }
 
-        customerBtn = myView.findViewById(R.id.lead_customer_btn)
-        customerBtn.text = getString(R.string.lead_customer_button_text, lead!!.custName, lead!!.address)
-        customerBtn.setOnClickListener{
+        binding.leadCustomerBtn.text = getString(R.string.lead_customer_button_text, lead!!.custName, lead!!.address)
+        binding.leadCustomerBtn.setOnClickListener{
             println("customer btn clicked")
 
 
@@ -112,28 +89,38 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
         }
 
-        scheduleTxt = myView.findViewById(R.id.lead_schedule_val_tv)
-        deadlineTxt = myView.findViewById(R.id.lead_deadline_val_tv)
-        salesRepTxt = myView.findViewById(R.id.lead_sales_rep_val_tv)
-        requestedByTxt = myView.findViewById(R.id.lead_requested_val_tv)
-        descriptionTxt = myView.findViewById(R.id.lead_description_val_tv)
-        statusCustCL = myView.findViewById(R.id.lead_status_cust_cl)
-        dataCL = myView.findViewById(R.id.lead_data_cl)
-        addTasksBtn = myView.findViewById(R.id.lead_add_task_btn)
-        taskRecyclerView = myView.findViewById(R.id.lead_task_rv)
-
-        addTasksBtn.setOnClickListener {
-
+        binding.leadAddTaskBtn.setOnClickListener {
 
                 val directions = LeadFragmentDirections.navigateLeadToImageUpload("LEADTASK",
                     arrayOf(),lead!!.customer,lead!!.custName,"","",lead!!.ID,"0","","","", "")
 
                 myView.findNavController().navigate(directions)
 
-
         }
 
         getLead()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.lead_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.edit_lead_item) {
+            if (GlobalVars.permissions!!.leadsEdit == "1") {
+                val directions = LeadFragmentDirections.navigateLeadToNewEditLead(lead)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads_edit))
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onStop() {
@@ -173,24 +160,24 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                     setStatus(lead!!.statusID)
 
                     if(lead!!.dateNice != null){
-                        scheduleTxt.text = lead!!.dateNice!!
+                        binding.leadScheduleValTv.text = lead!!.dateNice!!
                     }
                     if(lead!!.deadlineNice != null){
-                        deadlineTxt.text = lead!!.deadlineNice!!
+                        binding.leadDeadlineValTv.text = lead!!.deadlineNice!!
                     }
                     if(lead!!.repName != null){
-                        salesRepTxt.text = lead!!.repName!!
+                        binding.leadSalesRepValTv.text = lead!!.repName!!
                     }
                     if(lead!!.requestedByCust != null){
                         if (lead!!.requestedByCust!! == "1") {
-                            requestedByTxt.text = getString(R.string.yes)
+                            binding.leadRequestedValTv.text = getString(R.string.yes)
                         }
                         else {
-                            requestedByTxt.text = getString(R.string.no)
+                            binding.leadRequestedValTv.text = getString(R.string.no)
                         }
                     }
                     if(lead!!.description != null){
-                        descriptionTxt.text = lead!!.description!!
+                        binding.leadDescriptionValTv.text = lead!!.description!!
                     }
 
                    // var leadObj:JSONObject = parentObject["leads"][0] as JSONObject
@@ -213,7 +200,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                    // }
 
 
-                    taskRecyclerView.apply {
+                    binding.leadTaskRv.apply {
                         layoutManager = LinearLayoutManager(activity)
                         adapter = activity?.let {
                             LeadTasksAdapter(
@@ -226,7 +213,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
                         val itemDecoration: RecyclerView.ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        taskRecyclerView.addItemDecoration(itemDecoration)
+                        binding.leadTaskRv.addItemDecoration(itemDecoration)
 
 
 
@@ -286,7 +273,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
     private fun showStatusMenu(){
         println("showStatusMenu")
 
-        val popUp = PopupMenu(myView.context,statusBtn)
+        val popUp = PopupMenu(myView.context, binding.leadStatusBtn)
         popUp.inflate(R.menu.task_status_menu)
         popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_not_started)!!,myView.context), myView.context.getString(R.string.not_started)))
         popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_in_progress)!!,myView.context), myView.context.getString(R.string.in_progress)))
@@ -372,23 +359,23 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         when(status) {
             "1" -> {
                 println("1")
-                statusBtn.setBackgroundResource(R.drawable.ic_not_started)
+                binding.leadStatusBtn.setBackgroundResource(R.drawable.ic_not_started)
             }
             "2" -> {
                 println("2")
-                statusBtn.setBackgroundResource(R.drawable.ic_in_progress)
+                binding.leadStatusBtn.setBackgroundResource(R.drawable.ic_in_progress)
             }
             "3" -> {
                 println("3")
-                statusBtn.setBackgroundResource(R.drawable.ic_done)
+                binding.leadStatusBtn.setBackgroundResource(R.drawable.ic_done)
             }
             "4" -> {
                 println("4")
-                statusBtn.setBackgroundResource(R.drawable.ic_canceled)
+                binding.leadStatusBtn.setBackgroundResource(R.drawable.ic_canceled)
             }
             "5" -> {
                 println("5")
-                statusBtn.setBackgroundResource(R.drawable.ic_waiting)
+                binding.leadStatusBtn.setBackgroundResource(R.drawable.ic_waiting)
             }
         }
     }
@@ -396,20 +383,20 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
 
     override fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        statusCustCL.visibility = View.INVISIBLE
-        dataCL.visibility = View.INVISIBLE
-        taskRecyclerView.visibility = View.INVISIBLE
-        addTasksBtn.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.leadStatusCustCl.visibility = View.INVISIBLE
+        binding.leadDataCl.visibility = View.INVISIBLE
+        binding.leadTaskRv.visibility = View.INVISIBLE
+        binding.leadAddTaskBtn.visibility = View.INVISIBLE
 
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        statusCustCL.visibility = View.VISIBLE
-        dataCL.visibility = View.VISIBLE
-        taskRecyclerView.visibility = View.VISIBLE
-        addTasksBtn.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.leadStatusCustCl.visibility = View.VISIBLE
+        binding.leadDataCl.visibility = View.VISIBLE
+        binding.leadTaskRv.visibility = View.VISIBLE
+        binding.leadAddTaskBtn.visibility = View.VISIBLE
     }
 
 

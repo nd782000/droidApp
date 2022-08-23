@@ -7,15 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentWorkOrderListBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.dateFormatterYYYYMMDD
@@ -23,7 +21,6 @@ import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.scheduleSpinnerPosition
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_work_order_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -42,16 +39,20 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
 
     lateinit var myView:View
+    private lateinit var adapter:WorkOrdersAdapter
+    /*
     private lateinit var  pgsBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchView:androidx.appcompat.widget.SearchView
     private lateinit var  swipeRefresh:SwipeRefreshLayout
-    private lateinit var adapter:WorkOrdersAdapter
+
     private lateinit var scheduleSpinner:Spinner
     private lateinit var crewBtn:Button
     private lateinit var mapBtn:Button
     private lateinit var countTextView: TextView
     private lateinit var allCL: ConstraintLayout
+
+     */
 
     //update eq
     private var datesArray:Array<String> = arrayOf(
@@ -76,6 +77,9 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     var endDateDB:String = ""
     var empID:String = ""
 
+    private var _binding: FragmentWorkOrderListBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -84,17 +88,17 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         println("onCreateView")
 
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_work_order_list, container, false)
+        _binding = FragmentWorkOrderListBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!
             .findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.woList)
 
-        if (globalWorkOrdersList == null) {
+        adapter = if (globalWorkOrdersList == null) {
             val emptyList: MutableList<WorkOrder> = mutableListOf()
-            adapter = WorkOrdersAdapter(emptyList, this.myView.context,this)
-        }
-        else {
-            adapter = WorkOrdersAdapter(globalWorkOrdersList!!, this.myView.context,this)
+            WorkOrdersAdapter(emptyList, this.myView.context,this)
+        } else {
+            WorkOrdersAdapter(globalWorkOrdersList!!, this.myView.context,this)
             //(adapter).notifyDataSetChanged()
         }
 
@@ -114,6 +118,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
         (activity as MainActivity?)!!.setWorkOrderList(this)
 
+        /*
         pgsBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.list_recycler_view)
         searchView = view.findViewById(R.id.work_orders_search)
@@ -124,7 +129,9 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         countTextView = view.findViewById(R.id.work_order_count_textview)
         allCL = view.findViewById(R.id.all_cl)
 
-        crewBtn.setOnClickListener {
+         */
+
+        binding.crewBtn.setOnClickListener {
             println("Crew Click")
 
             var directions = WorkOrderListFragmentDirections.navigateToDepartments(null)
@@ -132,13 +139,13 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
             // Even spinner positions are the personal ones
             if (scheduleSpinnerPosition % 2 == 0) {
-                directions = WorkOrderListFragmentDirections.navigateToDepartments(GlobalVars.loggedInEmployee)
+                directions = WorkOrderListFragmentDirections.navigateToDepartments(loggedInEmployee)
             }
 
             myView.findNavController().navigate(directions)
         }
 
-        mapBtn.setOnClickListener{
+        binding.mapBtn.setOnClickListener{
             println("Map button clicked!")
             val directions = WorkOrderListFragmentDirections.navigateToMap(0)
             myView.findNavController().navigate(directions)
@@ -149,7 +156,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             println("globalWorkOrdersList = null")
             scheduleSpinnerPosition = 2
 
-            scheduleSpinner.setBackgroundResource(R.drawable.text_view_layout)
+            binding.scheduleSpinner.setBackgroundResource(R.drawable.text_view_layout)
 
 
             val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
@@ -158,16 +165,16 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             )
             adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
-            scheduleSpinner.adapter = adapter
+            binding.scheduleSpinner.adapter = adapter
 
 
 
 
             //triggers first get workOrders
-            scheduleSpinner.setTag(R.id.pos, scheduleSpinnerPosition)
-            scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
+            binding.scheduleSpinner.setTag(R.id.pos, scheduleSpinnerPosition)
+            binding.scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
 
-            scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
+            binding.scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
 
 
 
@@ -194,10 +201,9 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
             println("globalWorkOrdersList != null")
 
-            scheduleSpinner = view.findViewById(R.id.schedule_spinner)
-            scheduleSpinner.setBackgroundResource(R.drawable.text_view_layout)
+            binding.scheduleSpinner.setBackgroundResource(R.drawable.text_view_layout)
 
-            scheduleSpinner.onItemSelectedListener = null
+            binding.scheduleSpinner.onItemSelectedListener = null
 
             val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
                 myView.context,
@@ -206,7 +212,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             )
             adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
-            scheduleSpinner.adapter = adapter
+            binding.scheduleSpinner.adapter = adapter
 
 
 
@@ -219,13 +225,13 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             //if(activity != null){
 
             //}
-            scheduleSpinner.setTag(R.id.pos, scheduleSpinnerPosition)
-            scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
+            binding.scheduleSpinner.setTag(R.id.pos, scheduleSpinnerPosition)
+            binding.scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
 
-            scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
+            binding.scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
 
             updateScheduleInfo(scheduleSpinnerPosition)
-            countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+            binding.workOrderCountTextview.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
 
         }
 
@@ -283,7 +289,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
                     //(activity as MainActivity?)!!.updateMap()
 
-                    countTextView.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+                    binding.workOrderCountTextview.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
 
                     if (this.isVisible){
                         layoutViews()
@@ -330,7 +336,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
         hideProgressView()
 
-        list_recycler_view.apply {
+        binding.listRecyclerView.apply {
 
         layoutManager = LinearLayoutManager((activity as MainActivity?)!!)
 
@@ -349,25 +355,25 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                     myView.context,
                     DividerItemDecoration.VERTICAL
                 )
-            recyclerView.addItemDecoration(itemDecoration)
+            binding.listRecyclerView.addItemDecoration(itemDecoration)
 
 
             // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
             // Setup refresh listener which triggers new data loading
             // Setup refresh listener which triggers new data loading
-            swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+            binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 //fetchTimelineAsync(0)
-                searchView.setQuery("", false)
-                searchView.clearFocus()
+                binding.workOrdersSearch.setQuery("", false)
+                binding.workOrdersSearch.clearFocus()
                 println("Start date: $startDateDB")
                 println("End date: $endDateDB")
                 getWorkOrders()
             }
             // Configure the refreshing colors
             // Configure the refreshing colors
-            swipeRefresh.setColorSchemeResources(
+            binding.customerSwipeContainer.setColorSchemeResources(
                 R.color.button,
                 R.color.black,
                 R.color.colorAccent,
@@ -383,13 +389,13 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             // ...the data has come back, add new items to your adapter...
 
             // Now we call setRefreshing(false) to signal refresh has finished
-            customerSwipeContainer.isRefreshing = false
+            binding.customerSwipeContainer.isRefreshing = false
 
 
 
 
             //search listener
-            work_orders_search.setOnQueryTextListener(object :
+            binding.workOrdersSearch.setOnQueryTextListener(object :
                 SearchView.OnQueryTextListener,
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
@@ -433,11 +439,11 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
         println("onItemSelected position = $position")
-        println("scheduleSpinner.getTag(R.id.pos) = ${scheduleSpinner.getTag(R.id.pos)}")
+        println("scheduleSpinner.getTag(R.id.pos) = ${binding.scheduleSpinner.getTag(R.id.pos)}")
 
 
 
-        if(scheduleSpinner.getTag(R.id.pos) != null && scheduleSpinner.getTag(R.id.pos) != position){
+        if(binding.scheduleSpinner.getTag(R.id.pos) != null && binding.scheduleSpinner.getTag(R.id.pos) != position){
 
             println("tag != pos")
 
@@ -447,7 +453,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         }
 
         scheduleSpinnerPosition = position
-        scheduleSpinner.setTag(R.id.pos, position)
+        binding.scheduleSpinner.setTag(R.id.pos, position)
 
 
 
@@ -666,14 +672,14 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 endDateDB = ""
 
                 empID = loggedInEmployee!!.ID
-                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
+                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
             }
             1 -> {println("all dates everyone")
                 startDateDB = ""
                 endDateDB = ""
 
                 empID = ""
-                crewBtn.text = getString(R.string.crews_everyone)
+                binding.crewBtn.text = getString(R.string.crews_everyone)
             }
             2 -> {println("today personal")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -684,7 +690,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = loggedInEmployee!!.ID
-                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
+                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
             }
             3 -> {println("today everyone")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -696,7 +702,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = ""
-                crewBtn.text = getString(R.string.crews_everyone)
+                binding.crewBtn.text = getString(R.string.crews_everyone)
             }
             4 -> {println("tomorrow personal")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -707,7 +713,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = loggedInEmployee!!.ID
-                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
+                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
             }
             5 -> {println("tomorrow everyone")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -718,7 +724,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID =""
-                crewBtn.text = getString(R.string.crews_everyone)
+                binding.crewBtn.text = getString(R.string.crews_everyone)
             }
             6 -> {println("this week personal")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -729,7 +735,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = loggedInEmployee!!.ID
-                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
+                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
             }
             7 -> {println("this week everyone")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -740,7 +746,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = ""
-                crewBtn.text = getString(R.string.crews_everyone)
+                binding.crewBtn.text = getString(R.string.crews_everyone)
             }
             8 -> {println("next week personal")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -751,7 +757,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = loggedInEmployee!!.ID
-                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
+                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
             }
             9 -> {println("next week everyone")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -762,7 +768,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = ""
-                crewBtn.text = getString(R.string.crews_everyone)
+                binding.crewBtn.text = getString(R.string.crews_everyone)
             }
             10 -> {println("next 14 days personal")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -773,7 +779,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = loggedInEmployee!!.ID
-                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
+                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
             }
             11 -> {println("next 14 days everyone")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -784,7 +790,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = ""
-                crewBtn.text = getString(R.string.crews_everyone)
+                binding.crewBtn.text = getString(R.string.crews_everyone)
             }
             12 -> {println("next 30 days personal")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -795,7 +801,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = loggedInEmployee!!.ID
-                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
+                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
             }
             13 -> {println("next 30 days everyone")
                 val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -806,7 +812,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = ""
-                crewBtn.text = getString(R.string.crews_everyone)
+                binding.crewBtn.text = getString(R.string.crews_everyone)
             }
             14 -> {println("this year personal")
                 val odtStart: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atTime(OffsetTime.MIN)
@@ -816,7 +822,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = loggedInEmployee!!.ID
-                crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
+                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
             }
             15 -> {println("this year everyone")
                 val odtStart: OffsetDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atTime(OffsetTime.MIN)
@@ -826,40 +832,22 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 startDateDB = odtStart.format(dateFormatterYYYYMMDD)
                 endDateDB = odtStop.format(dateFormatterYYYYMMDD)
                 empID = ""
-                crewBtn.text = getString(R.string.crews_everyone)
+                binding.crewBtn.text = getString(R.string.crews_everyone)
             }
         }
     }
 
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCL.visibility = View.INVISIBLE
-        /*
-        searchView.visibility = View.INVISIBLE
-        recyclerView.visibility = View.INVISIBLE
-        scheduleSpinner.visibility = View.INVISIBLE
-        crewBtn.visibility = View.INVISIBLE
-        mapBtn.visibility = View.INVISIBLE
-        countTextView.visibility = View.INVISIBLE
-
-         */
-
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         println("hideProgressView")
-        pgsBar.visibility = View.INVISIBLE
-        allCL.visibility = View.VISIBLE
-        /*
-        searchView.visibility = View.VISIBLE
-        recyclerView.visibility = View.VISIBLE
-        scheduleSpinner.visibility = View.VISIBLE
-        crewBtn.visibility = View.VISIBLE
-        mapBtn.visibility = View.VISIBLE
-        countTextView.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
 
-         */
     }
 
 
@@ -873,8 +861,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
     override fun onDestroyView() {
         println("onDestroyView")
-        work_orders_search.setOnQueryTextListener(null)
-        scheduleSpinner.onItemSelectedListener = null
+        binding.workOrdersSearch.setOnQueryTextListener(null)
+        binding.scheduleSpinner.onItemSelectedListener = null
 
         super.onDestroyView()
     }

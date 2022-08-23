@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.customer_list_item.view.*
 import java.util.*
 
 
@@ -37,13 +36,13 @@ class CustomersAdapter(private val list: MutableList<Customer>, private val cell
 
     override fun onBindViewHolder(holder: CustomerViewHolder, position: Int) {
 
-
-
-
         val customer: Customer = filterList[position]
         holder.bind(customer)
         println("queryText = $queryText")
         //text highlighting for first string
+
+        val listSysname = holder.itemView.findViewById<TextView>(R.id.list_sysname)
+        val listMainAddr = holder.itemView.findViewById<TextView>(R.id.list_mainAddr)
 
         if (!searchAddressOnly) {
 
@@ -66,12 +65,12 @@ class CustomersAdapter(private val list: MutableList<Customer>, private val cell
                         endPos1,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                    holder.itemView.list_sysname.text = spannable
+                    listSysname.text = spannable
                 } else {
-                    holder.itemView.list_sysname.text = filterList[position].sysname
+                    listSysname.text = filterList[position].sysname
                 }
             } else {
-                holder.itemView.list_sysname.text = filterList[position].sysname
+                listSysname.text = filterList[position].sysname
             }
         }
 
@@ -96,12 +95,12 @@ class CustomersAdapter(private val list: MutableList<Customer>, private val cell
                     endPos2,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_mainAddr.text = spannable
+                listMainAddr.text = spannable
             } else {
-                holder.itemView.list_mainAddr.text = filterList[position].mainAddr
+                listMainAddr.text = filterList[position].mainAddr
             }
         } else {
-            holder.itemView.list_mainAddr.text = filterList[position].mainAddr
+            listMainAddr.text = filterList[position].mainAddr
         }
 
         val data = filterList[position]

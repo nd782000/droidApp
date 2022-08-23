@@ -6,100 +6,107 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/contracts_search_cl"
+        android:id="@+id/all_cl"
         android:layout_width="match_parent"
-        android:layout_height="57dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/background">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/contracts_search"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contracts_search_cl"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/text_view_layout"
-            android:textCursorDrawable="@null"
-            android:layout_margin="5dp"
-            app:iconifiedByDefault="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="57dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:queryBackground="@null"
-            android:title="Search"
-            app:actionViewClass="android.widget.SearchView"/>
+            android:background="@color/background">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/contracts_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_view_layout"
+                android:textCursorDrawable="@null"
+                android:layout_margin="5dp"
+                app:iconifiedByDefault="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:queryBackground="@null"
+                android:title="Search"
+                app:actionViewClass="android.widget.SearchView"/>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/customerSwipeContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/footer_cl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/contracts_search_cl">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_recycler_view"
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/customerSwipeContainer"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            />
+            app:layout_constraintBottom_toTopOf="@id/footer_cl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/contracts_search_cl">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_recycler_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/footer_cl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <TextView
-            android:id="@+id/contract_count_textview"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/footer_cl"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:paddingTop="4dp"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/new_contract_btn"
+            android:background="@color/background"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            />
+            <TextView
+                android:id="@+id/contract_count_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:paddingTop="4dp"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/new_contract_btn"
 
-
-        <Button
-            android:id="@+id/new_contract_btn"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-
-            android:text="@string/add_new_contract"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+                />
 
 
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/map_btn"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            <Button
+                android:id="@+id/new_contract_btn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
 
-        <Button
-            android:id="@+id/map_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+                android:text="@string/add_new_contract"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
 
-            android:layout_marginRight="10dp"
-            android:background="@drawable/ic_settings"
-            android:insetTop="12dp"
-            android:insetBottom="12dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="5dp"
-            android:text=""
-            app:iconPadding="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            />
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/map_btn"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <Button
+                android:id="@+id/map_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+
+                android:layout_marginRight="10dp"
+                android:background="@drawable/ic_settings"
+                android:insetTop="12dp"
+                android:insetBottom="12dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                android:text=""
+                app:iconPadding="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

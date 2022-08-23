@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,15 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentContractListBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_contract_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -37,18 +34,12 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-    lateinit var recyclerView: RecyclerView
-    lateinit var searchView:androidx.appcompat.widget.SearchView
-    private lateinit var footerCL:androidx.constraintlayout.widget.ConstraintLayout
-    lateinit var swipeRefresh:SwipeRefreshLayout
-    lateinit var contractCountText:TextView
-
-
-    // lateinit var  btn: Button
 
     lateinit var adapter:ContractsAdapter
 
+
+    private var _binding: FragmentContractListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,8 +49,8 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
         println("onCreateView")
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_contract_list, container, false)
-
+        _binding = FragmentContractListBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
         // progBar.alpha = 0.2f
@@ -77,20 +68,14 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
 
         // Inflate the layout for this fragment
+
         return myView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-
         //need to wait for this function to initialize views
         println("onViewCreated")
-        pgsBar = view.findViewById(R.id.progressBar)
-        recyclerView = view.findViewById(R.id.list_recycler_view)
-        searchView = view.findViewById(R.id.contracts_search)
-        swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
-        contractCountText = view.findViewById(R.id.contract_count_textview)
-        footerCL = view.findViewById(R.id.footer_cl)
 
         getContracts()
 
@@ -145,10 +130,10 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
                     val gson = GsonBuilder().create()
                     val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
 
-                    contractCountText.text = getString(R.string.x_active_contracts, contractsList.size)
+                    binding.contractCountTextview.text = getString(R.string.x_active_contracts, contractsList.size)
 
 
-                    list_recycler_view.apply {
+                    binding.listRecyclerView.apply {
                         layoutManager = LinearLayoutManager(activity)
 
 
@@ -158,7 +143,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
                         val itemDecoration: ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        recyclerView.addItemDecoration(itemDecoration)
+                        binding.listRecyclerView.addItemDecoration(itemDecoration)
 
                         //for item animations
                         // recyclerView.itemAnimator = SlideInUpAnimator()
@@ -168,17 +153,17 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
                         // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
                         // Setup refresh listener which triggers new data loading
                         // Setup refresh listener which triggers new data loading
-                        swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                        binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
                             // Make sure you call swipeContainer.setRefreshing(false)
                             // once the network request has completed successfully.
                             //fetchTimelineAsync(0)
-                            searchView.setQuery("", false)
-                            searchView.clearFocus()
+                            binding.contractsSearch.setQuery("", false)
+                            binding.contractsSearch.clearFocus()
                             getContracts()
                         }
                         // Configure the refreshing colors
                         // Configure the refreshing colors
-                        swipeRefresh.setColorSchemeResources(
+                        binding.customerSwipeContainer.setColorSchemeResources(
                             R.color.button,
                             R.color.black,
                             R.color.colorAccent,
@@ -194,14 +179,14 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
                         // ...the data has come back, add new items to your adapter...
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false
+                        binding.customerSwipeContainer.isRefreshing = false
 
                         // Toast.makeText(activity,"${contractsList.count()} Contracts Loaded",Toast.LENGTH_SHORT).show()
 
 
 
                         //search listener
-                        contracts_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+                        binding.contractsSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
                             androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
 
@@ -264,17 +249,13 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        searchView.visibility = View.INVISIBLE
-        recyclerView.visibility = View.INVISIBLE
-        footerCL.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        searchView.visibility = View.VISIBLE
-        recyclerView.visibility = View.VISIBLE
-        footerCL.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 

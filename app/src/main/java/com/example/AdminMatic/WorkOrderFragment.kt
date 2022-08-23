@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -14,11 +13,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentWorkOrderBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_work_order.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -40,10 +39,10 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     lateinit var context: AppCompatActivity
 
 
-    lateinit var  pgsBar: ProgressBar
-
     private lateinit var  stackFragment: StackFragment
 
+    /*
+    lateinit var  pgsBar: ProgressBar
     private lateinit var statusBtn:ImageButton
     private lateinit var customerBtn:Button
 
@@ -67,6 +66,8 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
     lateinit var itemRecyclerView:RecyclerView
 
+     */
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,23 +79,21 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         }
     }
 
+    private var _binding: FragmentWorkOrderBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-
         println("onCreateView")
         globalVars = GlobalVars()
 
-
-
-
-        myView = inflater.inflate(R.layout.fragment_work_order, container, false)
+        _binding = FragmentWorkOrderBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         println("Work Order: $workOrder")
-
 
         // Inflate the layout for this fragment
         return myView
@@ -104,7 +103,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         println("WorkOrder View")
-
+        /*
         pgsBar = myView.findViewById(R.id.progress_bar)
         allCL = myView.findViewById(R.id.all_cl)
         customerBtn = myView.findViewById(R.id.customer_btn)
@@ -130,6 +129,8 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         headerCL = myView.findViewById(R.id.header_cl)
 
         itemRecyclerView = myView.findViewById(R.id.work_order_items_rv)
+
+         */
 
 
         getWorkOrder()
@@ -231,9 +232,9 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
                     setStatusIcon(workOrder!!.status)
-                    titleTxt.text = workOrder!!.title
+                    binding.titleValTv.text = workOrder!!.title
                     if(workOrder!!.nextPlannedDate != null){
-                        scheduleTxt.text = workOrder!!.nextPlannedDate
+                        binding.scheduleValTv.text = workOrder!!.nextPlannedDate
                     }
                     /*
                     if(workOrder!!.department != null){
@@ -242,10 +243,10 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                      */
                     if(workOrder!!.crewName != null){
-                        crewTxt.text = workOrder!!.mainCrew!!
+                        binding.crewValTv.text = workOrder!!.mainCrew!!
                     }
                     if(workOrder!!.salesRepName != null){
-                        repTxt.text = workOrder!!.salesRepName!!
+                        binding.repValTv.text = workOrder!!.salesRepName!!
                     }
 
                     println("Charge Name: ${workOrder!!.chargeName}")
@@ -263,17 +264,17 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                             workOrder!!.chargeName = ""
                         }
                     }
-                    chargeTxt.text = workOrder!!.chargeName
+                    binding.chargeLblTv.text = workOrder!!.chargeName
 
 
                     val profit:Float = workOrder!!.totalPriceRaw.toFloat() - workOrder!!.totalCostRaw.toFloat()
                     val profitPercent:Int = (profit / workOrder!!.totalPriceRaw.toFloat() * 100).toInt()
 
-                    priceTxt.text = workOrder!!.totalPrice
-                    costTxt.text = workOrder!!.totalCost
-                    profitTxt.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
-                    profitPercentTxt.text = profitPercent.toString()
-                    profitBar.progress = 100 - profitPercent
+                    binding.priceTv.text = workOrder!!.totalPrice
+                    binding.costTv.text = workOrder!!.totalCost
+                    binding.profitTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
+                    binding.profitPercentTv.text = profitPercent.toString()
+                    binding.profitBar.progress = 100 - profitPercent
 
 
                     val woItemJSON: JSONArray = parentObject.getJSONArray("items")
@@ -284,7 +285,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         it.woID = workOrder!!.woID
                     }
 
-                    work_order_items_rv.apply {
+                    binding.workOrderItemsRv.apply {
                         layoutManager = LinearLayoutManager(activity)
                         adapter = activity?.let {
                             WoItemsAdapter(
@@ -297,7 +298,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                         val itemDecoration: RecyclerView.ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        itemRecyclerView.addItemDecoration(itemDecoration)
+                        binding.workOrderItemsRv.addItemDecoration(itemDecoration)
                         //(adapter as WoItemsAdapter).notifyDataSetChanged()
                     }
 
@@ -309,19 +310,19 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     ft.add(R.id.work_order_cl, stackFragment, "stackFrag")
                     ft.commitAllowingStateLoss()
 
-                    statusBtn.setOnClickListener{
+                    binding.statusBtn.setOnClickListener{
                         println("status btn clicked")
                         showStatusMenu()
                     }
 
-                    customerBtn.setOnClickListener{
+                    binding.customerBtn.setOnClickListener{
                         println("customer btn clicked")
                         val customer = Customer(workOrder!!.customer!!)
                         val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer.ID)
                         myView.findNavController().navigate(directions)
                     }
                     //customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
-                    customerBtn.text = getString(R.string.customer_button, workOrder!!.custName, workOrder!!.custAddress)
+                    binding.customerBtn.text = getString(R.string.customer_button, workOrder!!.custName, workOrder!!.custAddress)
 
                     println("lat: ${workOrder!!.lat}")
                     println("lng: ${workOrder!!.lng}")
@@ -331,7 +332,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     workOrder!!.setEmps()
 
                     if (GlobalVars.permissions!!.scheduleMoney == "0") {
-                        footerCL.visibility = View.GONE
+                        binding.workOrderFooterCl.visibility = View.GONE
                     }
 
                     hideProgressView()
@@ -360,7 +361,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     private fun showStatusMenu(){
         println("showStatusMenu")
 
-        val popUp = PopupMenu(myView.context,statusBtn)
+        val popUp = PopupMenu(myView.context, binding.statusBtn)
         popUp.inflate(R.menu.task_status_menu)
         popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_not_started)!!,myView.context), myView.context.getString(R.string.not_started)))
         popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_in_progress)!!,myView.context), myView.context.getString(R.string.in_progress)))
@@ -540,23 +541,23 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         when(status) {
             "1" -> {
                 println("1")
-                statusBtn.setBackgroundResource(R.drawable.ic_not_started)
+                binding.statusBtn.setBackgroundResource(R.drawable.ic_not_started)
             }
             "2" -> {
                 println("2")
-                statusBtn.setBackgroundResource(R.drawable.ic_in_progress)
+                binding.statusBtn.setBackgroundResource(R.drawable.ic_in_progress)
             }
             "3" -> {
                 println("3")
-                statusBtn.setBackgroundResource(R.drawable.ic_done)
+                binding.statusBtn.setBackgroundResource(R.drawable.ic_done)
             }
             "4" -> {
                 println("4")
-                statusBtn.setBackgroundResource(R.drawable.ic_canceled)
+                binding.statusBtn.setBackgroundResource(R.drawable.ic_canceled)
             }
             "5" -> {
                 println("5")
-                statusBtn.setBackgroundResource(R.drawable.ic_waiting)
+                binding.statusBtn.setBackgroundResource(R.drawable.ic_waiting)
             }
         }
     }
@@ -564,15 +565,14 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
     fun showProgressView() {
-
         println("showProgressView")
-        pgsBar.visibility = View.VISIBLE
-        allCL.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCL.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 }

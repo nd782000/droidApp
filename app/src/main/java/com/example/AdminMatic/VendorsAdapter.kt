@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.vendor_list_item.view.*
 import java.util.*
 
 
@@ -43,12 +42,12 @@ class VendorsAdapter(
     }
 
     override fun onBindViewHolder(holder: VendorViewHolder, position: Int) {
-
-
-
-
         val vendor: Vendor = filterList[position]
         holder.bind(vendor)
+
+        val listName = holder.itemView.findViewById<TextView>(R.id.list_name)
+        val listItemString = holder.itemView.findViewById<TextView>(R.id.list_itemString)
+
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         println("queryText = $queryText")
@@ -71,12 +70,12 @@ class VendorsAdapter(
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_name.text = spannable
+                listName.text = spannable
             } else {
-                holder.itemView.list_name.text = filterList[position].name
+                listName.text = filterList[position].name
             }
         } else {
-            holder.itemView.list_name.text = filterList[position].name
+            listName.text = filterList[position].name
         }
 
         //text highlighting for second string
@@ -99,12 +98,12 @@ class VendorsAdapter(
                     endPos2,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_itemString.text = spannable
+                listItemString.text = spannable
             } else {
-                holder.itemView.list_itemString.text = filterList[position].itemString!!
+                listItemString.text = filterList[position].itemString!!
             }
         } else {
-            holder.itemView.list_itemString.text = filterList[position].itemString!!
+            listItemString.text = filterList[position].itemString!!
         }
 
 

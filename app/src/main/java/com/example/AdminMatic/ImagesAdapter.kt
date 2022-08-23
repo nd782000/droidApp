@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.image_list_item.view.*
 import java.util.*
 
 
@@ -45,17 +44,17 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
 
-
-
-
         val image: Image = filterList[position]
         holder.bind(image, showTitleInsteadOfCustomer)
+
+        val listName = holder.itemView.findViewById<TextView>(R.id.list_name)
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         //println("queryText = $queryText")
 
         //text highlighting for second string
         if (queryText.isNotEmpty() && queryText != "" && filterList[position].customerName != null) {
+
 
 
             val startPos2: Int = filterList[position].customerName!!.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
@@ -82,25 +81,25 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 println("setting name to spannable 1")
-                holder.itemView.list_name.text = spannable
+                listName.text = spannable
             } else {
 
                 if (filterList[position].customerName != null){
                     if (showTitleInsteadOfCustomer) {
-                        holder.itemView.list_name.text = filterList[position].name
+                        listName.text = filterList[position].name
                     }
                     else {
-                        holder.itemView.list_name.text = filterList[position].customerName!!
+                        listName.text = filterList[position].customerName!!
                     }
                 }
             }
         } else {
             if (filterList[position].customerName != null){
                 if (showTitleInsteadOfCustomer) {
-                    holder.itemView.list_name.text = filterList[position].name
+                    listName.text = filterList[position].name
                 }
                 else {
-                    holder.itemView.list_name.text = filterList[position].customerName!!
+                    listName.text = filterList[position].customerName!!
                 }
             }
 

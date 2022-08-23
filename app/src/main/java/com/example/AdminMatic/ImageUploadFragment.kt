@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentImageUploadBinding
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request.Method.POST
 import com.android.volley.Response
@@ -46,7 +47,6 @@ import io.fotoapparat.log.logcat
 import io.fotoapparat.result.transformer.scaled
 import io.fotoapparat.selector.*
 import io.fotoapparat.view.CameraView
-import kotlinx.android.synthetic.main.fragment_image_upload.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -92,17 +92,6 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
     //lateinit var  pgsBar: ProgressBar
    // private lateinit var imageView: ImageView
 
-
-
-
-
-    private lateinit var footer:ConstraintLayout
-    private lateinit var cameraBtn: Button
-    private lateinit var galleryBtn: Button
-    private lateinit var submitBtn: Button
-
-    private lateinit var pgsBar: ProgressBar
-    private lateinit var allCL: ConstraintLayout
 
     lateinit  var globalVars:GlobalVars
 
@@ -190,6 +179,9 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
      */
 
+    private var _binding: FragmentImageUploadBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?,
@@ -197,36 +189,25 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
     ): View {
         // Inflate the layout for this fragment
 
+        _binding = FragmentImageUploadBinding.inflate(inflater, container, false)
+        myView = binding.root
 
-
-
-        myView = inflater.inflate(R.layout.fragment_image_upload, container, false)
 
         println("onCreateView")
-
         customerSearchView = myView.findViewById(R.id.image_upload_prep_customer_search)
-
         customerSearchView.setQuery(customerName, false)
-
         adapter = CustomersAdapter(GlobalVars.customerList!!, this, false)
-
         globalVars = GlobalVars()
 
 
-
         customerRecyclerView = myView.findViewById(R.id.customer_search_rv)
-
         customerRecyclerView.visibility = View.GONE
-
 
         descriptionTxt = myView.findViewById(R.id.image_upload_task_edit_txt)
 
         if (taskDescription != ""){
             descriptionTxt.text = Editable.Factory.getInstance().newEditable(taskDescription)
         }
-
-        pgsBar = myView.findViewById(R.id.progress_bar)
-        allCL = myView.findViewById(R.id.all_cl)
 
 
       //  return inflater.inflate(R.layout.fragment_image_upload, container, false)
@@ -376,9 +357,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
 
-        footer = view.findViewById(R.id.image_upload_prep_footer_cl)
-        cameraBtn = view.findViewById((R.id.camera_btn))
-        cameraBtn.setOnClickListener{
+
+        binding.cameraBtn.setOnClickListener{
             println("camera btn clicked")
 
             launchCamera()
@@ -392,16 +372,14 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             takePicture()
         }
 
-        galleryBtn = view.findViewById((R.id.gallery_btn))
-        galleryBtn.setOnClickListener{
+        binding.galleryBtn.setOnClickListener{
             println("gallery btn clicked")
 
             launchGallery()
         }
 
 
-        submitBtn = view.findViewById((R.id.submit_images_btn))
-        submitBtn.setOnClickListener{
+        binding.submitImagesBtn.setOnClickListener{
             println("submit btn clicked")
 
             if (!customerAllowImages && mode != "WOITEM") {
@@ -476,7 +454,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         fotoapparat = Fotoapparat(
             context = (activity as MainActivity?)!!,
             view = cameraView,
-            focusView = focusView,
+            focusView = binding.focusView,
             logger = logcat(),
 
 
@@ -509,7 +487,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         if (permissionsGranted) {
              cameraView.visibility = View.VISIBLE
             captureBtn.visibility = View.VISIBLE
-            footer.visibility = View.GONE
+            binding.imageUploadPrepFooterCl.visibility = View.GONE
 
         } else {
             permissionsDelegate.requestCameraPermission()
@@ -520,13 +498,13 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
     private fun takePicture(){
 
 
-        val cl = LayoutInflater.from(this.context).inflate(R.layout.image_upload_image_list_item, image_upload_prep_selected_images_ll, false) as ConstraintLayout
+        val cl = LayoutInflater.from(this.context).inflate(R.layout.image_upload_image_list_item, binding.imageUploadPrepSelectedImagesLl, false) as ConstraintLayout
         cl.id = selectedUris.count()
 
 
         cameraView.visibility = View.GONE
         captureBtn.visibility = View.GONE
-        footer.visibility = View.VISIBLE
+        binding.imageUploadPrepFooterCl.visibility = View.VISIBLE
 
 
         val tsLong = System.currentTimeMillis()/1000
@@ -674,13 +652,13 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
                         deleteBtn.setOnClickListener {
                             println("delete")
                             selectedUris.removeAt(selectedUris.count() - 1)
-                            image_upload_prep_selected_images_ll.removeView(cl)
+                            binding.imageUploadPrepSelectedImagesLl.removeView(cl)
                         }
 
 
 
 
-                        image_upload_prep_selected_images_ll.addView(cl)
+                        binding.imageUploadPrepSelectedImagesLl.addView(cl)
 
                         println("cl.findViewById(R.id.image_upload_image_item_iv) = ${cl.findViewById(R.id.image_upload_image_item_iv) as ImageView}")
                         Glide.with(this).load(uri).into(cl.findViewById(R.id.image_upload_image_item_iv) as ImageView)
@@ -689,7 +667,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
                         //cl.requestFocus()
                        // var image_upload_prep_selected_images_sv = cl.findViewById(R.id.image_upload_prep_selected_images_sv) as ScrollView
-                        image_upload_prep_selected_images_sv.fullScroll(View.FOCUS_DOWN)
+                        binding.imageUploadPrepSelectedImagesSv.fullScroll(View.FOCUS_DOWN)
 
 
                     }
@@ -767,7 +745,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             cameraView.visibility = View.VISIBLE
             captureBtn.visibility = View.VISIBLE
 
-            footer.visibility = View.GONE
+            binding.imageUploadPrepFooterCl.visibility = View.GONE
         }
     }
 
@@ -808,7 +786,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
             selectedUris.add(uri)
 
-            val cl = LayoutInflater.from(this.context).inflate(R.layout.image_upload_image_list_item, image_upload_prep_selected_images_ll, false) as ConstraintLayout
+            val cl = LayoutInflater.from(this.context).inflate(R.layout.image_upload_image_list_item, binding.imageUploadPrepSelectedImagesLl, false) as ConstraintLayout
             cl.id = count
 
             val pb = cl.findViewById(R.id.image_upload_image_item_pb) as ProgressBar
@@ -827,13 +805,13 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             deleteBtn.setOnClickListener {
                 println("delete")
                 selectedUris.removeAt(selectedUris.count() - 1)
-                image_upload_prep_selected_images_ll.removeView(cl)
+                binding.imageUploadPrepSelectedImagesLl.removeView(cl)
             }
 
 
 
 
-            image_upload_prep_selected_images_ll.addView(cl)
+            binding.imageUploadPrepSelectedImagesLl.addView(cl)
 
             println("cl.findViewById(R.id.image_upload_image_item_iv) = ${cl.findViewById(R.id.image_upload_image_item_iv) as ImageView}")
             Glide.with(this).load(uri).into(cl.findViewById(R.id.image_upload_image_item_iv) as ImageView)
@@ -841,7 +819,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             //cl.requestFocus()
 
             //image_upload_prep_selected_images_ll.fullScroll(View.FOCUS_DOWN)
-            image_upload_prep_selected_images_sv.fullScroll(View.FOCUS_DOWN)
+            binding.imageUploadPrepSelectedImagesSv.fullScroll(View.FOCUS_DOWN)
 
 
             count += 1
@@ -942,8 +920,8 @@ private  fun saveTask(){
         selectedUris.forEach { uri ->
             uri.path?.let { handleRotation(it) }
             println("uri# $count")
-            println("views = ${image_upload_prep_selected_images_ll.childCount}")
-            val cl = image_upload_prep_selected_images_ll.findViewById<ConstraintLayout>(count)
+            println("views = ${binding.imageUploadPrepSelectedImagesLl.childCount}")
+            val cl = binding.imageUploadPrepSelectedImagesLl.findViewById<ConstraintLayout>(count)
             val iv = cl.findViewById(R.id.image_upload_image_item_iv) as ImageView
             val pb = cl.findViewById(R.id.image_upload_image_item_pb) as ProgressBar
             val tv = cl.findViewById(R.id.image_upload_image_item_tv) as TextView
@@ -1188,13 +1166,13 @@ private  fun saveTask(){
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCL.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCL.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
     /*

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentEquipmentBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.android.material.tabs.TabLayout
@@ -32,23 +33,9 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-
-    lateinit var serviceRecyclerView: RecyclerView
-
     lateinit var currentServicesAdapter:ServiceAdapter
     lateinit var historyServicesAdapter:ServiceAdapter
 
-    private lateinit var equipmentImageView: ImageView
-    private lateinit var nameTxt:TextView
-    private lateinit var typeTxt:TextView
-    private lateinit var crewTxt:TextView
-    private lateinit var detailsBtn:Button
-    private lateinit var addServiceBtn: Button
-    private lateinit var statusBtn: ImageButton
-
-
-    private lateinit var tabLayout: TabLayout
     lateinit var tableMode:String
 
 
@@ -59,18 +46,18 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         }
     }
 
+    private var _binding: FragmentEquipmentBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-       // return inflater.inflate(R.layout.fragment_equipment, container, false)
-        myView = inflater.inflate(R.layout.fragment_equipment, container, false)
+        _binding = FragmentEquipmentBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment)
-
-
 
         return myView
     }
@@ -82,26 +69,12 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
         println("equipment = ${equipment!!.name}")
 
-
-        pgsBar = view.findViewById(R.id.progress_bar)
-
-        serviceRecyclerView = view.findViewById(R.id.service_recycler_view)
-
-        nameTxt = myView.findViewById(R.id.equipment_name_txt)
-        typeTxt = myView.findViewById(R.id.equipment_type_txt)
-        crewTxt = myView.findViewById(R.id.equipment_crew_txt)
-        equipmentImageView = myView.findViewById(R.id.equipment_pic_iv)
-        detailsBtn = view.findViewById(R.id.equipment_details_btn)
-        tabLayout = myView.findViewById(R.id.equipment_table_tl)
-
-        statusBtn = myView.findViewById(R.id.equipment_status_btn)
-        statusBtn.setOnClickListener{
+        binding.equipmentStatusBtn.setOnClickListener{
             println("status btn clicked")
             showStatusMenu()
         }
 
-        addServiceBtn = myView.findViewById(R.id.add_service_btn)
-        addServiceBtn.setOnClickListener{
+        binding.addServiceBtn.setOnClickListener{
             println("status btn clicked")
 
             if (GlobalVars.permissions!!.equipmentEdit == "1") {
@@ -119,23 +92,23 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                 .placeholder(R.drawable.ic_images) //optional
                 //.resize(imgWidth, imgHeight)         //optional
                 //.centerCrop()                        //optional
-                .into(equipmentImageView)                       //Your image view object.
+                .into(binding.equipmentPicIv)                       //Your image view object.
         }
 
 
 
 
-        nameTxt.text = equipment!!.name
+        binding.equipmentNameTxt.text = equipment!!.name
 
         if(equipment!!.typeName != null){
-            typeTxt.text = equipment!!.typeName
+            binding.equipmentTypeTxt.text = equipment!!.typeName
         }
 
         if(equipment!!.crewName != null){
-            crewTxt.text = getString(R.string.equipment_crew_display, equipment!!.crewName)
+            binding.equipmentCrewTxt.text = getString(R.string.equipment_crew_display, equipment!!.crewName)
         }
 
-        detailsBtn.setOnClickListener{
+        binding.equipmentDetailsBtn.setOnClickListener{
             println("details btn clicked")
             val directions = EquipmentFragmentDirections.navigateToEquipmentDetails(equipment)
             myView.findNavController().navigate(directions)
@@ -146,17 +119,17 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
 
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.equipmentTableTl.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab!!.position) {
                     0 -> {
                         tableMode = "CURRENT"
 
-                        serviceRecyclerView.adapter = currentServicesAdapter
+                        binding.serviceRecyclerView.adapter = currentServicesAdapter
                     }
                     1 -> {
 
-                        serviceRecyclerView.adapter = historyServicesAdapter
+                        binding.serviceRecyclerView.adapter = historyServicesAdapter
                         tableMode = "HISTORY"
                     }
                 }
@@ -232,7 +205,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     historyServicesAdapter = ServiceAdapter(servicesListHistory,this.myView.context, true,this)
 
 
-                    serviceRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    binding.serviceRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
 
 
                     //status
@@ -242,14 +215,14 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     equipment!!.status = equipmentNew.status
                     setStatus(equipment!!.status)
 
-                    serviceRecyclerView.adapter = currentServicesAdapter
+                    binding.serviceRecyclerView.adapter = currentServicesAdapter
 
 
 
 
                     val itemDecoration: RecyclerView.ItemDecoration =
                         DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                    serviceRecyclerView.addItemDecoration(itemDecoration)
+                    binding.serviceRecyclerView.addItemDecoration(itemDecoration)
 
                     /*
                     currentRecyclerView.apply {
@@ -327,7 +300,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     private fun showStatusMenu(){
         println("showStatusMenu")
 
-        val popUp = PopupMenu(myView.context,statusBtn)
+        val popUp = PopupMenu(myView.context, binding.equipmentStatusBtn)
         popUp.inflate(R.menu.task_status_menu)
         popUp.menu.add(0, 0, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_online)!!,myView.context), myView.context.getString(R.string.equipment_status_online)))
         popUp.menu.add(0, 1, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_needs_repair)!!,myView.context), myView.context.getString(R.string.equipment_status_needs_repair)))
@@ -401,35 +374,31 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         when(status) {
             "0" -> {
                 println("0")
-                statusBtn.setBackgroundResource(R.drawable.ic_online)
+                binding.equipmentStatusBtn.setBackgroundResource(R.drawable.ic_online)
             }
             "1" -> {
                 println("1")
-                statusBtn.setBackgroundResource(R.drawable.ic_needs_repair)
+                binding.equipmentStatusBtn.setBackgroundResource(R.drawable.ic_needs_repair)
             }
             "2" -> {
                 println("2")
-                statusBtn.setBackgroundResource(R.drawable.ic_broken)
+                binding.equipmentStatusBtn.setBackgroundResource(R.drawable.ic_broken)
             }
             "3" -> {
                 println("3")
-                statusBtn.setBackgroundResource(R.drawable.ic_winterized)
+                binding.equipmentStatusBtn.setBackgroundResource(R.drawable.ic_winterized)
             }
         }
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        serviceRecyclerView.visibility = View.INVISIBLE
-        //currentRecyclerView.visibility = View.INVISIBLE
-       // historyRecyclerView.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.serviceRecyclerView.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        serviceRecyclerView.visibility = View.VISIBLE
-       // currentRecyclerView.visibility = View.VISIBLE
-       // historyRecyclerView.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.serviceRecyclerView.visibility = View.VISIBLE
     }
 
 }

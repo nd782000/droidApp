@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.equipment_detail_list_item.view.*
 
 
 class EquipmentDetailAdapter(list: MutableList<String>, private val cellClickListener: EquipmentDetailCellClickListener)
@@ -46,7 +45,7 @@ class EquipmentDetailAdapter(list: MutableList<String>, private val cellClickLis
         //text highlighting for first string
 
         //if (filterList[position].name != null){
-        holder.itemView.list_detail_name.text = filterList[position]
+        holder.itemView.findViewById<TextView>(R.id.list_detail_name).text = filterList[position]
         //}
 
 

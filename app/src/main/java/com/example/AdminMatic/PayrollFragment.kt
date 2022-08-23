@@ -13,12 +13,11 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentPayrollBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.employeeList
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
@@ -38,32 +37,6 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
     lateinit var currentPayroll:Payroll
 
     lateinit var myView:View
-    lateinit var  pgsBar: ProgressBar
-    private lateinit var  empPickerCL: ConstraintLayout
-    private lateinit var  startCL: ConstraintLayout
-    private lateinit var  stopCL: ConstraintLayout
-    private lateinit var  breakCL: ConstraintLayout
-    private lateinit var  resetCL: ConstraintLayout
-    private lateinit var  footerCL: ConstraintLayout
-
-    private lateinit var empSpinner:Spinner
-    private lateinit var  startBtn: Button
-    private lateinit var  stopBtn: Button
-    private lateinit var  resetBtn: Button
-
-    lateinit var  startTxt: EditText
-    lateinit var  stopTxt: EditText
-    lateinit var  breakTxt: EditText
-
-    private lateinit var startLock:ConstraintLayout
-    private lateinit var stopLock:ConstraintLayout
-    private lateinit var breakLock:ConstraintLayout
-
-    lateinit var  totalTxt: TextView
-    lateinit var  combinedTotalTxt: TextView
-
-    lateinit var  pendingTxt: TextView
-    lateinit var  combinedPendingTxt: TextView
 
     private lateinit var timePicker: TimePickerHelper
 
@@ -77,6 +50,9 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         }
     }
 
+    private var _binding: FragmentPayrollBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -84,8 +60,8 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         // Inflate the layout for this fragment
         println("onCreateView")
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_payroll, container, false)
-
+        _binding = FragmentPayrollBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         // Inflate the layout for this fragment
         return myView
@@ -100,49 +76,28 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.enter_payroll)
 
-
-        pgsBar = myView.findViewById(R.id.progressBar)
-        empPickerCL = myView.findViewById(R.id.picker_cl)
-        startCL = myView.findViewById(R.id.start_cl)
-        stopCL = myView.findViewById(R.id.stop_cl)
-        breakCL = myView.findViewById(R.id.break_cl)
-        resetCL = myView.findViewById(R.id.reset_cl)
-        footerCL = myView.findViewById(R.id.footer_cl)
-
-
-        empSpinner = myView.findViewById(R.id.emp_spinner)
-        empSpinner.setBackgroundResource(R.drawable.text_view_layout)
-
-        startBtn = myView.findViewById(R.id.start_btn)
-        startBtn.setOnClickListener {
+        binding.startBtn.setOnClickListener {
             start()
         }
-        stopBtn = myView.findViewById(R.id.stop_btn)
-        stopBtn.setOnClickListener {
+        binding.stopBtn.setOnClickListener {
             stop()
         }
-        resetBtn = myView.findViewById(R.id.reset_btn)
-        resetBtn.setOnClickListener {
+        binding.resetBtn.setOnClickListener {
             reset()
         }
 
-
-        startTxt = myView.findViewById(R.id.start_edit_txt)
-        startTxt.setOnClickListener {
+        binding.startEditTxt.setOnClickListener {
             editStart()
         }
-        stopTxt = myView.findViewById(R.id.stop_edit_txt)
-        //stopTxt.ed
-        stopTxt.setOnClickListener {
+        binding.stopEditTxt.setOnClickListener {
             editStop()
         }
 
 
-        breakTxt = myView.findViewById(R.id.break_edit_txt)
-        breakTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
-        breakTxt.setSelectAllOnFocus(true)
+        binding.breakEditTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
+        binding.breakEditTxt.setSelectAllOnFocus(true)
 
-        breakTxt.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+        binding.breakEditTxt.setOnEditorActionListener(object : TextView.OnEditorActionListener {
           override  fun onEditorAction(
                 v: TextView?,
                 actionId: Int,
@@ -153,7 +108,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
               try {
                   if (isResumed) {
-                      val num = parseDouble(breakTxt.text.toString())
+                      val num = parseDouble(binding.breakEditTxt.text.toString())
                   }
               } catch (e: NumberFormatException) {
                  // numeric = false
@@ -161,7 +116,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                   globalVars.simpleAlert(myView.context,"Break Time Error","Break Time must be a Number of Minutes")
                   //Toast.makeText(myView.context, "Break Time must be a Number of Minutes", Toast.LENGTH_LONG).show()
 
-                  breakTxt.setText("0")
+                  binding.breakEditTxt.setText("0")
                   return false
               }
 
@@ -182,7 +137,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                         globalVars.simpleAlert(myView.context,"Break Time Error","Add start time before break time.")
 
 
-                        breakTxt.setText("0")
+                        binding.breakEditTxt.setText("0")
                         return false
                     }
 
@@ -193,20 +148,20 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
                         val totalMins = currentPayroll.total!!.toFloat() * 60
 
-                        if (breakTxt.text.toString().toFloat() >= totalMins){
+                        if (binding.breakEditTxt.text.toString().toFloat() >= totalMins){
 
                             globalVars.simpleAlert(myView.context,"Break Time Error","Break time can not be equal or greater then total shift time.")
 
                            // Toast.makeText(myView.context,"Break time can not be equal or greater then total shift time.",Toast.LENGTH_LONG).show()
-                            breakTxt.setText("0")
+                            binding.breakEditTxt.setText("0")
                             return false
                         }
 
                     }
 
-                    breakTxt.hideKeyboard()
+                    binding.breakEditTxt.hideKeyboard()
 
-                    currentPayroll.lunch = breakTxt.text.toString()
+                    currentPayroll.lunch = binding.breakEditTxt.text.toString()
                     submitPayroll()
                     return true
                 }
@@ -214,15 +169,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
             }
         })
 
-        startLock = myView.findViewById(R.id.start_lock_cl)
-        stopLock = myView.findViewById(R.id.stop_lock_cl)
-        breakLock = myView.findViewById(R.id.break_lock_cl)
 
-        totalTxt = myView.findViewById(R.id.total_val_tv)
-        combinedTotalTxt = myView.findViewById(R.id.combined_total_val_tv)
-
-        pendingTxt = myView.findViewById(R.id.total_pending_tv)
-        combinedPendingTxt = myView.findViewById(R.id.combined_total_pending_tv)
 
 
         (activity as AppCompatActivity).supportActionBar?.title = "Payroll Entry"
@@ -234,7 +181,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         )
         adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
 
-        empSpinner.adapter = adapter
+        binding.empSpinner.adapter = adapter
 
 
         var i = 0
@@ -245,13 +192,13 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
             if (emp.ID == employee!!.ID){
 
                 println("set selected with ${emp.name} position $i")
-                empSpinner.setSelection(i, false)
+                binding.empSpinner.setSelection(i, false)
             }
             i += 1
 
         }
 
-        empSpinner.onItemSelectedListener = this@PayrollFragment
+        binding.empSpinner.onItemSelectedListener = this@PayrollFragment
 
         getPayroll()
 
@@ -303,46 +250,46 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                         println("currentPayroll.startTimeShort = ${currentPayroll.startTimeShort!!}")
 
 
-                       startTxt.setText(currentPayroll.startTimeShort!!)
+                        binding.startEditTxt.setText(currentPayroll.startTimeShort!!)
                     }else{
-                        startTxt.setText(getString(R.string.no_time))
+                        binding.startEditTxt.setText(getString(R.string.no_time))
                     }
 
                     if (currentPayroll.stopTimeShort != null && currentPayroll.stopTimeShort != "No Time" && currentPayroll.stopTimeShort != "") {
-                        stopTxt.setText(currentPayroll.stopTimeShort!!)
+                        binding.stopEditTxt.setText(currentPayroll.stopTimeShort!!)
                     }else{
-                        stopTxt.setText(getString(R.string.no_time))
+                        binding.stopEditTxt.setText(getString(R.string.no_time))
                     }
                     if (currentPayroll.lunch != null) {
-                        breakTxt.setText(currentPayroll.lunch!!)
+                        binding.breakEditTxt.setText(currentPayroll.lunch!!)
                     }else{
-                        breakTxt.setText("0")
+                        binding.breakEditTxt.setText("0")
                     }
 
                     if (currentPayroll.total != null) {
-                        totalTxt.text = currentPayroll.total!!
+                        binding.totalValTv.text = currentPayroll.total!!
                     }else{
-                        totalTxt.text = getString(R.string.zero_hours)
+                        binding.totalValTv.text = getString(R.string.zero_hours)
                     }
                     val combinedTotal: String? = parentObject.getString("combinedTotal")
                     println("payroll = $combinedTotal")
                     if (combinedTotal != null) {
-                        combinedTotalTxt.text = combinedTotal
+                        binding.combinedTotalValTv.text = combinedTotal
                     }else{
-                        combinedTotalTxt.text = getString(R.string.zero_hours)
+                        binding.combinedTotalValTv.text = getString(R.string.zero_hours)
                     }
 
                     //var pendingString: String =
                    // println("pendingString = ${parentObject.getString("verified")}")
                     if (currentPayroll.verified !="0") {
                         //pendingTxt.text = "Pending Shift"
-                        pendingTxt.visibility = View.GONE
+                        binding.totalPendingTv.visibility = View.GONE
 
                         //combinedPendingTxt.text = "Excludes Pending"
-                        combinedPendingTxt.visibility = View.GONE
+                        binding.combinedTotalPendingTv.visibility = View.GONE
                     }else{
-                        pendingTxt.visibility = View.VISIBLE
-                        combinedPendingTxt.visibility = View.VISIBLE
+                        binding.totalPendingTv.visibility = View.VISIBLE
+                        binding.combinedTotalPendingTv.visibility = View.VISIBLE
                     }
 
 
@@ -410,7 +357,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
             globalVars.simpleAlert(myView.context,"Stop Time Error","Add start time before adding stop time.")
 
 
-            stopTxt.setText(getString(R.string.no_time))
+            binding.stopEditTxt.setText(getString(R.string.no_time))
 
         }else{
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -433,9 +380,9 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
             currentPayroll.startTime = ""
             currentPayroll.stopTime = ""
             currentPayroll.lunch = "0"
-            startTxt.setText("")
-            stopTxt.setText("")
-            breakTxt.setText("0")
+            binding.startEditTxt.setText("")
+            binding.stopEditTxt.setText("")
+            binding.breakEditTxt.setText("0")
 
             submitPayroll("1")
         }else{
@@ -518,7 +465,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
             globalVars.simpleAlert(myView.context,"Stop Time Error","Add start time before adding stop time.")
 
-            stopTxt.setText(getString(R.string.no_time))
+            binding.stopEditTxt.setText(getString(R.string.no_time))
 
         }else {
 
@@ -688,79 +635,64 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
     fun lockInputs(){
 
 
-        startBtn.isEnabled = false
-        startBtn.isClickable = false
-        startTxt.isEnabled = false
-        startTxt.isClickable = false
+        binding.startBtn.isEnabled = false
+        binding.startBtn.isClickable = false
+        binding.startEditTxt.isEnabled = false
+        binding.startEditTxt.isClickable = false
 
-        stopBtn.isEnabled = false
-        stopBtn.isClickable = false
-        stopTxt.isEnabled = false
-        stopTxt.isClickable = false
+        binding.stopBtn.isEnabled = false
+        binding.stopBtn.isClickable = false
+        binding.stopEditTxt.isEnabled = false
+        binding.stopEditTxt.isClickable = false
 
-        breakTxt.isEnabled = false
-        breakTxt.isClickable = false
+        binding.breakEditTxt.isEnabled = false
+        binding.breakEditTxt.isClickable = false
 
-        resetBtn.isEnabled = false
-        resetBtn.isClickable = false
+        binding.resetBtn.isEnabled = false
+        binding.resetBtn.isClickable = false
 
 
 
-        startLock.visibility = View.VISIBLE
-        stopLock.visibility = View.VISIBLE
-        breakLock.visibility = View.VISIBLE
+        binding.startLockCl.visibility = View.VISIBLE
+        binding.stopLockCl.visibility = View.VISIBLE
+        binding.breakLockCl.visibility = View.VISIBLE
     }
 
     fun unlockInputs(){
 
 
-        startBtn.isEnabled = true
-        startBtn.isClickable = true
-        startTxt.isEnabled = true
-        startTxt.isClickable = true
+        binding.startBtn.isEnabled = true
+        binding.startBtn.isClickable = true
+        binding.startEditTxt.isEnabled = true
+        binding.startEditTxt.isClickable = true
 
-        stopBtn.isEnabled = true
-        stopBtn.isClickable = true
-        stopTxt.isEnabled = true
-        stopTxt.isClickable = true
+        binding.stopBtn.isEnabled = true
+        binding.stopBtn.isClickable = true
+        binding.stopEditTxt.isEnabled = true
+        binding.stopEditTxt.isClickable = true
 
-        breakTxt.isEnabled = true
-        breakTxt.isClickable = true
+        binding.breakEditTxt.isEnabled = true
+        binding.breakEditTxt.isClickable = true
 
-        resetBtn.isEnabled = true
-        resetBtn.isClickable = true
+        binding.resetBtn.isEnabled = true
+        binding.resetBtn.isClickable = true
 
 
-        startLock.visibility = View.GONE
-        stopLock.visibility = View.GONE
-        breakLock.visibility = View.GONE
+        binding.startLockCl.visibility = View.GONE
+        binding.stopLockCl.visibility = View.GONE
+        binding.breakLockCl.visibility = View.GONE
     }
 
 
     fun showProgressView() {
-
         println("showProgressView")
-
-        pgsBar.visibility = View.VISIBLE
-        empPickerCL.visibility = View.INVISIBLE
-        startCL.visibility = View.INVISIBLE
-        stopCL.visibility = View.INVISIBLE
-        breakCL.visibility = View.INVISIBLE
-        resetCL.visibility = View.INVISIBLE
-        footerCL.visibility = View.INVISIBLE
-
-
-
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        empPickerCL.visibility = View.VISIBLE
-        startCL.visibility = View.VISIBLE
-        stopCL.visibility = View.VISIBLE
-        breakCL.visibility = View.VISIBLE
-        resetCL.visibility = View.VISIBLE
-        footerCL.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
     private fun View.hideKeyboard() {

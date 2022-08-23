@@ -2,7 +2,6 @@ package com.example.AdminMatic
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
@@ -14,9 +13,7 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.employee_list_item.view.*
-import kotlinx.android.synthetic.main.equipment_list_item.view.*
-import java.util.*
+
 
 
 

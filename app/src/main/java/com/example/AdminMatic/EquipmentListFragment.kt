@@ -6,20 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentEquipmentListBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_equipment_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -36,49 +33,28 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
     private lateinit var globalVars:GlobalVars
     private lateinit var myView:View
 
-    private lateinit var pgsBar: ProgressBar
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var searchView: androidx.appcompat.widget.SearchView
-    private lateinit var swipeRefresh: SwipeRefreshLayout
-
-    private lateinit var allCl: ConstraintLayout
-    private lateinit var footerTv: TextView
-    private lateinit var addEquipmentBtn: Button
-    private lateinit var editFieldsBtn: Button
-
-
-
-    // lateinit var  btn: Button
-
     lateinit var adapter:EquipmentAdapter
 
+
+    private var _binding: FragmentEquipmentListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-
         println("onCreateView")
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_equipment_list, container, false)
+        _binding = FragmentEquipmentListBinding.inflate(inflater, container, false)
+        myView = binding.root
 
-
-        //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
-        // progBar.alpha = 0.2f
 
         val emptyList:MutableList<Equipment> = mutableListOf()
 
         adapter = EquipmentAdapter(emptyList,myView.context, this)
 
-
-
-
-
-        //(activity as AppCompatActivity).supportActionBar?.title = "Equipment List"
-
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment_list)
-
 
 
         // Inflate the layout for this fragment
@@ -86,22 +62,8 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-
-        //need to wait for this function to initialize views
         println("onViewCreated")
-        pgsBar = view.findViewById(R.id.progressBar)
-        recyclerView = view.findViewById(R.id.list_recycler_view)
-        searchView = view.findViewById(R.id.equipment_search)
-        swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
-
-        allCl = view.findViewById(R.id.all_cl)
-        footerTv = view.findViewById(R.id.equipment_count_textview)
-        addEquipmentBtn = view.findViewById(R.id.equipment_list_add_equipment_btn)
-        editFieldsBtn = view.findViewById(R.id.equipment_list_edit_fields_btn)
-
         getEquipment()
-
     }
 
     override fun onStop() {
@@ -113,12 +75,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
     private fun getEquipment(){
         println("getEquipment")
 
-
-        // println("pgsBar = $pgsBar")
-
-
         showProgressView()
-
 
         var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/equipmentList.php"
 
@@ -158,7 +115,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
                     val equipmentList = gson.fromJson(equipment.toString() , Array<Equipment>::class.java).toMutableList()
 
 
-                    list_recycler_view.apply {
+                    binding.listRecyclerView.apply {
                         layoutManager = LinearLayoutManager(activity)
 
 
@@ -169,7 +126,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
                         val itemDecoration: ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        recyclerView.addItemDecoration(itemDecoration)
+                        binding.listRecyclerView.addItemDecoration(itemDecoration)
 
                         //for item animations
                         // recyclerView.itemAnimator = SlideInUpAnimator()
@@ -177,28 +134,28 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
                         // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
                         // Setup refresh listener which triggers new data loading
                         // Setup refresh listener which triggers new data loading
-                        swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                        binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
                             // Make sure you call swipeContainer.setRefreshing(false)
                             // once the network request has completed successfully.
                             //fetchTimelineAsync(0)
-                            searchView.setQuery("", false)
-                            searchView.clearFocus()
+                            binding.equipmentSearch.setQuery("", false)
+                            binding.equipmentSearch.clearFocus()
                             getEquipment()
                         }
                         // Configure the refreshing colors
                         // Configure the refreshing colors
-                        swipeRefresh.setColorSchemeResources(
+                        binding.customerSwipeContainer.setColorSchemeResources(
                             R.color.button,
                             R.color.black,
                             R.color.colorAccent,
                             R.color.colorPrimaryDark
                         )
 
-                        customerSwipeContainer.isRefreshing = false
+                        binding.customerSwipeContainer.isRefreshing = false
 
 
                         //search listener
-                        equipment_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+                        binding.equipmentSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
                             androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
 
@@ -215,7 +172,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
                         })
                     }
 
-                    footerTv.text = getString(R.string.x_equipment, equipmentList.size)
+                    binding.equipmentCountTextview.text = getString(R.string.x_equipment, equipmentList.size)
 
 
 
@@ -261,13 +218,13 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 }

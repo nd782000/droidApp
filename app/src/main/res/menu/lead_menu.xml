@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/edit_customer_item"
-        android:title="@string/edit_customer_menu"/>
+        android:id="@+id/edit_lead_item"
+        android:title="@string/edit_lead_menu"/>
 </menu>

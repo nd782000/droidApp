@@ -3,8 +3,6 @@ package com.example.AdminMatic
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
-import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -12,6 +10,7 @@ import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentImageBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.squareup.picasso.Picasso
@@ -34,14 +33,8 @@ class ImageFragment : Fragment() {
 
     private var primaryColor: Int = 0
 
-
-    lateinit var pgsBar: ProgressBar
-    lateinit var imageView:ImageView
-    private lateinit var likeView:ImageView
-    private lateinit var likesTextView:TextView
-    private lateinit var custNameTextView:TextView
-    private lateinit var detailsTextView:TextView
-
+    private var _binding: FragmentImageBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +51,8 @@ class ImageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-       // return inflater.inflate(R.layout.fragment_image, container, false)
-        myView = inflater.inflate(R.layout.fragment_image, container, false)
+        _binding = FragmentImageBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         primaryColor = R.color.colorPrimary
@@ -75,10 +67,6 @@ class ImageFragment : Fragment() {
         Picasso.with(context).load(R.drawable.ic_liked).fetch()
         Picasso.with(context).load(R.drawable.ic_unliked).fetch()
 
-        pgsBar = view.findViewById(R.id.progress_bar)
-        //pgsBar.visibility = View.INVISIBLE
-
-        imageView = myView.findViewById(R.id.image_details_iv)
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
             override fun onDown(event: MotionEvent): Boolean { return true }
             override fun onFling(event1: MotionEvent, event2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
@@ -103,20 +91,19 @@ class ImageFragment : Fragment() {
                 return true
             }
         })
-        imageView.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+        binding.imageDetailsIv.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
 
-        likeView  = myView.findViewById(R.id.like_iv)
-        ImageViewCompat.setImageTintList(likeView, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
+        ImageViewCompat.setImageTintList(binding.likeIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
 
-        likeView.setOnClickListener {
+        binding.likeIv.setOnClickListener {
             var likeCount:Int? = image!!.likes?.toInt()
             if (image!!.liked == "1") {
                 image!!.liked = "0"
                 if (likeCount != null) {
                     likeCount--
                 }
-                Picasso.with(context).load(R.drawable.ic_unliked).into(likeView)
-                ImageViewCompat.setImageTintList(likeView, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
+                Picasso.with(context).load(R.drawable.ic_unliked).into(binding.likeIv)
+                ImageViewCompat.setImageTintList(binding.likeIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
                 setLiked(false)
             }
             else {
@@ -124,17 +111,16 @@ class ImageFragment : Fragment() {
                 if (likeCount != null) {
                     likeCount++
                 }
-                Picasso.with(context).load(R.drawable.ic_liked).into(likeView)
-                ImageViewCompat.setImageTintList(likeView, null)
-                likeView.colorFilter = null
+                Picasso.with(context).load(R.drawable.ic_liked).into(binding.likeIv)
+                ImageViewCompat.setImageTintList(binding.likeIv, null)
+                binding.likeIv.colorFilter = null
                 setLiked(true)
             }
             image!!.likes = likeCount.toString()
             setLikesViewText()
         }
 
-        likesTextView = myView.findViewById(R.id.likes_tv)
-        likesTextView.setOnClickListener {
+        binding.likesTv.setOnClickListener {
             if (image!!.likes != "0") {
                 image.let {
                     val directions = ImageFragmentDirections.navigateImageToImageLikes(image!!)
@@ -154,10 +140,10 @@ class ImageFragment : Fragment() {
 
     private fun setLikesViewText() {
         if (image!!.likes == "1") {
-            likesTextView.text = getString(R.string.one_like)
+            binding.likesTv.text = getString(R.string.one_like)
         }
         else {
-            likesTextView.text = getString(R.string.x_likes, image!!.likes)
+            binding.likesTv.text = getString(R.string.x_likes, image!!.likes)
         }
     }
 
@@ -166,8 +152,8 @@ class ImageFragment : Fragment() {
 
         //showProgressView()
 
-        likeView.isClickable = false
-        likeView.isFocusable = false
+        binding.likeIv.isClickable = false
+        binding.likeIv.isFocusable = false
 
         var urlString:String = if (liked) {
             "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/new/like.php"
@@ -186,8 +172,8 @@ class ImageFragment : Fragment() {
                 //Log.d("Response", response)
 
                 println("Response $response")
-                likeView.isClickable = true
-                likeView.isFocusable = true
+                binding.likeIv.isClickable = true
+                binding.likeIv.isFocusable = true
 
                 //hideProgressView()
 
@@ -234,28 +220,26 @@ class ImageFragment : Fragment() {
             .load(GlobalVars.mediumBase + image!!.fileName)
             //.resize(imgWidth, imgHeight)         //optional
             //.centerCrop()                        //optional
-            .into(imageView)                        //Your image view object.
+            .into(binding.imageDetailsIv)                        //Your image view object.
 
         println("image.likes = ${image!!.likes}")
         if (image!!.likes!! != "0"){
-            likeView.visibility = View.VISIBLE
+            binding.likeIv.visibility = View.VISIBLE
             // val likeIcon = resources.getDrawable(R.drawable.ic_liked,null)
             //likeView.background = likeIcon
         }
 
         if (image!!.liked == "1") {
-            Picasso.with(context).load(R.drawable.ic_liked).into(likeView)
-            ImageViewCompat.setImageTintList(likeView, null)
+            Picasso.with(context).load(R.drawable.ic_liked).into(binding.likeIv)
+            ImageViewCompat.setImageTintList(binding.likeIv, null)
         }
 
         setLikesViewText()
 
-        custNameTextView  = myView.findViewById(R.id.image_customer_tv)
-        custNameTextView.text = image!!.customerName
+        binding.imageCustomerTv.text = image!!.customerName
 
-        detailsTextView  = myView.findViewById(R.id.image_details_tv)
         val imageDate = LocalDate.parse(image!!.dateAdded, GlobalVars.dateFormatterPHP)
-        detailsTextView.text = getString(R.string.image_description, image!!.createdByName, imageDate.format(GlobalVars.dateFormatterShort), image!!.description)
+        binding.imageDetailsTv.text = getString(R.string.image_description, image!!.createdByName, imageDate.format(GlobalVars.dateFormatterShort), image!!.description)
     }
 
 }

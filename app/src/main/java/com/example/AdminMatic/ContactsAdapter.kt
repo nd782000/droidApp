@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.employee_list_item.view.*
 
 
 class ContactsAdapter(list: MutableList<Contact>, private val cellClickListener: ContactCellClickListener): RecyclerView.Adapter<ContactViewHolder>(){
@@ -30,7 +29,7 @@ class ContactsAdapter(list: MutableList<Contact>, private val cellClickListener:
         val contact: Contact = filterList[position]
         holder.bind(contact)
 
-        holder.itemView.list_name.text = filterList[position].value!!
+        holder.itemView.findViewById<TextView>(R.id.list_name).text = filterList[position].value!!
 
 
 

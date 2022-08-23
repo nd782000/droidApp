@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,22 +11,20 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.AdminMatic.R
-
+import com.AdminMatic.databinding.FragmentCustomerLookupBinding
 
 
 class CustomerLookupFragment : Fragment(), CustomerCellClickListener {
 
     private lateinit var globalVars:GlobalVars
     private lateinit var myView:View
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var searchView:androidx.appcompat.widget.SearchView
-    private lateinit var adapter:CustomersAdapter
-    private lateinit var addCustomerBtn: Button
-    private lateinit var reminderText: TextView
 
+    private lateinit var adapter:CustomersAdapter
+
+    private var _binding: FragmentCustomerLookupBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,8 +32,8 @@ class CustomerLookupFragment : Fragment(), CustomerCellClickListener {
     ): View {
 
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_customer_lookup, container, false)
-
+        _binding = FragmentCustomerLookupBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         val emptyList:MutableList<Customer> = mutableListOf()
         adapter = CustomersAdapter(emptyList, this, true)
@@ -52,15 +49,11 @@ class CustomerLookupFragment : Fragment(), CustomerCellClickListener {
 
         //need to wait for this function to initialize views
         println("onViewCreated")
-        recyclerView = view.findViewById(R.id.customer_lookup_rv)
-        searchView = view.findViewById(R.id.customer_lookup_search)
-        addCustomerBtn = view.findViewById(R.id.customer_lookup_add_customer_btn)
-        addCustomerBtn.setOnClickListener {
+
+        binding.customerLookupAddCustomerBtn.setOnClickListener {
             val directions = CustomerLookupFragmentDirections.navigateToNewCustomer(null)
             myView.findNavController().navigate(directions)
         }
-        reminderText = view.findViewById(R.id.customer_lookup_tv)
-
 
         showCustomers()
 
@@ -74,7 +67,7 @@ class CustomerLookupFragment : Fragment(), CustomerCellClickListener {
 
     private fun showCustomers(){
         println("showCustomers")
-        recyclerView.apply {
+        binding.customerLookupRv.apply {
             layoutManager = LinearLayoutManager(activity)
 
 
@@ -86,12 +79,12 @@ class CustomerLookupFragment : Fragment(), CustomerCellClickListener {
 
                 val itemDecoration: ItemDecoration =
                     DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                recyclerView.addItemDecoration(itemDecoration)
+                binding.customerLookupRv.addItemDecoration(itemDecoration)
 
 
 
                 //search listener
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+                binding.customerLookupSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
                     androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -101,12 +94,12 @@ class CustomerLookupFragment : Fragment(), CustomerCellClickListener {
                     override fun onQueryTextChange(newText: String?): Boolean {
 
                         if (newText.isNullOrBlank()) {
-                            recyclerView.visibility = View.INVISIBLE
-                            reminderText.visibility = View.VISIBLE
+                            binding.customerLookupRv.visibility = View.INVISIBLE
+                            binding.customerLookupTv.visibility = View.VISIBLE
                         }
                         else {
-                            recyclerView.visibility = View.VISIBLE
-                            reminderText.visibility = View.INVISIBLE
+                            binding.customerLookupRv.visibility = View.VISIBLE
+                            binding.customerLookupTv.visibility = View.INVISIBLE
                         }
 
                         println("onQueryTextChange = $newText")

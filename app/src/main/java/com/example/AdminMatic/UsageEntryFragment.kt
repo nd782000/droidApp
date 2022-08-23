@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentUsageEntryBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.Gson
@@ -55,15 +56,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     //private var adapter: UsageAdapter? = null
 
-
-    private lateinit var pgsBar: ProgressBar
-    private lateinit var empSpinner: Spinner
-    private lateinit var startStopCl: ConstraintLayout
-    private lateinit var usageRecyclerView: RecyclerView
-    private lateinit var startBtn: Button
-    private lateinit var stopBtn: Button
-    private lateinit var submitBtn: Button
-
     //lateinit var empsOnWo:Array<Employee>
 
     var usageToLog:MutableList<Usage> = mutableListOf()
@@ -87,6 +79,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
     }
 
+    private var _binding: FragmentUsageEntryBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,7 +89,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         println("onCreateView")
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_usage_entry, container, false)
+        _binding = FragmentUsageEntryBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -164,49 +160,36 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.enter_usage)
 
 
-        pgsBar = myView.findViewById(R.id.progressBar)
 
+        binding.usageEmpSpinner.setBackgroundResource(R.drawable.text_view_layout)
 
-
-
-        startStopCl = myView.findViewById(R.id.start_stop_cl)
-
-
-
-        empSpinner = myView.findViewById(R.id.usage_emp_spinner)
-        empSpinner.setBackgroundResource(R.drawable.text_view_layout)
-
-        startBtn = myView.findViewById(R.id.start_btn)
-        startBtn.setOnClickListener{
+        binding.startBtn.setOnClickListener{
             start()
         }
-        stopBtn = myView.findViewById(R.id.stop_btn)
-        stopBtn.setOnClickListener{
+        binding.stopBtn.setOnClickListener{
             stop()
         }
 
-        submitBtn = myView.findViewById(R.id.usage_submit_btn)
-        submitBtn.setOnClickListener{
+        binding.usageSubmitBtn.setOnClickListener{
             submitUsage()
         }
 
 
         val empAdapter = EmpAdapter(myView.context,GlobalVars.employeeList!!.toList())
-        empSpinner.adapter = empAdapter
+        binding.usageEmpSpinner.adapter = empAdapter
 
 
 
-        empSpinner.onItemSelectedListener = this@UsageEntryFragment
+        binding.usageEmpSpinner.onItemSelectedListener = this@UsageEntryFragment
 
-        usageRecyclerView = myView.findViewById(R.id.usage_entry_rv)
 
 
         hideProgressView()
 
         println("woItem!!.type = ${woItem!!.type}")
         if (woItem!!.type != "1"){
-            empSpinner.visibility = View.GONE
-            startStopCl.visibility = View.GONE
+            binding.usageEmpSpinner.visibility = View.GONE
+            binding.startStopCl.visibility = View.GONE
         }
 
 
@@ -216,7 +199,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         val itemDecoration: RecyclerView.ItemDecoration =
             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-        usageRecyclerView.addItemDecoration(itemDecoration)
+        binding.usageEntryRv.addItemDecoration(itemDecoration)
 
     }
 
@@ -469,7 +452,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         if (position != 0){
             addEmployee(GlobalVars.employeeList!![position - 1])
-            empSpinner.setSelection(0,false)
+            binding.usageEmpSpinner.setSelection(0,false)
         }
 
     }
@@ -500,7 +483,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     private fun updateUsageTable(){
         println("updateUsageTable")
 
-        usageRecyclerView.apply {
+        binding.usageEntryRv.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = activity?.let {
                 UsageAdapter(
@@ -1201,24 +1184,24 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        usageRecyclerView.visibility = View.INVISIBLE
-        submitBtn.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.usageEntryRv.visibility = View.INVISIBLE
+        binding.usageSubmitBtn.visibility = View.INVISIBLE
         if (woItem!!.type == "1") {
-            startStopCl.visibility = View.INVISIBLE
-            empSpinner.visibility = View.INVISIBLE
+            binding.startStopCl.visibility = View.INVISIBLE
+            binding.usageEmpSpinner.visibility = View.INVISIBLE
         }
 
     }
 
     fun hideProgressView() {
         println("hideProgressView")
-        pgsBar.visibility = View.INVISIBLE
-        usageRecyclerView.visibility = View.VISIBLE
-        submitBtn.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.usageEntryRv.visibility = View.VISIBLE
+        binding.usageSubmitBtn.visibility = View.VISIBLE
         if (woItem!!.type == "1"){
-            startStopCl.visibility = View.VISIBLE
-            empSpinner.visibility = View.VISIBLE
+            binding.startStopCl.visibility = View.VISIBLE
+            binding.usageEmpSpinner.visibility = View.VISIBLE
         }
     }
 

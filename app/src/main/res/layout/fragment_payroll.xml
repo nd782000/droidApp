@@ -7,404 +7,412 @@
     android:layout_height="match_parent"
     tools:context="com.example.AdminMatic.PayrollFragment">
 
-    <!-- Emp Picker -->
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/picker_cl"
+        android:id="@+id/all_cl"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="24dp"
-        android:layout_marginVertical="10dp">
+        android:layout_height="match_parent">
 
-        <!-- android:spinnerMode="dialog"-->
-
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
+        <!-- Emp Picker -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/picker_cl"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:layout_marginHorizontal="3dp"
-            android:text="Today's Payroll:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintRight_toLeftOf="@+id/emp_spinner"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Spinner
-            android:id="@+id/emp_spinner"
-            android:layout_width="240dp"
-            android:layout_height="50dp"
-
-            android:foregroundGravity="right"
-            android:spinnerMode="dropdown"
-            android:layout_marginHorizontal="3dp"
-            android:textAlignment="center"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!-- Start -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/start_cl"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/picker_cl"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/start_lock_cl"
-        android:layout_marginVertical="10dp">
-
-        <Button
-            android:id="@+id/start_btn"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="3dp"
-            android:text="Start"
-            android:backgroundTint="@color/colorPrimary"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/guideline1"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/start_edit_txt"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="3dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Start"
-
-            android:focusable="false"
-            android:focusableInTouchMode="true"
-
-
-
-            android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@+id/guideline1"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-
-
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintGuide_percent="0.5"/>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Start Lock -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/start_lock_cl"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toTopOf="@+id/start_cl"
-        app:layout_constraintRight_toRightOf="parent"
-        android:visibility="gone"
-        >
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_editor_absoluteX="24dp"
+            android:layout_marginVertical="10dp">
 
-            android:src="@drawable/ic_lock"/>
+            <!-- android:spinnerMode="dialog"-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Stop -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/stop_cl"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/start_cl"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/stop_lock_cl"
-        android:layout_marginVertical="10dp">
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:gravity="center_vertical"
+                android:layout_marginHorizontal="3dp"
+                android:text="Today's Payroll:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintRight_toLeftOf="@+id/emp_spinner"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/stop_btn"
+            <Spinner
+                android:id="@+id/emp_spinner"
+                android:layout_width="240dp"
+                android:layout_height="50dp"
+
+                android:foregroundGravity="right"
+                android:spinnerMode="dropdown"
+                android:layout_marginHorizontal="3dp"
+                android:textAlignment="center"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!-- Start -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/start_cl"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginHorizontal="3dp"
-
-            android:text="Stop"
-            android:backgroundTint="@color/red"
+            app:layout_constraintTop_toBottomOf="@+id/picker_cl"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintRight_toLeftOf="@+id/start_lock_cl"
+            android:layout_marginVertical="10dp">
+
+            <Button
+                android:id="@+id/start_btn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="3dp"
+                android:text="Start"
+                android:backgroundTint="@color/colorPrimary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/guideline1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/start_edit_txt"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="3dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Start"
+
+                android:focusable="false"
+                android:focusableInTouchMode="true"
+
+
+
+                android:textAlignment="center"
+                app:layout_constraintLeft_toRightOf="@+id/guideline1"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
 
 
 
-        <EditText
-            android:id="@+id/stop_edit_txt"
-            android:layout_width="0dp"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintGuide_percent="0.5"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Start Lock -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/start_lock_cl"
+            android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginHorizontal="3dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Stop"
-
-            android:focusable="false"
-            android:focusableInTouchMode="true"
-
-            android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@+id/guideline2"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintGuide_percent="0.5"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Stop Lock -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/stop_lock_cl"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toTopOf="@+id/stop_cl"
-        app:layout_constraintRight_toRightOf="parent"
-        android:visibility="gone"
-        >
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-
-            android:src="@drawable/ic_lock"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Break -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/break_cl"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/stop_cl"
-
-
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/break_lock_cl"
-
-        android:layout_marginVertical="10dp">
-
-        <TextView
-            android:id="@+id/break_txt"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="3dp"
-            android:gravity="center_vertical"
-            android:text="Break:"
-            android:textAlignment="textEnd"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/guideline3"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/break_edit_txt"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="3dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Break"
-
-            android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@+id/guideline3"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintGuide_percent="0.5"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Break Lock -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/break_lock_cl"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toTopOf="@+id/break_cl"
-        app:layout_constraintRight_toRightOf="parent"
-        android:visibility="gone"
-        >
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-
-            android:src="@drawable/ic_lock"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!-- Reset -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/reset_cl"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/break_cl"
-        tools:layout_editor_absoluteX="10dp"
-        android:layout_marginVertical="10dp">
-
-        <Button
-            android:id="@+id/reset_btn"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:backgroundTint="@color/gray"
-
-            android:text="Reset"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Footer -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/footer_cl"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="22dp">
-
-        <TextView
-            android:id="@+id/total_lbl_tv"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="3dp"
-            android:gravity="center_vertical"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:text="Current Total:"
-            android:textAlignment="center"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/guideline4"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-
-
-
-        <TextView
-            android:id="@+id/combined_total_lbl_tv"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="3dp"
-            android:gravity="center_vertical"
-
-            android:text="Week Total:"
-
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@+id/guideline4"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/total_val_tv"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginHorizontal="3dp"
-
-            android:text="0.00"
-            android:textSize="72sp"
-            android:textAlignment="center"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/total_lbl_tv" />
-
-        <TextView
-            android:id="@+id/total_pending_tv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="Pending Shift"
-            app:layout_constraintTop_toBottomOf="@+id/combined_total_val_tv"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/guideline4"
-            android:visibility="gone"
-            />
-
-
-
-
-
-        <TextView
-            android:id="@+id/combined_total_val_tv"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginHorizontal="3dp"
-
-            android:text="0.00"
-
-            android:textSize="72sp"
-            android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@+id/guideline4"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/total_lbl_tv"  />
-
-        <TextView
-            android:id="@+id/combined_total_pending_tv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="Excludes Pending"
-            app:layout_constraintTop_toBottomOf="@+id/combined_total_val_tv"
-            app:layout_constraintLeft_toRightOf="@+id/guideline4"
+            app:layout_constraintTop_toTopOf="@+id/start_cl"
             app:layout_constraintRight_toRightOf="parent"
             android:visibility="gone"
-            />
+            >
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+
+                android:src="@drawable/ic_lock"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Stop -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/stop_cl"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toBottomOf="@+id/start_cl"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/stop_lock_cl"
+            android:layout_marginVertical="10dp">
+
+            <Button
+                android:id="@+id/stop_btn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="3dp"
+
+                android:text="Stop"
+                android:backgroundTint="@color/red"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/guideline2"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
 
 
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+            <EditText
+                android:id="@+id/stop_edit_txt"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="3dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Stop"
+
+                android:focusable="false"
+                android:focusableInTouchMode="true"
+
+                android:textAlignment="center"
+                app:layout_constraintLeft_toRightOf="@+id/guideline2"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintGuide_percent="0.5"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Stop Lock -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/stop_lock_cl"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toTopOf="@+id/stop_cl"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintGuide_percent="0.5"/>
+            android:visibility="gone"
+            >
 
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+
+                android:src="@drawable/ic_lock"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Break -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/break_cl"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toBottomOf="@+id/stop_cl"
+
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/break_lock_cl"
+
+            android:layout_marginVertical="10dp">
+
+            <TextView
+                android:id="@+id/break_txt"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="3dp"
+                android:gravity="center_vertical"
+                android:text="Break:"
+                android:textAlignment="textEnd"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/guideline3"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/break_edit_txt"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="3dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Break"
+
+                android:textAlignment="center"
+                app:layout_constraintLeft_toRightOf="@+id/guideline3"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintGuide_percent="0.5"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Break Lock -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/break_lock_cl"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toTopOf="@+id/break_cl"
+            app:layout_constraintRight_toRightOf="parent"
+            android:visibility="gone"
+            >
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+
+                android:src="@drawable/ic_lock"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!-- Reset -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/reset_cl"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toBottomOf="@+id/break_cl"
+            tools:layout_editor_absoluteX="10dp"
+            android:layout_marginVertical="10dp">
+
+            <Button
+                android:id="@+id/reset_btn"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/gray"
+
+                android:text="Reset"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Footer -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/footer_cl"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteX="22dp">
+
+            <TextView
+                android:id="@+id/total_lbl_tv"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="3dp"
+                android:gravity="center_vertical"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Current Total:"
+                android:textAlignment="center"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/guideline4"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+
+            <TextView
+                android:id="@+id/combined_total_lbl_tv"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="3dp"
+                android:gravity="center_vertical"
+
+                android:text="Week Total:"
+
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                app:layout_constraintLeft_toRightOf="@+id/guideline4"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/total_val_tv"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginHorizontal="3dp"
+
+                android:text="0.00"
+                android:textSize="72sp"
+                android:textAlignment="center"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/guideline4"
+                app:layout_constraintTop_toBottomOf="@+id/total_lbl_tv" />
+
+            <TextView
+                android:id="@+id/total_pending_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="Pending Shift"
+                app:layout_constraintTop_toBottomOf="@+id/combined_total_val_tv"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/guideline4"
+                android:visibility="gone"
+                />
+
+
+
+
+
+            <TextView
+                android:id="@+id/combined_total_val_tv"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginHorizontal="3dp"
+
+                android:text="0.00"
+
+                android:textSize="72sp"
+                android:textAlignment="center"
+                app:layout_constraintLeft_toRightOf="@+id/guideline4"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/total_lbl_tv"  />
+
+            <TextView
+                android:id="@+id/combined_total_pending_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="Excludes Pending"
+                app:layout_constraintTop_toBottomOf="@+id/combined_total_val_tv"
+                app:layout_constraintLeft_toRightOf="@+id/guideline4"
+                app:layout_constraintRight_toRightOf="parent"
+                android:visibility="gone"
+                />
+
+
+
+
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintGuide_percent="0.5"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

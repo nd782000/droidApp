@@ -15,7 +15,6 @@ import android.text.TextUtils
 import android.text.style.ImageSpan
 import android.view.View
 import com.AdminMatic.R
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONObject

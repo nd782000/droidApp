@@ -1,25 +1,11 @@
 package com.example.AdminMatic
 
-import android.content.Context
-import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.Typeface
-import android.net.Uri
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.employee_list_item.view.*
-import java.util.*
-
 
 
 class EmployeesTextAdapter(private val list: Array<Employee>, private val checkList: Array<Boolean>, private val cellClickListener: EmployeeCheckClickListener) : RecyclerView.Adapter<EmployeeTextViewHolder>() {

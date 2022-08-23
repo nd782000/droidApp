@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentShiftsBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
@@ -32,13 +32,6 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-
-    private lateinit var allCl: ConstraintLayout
-    private lateinit var spinnerLabelText: TextView
-    private lateinit var weekSpinner: Spinner
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var footerText: TextView
 
     private var weekSpinnerPosition: Int = 0
 
@@ -50,11 +43,8 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var dateToDB: String = ""
 
 
-
-
     private var shifts = mutableListOf<Shift>()
     private lateinit var shiftsJSON: JSONObject
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,12 +53,16 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
     }
 
+    private var _binding: FragmentShiftsBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        myView = inflater.inflate(R.layout.fragment_shifts, container, false)
+        _binding = FragmentShiftsBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_shifts, employee!!.fname)
@@ -81,23 +75,15 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pgsBar = view.findViewById(R.id.progress_bar)
-        allCl = view.findViewById(R.id.all_cl)
-
-        recyclerView = view.findViewById(R.id.shifts_recycler_view)
-        footerText = view.findViewById(R.id.shifts_footer_tv)
-        spinnerLabelText = view.findViewById(R.id.shifts_week_lbl_tv)
-        spinnerLabelText.text = getString(R.string.xs_shifts_for, employee!!.fname)
-
+        binding.shiftsWeekLblTv.text = getString(R.string.xs_shifts_for, employee!!.fname)
 
         val weekSpinnerArray:Array<String> = arrayOf(
             getString(R.string.shifts_this_week),
             getString(R.string.shifts_next_week))
 
-        weekSpinner = myView.findViewById(R.id.shifts_week_spinner)
-        weekSpinner.setBackgroundResource(R.drawable.text_view_layout)
+        binding.shiftsWeekSpinner.setBackgroundResource(R.drawable.text_view_layout)
 
-        weekSpinner.onItemSelectedListener = null
+        binding.shiftsWeekSpinner.onItemSelectedListener = null
 
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             myView.context,
@@ -105,10 +91,10 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         )
         adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-        weekSpinner.adapter = adapter
-        weekSpinner.onItemSelectedListener = this@ShiftsFragment
+        binding.shiftsWeekSpinner.adapter = adapter
+        binding.shiftsWeekSpinner.onItemSelectedListener = this@ShiftsFragment
 
-        weekSpinner.setSelection(0)
+        binding.shiftsWeekSpinner.setSelection(0)
 
     }
 
@@ -209,7 +195,7 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         }
 
-        recyclerView.apply {
+        binding.shiftsRecyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
 
             adapter = activity?.let {
@@ -218,7 +204,7 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
             val itemDecoration: RecyclerView.ItemDecoration =
                 DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-            recyclerView.addItemDecoration(itemDecoration)
+            binding.shiftsRecyclerView.addItemDecoration(itemDecoration)
 
 
             var totalHours = 0.0
@@ -226,7 +212,7 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 totalHours += it.shiftQty!!.toDouble()
             }
 
-            footerText.text = getString(R.string.shifts_footer_text, numberOfValidShifts, totalHours)
+            binding.shiftsFooterTv.text = getString(R.string.shifts_footer_text, numberOfValidShifts, totalHours)
 
             //(adapter as ShiftsAdapter).notifyDataSetChanged()
 
@@ -243,14 +229,14 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
         println("onItemSelected position = $position")
-        println("weekSpinner.getTag(R.id.pos) = ${weekSpinner.getTag(R.id.pos)}")
+        println("weekSpinner.getTag(R.id.pos) = ${binding.shiftsWeekSpinner.getTag(R.id.pos)}")
 
-        if(weekSpinner.getTag(R.id.pos) != null && weekSpinner.getTag(R.id.pos) != position){
+        if(binding.shiftsWeekSpinner.getTag(R.id.pos) != null && binding.shiftsWeekSpinner.getTag(R.id.pos) != position){
             println("tag != pos")
         }
 
         weekSpinnerPosition = position
-        weekSpinner.setTag(R.id.pos, position)
+        binding.shiftsWeekSpinner.setTag(R.id.pos, position)
 
 
         dateFrom = LocalDate.now(ZoneOffset.UTC).with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atTime(OffsetTime.MIN)
@@ -270,13 +256,13 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
     
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 }

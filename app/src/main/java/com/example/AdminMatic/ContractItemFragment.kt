@@ -10,17 +10,15 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentContractItemBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_item_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -48,21 +46,6 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-
-    private lateinit var allCl: ConstraintLayout
-    private lateinit var contractItemSearch: androidx.appcompat.widget.SearchView
-    private lateinit var contractItemRecycler: RecyclerView
-    private lateinit var hideQtySwitch: SwitchCompat
-    private lateinit var taxableSwitch: SwitchCompat
-    private lateinit var chargeSpinner: Spinner
-    private lateinit var submitBtn: Button
-
-
-    private lateinit var qtyEt: EditText
-    private lateinit var priceEt: EditText
-    private lateinit var totalEt: EditText
-    private lateinit var recycler: RecyclerView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,16 +56,18 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         }
     }
 
+    private var _binding: FragmentContractItemBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_contract, container, false)
-        // employee = args
-        myView = inflater.inflate(R.layout.fragment_contract_item, container, false)
 
         globalVars = GlobalVars()
+
+        _binding = FragmentContractItemBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         if (addMode == true) {
             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.add_item)
@@ -113,7 +98,9 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
+
         return myView
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,49 +109,33 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
         //Todo: Make search view recycler appear when search is focused
 
-        pgsBar = view.findViewById(R.id.progress_bar)
-        pgsBar.visibility = View.INVISIBLE
-
-        allCl = myView.findViewById(R.id.all_cl)
-        contractItemSearch = myView.findViewById(R.id.contract_item_search)
-        contractItemRecycler = myView.findViewById(R.id.contract_item_search_rv)
-        //contractItemRecycler.visibility = View.GONE
-        hideQtySwitch = myView.findViewById(R.id.contract_item_hide_qty_switch)
-        taxableSwitch = myView.findViewById(R.id.contract_item_taxable_switch)
-        chargeSpinner = myView.findViewById(R.id.contract_item_charge_spinner)
-        submitBtn = myView.findViewById(R.id.contract_item_submit_btn)
-        qtyEt = myView.findViewById(R.id.contract_item_qty_val_et)
-        priceEt = myView.findViewById(R.id.contract_item_price_val_et)
-        totalEt = myView.findViewById(R.id.contract_item_total_val_et)
-        recycler = myView.findViewById(R.id.contract_item_tasks_rv)
-
         //contractItemSearch.isSubmitButtonEnabled = false
 
         if (addMode == true) {
-            recycler.visibility = View.GONE
+            binding.contractItemTasksRv.visibility = View.GONE
             editMode = true
 
         }
         else {
-            contractItemSearch.isEnabled = false
-            chargeSpinner.isEnabled = false
-            qtyEt.isEnabled = false
-            priceEt.isEnabled = false
-            totalEt.isEnabled = false
-            hideQtySwitch.isEnabled = false
-            taxableSwitch.isEnabled = false
+            binding.contractItemSearch.isEnabled = false
+            binding.contractItemChargeSpinner.isEnabled = false
+            binding.contractItemQtyValEt.isEnabled = false
+            binding.contractItemPriceValEt.isEnabled = false
+            binding.contractItemTotalValEt.isEnabled = false
+            binding.contractItemHideQtySwitch.isEnabled = false
+            binding.contractItemTaxableSwitch.isEnabled = false
 
 
             if (contractItem!!.hideUnits == "1") {
-                hideQtySwitch.isChecked = true
+                binding.contractItemHideQtySwitch.isChecked = true
             }
 
             if (contractItem!!.taxType == "1") {
-                taxableSwitch.isChecked = true
+                binding.contractItemTaxableSwitch.isChecked = true
             }
             //contractItemSearch.setQuery(contractItem!!.name, false)
 
-            recycler.apply {
+            binding.contractItemTasksRv.apply {
                 layoutManager = LinearLayoutManager(activity)
                 adapter = activity?.let {
                     contractItem!!.tasks?.let { it1 ->
@@ -178,16 +149,16 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
                 val itemDecoration: RecyclerView.ItemDecoration =
                     DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                recycler.addItemDecoration(itemDecoration)
+                binding.contractItemTasksRv.addItemDecoration(itemDecoration)
                 //(adapter as ContractTasksAdapter).notifyDataSetChanged()
             }
 
         }
 
-        qtyEt.setText(contractItem!!.qty)
+        binding.contractItemQtyValEt.setText(contractItem!!.qty)
 
-        priceEt.setText(contractItem!!.price)
-        totalEt.setText(contractItem!!.total)
+        binding.contractItemPriceValEt.setText(contractItem!!.price)
+        binding.contractItemTotalValEt.setText(contractItem!!.total)
 
 
         // Set up fields
@@ -198,11 +169,11 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
             android.R.layout.simple_spinner_dropdown_item, chargeTypeArray
         )
         adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-        chargeSpinner.adapter = adapter
-        chargeSpinner.setSelection(contractItem!!.chargeType.toInt() - 1)
-        chargeSpinner.onItemSelectedListener = this@ContractItemFragment
+        binding.contractItemChargeSpinner.adapter = adapter
+        binding.contractItemChargeSpinner.setSelection(contractItem!!.chargeType.toInt() - 1)
+        binding.contractItemChargeSpinner.onItemSelectedListener = this@ContractItemFragment
 
-        hideQtySwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.contractItemHideQtySwitch.setOnCheckedChangeListener { _, isChecked ->
             editsMade = true
             if (isChecked) {
                 contractItem!!.hideUnits = "1"
@@ -212,7 +183,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
             }
         }
 
-        taxableSwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.contractItemTaxableSwitch.setOnCheckedChangeListener { _, isChecked ->
             editsMade = true
             if (isChecked) {
                 contractItem!!.taxType = "1"
@@ -222,25 +193,25 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
             }
         }
 
-        qtyEt.setRawInputType(Configuration.KEYBOARD_12KEY)
-        qtyEt.setSelectAllOnFocus(true)
-        qtyEt.setOnEditorActionListener { _, actionId, _ ->
+        binding.contractItemQtyValEt.setRawInputType(Configuration.KEYBOARD_12KEY)
+        binding.contractItemQtyValEt.setSelectAllOnFocus(true)
+        binding.contractItemQtyValEt.setOnEditorActionListener { _, actionId, _ ->
 
             if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                qtyEt.clearFocus()
+                binding.contractItemQtyValEt.clearFocus()
                 myView.hideKeyboard()
                 editsMade = true
 
-                if (qtyEt.text.toString() != "") {
-                    val costInput = qtyEt.text.toString().toDouble()
+                if (binding.contractItemQtyValEt.text.toString() != "") {
+                    val costInput = binding.contractItemQtyValEt.text.toString().toDouble()
                     val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
                     contractItem!!.qty = costInputTrimmed.toString()
-                    qtyEt.setText(costInputTrimmed.toString())
+                    binding.contractItemQtyValEt.setText(costInputTrimmed.toString())
                 }
                 else {
                     contractItem!!.qty = "0.00"
-                    qtyEt.setText(contractItem!!.qty)
+                    binding.contractItemQtyValEt.setText(contractItem!!.qty)
                 }
                 setTotalText()
                 true
@@ -249,25 +220,25 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
             }
         }
 
-        priceEt.setRawInputType(Configuration.KEYBOARD_12KEY)
-        priceEt.setSelectAllOnFocus(true)
-        priceEt.setOnEditorActionListener { _, actionId, _ ->
+        binding.contractItemPriceValEt.setRawInputType(Configuration.KEYBOARD_12KEY)
+        binding.contractItemPriceValEt.setSelectAllOnFocus(true)
+        binding.contractItemPriceValEt.setOnEditorActionListener { _, actionId, _ ->
 
             if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                priceEt.clearFocus()
+                binding.contractItemPriceValEt.clearFocus()
                 myView.hideKeyboard()
                 editsMade = true
 
-                if (priceEt.text.toString() != "") {
-                    val costInput = priceEt.text.toString().toDouble()
+                if (binding.contractItemPriceValEt.text.toString() != "") {
+                    val costInput = binding.contractItemPriceValEt.text.toString().toDouble()
                     val costInputTrimmed = (costInput * 100.0).roundToInt() / 100.0
                     contractItem!!.price = costInputTrimmed.toString()
-                    priceEt.setText(costInputTrimmed.toString())
+                    binding.contractItemPriceValEt.setText(costInputTrimmed.toString())
                 }
                 else {
                     contractItem!!.price = "0.00"
-                    priceEt.setText(contractItem!!.price)
+                    binding.contractItemPriceValEt.setText(contractItem!!.price)
                 }
                 setTotalText()
                 true
@@ -277,7 +248,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         }
 
 
-        submitBtn.setOnClickListener {
+        binding.contractItemSubmitBtn.setOnClickListener {
             println("Crew Click")
 
             if (contractItem!!.itemID.isEmpty() || contractItem!!.qty.isEmpty() || contractItem!!.price.isNullOrEmpty()) {
@@ -348,7 +319,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                     }
 
 
-                    contractItemRecycler.apply {
+                    binding.contractItemSearchRv.apply {
                         layoutManager = LinearLayoutManager(activity)
 
 
@@ -362,13 +333,13 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
                         val itemDecoration: RecyclerView.ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        contractItemRecycler.addItemDecoration(itemDecoration)
+                        binding.contractItemSearchRv.addItemDecoration(itemDecoration)
 
 
                         //(adapter as SearchItemsAdapter).notifyDataSetChanged()
 
 
-                        contractItemSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+                        binding.contractItemSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
                             androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -380,9 +351,9 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                                 println("onQueryTextChange = $newText")
                                 (adapter as SearchItemsAdapter).filter.filter(newText)
                                 if(newText == ""){
-                                    contractItemRecycler.visibility = View.GONE
+                                    binding.contractItemSearchRv.visibility = View.GONE
                                 }else{
-                                    contractItemRecycler.visibility = View.VISIBLE
+                                    binding.contractItemSearchRv.visibility = View.VISIBLE
                                 }
 
                                 return false
@@ -424,13 +395,13 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
     override fun onSearchItemCellClickListener(data:SearchItem) {
         println("Clicked on item #${data.index}")
         editsMade=true
-        contractItemSearch.setQuery(itemsList[data.index].name, false)
-        contractItemSearch.clearFocus()
+        binding.contractItemSearch.setQuery(itemsList[data.index].name, false)
+        binding.contractItemSearch.clearFocus()
         contractItem!!.itemID = itemsList[data.index].ID
-        contractItemRecycler.visibility = View.GONE
+        binding.contractItemSearchRv.visibility = View.GONE
 
         if (itemsList[data.index].price != "") {
-            priceEt.setText(itemsList[data.index].price)
+            binding.contractItemPriceValEt.setText(itemsList[data.index].price)
             contractItem!!.price = itemsList[data.index].price
             setTotalText()
         }
@@ -456,17 +427,17 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         }
         val totalCost = (contractItem!!.qty.toDouble() * contractItem!!.price!!.toDouble())
         contractItem!!.total = String.format("%.2f", totalCost)
-        totalEt.setText(contractItem!!.total)
+        binding.contractItemTotalValEt.setText(contractItem!!.total)
     }
 
     fun showProgressView() {
-        allCl.visibility = View.INVISIBLE
-        pgsBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     fun hideProgressView() {
-        allCl.visibility = View.VISIBLE
-        pgsBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
     }
 
 

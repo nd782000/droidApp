@@ -6,24 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentLeadListBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.globalLeadList
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-
-import kotlinx.android.synthetic.main.fragment_lead_list.list_recycler_view
-import kotlinx.android.synthetic.main.fragment_lead_list.customerSwipeContainer
-import kotlinx.android.synthetic.main.fragment_lead_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -41,47 +35,25 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
     private lateinit var globalVars:GlobalVars
     private lateinit var myView:View
 
-    private lateinit var pgsBar: ProgressBar
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var searchView:androidx.appcompat.widget.SearchView
-    private lateinit var swipeRefresh:SwipeRefreshLayout
-    private lateinit var allCl: ConstraintLayout
-
-    //lateinit var  newLeadBtn: Button
-    private lateinit var leadCountTv: TextView
-    private lateinit var addNewLeadBtn: Button
-    private lateinit var mapBtn: Button
-
     lateinit var adapter:LeadsAdapter
 
+    private var _binding: FragmentLeadListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-
         println("onCreateView")
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_lead_list, container, false)
-
-
-        //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
-        // progBar.alpha = 0.2f
+        _binding = FragmentLeadListBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         val emptyList:MutableList<Lead> = mutableListOf()
 
         adapter = LeadsAdapter(emptyList, this.myView.context, this)
-
-
-
-
-
-        //(activity as AppCompatActivity).supportActionBar?.title = "Lead List"
-
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_list)
-
-
 
         // Inflate the layout for this fragment
         return myView
@@ -95,23 +67,14 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
         (activity as MainActivity?)!!.setLeadList(this)
 
-        pgsBar = view.findViewById(R.id.progressBar)
-        recyclerView = view.findViewById(R.id.list_recycler_view)
-        searchView = view.findViewById(R.id.leads_search)
-        swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
-        mapBtn = view.findViewById(R.id.map_btn)
-        addNewLeadBtn = view.findViewById(R.id.new_lead_btn)
-        leadCountTv = view.findViewById(R.id.lead_count_textview)
 
-        allCl = view.findViewById(R.id.all_cl)
-
-        mapBtn.setOnClickListener{
+        binding.mapBtn.setOnClickListener{
             println("Map button clicked!")
             val directions = LeadListFragmentDirections.navigateToMap(1)
             myView.findNavController().navigate(directions)
         }
 
-        addNewLeadBtn.setOnClickListener{
+        binding.newLeadBtn.setOnClickListener{
             println("Map button clicked!")
             val directions = LeadListFragmentDirections.navigateToNewEditLead(null)
             myView.findNavController().navigate(directions)
@@ -173,9 +136,9 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                     }
                     val gson = GsonBuilder().create()
                     globalLeadList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
-                    leadCountTv.text = getString(R.string.x_active_leads, globalLeadList!!.size)
+                    binding.leadCountTextview.text = getString(R.string.x_active_leads, globalLeadList!!.size)
 
-                    list_recycler_view.apply {
+                    binding.listRecyclerView.apply {
                         layoutManager = LinearLayoutManager(activity)
 
 
@@ -187,7 +150,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
                         val itemDecoration: ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        recyclerView.addItemDecoration(itemDecoration)
+                        binding.listRecyclerView.addItemDecoration(itemDecoration)
 
                         //for item animations
                         // recyclerView.itemAnimator = SlideInUpAnimator()
@@ -197,17 +160,17 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                         // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
                         // Setup refresh listener which triggers new data loading
                         // Setup refresh listener which triggers new data loading
-                        swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                        binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
                             // Make sure you call swipeContainer.setRefreshing(false)
                             // once the network request has completed successfully.
                             //fetchTimelineAsync(0)
-                            searchView.setQuery("", false)
-                            searchView.clearFocus()
+                            binding.leadsSearch.setQuery("", false)
+                            binding.leadsSearch.clearFocus()
                             getLeads()
                         }
                         // Configure the refreshing colors
                         // Configure the refreshing colors
-                        swipeRefresh.setColorSchemeResources(
+                        binding.customerSwipeContainer.setColorSchemeResources(
                             R.color.button,
                             R.color.black,
                             R.color.colorAccent,
@@ -223,14 +186,14 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                         // ...the data has come back, add new items to your adapter...
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false
+                        binding.customerSwipeContainer.isRefreshing = false
 
                         // Toast.makeText(activity,"${leadsList.count()} Leads Loaded",Toast.LENGTH_SHORT).show()
 
 
 
                         //search listener
-                        leads_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+                        binding.leadsSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
                             androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
 
@@ -291,14 +254,14 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
 
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 

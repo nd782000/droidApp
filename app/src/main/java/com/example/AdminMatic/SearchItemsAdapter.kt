@@ -116,7 +116,6 @@ class SearchItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     private var mNameView: TextView? = null
 
 
-
     init {
         mNameView = itemView.findViewById(R.id.list_name)
     }
@@ -124,7 +123,5 @@ class SearchItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     fun bind(item: SearchItem) {
         mNameView?.text = item.name
     }
-
-
 
 }

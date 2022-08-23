@@ -154,8 +154,8 @@
         android:label="fragment_new_edit_lead"
         tools:layout="@layout/fragment_new_edit_lead" >
         <argument
-            android:name="leadID"
-            app:argType="string"
+            android:name="lead"
+            app:argType="com.example.AdminMatic.Lead"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -454,6 +454,9 @@
         <action
             android:id="@+id/navigateLeadToImageUpload"
             app:destination="@id/imageUpload" />
+        <action
+            android:id="@+id/navigateLeadToNewEditLead"
+            app:destination="@id/newEditLeadFragment" />
     </fragment>
     <fragment
         android:id="@+id/contractFragment"

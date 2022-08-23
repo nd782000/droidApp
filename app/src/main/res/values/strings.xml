@@ -161,7 +161,8 @@
 
     <!--Permissions stuff-->
     <string name="access_denied">Access Denied</string>
-    <string name="no_permission_leads">You don\'t have permission to access leads.</string>
+    <string name="no_permission_leads">You don\'t have permission to edit leads.</string>
+    <string name="no_permission_leads_edit">You don\'t have permission to access leads.</string>
     <string name="no_permission_contracts">You don\'t have permission to access contracts.</string>
     <string name="no_permission_schedule">You don\'t have permission to access work orders.</string>
     <string name="no_permission_invoices">You don\'t have permission to access invoices.</string>
@@ -253,6 +254,7 @@
     <string name="group_text_body">%1$s ~ AdminMatic Group Message by %2$s</string>
 
     <!--New Customer stuff-->
+    <string name="edit_customer_menu">Edit Customer</string>
     <string name="add_new_customer">Add New Customer</string>
     <string name="new_customer_duplicate_message">Enter street address to search existing customers. We want to avoid duplicate customer entries.</string>
     <string name="new_customer_parent">Parent Customer</string>
@@ -311,6 +313,8 @@
     <string name="new_customer_autofill_sysname">%1$s, %2$s</string>
 
     <!--New Lead stuff-->
+    <string name="edit_lead_menu">Edit Lead</string>
+    <string name="edit_leadu">Edit Lead #%1$s</string>
     <string name="new_lead">New Lead</string>
     <string name="edit_lead">Edit Lead #%1$s</string>
     <string name="new_lead_schedule_type">Schedule Type:</string>
@@ -324,6 +328,9 @@
     <string name="new_lead_date_hint">Date…</string>
     <string name="new_lead_time_hint">Time…</string>
     <string name="new_lead_sales_rep_hint">Sales Rep…</string>
+    <string name="new_lead_schedule_type_asap">ASAP (No Appointment)</string>
+    <string name="new_lead_schedule_type_firm">FIRM (Appointment)</string>
+
 
 
 

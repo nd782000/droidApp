@@ -6,18 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.*
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentImageListBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_image_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -42,21 +40,9 @@ interface ImageCellClickListener {
 
 class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInterface {
 
-
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
     var imagesLoaded:Boolean = false
-
-    lateinit var pgsBar: ProgressBar
-    lateinit var recyclerView: RecyclerView
-    lateinit var searchView: androidx.appcompat.widget.SearchView
-    lateinit var swipeRefresh: SwipeRefreshLayout
-    lateinit var allCl: ConstraintLayout
-
-    private lateinit var addImagesBtn: Button
-
-
-    // lateinit var  btn: Button
 
     lateinit var adapter:ImagesAdapter
 
@@ -67,6 +53,9 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
     var refreshing = false
     var searching = false
+
+    private var _binding: FragmentImageListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,26 +69,14 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
             println("myView = null")
             globalVars = GlobalVars()
-            myView = inflater.inflate(R.layout.fragment_image_list, container, false)
-
-
-            //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
-            // progBar.alpha = 0.2f
+            _binding = FragmentImageListBinding.inflate(inflater, container, false)
+            myView = binding.root
 
             imageList = mutableListOf()
 
             adapter = ImagesAdapter(imageList,myView.context, false, this)
 
 
-
-
-
-            //(activity as AppCompatActivity).supportActionBar?.title = "Image List"
-
-
-
-
-            // Inflate the layout for this fragment
         }
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.image_list)
@@ -117,15 +94,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
         (activity as MainActivity?)!!.setImageList(this)
 
         if(!imagesLoaded){
-            pgsBar = view.findViewById(R.id.progressBar)
-            recyclerView = view.findViewById(R.id.list_recycler_view)
-            searchView = view.findViewById(R.id.images_search)
-            swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
-            allCl = view.findViewById(R.id.all_cl)
-
-
-            addImagesBtn = view.findViewById((R.id.add_images_btn))
-            addImagesBtn.setOnClickListener{
+            binding.addImagesBtn.setOnClickListener{
                 println("add images btn clicked")
 
                 val directions = ImageListFragmentDirections.navigateToGalleryImageUpload("GALLERY",
@@ -138,13 +107,13 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
             val itemDecoration: ItemDecoration =
                 DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-            recyclerView.addItemDecoration(itemDecoration)
+            binding.listRecyclerView.addItemDecoration(itemDecoration)
 
-            recyclerView.onScrollToEnd { if(!searching){
+            binding.listRecyclerView.onScrollToEnd { if(!searching){
                 getImages()}
             }
 
-            recyclerView.adapter = adapter
+            binding.listRecyclerView.adapter = adapter
 
             // recyclerView.apply {
             // layoutManager = GridLayoutManager(myView.context, 2)
@@ -152,17 +121,17 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
             // }
 
-            recyclerView.layoutManager = GridLayoutManager(myView.context, 2)
+            binding.listRecyclerView.layoutManager = GridLayoutManager(myView.context, 2)
 
 
-            recyclerView.apply {
+            binding.listRecyclerView.apply {
 
 
 
                 // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
                 // Setup refresh listener which triggers new data loading
                 // Setup refresh listener which triggers new data loading
-                swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
                     // Make sure you call swipeContainer.setRefreshing(false)
                     // once the network request has completed successfully.
                     //fetchTimelineAsync(0)
@@ -183,7 +152,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                 }
                 // Configure the refreshing colors
                 // Configure the refreshing colors
-                swipeRefresh.setColorSchemeResources(
+                binding.customerSwipeContainer.setColorSchemeResources(
                     R.color.button,
                     R.color.black,
                     R.color.colorAccent,
@@ -196,7 +165,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                 //  scrollListener.setLoaded()
 
                 //search listener
-                images_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+                binding.imagesSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
                     androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
 
@@ -224,8 +193,8 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
     }
 
     fun refreshImages(){
-        searchView.setQuery("", false)
-        searchView.clearFocus()
+        binding.imagesSearch.setQuery("", false)
+        binding.imagesSearch.clearFocus()
         //clear list
         imageList = mutableListOf()
         refreshing = true
@@ -294,7 +263,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                     println("imageList count = ${imageList.count()}")
 
                     // Now we call setRefreshing(false) to signal refresh has finished
-                    customerSwipeContainer.isRefreshing = false
+                    binding.customerSwipeContainer.isRefreshing = false
 
                     // Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 
@@ -368,16 +337,16 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
 
         //searchView.alpha = 0.5f
         //recyclerView.alpha = 0.5f
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
 
         //searchView.alpha = 1.0f
         //recyclerView.alpha = 1.0f

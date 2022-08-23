@@ -4,25 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentCustomerListBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_customer_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -35,18 +30,13 @@ interface CustomerCellClickListener {
 //https://guides.codepath.com/android/using-the-recyclerview
 
 
-
 class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
     private lateinit var globalVars: GlobalVars
-    private lateinit var myView: View
-    private lateinit var pgsBar: ProgressBar
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var searchView: androidx.appcompat.widget.SearchView
-    private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var adapter: CustomersAdapter
-    private lateinit var addCustomerBtn: Button
-    private lateinit var allCl: ConstraintLayout
+
+    private var _binding: FragmentCustomerListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +44,8 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
     ): View {
 
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_customer_list, container, false)
+        _binding = FragmentCustomerListBinding.inflate(inflater, container, false)
+        myView = binding.root
 
 
         val emptyList: MutableList<Customer> = mutableListOf()
@@ -72,13 +63,9 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
         //need to wait for this function to initialize views
         println("onViewCreated")
-        pgsBar = view.findViewById(R.id.progressBar)
-        recyclerView = view.findViewById(R.id.list_recycler_view)
-        searchView = view.findViewById(R.id.customers_search)
-        swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
-        addCustomerBtn = view.findViewById(R.id.add_customer_btn)
 
-        addCustomerBtn.setOnClickListener {
+
+        binding.addCustomerBtn.setOnClickListener {
             if (GlobalVars.permissions!!.customersEdit == "1") {
                 val directions = CustomerListFragmentDirections.navigateToCustomerLookup()
                 myView.findNavController().navigate(directions)
@@ -87,7 +74,6 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                 globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_customers_edit))
             }
         }
-        allCl = view.findViewById(R.id.all_cl)
 
         //getCustomers()
 
@@ -103,7 +89,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
     fun showCustomers() {
         println("showCustomers")
-        list_recycler_view.apply {
+        binding.listRecyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
 
             hideProgressView()
@@ -124,19 +110,19 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
                 val itemDecoration: ItemDecoration =
                     DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                recyclerView.addItemDecoration(itemDecoration)
+                binding.listRecyclerView.addItemDecoration(itemDecoration)
 
 
                 // Setup refresh listener which triggers new data loading
-                swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+                binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
                     // Make sure you call swipeContainer.setRefreshing(false)
                     // once the network request has completed successfully.
-                    searchView.setQuery("", false)
-                    searchView.clearFocus()
+                    binding.customersSearch.setQuery("", false)
+                    binding.customersSearch.clearFocus()
                     getCustomers()
                 }
                 // Configure the refreshing colors
-                swipeRefresh.setColorSchemeResources(
+                binding.customerSwipeContainer.setColorSchemeResources(
                     R.color.button,
                     R.color.black,
                     R.color.colorAccent,
@@ -147,7 +133,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                 // Remember to CLEAR OUT old items before appending in the new ones
 
                 // Now we call setRefreshing(false) to signal refresh has finished
-                customerSwipeContainer.isRefreshing = false
+                binding.customerSwipeContainer.isRefreshing = false
 /*
 
                 Toast.makeText(
@@ -158,7 +144,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 */
 
                 //search listener
-                customers_search.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+                binding.customersSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
                     androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -239,12 +225,12 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 }

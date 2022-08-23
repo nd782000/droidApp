@@ -1,24 +1,13 @@
 package com.example.AdminMatic
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.work_order_list_item.view.*
-import java.util.*
 
 
 class ItemWorkOrdersAdapter(list: MutableList<WorkOrder>, private val context: Context, private val unit: String, private val cellClickListener: WorkOrderCellClickListener) : RecyclerView.Adapter<ItemWorkOrderViewHolder>() {

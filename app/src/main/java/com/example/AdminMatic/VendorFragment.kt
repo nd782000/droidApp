@@ -7,18 +7,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentVendorBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.gson.GsonBuilder
 import org.json.JSONException
@@ -32,27 +30,7 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-    private lateinit var  pgsBar: ProgressBar
-
-
-    private lateinit var vendorNameTv:TextView
-    private lateinit var vendorBalanceTv:TextView
-    private lateinit var vendorPhoneBtn: ConstraintLayout
-    private lateinit var vendorWebBtn: ConstraintLayout
-    private lateinit var vendorAddressBtn: ConstraintLayout
-    private lateinit var vendorPhoneBtnTxt:TextView
-    private lateinit var vendorWebBtnTxt:TextView
-    private lateinit var vendorAddressBtnTxt:TextView
-    private lateinit var vendorBodyCl:ConstraintLayout
-
-    private var mapFragment : SupportMapFragment? = null
     private lateinit var googleMapGlobal:GoogleMap
-
-    private lateinit var mapCl: ConstraintLayout
-
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,30 +40,26 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private var _binding: FragmentVendorBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-       // return inflater.inflate(R.layout.fragment_vendor, container, false)
-        myView = inflater.inflate(R.layout.fragment_vendor, container, false)
+        _binding = FragmentVendorBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.vendor)
-        mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
         return myView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pgsBar = view.findViewById(R.id.progress_bar)
-        vendorBodyCl = view.findViewById(R.id.vendor_body_cl)
-        mapCl = view.findViewById(R.id.vendor_map_cl)
 
 
-
-
-        mapFragment!!.getMapAsync(this)
+        binding.mapFrg.getMapAsync(this)
 
         hideProgressView()
 
@@ -140,40 +114,35 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun populateVendorView() {
-        vendorNameTv = myView.findViewById(R.id.vendor_name_txt)
-        vendorNameTv.text = vendor!!.name
-        vendorBalanceTv = myView.findViewById(R.id.vendor_balance_txt)
+        binding.vendorNameTxt.text = vendor!!.name
         if (vendor!!.balance == null) {
             vendor!!.balance = "0"
         }
-        vendorBalanceTv.text = getString(R.string.vendor_balance, vendor!!.balance)
+        binding.vendorBalanceTxt.text = getString(R.string.vendor_balance, vendor!!.balance)
         if (GlobalVars.permissions!!.vendorsMoney == "0") {
-            vendorBalanceTv.visibility = View.INVISIBLE
+            binding.vendorBalanceTxt.visibility = View.INVISIBLE
         }
 
-        vendorPhoneBtn = myView.findViewById(R.id.vendor_phone_btn_cl)
-        vendorPhoneBtnTxt = myView.findViewById(R.id.vendor_phone_btn_tv)
-        vendorPhoneBtnTxt.text = getString(R.string.no_phone_found)
+        binding.vendorPhoneBtnTv.text = getString(R.string.no_phone_found)
 
 
 
         if(!vendor!!.mainPhone.isNullOrEmpty()){
-            vendorPhoneBtnTxt.text = vendor!!.mainPhone!!
+            binding.vendorPhoneBtnTv.text = vendor!!.mainPhone!!
 
-            vendorPhoneBtnTxt.setOnClickListener {
+            binding.vendorPhoneBtnTv.setOnClickListener {
 
                 val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + vendor!!.mainPhone!!))
                 com.example.AdminMatic.myView.context.startActivity(intent)
             }
         }
 
-        vendorWebBtn = myView.findViewById(R.id.vendor_web_btn_cl)
-        vendorWebBtnTxt = myView.findViewById(R.id.vendor_web_btn_tv)
-        vendorWebBtnTxt.text = getString(R.string.no_website_found)
-        if(vendor!!.website != null){
-            vendorWebBtnTxt.text = vendor!!.website!!
 
-            vendorWebBtnTxt.setOnClickListener {
+        binding.vendorWebBtnTv.text = getString(R.string.no_website_found)
+        if(vendor!!.website != null){
+            binding.vendorWebBtnTv.text = vendor!!.website!!
+
+            binding.vendorWebBtnTv.setOnClickListener {
 
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse(vendor!!.website!!)
@@ -183,8 +152,7 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
 
         }
 
-        vendorAddressBtn = myView.findViewById(R.id.vendor_address_btn_cl)
-        vendorAddressBtn.setOnClickListener {
+        binding.vendorAddressBtnCl.setOnClickListener {
             println("map btn clicked ${vendor!!.mainAddr}")
 
             var lng = "0"
@@ -205,13 +173,12 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
 
         }
 
-        vendorAddressBtnTxt = myView.findViewById(R.id.vendor_address_btn_tv)
-        vendorAddressBtnTxt.text = getString(R.string.no_address_found)
+        binding.vendorAddressBtnTv.text = getString(R.string.no_address_found)
 
         println("Main Address: ${vendor!!.mainAddr}")
 
         if (vendor!!.mainAddr != "" && vendor!!.mainAddr != ", "){
-            vendorAddressBtnTxt.text = vendor!!.mainAddr!!
+            binding.vendorAddressBtnTv.text = vendor!!.mainAddr!!
         }
 
         updateMap()
@@ -337,13 +304,13 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        vendorBodyCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.vendorBodyCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        vendorBodyCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.vendorBodyCl.visibility = View.VISIBLE
     }
 
     /*

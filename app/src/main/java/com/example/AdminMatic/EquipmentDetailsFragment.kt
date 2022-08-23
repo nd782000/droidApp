@@ -10,11 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.AdminMatic.R
-
-import kotlinx.android.synthetic.main.fragment_equipment_list.list_recycler_view
+import com.AdminMatic.databinding.FragmentEquipmentDetailsBinding
 
 
 interface EquipmentDetailCellClickListener {
@@ -25,16 +23,10 @@ interface EquipmentDetailCellClickListener {
 class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
     private  var equipment: Equipment? = null
-
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-    lateinit var recyclerView: RecyclerView
-
     lateinit var adapter:EquipmentDetailAdapter
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +34,9 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
             equipment = it.getParcelable("equipment")
         }
     }
+
+    private var _binding: FragmentEquipmentDetailsBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,24 +46,15 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
         println("onCreateView")
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_equipment_details, container, false)
-
-
-        //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
-        // progBar.alpha = 0.2f
+        _binding = FragmentEquipmentDetailsBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         val emptyList:MutableList<String> = mutableListOf()
 
         adapter = EquipmentDetailAdapter(emptyList, this)
 
 
-
-
-
-        //(activity as AppCompatActivity).supportActionBar?.title = "Equipment List"
-
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment_details)
-
 
 
         // Inflate the layout for this fragment
@@ -80,9 +66,6 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
         //need to wait for this function to initialize views
         println("onViewCreated")
-        pgsBar = view.findViewById(R.id.progressBar)
-        recyclerView = view.findViewById(R.id.list_recycler_view)
-
 
         val detailList = mutableListOf<String>()
 
@@ -104,7 +87,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
         detailList.add(0, "Type: ${equipment!!.typeName}")
         detailList.add(0, "Name: ${equipment!!.name}")
 
-        list_recycler_view.apply {
+        binding.listRecyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
 
             adapter = activity?.let {
@@ -116,7 +99,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
             val itemDecoration: ItemDecoration =
                 DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-            recyclerView.addItemDecoration(itemDecoration)
+            binding.listRecyclerView.addItemDecoration(itemDecoration)
 
             //for item animations
             // recyclerView.itemAnimator = SlideInUpAnimator()
@@ -146,13 +129,13 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        recyclerView.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.listRecyclerView.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        recyclerView.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.listRecyclerView.visibility = View.VISIBLE
     }
 
 }

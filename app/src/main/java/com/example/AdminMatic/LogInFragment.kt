@@ -27,11 +27,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.AdminMatic.BuildConfig
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentLogInBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.deviceID
 import com.example.AdminMatic.GlobalVars.Companion.employeeList
-import com.example.AdminMatic.GlobalVars.Companion.hearTypes
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.mediumBase
 import com.example.AdminMatic.GlobalVars.Companion.rawBase
@@ -74,24 +74,16 @@ class LogInFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
-
         println("login onCreate")
         globalVars = GlobalVars()
 
         instance = this
 
 
-
-
-
-
         //used for async url calls
         val policy =
             StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-
 
         /*
         arguments?.let {
@@ -140,6 +132,9 @@ class LogInFragment : Fragment() {
     }
 
 
+    private var _binding: FragmentLogInBinding? = null
+    private val binding get() = _binding!!
+
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("ResourceType")
     override fun onCreateView(
@@ -151,7 +146,8 @@ class LogInFragment : Fragment() {
 
 
         // Inflate the layout for this fragment
-         myView = inflater.inflate(R.layout.fragment_log_in, container, false)
+        _binding = FragmentLogInBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         //set app bar
         val colorDrawable =  ColorDrawable(Color.parseColor(resources.getString(R.color.button)))
@@ -161,7 +157,7 @@ class LogInFragment : Fragment() {
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.login_to_adminmatic)
 
         //set up layout container
-        constraintLayout = myView.findViewById(R.id.loginLayout)
+        constraintLayout = binding.loginLayout
         constraintLayout.setBackgroundColor(Color.parseColor(resources.getString(R.color.background)))
 
 
@@ -180,6 +176,12 @@ class LogInFragment : Fragment() {
 
         return myView
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
     private fun loginOrGetSessionUser(){
         println("loginOrGetSessionUser")
@@ -202,8 +204,8 @@ class LogInFragment : Fragment() {
     private fun createLogInView(){
         println("createLogInView")
 
-        pgsBar = myView.findViewById(R.id.progressBar) as ProgressBar
-        pgsBar.isVisible = false
+        pgsBar = binding.progressBar
+        pgsBar.visibility = View.GONE
 
 
         companyEditText = EditText(myView.context)
@@ -217,7 +219,7 @@ class LogInFragment : Fragment() {
 
 
         companyEditText.id = generateViewId() // Views must have IDs in order to add them to chain later.
-        myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(companyEditText)
+        binding.loginLayout.addView(companyEditText)
 
 
         userEditText = EditText(myView.context)
@@ -227,7 +229,7 @@ class LogInFragment : Fragment() {
         userEditText.height = 100
         userEditText.setBackgroundResource(R.drawable.text_view_layout)
         userEditText.id = generateViewId()
-        myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(userEditText)
+        binding.loginLayout.addView(userEditText)
 
         passEditText = EditText(myView.context)
         passEditText.hint = "Password"
@@ -237,7 +239,7 @@ class LogInFragment : Fragment() {
         passEditText.setBackgroundResource(R.drawable.text_view_layout)
         passEditText.id = generateViewId()
         passEditText.transformationMethod = PasswordTransformationMethod()
-        myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(passEditText)
+        binding.loginLayout.addView(passEditText)
 
         rememberSwitch = SwitchCompat(myView.context)
         rememberSwitch.text = getString(R.string.remember_me)
@@ -270,7 +272,7 @@ class LogInFragment : Fragment() {
             }
 
         }
-        myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(rememberSwitch)
+        binding.loginLayout.addView(rememberSwitch)
 
 
 
@@ -280,13 +282,13 @@ class LogInFragment : Fragment() {
         submitBtn.setBackgroundResource(R.drawable.button_layout)
         submitBtn.setTextColor(Color.WHITE)
         submitBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP,18f)
-        myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(submitBtn)
+        binding.loginLayout.addView(submitBtn)
 
         versionText = TextView(myView.context)
         versionText.text = getString(R.string.version, BuildConfig.VERSION_NAME)
         versionText.gravity = Gravity.CENTER_HORIZONTAL
         versionText.id = generateViewId()
-        myView.findViewById<ConstraintLayout>(R.id.loginLayout).addView(versionText)
+        binding.loginLayout.addView(versionText)
 
 
 
@@ -393,6 +395,7 @@ class LogInFragment : Fragment() {
         constraintSet.centerHorizontally(versionText.id,ConstraintSet.PARENT_ID)
 
         constraintSet.applyTo(constraintLayout)
+
     }
 
     private fun getSessionUser(){
@@ -975,16 +978,16 @@ class LogInFragment : Fragment() {
 
 
     fun loading(){
-        for (index in 0 until (myView.findViewById<ConstraintLayout>(R.id.loginLayout) as ViewGroup).childCount) {
-            val nextChild = (myView.findViewById<ConstraintLayout>(R.id.loginLayout) as ViewGroup).getChildAt(index)
+        for (index in 0 until (binding.loginLayout as ViewGroup).childCount) {
+            val nextChild = (binding.loginLayout as ViewGroup).getChildAt(index)
             nextChild.isVisible = false
         }
         pgsBar.isVisible = true
     }
 
     fun stopLoading(){
-        for (index in 0 until (myView.findViewById<ConstraintLayout>(R.id.loginLayout) as ViewGroup).childCount) {
-            val nextChild = (myView.findViewById<ConstraintLayout>(R.id.loginLayout) as ViewGroup).getChildAt(index)
+        for (index in 0 until (binding.loginLayout as ViewGroup).childCount) {
+            val nextChild = (binding.loginLayout as ViewGroup).getChildAt(index)
             nextChild.isVisible = true
         }
         pgsBar.isVisible = false

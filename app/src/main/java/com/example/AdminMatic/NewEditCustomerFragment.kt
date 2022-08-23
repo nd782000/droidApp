@@ -11,14 +11,13 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentNewEditCustomerBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
@@ -42,68 +41,11 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
-
-    lateinit var  pgsBar: ProgressBar
-
-    private lateinit var allCl: ConstraintLayout
+    
     private var editMode = false
-
-
-    // Parent
-    private lateinit var parentSwitch: SwitchCompat
-    private lateinit var parentSearch: androidx.appcompat.widget.SearchView
-    private lateinit var parentRecycler: RecyclerView
-    //private lateinit var parentAdapter: CustomersAdapter
     private var parentName = ""
 
-    // Customer Name
-    private lateinit var isBusinessSwitch: SwitchCompat
-    private lateinit var namePrefixSpinner: Spinner
-    private lateinit var nameFirstEt: EditText
-    private lateinit var nameMiddleEt: EditText
-    private lateinit var nameLastEt: EditText
-    private lateinit var nameBusinessEt: EditText
-    private lateinit var nameSystemEt: EditText
-        // CLs so we can hide/show sections with the switch
-    private lateinit var namePrefixCl: ConstraintLayout
-    private lateinit var nameFirstCl: ConstraintLayout
-    private lateinit var nameMiddleCl: ConstraintLayout
-    private lateinit var nameLastCl: ConstraintLayout
-    private lateinit var nameBusinessCl: ConstraintLayout
-
-    // Contact Info
-    private lateinit var contactPhoneEt: EditText
-    private lateinit var contactEmailEt: EditText
-
-    // Job Site Address
-    private lateinit var addressStreet1: EditText
-    private lateinit var addressStreet2: EditText
-    private lateinit var addressStreet3: EditText
-    private lateinit var addressStreet4: EditText
-    private lateinit var addressCity: EditText
-    private lateinit var addressState: Spinner
-    private lateinit var addressZip: EditText
-
-    // Billing Address
-    private lateinit var sameAsAddressSwitch: SwitchCompat
-    private lateinit var sameAsAddressSwitchLabel: TextView
-    private lateinit var billingAddressLl: LinearLayout
-    private lateinit var billingAddressStreet1: EditText
-    private lateinit var billingAddressStreet2: EditText
-    private lateinit var billingAddressStreet3: EditText
-    private lateinit var billingAddressStreet4: EditText
-    private lateinit var billingAddressCity: EditText
-    private lateinit var billingAddressState: Spinner
-    private lateinit var billingAddressZip: EditText
-    
-    private lateinit var referredBySpinner: Spinner
-    private lateinit var isActiveSwitch: SwitchCompat
-    
-    private lateinit var submitBtn: Button
-
     private var referredBySpinnerPosition: Int = 0
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,12 +63,16 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("customerNewEdit")
     }
 
+    private var _binding: FragmentNewEditCustomerBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        myView = inflater.inflate(R.layout.fragment_new_edit_customer, container, false)
+        _binding = FragmentNewEditCustomerBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -167,21 +113,6 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
         customer = Customer("0", "")
 
-        // =================================
-        // ===== FETCH VIEW REFERENCES =====
-        // =================================
-        pgsBar = view.findViewById(R.id.progress_bar)
-        allCl = view.findViewById(R.id.all_cl)
-
-        // Parent
-        parentSwitch = view.findViewById(R.id.new_customer_parent_switch)
-        parentSearch = view.findViewById(R.id.new_customer_parent_search)
-        parentRecycler = view.findViewById(R.id.new_customer_parent_search_rv)
-
-        // Name
-        isBusinessSwitch = view.findViewById(R.id.new_customer_business_switch)
-
-        namePrefixSpinner = view.findViewById(R.id.new_customer_name_prefix_spinner)
         prefixArray = arrayOf(getString(R.string.new_customer_name_prefix_none_selected),
             getString(R.string.new_customer_name_prefix_mr),
             getString(R.string.new_customer_name_prefix_mrs),
@@ -196,67 +127,20 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             getString(R.string.new_customer_name_prefix_miss_short),
             getString(R.string.new_customer_name_prefix_dr_short))
 
-        nameFirstEt = view.findViewById(R.id.new_customer_name_first_et)
-        nameMiddleEt = view.findViewById(R.id.new_customer_name_middle_et)
-        nameLastEt = view.findViewById(R.id.new_customer_name_last_et)
-        nameBusinessEt = view.findViewById(R.id.new_customer_name_business_et)
-        nameSystemEt = view.findViewById(R.id.new_customer_name_system_et)
-        namePrefixCl = view.findViewById(R.id.new_customer_name_prefix_cl)
-        nameFirstCl = view.findViewById(R.id.new_customer_name_first_cl)
-        nameMiddleCl = view.findViewById(R.id.new_customer_name_middle_cl)
-        nameLastCl = view.findViewById(R.id.new_customer_name_last_cl)
-        nameBusinessCl = view.findViewById(R.id.new_customer_name_business_cl)
 
-        // Contact
-        contactPhoneEt = view.findViewById(R.id.new_customer_contact_phone_et)
-        contactEmailEt = view.findViewById(R.id.new_customer_contact_email_et)
-
-        // Address
-        addressStreet1 = view.findViewById(R.id.new_customer_address_street1_et)
-        addressStreet2 = view.findViewById(R.id.new_customer_address_street2_et)
-        addressStreet3 = view.findViewById(R.id.new_customer_address_street3_et)
-        addressStreet4 = view.findViewById(R.id.new_customer_address_street4_et)
-        addressCity = view.findViewById(R.id.new_customer_address_city_et)
-        addressState = view.findViewById(R.id.new_customer_address_state_spinner)
-        addressZip = view.findViewById(R.id.new_customer_address_zip_et)
-
-        // Billing Address
-        sameAsAddressSwitch = view.findViewById(R.id.new_customer_billing_same_switch)
-        sameAsAddressSwitchLabel = view.findViewById(R.id.new_customer_copy_billing_switch_tv)
-        billingAddressLl = view.findViewById(R.id.new_customer_billing_address_ll)
-        billingAddressStreet1 = view.findViewById(R.id.new_customer_billing_address_street1_et)
-        billingAddressStreet2 = view.findViewById(R.id.new_customer_billing_address_street2_et)
-        billingAddressStreet3 = view.findViewById(R.id.new_customer_billing_address_street3_et)
-        billingAddressStreet4 = view.findViewById(R.id.new_customer_billing_address_street4_et)
-        billingAddressCity = view.findViewById(R.id.new_customer_billing_address_city_et)
-        billingAddressState = view.findViewById(R.id.new_customer_billing_address_state_spinner)
-        billingAddressZip = view.findViewById(R.id.new_customer_billing_address_zip_et)
-        
-        // Referred by
-        referredBySpinner = view.findViewById(R.id.new_customer_referral_spinner)
-        isActiveSwitch = view.findViewById(R.id.new_customer_active_switch)
-
-        //Submit Button
-        submitBtn = view.findViewById(R.id.new_customer_submit_btn)
-
-
-        // =================================
-        // ========= SET UP VIEWS ==========
-        // =================================
 
         // Parent
-
-        parentSwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.newCustomerParentSwitch.setOnCheckedChangeListener { _, isChecked ->
             editsMade = true
             if (isChecked) {
-                parentSearch.visibility = View.VISIBLE
+                binding.newCustomerParentSearch.visibility = View.VISIBLE
             }
             else {
-                parentSearch.visibility = View.GONE
+                binding.newCustomerParentSearch.visibility = View.GONE
             }
         }
 
-        parentRecycler.apply {
+        binding.newCustomerParentSearchRv.apply {
             layoutManager = LinearLayoutManager(activity)
 
 
@@ -269,35 +153,12 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
             val itemDecoration: RecyclerView.ItemDecoration =
                 DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-            parentRecycler.addItemDecoration(itemDecoration)
-
-
-            //(adapter as SearchItemsAdapter).notifyDataSetChanged()
-
-            /*
-            parentSearch.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    (adapter as CustomersAdapter).filter.filter(s)
-                    if(s == ""){
-                        parentRecycler.visibility = View.GONE
-                    }else{
-                        parentRecycler.visibility = View.VISIBLE
-                    }
-                }
-            })
-
-             */
+            binding.newCustomerParentSearchRv.addItemDecoration(itemDecoration)
 
 
 
-            parentSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+
+            binding.newCustomerParentSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -309,9 +170,9 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                     println("onQueryTextChange = $newText")
                     (adapter as CustomersAdapter).filter.filter(newText)
                     if(newText == ""){
-                        parentRecycler.visibility = View.GONE
+                        binding.newCustomerParentSearchRv.visibility = View.GONE
                     }else{
-                        parentRecycler.visibility = View.VISIBLE
+                        binding.newCustomerParentSearchRv.visibility = View.VISIBLE
                     }
 
                     return false
@@ -320,20 +181,20 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             })
 
 
-            val closeButton: View? = parentSearch.findViewById(androidx.appcompat.R.id.search_close_btn)
+            val closeButton: View? = binding.newCustomerParentSearch.findViewById(androidx.appcompat.R.id.search_close_btn)
             closeButton?.setOnClickListener {
-                parentSearch.setQuery("", false)
+                binding.newCustomerParentSearch.setQuery("", false)
                 customer.parentID = "0"
                 parentName = ""
                 myView.hideKeyboard()
-                parentSearch.clearFocus()
-                parentRecycler.visibility = View.GONE
+                binding.newCustomerParentSearch.clearFocus()
+                binding.newCustomerParentSearchRv.visibility = View.GONE
             }
 
-            parentSearch.setOnQueryTextFocusChangeListener { _, isFocused ->
+            binding.newCustomerParentSearch.setOnQueryTextFocusChangeListener { _, isFocused ->
                 if (!isFocused) {
-                    parentSearch.setQuery(parentName, false)
-                    parentRecycler.visibility = View.GONE
+                    binding.newCustomerParentSearch.setQuery(parentName, false)
+                    binding.newCustomerParentSearchRv.visibility = View.GONE
                 }
             }
 
@@ -342,43 +203,42 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
 
         // Name
-        namePrefixSpinner = view.findViewById(R.id.new_customer_name_prefix_spinner)
-        namePrefixSpinner.setBackgroundResource(R.drawable.text_view_layout)
+        binding.newCustomerNamePrefixSpinner.setBackgroundResource(R.drawable.text_view_layout)
         prefixAdapter = ArrayAdapter<String>(
             myView.context,
             android.R.layout.simple_spinner_dropdown_item,
             prefixArray
         )
         prefixAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-        namePrefixSpinner.adapter = prefixAdapter
-        namePrefixSpinner.onItemSelectedListener = this@NewEditCustomerFragment
+        binding.newCustomerNamePrefixSpinner.adapter = prefixAdapter
+        binding.newCustomerNamePrefixSpinner.onItemSelectedListener = this@NewEditCustomerFragment
 
-        nameMiddleEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        nameMiddleEt.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerNameMiddleEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerNameMiddleEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        nameLastEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        nameLastEt.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerNameLastEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerNameLastEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        nameBusinessEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        nameBusinessEt.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerNameBusinessEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerNameBusinessEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        nameSystemEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        nameSystemEt.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerNameSystemEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerNameSystemEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -386,48 +246,48 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             }
         })
 
-        nameSystemEt.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+        binding.newCustomerNameSystemEt.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 if (customer.parentID == "0") {
-                    if (nameSystemEt.text.isBlank() && nameFirstEt.text.isNotBlank() && nameLastEt.text.isNotBlank()) {
-                        nameSystemEt.setText(getString(R.string.new_customer_autofill_sysname, nameLastEt.text, nameFirstEt.text))
+                    if (binding.newCustomerNameSystemEt.text.isBlank() && binding.newCustomerNameFirstEt.text.isNotBlank() && binding.newCustomerNameLastEt.text.isNotBlank()) {
+                        binding.newCustomerNameSystemEt.setText(getString(R.string.new_customer_autofill_sysname, binding.newCustomerNameLastEt.text, binding.newCustomerNameFirstEt.text))
                     }
                 }
                 else {
-                    nameSystemEt.setText(customer.billStreet1)
+                    binding.newCustomerNameSystemEt.setText(customer.billStreet1)
                 }
             }
         }
 
-        isBusinessSwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.newCustomerBusinessSwitch.setOnCheckedChangeListener { _, isChecked ->
             editsMade = true
             if (isChecked) {
-                namePrefixCl.visibility = View.GONE
-                nameFirstCl.visibility = View.GONE
-                nameMiddleCl.visibility = View.GONE
-                nameLastCl.visibility = View.GONE
-                nameBusinessCl.visibility = View.VISIBLE
+                binding.newCustomerNamePrefixCl.visibility = View.GONE
+                binding.newCustomerNameFirstCl.visibility = View.GONE
+                binding.newCustomerNameMiddleCl.visibility = View.GONE
+                binding.newCustomerNameLastCl.visibility = View.GONE
+                binding.newCustomerNameBusinessCl.visibility = View.VISIBLE
             }
             else {
-                namePrefixCl.visibility = View.VISIBLE
-                nameFirstCl.visibility = View.VISIBLE
-                nameMiddleCl.visibility = View.VISIBLE
-                nameLastCl.visibility = View.VISIBLE
-                nameBusinessCl.visibility = View.GONE
+                binding.newCustomerNamePrefixCl.visibility = View.VISIBLE
+                binding.newCustomerNameFirstCl.visibility = View.VISIBLE
+                binding.newCustomerNameMiddleCl.visibility = View.VISIBLE
+                binding.newCustomerNameLastCl.visibility = View.VISIBLE
+                binding.newCustomerNameBusinessCl.visibility = View.GONE
             }
         }
 
         // Contact
-        contactPhoneEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        contactPhoneEt.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerContactPhoneEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerContactPhoneEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        contactEmailEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        contactEmailEt.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerContactEmailEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerContactEmailEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -436,40 +296,40 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
         })
 
         // Address
-        addressStreet1.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        addressStreet1.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerAddressStreet1Et.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerAddressStreet1Et.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        addressStreet2.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        addressStreet2.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerAddressStreet2Et.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerAddressStreet2Et.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        addressStreet3.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        addressStreet3.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerAddressStreet3Et.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerAddressStreet3Et.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        addressStreet4.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        addressStreet4.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerAddressStreet4Et.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerAddressStreet4Et.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        addressCity.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        addressCity.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerAddressCityEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerAddressCityEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -477,19 +337,18 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             }
         })
 
-        addressState = view.findViewById(R.id.new_customer_address_state_spinner)
-        addressState.setBackgroundResource(R.drawable.text_view_layout)
+        binding.newCustomerAddressStateSpinner.setBackgroundResource(R.drawable.text_view_layout)
         stateAdapter = ArrayAdapter<String>(
             myView.context,
             android.R.layout.simple_spinner_dropdown_item,
             GlobalVars.states
         )
         stateAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-        addressState.adapter = stateAdapter
-        addressState.onItemSelectedListener = this@NewEditCustomerFragment
+        binding.newCustomerAddressStateSpinner.adapter = stateAdapter
+        binding.newCustomerAddressStateSpinner.onItemSelectedListener = this@NewEditCustomerFragment
 
-        addressZip.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        addressZip.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerAddressZipEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerAddressZipEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -498,56 +357,56 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
         })
 
         // Billing Address
-        sameAsAddressSwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.newCustomerBillingSameSwitch.setOnCheckedChangeListener { _, isChecked ->
             editsMade = true
             if (isChecked) {
-                billingAddressLl.visibility = View.GONE
+                binding.newCustomerBillingAddressLl.visibility = View.GONE
             }
             else {
-                billingAddressLl.visibility = View.VISIBLE
+                binding.newCustomerBillingAddressLl.visibility = View.VISIBLE
             }
         }
-        billingAddressStreet1.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        billingAddressStreet1.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerBillingAddressStreet1Et.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerBillingAddressStreet1Et.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        billingAddressStreet1.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+        binding.newCustomerBillingAddressStreet1Et.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-                if (customer.parentID != "0" && nameSystemEt.text.isBlank()) {
-                    nameSystemEt.text = billingAddressStreet1.text
+                if (customer.parentID != "0" && binding.newCustomerNameSystemEt.text.isBlank()) {
+                    binding.newCustomerNameSystemEt.text = binding.newCustomerBillingAddressStreet1Et.text
                 }
             }
         }
-        billingAddressStreet2.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        billingAddressStreet2.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerBillingAddressStreet2Et.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerBillingAddressStreet2Et.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        billingAddressStreet3.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        billingAddressStreet3.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerBillingAddressStreet3Et.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerBillingAddressStreet3Et.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        billingAddressStreet4.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        billingAddressStreet4.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerBillingAddressStreet4Et.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerBillingAddressStreet4Et.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
             }
         })
-        billingAddressCity.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        billingAddressCity.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerBillingAddressCityEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerBillingAddressCityEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -555,19 +414,18 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             }
         })
 
-        billingAddressState = view.findViewById(R.id.new_customer_billing_address_state_spinner)
-        billingAddressState.setBackgroundResource(R.drawable.text_view_layout)
+        binding.newCustomerBillingAddressStateSpinner.setBackgroundResource(R.drawable.text_view_layout)
         stateBillingAdapter = ArrayAdapter<String>(
             myView.context,
             android.R.layout.simple_spinner_dropdown_item,
             GlobalVars.states
         )
         stateBillingAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-        billingAddressState.adapter = stateBillingAdapter
-        billingAddressState.onItemSelectedListener = this@NewEditCustomerFragment
+        binding.newCustomerBillingAddressStateSpinner.adapter = stateBillingAdapter
+        binding.newCustomerBillingAddressStateSpinner.onItemSelectedListener = this@NewEditCustomerFragment
 
-        billingAddressZip.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
-        billingAddressZip.addTextChangedListener(object : TextWatcher {
+        binding.newCustomerBillingAddressZipEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newCustomerBillingAddressZipEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -576,22 +434,20 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
         })
 
         // Referred by
-        referredBySpinner = view.findViewById(R.id.new_customer_referral_spinner)
-        referredBySpinner.setBackgroundResource(R.drawable.text_view_layout)
+        binding.newCustomerReferralSpinner.setBackgroundResource(R.drawable.text_view_layout)
         referredByAdapter = ArrayAdapter<HearType>(
             myView.context,
             android.R.layout.simple_spinner_dropdown_item,
             GlobalVars.hearTypes!!
         )
         referredByAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-        referredBySpinner.adapter = referredByAdapter
-        referredBySpinner.onItemSelectedListener = this@NewEditCustomerFragment
+        binding.newCustomerReferralSpinner.adapter = referredByAdapter
+        binding.newCustomerReferralSpinner.onItemSelectedListener = this@NewEditCustomerFragment
         // Set to "none specified" by default
-        referredBySpinner.setSelection(7)
+        binding.newCustomerReferralSpinner.setSelection(7)
 
 
-        isActiveSwitch = view.findViewById(R.id.new_customer_active_switch)
-        isActiveSwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.newCustomerActiveSwitch.setOnCheckedChangeListener { _, isChecked ->
             editsMade = true
             if (isChecked) {
                 customer.active = "1"
@@ -601,7 +457,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             }
         }
 
-        submitBtn.setOnClickListener {
+        binding.newCustomerSubmitBtn.setOnClickListener {
             if (validateFields()) {
                 updateCustomer()
             }
@@ -632,9 +488,9 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
             R.id.new_customer_referral_spinner -> {
                 println("onItemSelected position = $position")
-                println("weekSpinner.getTag(R.id.pos) = ${referredBySpinner.getTag(R.id.pos)}")
+                println("weekSpinner.getTag(R.id.pos) = ${binding.newCustomerReferralSpinner.getTag(R.id.pos)}")
 
-                if(referredBySpinner.getTag(R.id.pos) != null && referredBySpinner.getTag(R.id.pos) != position){
+                if(binding.newCustomerReferralSpinner.getTag(R.id.pos) != null && binding.newCustomerReferralSpinner.getTag(R.id.pos) != position){
                     println("tag != pos")
                 }
 
@@ -645,7 +501,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
 
                 referredBySpinnerPosition = position
-                referredBySpinner.setTag(R.id.pos, position)
+                binding.newCustomerReferralSpinner.setTag(R.id.pos, position)
             }
         }
 
@@ -724,11 +580,11 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 for (it in GlobalVars.customerList!!) {
                     if (it.ID == customer.parentID) {
                         parentName = it.sysname
-                        parentSearch.setQuery(it.sysname, false)
-                        parentSearch.clearFocus()
-                        parentRecycler.visibility = View.GONE
-                        parentSwitch.isChecked = true
-                        parentSwitch.jumpDrawablesToCurrentState()
+                        binding.newCustomerParentSearch.setQuery(it.sysname, false)
+                        binding.newCustomerParentSearch.clearFocus()
+                        binding.newCustomerParentSearchRv.visibility = View.GONE
+                        binding.newCustomerParentSwitch.isChecked = true
+                        binding.newCustomerParentSwitch.jumpDrawablesToCurrentState()
                         break
                     }
                 }
@@ -736,8 +592,8 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
         }
 
         if (!customer.companyName.isNullOrBlank()) {
-            isBusinessSwitch.isChecked = true
-            isBusinessSwitch.jumpDrawablesToCurrentState()
+            binding.newCustomerBusinessSwitch.isChecked = true
+            binding.newCustomerBusinessSwitch.jumpDrawablesToCurrentState()
         }
 
 
@@ -748,71 +604,71 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
         }
 
         if (indexOfPrefix != -1) {
-            namePrefixSpinner.setSelection(indexOfPrefix)
+            binding.newCustomerNamePrefixSpinner.setSelection(indexOfPrefix)
         }
 
 
 
-        nameFirstEt.setText(customer.fname)
-        nameMiddleEt.setText(customer.mname)
-        nameLastEt.setText(customer.lname)
-        nameBusinessEt.setText(customer.companyName)
-        nameSystemEt.setText(customer.sysname)
-        contactPhoneEt.setText(customer.phone)
-        contactEmailEt.setText(customer.email)
+        binding.newCustomerNameFirstEt.setText(customer.fname)
+        binding.newCustomerNameMiddleEt.setText(customer.mname)
+        binding.newCustomerNameLastEt.setText(customer.lname)
+        binding.newCustomerNameBusinessEt.setText(customer.companyName)
+        binding.newCustomerNameSystemEt.setText(customer.sysname)
+        binding.newCustomerContactPhoneEt.setText(customer.phone)
+        binding.newCustomerContactEmailEt.setText(customer.email)
 
         if (!fromSelected) {
-            addressStreet1.setText(customer.jobStreet1)
-            addressStreet2.setText(customer.jobStreet2)
-            addressStreet3.setText(customer.jobStreet3)
-            addressStreet4.setText(customer.jobStreet4)
-            addressCity.setText(customer.jobCity)
+            binding.newCustomerAddressStreet1Et.setText(customer.jobStreet1)
+            binding.newCustomerAddressStreet2Et.setText(customer.jobStreet2)
+            binding.newCustomerAddressStreet3Et.setText(customer.jobStreet3)
+            binding.newCustomerAddressStreet4Et.setText(customer.jobStreet4)
+            binding.newCustomerAddressCityEt.setText(customer.jobCity)
             val addressStateIndex = GlobalVars.statesShort.indexOf(customer.jobState)
             if (addressStateIndex != -1) {
-                addressState.setSelection(addressStateIndex)
+                binding.newCustomerAddressStateSpinner.setSelection(addressStateIndex)
             }
-            addressZip.setText(customer.jobZip)
+            binding.newCustomerAddressZipEt.setText(customer.jobZip)
         }
 
-        billingAddressStreet1.setText(customer.billStreet1)
-        billingAddressStreet2.setText(customer.billStreet2)
-        billingAddressStreet3.setText(customer.billStreet3)
-        billingAddressStreet4.setText(customer.billStreet4)
-        billingAddressCity.setText(customer.billCity)
+        binding.newCustomerBillingAddressStreet1Et.setText(customer.billStreet1)
+        binding.newCustomerBillingAddressStreet2Et.setText(customer.billStreet2)
+        binding.newCustomerBillingAddressStreet3Et.setText(customer.billStreet3)
+        binding.newCustomerBillingAddressStreet4Et.setText(customer.billStreet4)
+        binding.newCustomerBillingAddressCityEt.setText(customer.billCity)
         val billingAddressStateIndex = GlobalVars.statesShort.indexOf(customer.billState)
         if (billingAddressStateIndex != -1) {
-            billingAddressState.setSelection(billingAddressStateIndex)
+            binding.newCustomerBillingAddressStateSpinner.setSelection(billingAddressStateIndex)
         }
-        billingAddressZip.setText(customer.jobZip)
+        binding.newCustomerBillingAddressZipEt.setText(customer.jobZip)
 
 
         // In edit mode, disable the same as job site address switch
         if (editMode) {
-            sameAsAddressSwitch.isChecked = false
-            sameAsAddressSwitch.jumpDrawablesToCurrentState()
-            sameAsAddressSwitch.visibility = View.GONE
-            sameAsAddressSwitchLabel.visibility = View.GONE
+            binding.newCustomerBillingSameSwitch.isChecked = false
+            binding.newCustomerBillingSameSwitch.jumpDrawablesToCurrentState()
+            binding.newCustomerBillingSameSwitch.visibility = View.GONE
+            binding.newCustomerCopyBillingSwitchTv.visibility = View.GONE
         }
 
         if (fromSelected) {
-            sameAsAddressSwitch.isChecked = false
-            sameAsAddressSwitch.jumpDrawablesToCurrentState()
+            binding.newCustomerBillingSameSwitch.isChecked = false
+            binding.newCustomerBillingSameSwitch.jumpDrawablesToCurrentState()
         }
 
 
 
 
         println("hear: ${customer.hear}")
-        referredBySpinner.setSelection(7)
+        binding.newCustomerReferralSpinner.setSelection(7)
         for (i in 0 until GlobalVars.hearTypes!!.size) {
             val adapterItem = referredByAdapter.getItem(i)
             if (adapterItem!!.ID.toInt() == customer.hear!!.toInt()) {
-                referredBySpinner.setSelection(i)
+                binding.newCustomerReferralSpinner.setSelection(i)
             }
         }
         if (customer.active == "0") {
-            isBusinessSwitch.isChecked = false
-            isBusinessSwitch.jumpDrawablesToCurrentState()
+            binding.newCustomerBusinessSwitch.isChecked = false
+            binding.newCustomerBusinessSwitch.jumpDrawablesToCurrentState()
         }
         editsMade = false
         hideProgressView()
@@ -875,43 +731,43 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["parentID"] = customer.parentID!!
-                params["companyName"] = nameBusinessEt.text.toString()
+                params["companyName"] = binding.newCustomerNameBusinessEt.text.toString()
                 params["salutation"] = customer.salutation.toString()
-                params["firstName"] = nameFirstEt.text.toString()
-                params["middleName"] = nameMiddleEt.text.toString()
-                params["lastName"] = nameLastEt.text.toString()
-                params["sysName"] = nameSystemEt.text.toString()
+                params["firstName"] = binding.newCustomerNameFirstEt.text.toString()
+                params["middleName"] = binding.newCustomerNameMiddleEt.text.toString()
+                params["lastName"] = binding.newCustomerNameLastEt.text.toString()
+                params["sysName"] = binding.newCustomerNameSystemEt.text.toString()
                 if (editMode) {
-                    if (nameSystemEt.text.toString() != customer.sysname) {
+                    if (binding.newCustomerNameSystemEt.text.toString() != customer.sysname) {
                         params["nameChange"] = "1"
                     }
                     else {
                         params["nameChange"] = "0"
                     }
                 }
-                params["mainPhone"] = contactPhoneEt.text.toString()
-                params["mainEmail"] = contactEmailEt.text.toString()
-                params["jobStreet1"] = addressStreet1.text.toString()
-                params["jobStreet2"] = addressStreet2.text.toString()
-                params["jobStreet3"] = addressStreet3.text.toString()
-                params["jobStreet4"] = addressStreet4.text.toString()
-                params["jobCity"] = addressCity.text.toString()
-                if (addressState.selectedItemPosition > 0) {
-                    params["jobState"] = GlobalVars.statesShort[addressState.selectedItemPosition]
+                params["mainPhone"] = binding.newCustomerContactPhoneEt.text.toString()
+                params["mainEmail"] = binding.newCustomerContactEmailEt.text.toString()
+                params["jobStreet1"] = binding.newCustomerAddressStreet1Et.text.toString()
+                params["jobStreet2"] = binding.newCustomerAddressStreet2Et.text.toString()
+                params["jobStreet3"] = binding.newCustomerAddressStreet3Et.text.toString()
+                params["jobStreet4"] = binding.newCustomerAddressStreet4Et.text.toString()
+                params["jobCity"] = binding.newCustomerAddressCityEt.text.toString()
+                if (binding.newCustomerAddressStateSpinner.selectedItemPosition > 0) {
+                    params["jobState"] = GlobalVars.statesShort[binding.newCustomerAddressStateSpinner.selectedItemPosition]
                 }
                 else {
                     params["jobState"] = ""
                 }
-                params["jobZip"] = addressZip.text.toString()
+                params["jobZip"] = binding.newCustomerAddressZipEt.text.toString()
                 if (editMode) {
-                    val newState = GlobalVars.statesShort[addressState.selectedItemPosition]
-                    if (addressStreet1.text.toString() != customer.jobStreet1 ||
-                        addressStreet2.text.toString() != customer.jobStreet2 ||
-                        addressStreet3.text.toString() != customer.jobStreet3 ||
-                        addressStreet4.text.toString() != customer.jobStreet4 ||
-                        addressCity.text.toString() != customer.jobCity ||
+                    val newState = GlobalVars.statesShort[binding.newCustomerAddressStateSpinner.selectedItemPosition]
+                    if (binding.newCustomerAddressStreet1Et.text.toString() != customer.jobStreet1 ||
+                        binding.newCustomerAddressStreet2Et.text.toString() != customer.jobStreet2 ||
+                        binding.newCustomerAddressStreet3Et.text.toString() != customer.jobStreet3 ||
+                        binding.newCustomerAddressStreet4Et.text.toString() != customer.jobStreet4 ||
+                        binding.newCustomerAddressCityEt.text.toString() != customer.jobCity ||
                         newState != customer.jobState ||
-                        addressZip.text.toString() != customer.jobZip) {
+                        binding.newCustomerAddressZipEt.text.toString() != customer.jobZip) {
                         params["jobSiteChange"] = "1"
                     }
                     else {
@@ -919,40 +775,40 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                     }
                 }
 
-                if (sameAsAddressSwitch.isChecked) {
+                if (binding.newCustomerBillingSameSwitch.isChecked) {
                     // If "same as job site address" is checked, use same values as regular address with name added
                     var nameString = ""
                     nameString += customer.salutation
-                    nameString += nameFirstEt.text
-                    nameString += nameMiddleEt.text
-                    nameString += nameLastEt.text
+                    nameString += binding.newCustomerNameFirstEt.text
+                    nameString += binding.newCustomerNameMiddleEt.text
+                    nameString += binding.newCustomerNameLastEt.text
                     params["billStreet1"] = nameString
-                    params["billStreet2"] = addressStreet1.text.toString()
-                    params["billStreet3"] = addressStreet2.text.toString()
-                    params["billStreet4"] = addressStreet3.text.toString()
-                    params["billCity"] = addressCity.text.toString()
-                    if (billingAddressState.selectedItemPosition > 0) {
-                        params["billState"] = GlobalVars.statesShort[addressState.selectedItemPosition]
+                    params["billStreet2"] = binding.newCustomerAddressStreet1Et.text.toString()
+                    params["billStreet3"] = binding.newCustomerAddressStreet2Et.text.toString()
+                    params["billStreet4"] = binding.newCustomerAddressStreet3Et.text.toString()
+                    params["billCity"] = binding.newCustomerAddressCityEt.text.toString()
+                    if (binding.newCustomerAddressStateSpinner.selectedItemPosition > 0) {
+                        params["billState"] = GlobalVars.statesShort[binding.newCustomerAddressStateSpinner.selectedItemPosition]
                     }
                     else {
                         params["billState"] = ""
                     }
-                    params["billZip"] = addressZip.text.toString()
+                    params["billZip"] = binding.newCustomerAddressZipEt.text.toString()
                 }
                 else {
                     // If not, take the values put in the fields
-                    params["billStreet1"] = billingAddressStreet1.text.toString()
-                    params["billStreet2"] = billingAddressStreet2.text.toString()
-                    params["billStreet3"] = billingAddressStreet3.text.toString()
-                    params["billStreet4"] = billingAddressStreet4.text.toString()
-                    params["billCity"] = billingAddressCity.text.toString()
-                    if (billingAddressState.selectedItemPosition > 0) {
-                        params["billState"] = GlobalVars.statesShort[billingAddressState.selectedItemPosition]
+                    params["billStreet1"] = binding.newCustomerBillingAddressStreet1Et.text.toString()
+                    params["billStreet2"] = binding.newCustomerBillingAddressStreet2Et.text.toString()
+                    params["billStreet3"] = binding.newCustomerBillingAddressStreet3Et.text.toString()
+                    params["billStreet4"] = binding.newCustomerBillingAddressStreet4Et.text.toString()
+                    params["billCity"] = binding.newCustomerBillingAddressCityEt.text.toString()
+                    if (binding.newCustomerBillingAddressStateSpinner.selectedItemPosition > 0) {
+                        params["billState"] = GlobalVars.statesShort[binding.newCustomerBillingAddressStateSpinner.selectedItemPosition]
                     }
                     else {
                         params["billState"] = ""
                     }
-                    params["billZip"] = billingAddressZip.text.toString()
+                    params["billZip"] = binding.newCustomerBillingAddressZipEt.text.toString()
                 }
 
                 params["hear"] = customer.hear.toString()
@@ -1001,10 +857,10 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
                     customer.parentID = customerSelected.parentID
                     parentName = customerSelected.sysname
-                    parentSearch.setQuery(parentName, false)
-                    parentSearch.clearFocus()
+                    binding.newCustomerParentSearch.setQuery(parentName, false)
+                    binding.newCustomerParentSearch.clearFocus()
                     myView.hideKeyboard()
-                    parentRecycler.visibility = View.GONE
+                    binding.newCustomerParentSearchRv.visibility = View.GONE
 
                     customer.salutation = customerSelected.salutation
                     customer.fname = customerSelected.fname
@@ -1054,17 +910,17 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
     }
 
     private fun validateFields(): Boolean {
-        if (nameSystemEt.text.length > 41) {
+        if (binding.newCustomerNameSystemEt.text.length > 41) {
             globalVars.simpleAlert(myView.context,getString(R.string.dialogue_sysname_too_long_title),getString(R.string.dialogue_sysname_too_long_body))
             return false
         }
 
-        if (nameSystemEt.text.isBlank()) {
+        if (binding.newCustomerNameSystemEt.text.isBlank()) {
             globalVars.simpleAlert(myView.context,getString(R.string.dialogue_sysname_missing_title),getString(R.string.dialogue_sysname_missing_body))
             return false
         }
 
-        if (billingAddressStreet1.text.length > 31) {
+        if (binding.newCustomerBillingAddressStreet1Et.text.length > 31) {
             globalVars.simpleAlert(myView.context,getString(R.string.dialogue_billing_name_too_long_title),getString(R.string.dialogue_billing_name_too_long_body))
             return false
         }
@@ -1074,14 +930,14 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 }

@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.item_list_item.view.*
 import java.util.*
 
 
@@ -40,11 +39,11 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
 
-
-
-
         val item: Item = filterList[position]
         holder.bind(item, context)
+
+        val listItemName = holder.itemView.findViewById<TextView>(R.id.list_item_name_tv)
+
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
         println("queryText = $queryText")
@@ -67,12 +66,12 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_item_name_tv.text = spannable
+                listItemName.text = spannable
             } else {
-                holder.itemView.list_item_name_tv.text = filterList[position].name
+                listItemName.text = filterList[position].name
             }
         } else {
-            holder.itemView.list_item_name_tv.text = filterList[position].name
+            listItemName.text = filterList[position].name
         }
 
 

@@ -6,34 +6,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentMapBinding
 import com.example.AdminMatic.GlobalVars.Companion.globalLeadList
 import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
-    lateinit var  pgsBar: ProgressBar
-    private lateinit var refreshBtn: Button
     private val markerList = mutableListOf<Marker>()
-    private var mapFragment : SupportMapFragment?=null
     private val pinMapWorkOrder = HashMap<Marker?, WorkOrder>()
     private val pinMapLead = HashMap<Marker?, Lead>()
     private lateinit var googleMapGlobal:GoogleMap
+
+
 
     //Todo: change to an enum maybe, currently 0 = work orders and 1 = leads
     var mode:Int = 0
@@ -46,7 +42,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         //activity!!.setContentView(R.layout.fragment_map)
     }
 
-
+    private var _binding: FragmentMapBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,8 +51,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     ): View {
         println("onCreateView")
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_map, container, false)
-
+        _binding = FragmentMapBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         if (mode == 0){ // Work orders
             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
@@ -64,7 +61,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_map)
         }
 
-        mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
 
 
         // Inflate the layout for this fragment
@@ -77,11 +73,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         (activity as MainActivity?)!!.setMap(this)
 
-
-        pgsBar = view.findViewById(R.id.progressBar)
-        refreshBtn = view.findViewById(R.id.map_refresh_btn)
-
-        mapFragment!!.getMapAsync(this)
+        binding.mapFrg.getMapAsync(this)
 
         hideProgressView()
     }
@@ -98,7 +90,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         println("updateMap")
 
         var newMarker: Marker?
-        var bitmapDescriptor: BitmapDescriptor?
 
         googleMapGlobal.clear()
 
@@ -176,7 +167,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 myView.findNavController().navigate(directions)
             }
 
-            refreshBtn.setOnClickListener {
+            binding.mapRefreshBtn.setOnClickListener {
                 (activity as MainActivity?)!!.refreshWorkOrders()
             }
         }
@@ -247,7 +238,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 pinMapLead[newMarker] = it
             }
 
-            refreshBtn.setOnClickListener {
+            binding.mapRefreshBtn.setOnClickListener {
                 (activity as MainActivity?)!!.refreshWorkOrders()
             }
         }
@@ -265,11 +256,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
     }
 
 }

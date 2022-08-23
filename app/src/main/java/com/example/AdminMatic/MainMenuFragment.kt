@@ -3,8 +3,6 @@ package com.example.AdminMatic
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.AdminMatic.BuildConfig
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentMainMenuBinding
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.thumbBase
 import com.squareup.picasso.Picasso
@@ -55,6 +54,9 @@ class MainMenuFragment : Fragment() {
 
     }
 
+    private var _binding: FragmentMainMenuBinding? = null
+    private val binding get() = _binding!!
+
     @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,47 +68,29 @@ class MainMenuFragment : Fragment() {
 
         setHasOptionsMenu(true)
         // Inflate the layout for this fragment
-        myView =  inflater.inflate(R.layout.fragment_main_menu, container, false)
-
-
-        // (activity as AppCompatActivity).supportActionBar?.title = "AdminMatic Home"
+        _binding = FragmentMainMenuBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.app_name)
-
-
-
         val constraintLayout: ConstraintLayout = myView.findViewById(R.id.logged_in_employee_constraint_layout)
-
-
-
         val constraintSet = ConstraintSet()
         constraintSet.clone(constraintLayout)
 
-
-        val loggedInEmployeeImageView:ImageView = myView.findViewById(R.id.logged_in_employee_image_view)
-
+        //val loggedInEmployeeImageView:ImageView = myView.findViewById(R.id.logged_in_employee_image_view)
 
         Picasso.with(context)
             .load(thumbBase + loggedInEmployee!!.pic)
             .placeholder(R.drawable.user_placeholder) //optional
             //.resize(imgWidth, imgHeight)         //optional
             //.centerCrop()                        //optional
-            .into( loggedInEmployeeImageView)                       //Your image view object.
+            .into( binding.loggedInEmployeeImageView)                       //Your image view object.
 
+        binding.loggedInEmployee.text = getString(R.string.welcome_name, loggedInEmployee!!.fname)
 
+        println("loggedInEmployeeTextView.id = ${binding.loggedInEmployee.id}")
+        println("loggedInEmployeeImageView.id = ${binding.loggedInEmployeeImageView.id}")
 
-
-        val loggedInEmployeeTextView:TextView = myView.findViewById(R.id.logged_in_employee)
-        loggedInEmployeeTextView.text = getString(R.string.welcome_name, loggedInEmployee!!.fname)
-
-
-
-
-        println("loggedInEmployeeTextView.id = ${loggedInEmployeeTextView.id}")
-        println("loggedInEmployeeImageView.id = ${loggedInEmployeeImageView.id}")
-
-
-        myView.findViewById<ConstraintLayout>(R.id.logged_in_employee_constraint_layout).setOnClickListener(({
+        binding.loggedInEmployeeConstraintLayout.setOnClickListener(({
 
             println("Go To Logged in Employee")
             // Toast.makeText(activity,"Go To Logged in Employee",Toast.LENGTH_SHORT).show()
@@ -123,7 +107,7 @@ class MainMenuFragment : Fragment() {
         }))
 
 
-        myView.findViewById<LinearLayout>(R.id.btn_employees).setOnClickListener(({
+        binding.btnEmployees.setOnClickListener(({
 
             println("Go To Employees")
             // Toast.makeText(activity,"Go To Employees",Toast.LENGTH_SHORT).show()
@@ -137,7 +121,7 @@ class MainMenuFragment : Fragment() {
             //startActivity(clickintent)
         }))
 
-        myView.findViewById<LinearLayout>(R.id.btn_customers).setOnClickListener(({
+        binding.btnCustomers.setOnClickListener(({
             println("Go To Customers")
             //Toast.makeText(activity,"Go To Customers",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
 
@@ -151,7 +135,7 @@ class MainMenuFragment : Fragment() {
             // startActivity(clickintent)
         }))
 
-        myView.findViewById<LinearLayout>(R.id.btn_vendors).setOnClickListener(({
+        binding.btnVendors.setOnClickListener(({
             println("Go To Vendors")
             //Toast.makeText(activity,"Go To Vendors",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
             if (GlobalVars.permissions!!.vendors == "1") {
@@ -165,7 +149,7 @@ class MainMenuFragment : Fragment() {
             //startActivity(clickintent)
         }))
 
-        myView.findViewById<LinearLayout>(R.id.btn_items).setOnClickListener(({
+        binding.btnItems.setOnClickListener(({
             println("Go To Items")
             //Toast.makeText(activity,"Go To Items",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
             if (GlobalVars.permissions!!.items == "1") {
@@ -179,7 +163,7 @@ class MainMenuFragment : Fragment() {
             //startActivity(clickintent)
         }))
 
-        myView.findViewById<LinearLayout>(R.id.btn_leads).setOnClickListener(({
+        binding.btnLeads.setOnClickListener(({
             println("Go To Leads")
             // Toast.makeText(activity,"Go To Leads",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
 
@@ -192,7 +176,7 @@ class MainMenuFragment : Fragment() {
             //var clickintent = Intent(this@MainMenu, ScheduleList::class.java)
             //startActivity(clickintent)
         }))
-        myView.findViewById<LinearLayout>(R.id.btn_contracts).setOnClickListener(({
+        binding.btnContracts.setOnClickListener(({
             println("Go To Contracts")
             // Toast.makeText(activity,"Go To Contracts",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
             if (GlobalVars.permissions!!.contracts == "1") {
@@ -205,7 +189,7 @@ class MainMenuFragment : Fragment() {
             //var clickintent = Intent(this@MainMenu, PerformanceList::class.java)
             //startActivity(clickintent)
         }))
-        myView.findViewById<LinearLayout>(R.id.btn_schedule).setOnClickListener(({
+        binding.btnSchedule.setOnClickListener(({
             println("Go To Work Orders")
             //Toast.makeText(activity,"Go To Work Orders",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
             if (GlobalVars.permissions!!.schedule == "1") {
@@ -218,7 +202,7 @@ class MainMenuFragment : Fragment() {
             //startActivity(clickintent)
         }))
 
-        myView.findViewById<LinearLayout>(R.id.btn_invoices).setOnClickListener(({
+        binding.btnInvoices.setOnClickListener(({
             println("Go To Invoices")
             //Toast.makeText(activity,"Go To Invoices",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
             if (GlobalVars.permissions!!.invoices == "1") {
@@ -232,7 +216,7 @@ class MainMenuFragment : Fragment() {
             //startActivity(clickintent)
         }))
 
-        myView.findViewById<LinearLayout>(R.id.btn_images).setOnClickListener(({
+        binding.btnImages.setOnClickListener(({
             println("Go To Images")
             //Toast.makeText(activity,"Go To Images",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
             if (GlobalVars.permissions!!.files == "1") {
@@ -245,7 +229,7 @@ class MainMenuFragment : Fragment() {
             //var clickintent = Intent(this@MainMenu, ImagesList::class.java)
             //startActivity(clickintent)
         }))
-        myView.findViewById<LinearLayout>(R.id.btn_equipment).setOnClickListener(({
+        binding.btnEquipment.setOnClickListener(({
             println("Go To Equipment")
             // Toast.makeText(activity,"Go To Equipment",Toast.LENGTH_SHORT).show()            //var clickintent = Intent(this@MainMenu, CustomersList::class.java)
             if (GlobalVars.permissions!!.equipment == "1") {

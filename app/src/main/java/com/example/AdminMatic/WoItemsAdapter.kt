@@ -14,7 +14,6 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.wo_item_list_item.view.*
 import org.json.JSONObject
 
 
@@ -57,7 +56,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
         //text highlighting for first string
 
 
-        holder.itemView.list_name.text = filterList[position].item
+        holder.itemView.findViewById<TextView>(R.id.list_name).text = filterList[position].item
 
         val mIconView:ImageView = holder.itemView.findViewById(R.id.status_icon_iv)
         when (woItem.status) {

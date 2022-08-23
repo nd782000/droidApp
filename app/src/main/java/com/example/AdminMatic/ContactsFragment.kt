@@ -6,20 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.fragment_work_order_list.*
-
-
-//great resource fo recyclerView inf
-//https://guides.codepath.com/android/using-the-recyclerview
+import com.AdminMatic.databinding.FragmentContactListBinding
 
 interface ContactCellClickListener {
     fun onContactCellClickListener(data:Contact)
@@ -29,16 +23,7 @@ interface ContactCellClickListener {
 
 class ContactsFragment : Fragment(), ContactCellClickListener  {
 
-
     private  var customer: Customer? = null
-
-    lateinit  var globalVars:GlobalVars
-    lateinit var myView:View
-    lateinit var  pgsBar: ProgressBar
-    lateinit var recyclerView: RecyclerView
-
-    lateinit var  swipeRefresh:SwipeRefreshLayout
-    lateinit var adapter:ContactsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,24 +34,19 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
     }
 
 
-
-
-
-
+    private var _binding: FragmentContactListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
+        _binding = FragmentContactListBinding.inflate(inflater, container, false)
+        myView = binding.root
+
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_contact_list, container, false)
 
-
-       // var list:MutableList<Contact> = mutableListOf(customer.contacts)
-
-       // adapter = ContactsAdapter(customer!!.contacts.toMutableList(),myView.context,this)
-        //(activity as AppCompatActivity).supportActionBar?.title = "Customer List"
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.contacts_list)
 
@@ -78,10 +58,6 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
         //need to wait for this function to initialize views
         println("onViewCreated")
-        pgsBar = view.findViewById(R.id.progressBar)
-        recyclerView = view.findViewById(R.id.list_recycler_view)
-
-        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
 
        //recyclerView.adapter = adapter
         layoutViews()
@@ -97,7 +73,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
         hideProgressView()
 
-        list_recycler_view.apply {
+        binding.listRecyclerView.apply {
 
             layoutManager = LinearLayoutManager(activity)
 
@@ -118,7 +94,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
                     myView.context,
                     DividerItemDecoration.VERTICAL
                 )
-            recyclerView.addItemDecoration(itemDecoration)
+            binding.listRecyclerView.addItemDecoration(itemDecoration)
 
 
         }
@@ -251,15 +227,15 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
 
-        recyclerView.visibility = View.INVISIBLE
+        binding.listRecyclerView.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
 
-        recyclerView.visibility = View.VISIBLE
+        binding.listRecyclerView.visibility = View.VISIBLE
     }
 
     /*

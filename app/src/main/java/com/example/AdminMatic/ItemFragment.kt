@@ -1,20 +1,18 @@
 package com.example.AdminMatic
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentItemBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -24,8 +22,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_item.*
-import kotlinx.android.synthetic.main.fragment_work_order.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -34,25 +30,13 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
     private  var item: Item? = null
 
-    lateinit var globalVars:GlobalVars
-    lateinit var myView:View
+    private lateinit var globalVars:GlobalVars
+    private lateinit var myView:View
 
-    lateinit var itemNameTv:TextView
-    lateinit var itemPriceTv:TextView
-    lateinit var itemDescriptionTv:TextView
-    lateinit var itemTypeTv:TextView
-    lateinit var itemTaxTv:TextView
-    lateinit var footerTv:TextView
-    lateinit var recyclerView: RecyclerView
+    private lateinit var vendorsAdapter: ItemVendorsAdapter
+    private lateinit var workOrdersAdapter: ItemWorkOrdersAdapter
 
-    lateinit var vendorsAdapter: ItemVendorsAdapter
-    lateinit var workOrdersAdapter: ItemWorkOrdersAdapter
-
-    lateinit var pgsBar: ProgressBar
-    lateinit var allCl: ConstraintLayout
-    lateinit var mapCl: ConstraintLayout
-
-    var remainingQty = 0.0
+    private var remainingQty = 0.0
 
     private val markerList = mutableListOf<Marker>()
     private val pinMapVendor = HashMap<Marker?, Vendor>()
@@ -70,13 +54,15 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
         }
     }
 
+    private var _binding: FragmentItemBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-       // return inflater.inflate(R.layout.fragment_item, container, false)
-        myView = inflater.inflate(R.layout.fragment_item, container, false)
+        _binding = FragmentItemBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.item)
@@ -92,51 +78,40 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
         println("item id = ${item!!.ID}")
         println("item price = ${item!!.price}")
 
-        pgsBar = view.findViewById(R.id.progress_bar)
-        allCl = view.findViewById(R.id.all_cl)
-        mapCl = view.findViewById(R.id.item_map_cl)
 
-        itemNameTv = view.findViewById(R.id.item_name_tv)
-        itemPriceTv = view.findViewById(R.id.item_price_tv)
-        itemDescriptionTv = view.findViewById(R.id.item_description_tv)
-        itemTypeTv = view.findViewById(R.id.item_type_tv)
-        itemTaxTv = view.findViewById(R.id.item_tax_tv)
-        footerTv = view.findViewById(R.id.item_footer_tv)
-        recyclerView = view.findViewById(R.id.item_recycler_view)
-
-        itemNameTv.text = item!!.name
-        itemPriceTv.text = getString(R.string.item_price_each, item!!.price, item!!.unit)
+        binding.itemNameTv.text = item!!.name
+        binding.itemPriceTv.text = getString(R.string.item_price_each, item!!.price, item!!.unit)
         if (GlobalVars.permissions!!.itemsMoney == "0") {
-            itemPriceTv.visibility = View.GONE
+            binding.itemPriceTv.visibility = View.GONE
         }
 
 
         if (item!!.salesDescription.isNullOrEmpty()) {
-            itemDescriptionTv.text = getString(R.string.no_description_provided)
+            binding.itemDescriptionTv.text = getString(R.string.no_description_provided)
         }
         else {
-            itemDescriptionTv.text = item!!.salesDescription
+            binding.itemDescriptionTv.text = item!!.salesDescription
         }
 
         when (item!!.typeID) {
             "1" -> {
-                itemTypeTv.text = getString(R.string.item_labor_type)
+                binding.itemTypeTv.text = getString(R.string.item_labor_type)
             }
             "2" -> {
-                itemTypeTv.text = getString(R.string.item_material_type)
+                binding.itemTypeTv.text = getString(R.string.item_material_type)
             }
             else -> {
-                itemTypeTv.text = getString(R.string.item_other_type)
+                binding.itemTypeTv.text = getString(R.string.item_other_type)
             }
         }
 
         //itemTypeTv.text = item!!.type
 
         if (item!!.tax == "1") {
-            itemTaxTv.text = getString(R.string.taxable_yes)
+            binding.itemTaxTv.text = getString(R.string.taxable_yes)
         }
         else {
-            itemTaxTv.text = getString(R.string.taxable_no)
+            binding.itemTaxTv.text = getString(R.string.taxable_no)
         }
 
         mapFragment!!.getMapAsync(this)
@@ -148,26 +123,26 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                 when (tab!!.position) {
                     0 -> {
                         tableMode = 0
-                        mapCl.visibility = View.VISIBLE
-                        recyclerView.visibility = View.INVISIBLE
+                        binding.itemMapCl.visibility = View.VISIBLE
+                        binding.itemRecyclerView.visibility = View.INVISIBLE
 
                         //serviceRecyclerView.adapter = currentServicesAdapter
                     }
                     1 -> {
                         tableMode = 1
-                        mapCl.visibility = View.INVISIBLE
-                        recyclerView.visibility = View.VISIBLE
-                        footerTv.text = getString(R.string.item_x_vendors, item!!.vendors!!.size.toString(), item!!.name)
-                        recyclerView.adapter = vendorsAdapter
+                        binding.itemMapCl.visibility = View.INVISIBLE
+                        binding.itemRecyclerView.visibility = View.VISIBLE
+                        binding.itemFooterTv.text = getString(R.string.item_x_vendors, item!!.vendors!!.size.toString(), item!!.name)
+                        binding.itemRecyclerView.adapter = vendorsAdapter
 
                     }
                     2 -> {
                         tableMode = 2
-                        mapCl.visibility = View.INVISIBLE
-                        recyclerView.visibility = View.VISIBLE
-                        recyclerView.adapter = workOrdersAdapter
+                        binding.itemMapCl.visibility = View.INVISIBLE
+                        binding.itemRecyclerView.visibility = View.VISIBLE
+                        binding.itemRecyclerView.adapter = workOrdersAdapter
 
-                        footerTv.text = getString(R.string.item_x_work_orders, item!!.workOrders!!.size.toString(), remainingQty.toString(), item!!.unit)
+                        binding.itemFooterTv.text = getString(R.string.item_x_work_orders, item!!.workOrders!!.size.toString(), remainingQty.toString(), item!!.unit)
                     }
                 }
             }
@@ -200,7 +175,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
         googleMapGlobal.clear()
 
-        if (item!!.vendors!!.isNullOrEmpty()) {
+        if (item!!.vendors!!.isEmpty()) {
             return
         }
 
@@ -312,10 +287,10 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
                     vendorsAdapter = ItemVendorsAdapter(item!!.vendors!!.toMutableList(), this.myView.context, item!!.unit!!, this)
                     workOrdersAdapter = ItemWorkOrdersAdapter(item!!.workOrders!!.toMutableList(), this.myView.context, item!!.unit!!, this)
-                    recyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    binding.itemRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
                     val itemDecoration: RecyclerView.ItemDecoration =
                         DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                    recyclerView.addItemDecoration(itemDecoration)
+                    binding.itemRecyclerView.addItemDecoration(itemDecoration)
 
                     if (item!!.vendors!!.isEmpty()) {
                         globalVars.simpleAlert(myView.context,getString(R.string.dialogue_item_no_vendors_title),getString(R.string.dialogue_item_no_vendors_body))
@@ -358,13 +333,13 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 }

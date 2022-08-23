@@ -9,8 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +17,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentGroupTextBinding
 import com.example.AdminMatic.MainActivity.DoneOnEditorActionListener
 import com.squareup.picasso.Picasso
 
@@ -40,12 +39,6 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
     private var numbersThisBatch = 0
     private var batchSize = 7 // How many messages are sent at once while batching
 
-    private lateinit var messageEt: EditText
-    private lateinit var selectNoneBtn: Button
-    private lateinit var selectAllBtn: Button
-    private lateinit var sendBtn: Button
-    private lateinit var recyclerView: RecyclerView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -54,12 +47,16 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
         employeeCheckList = Array(employeeList.size) { true }
     }
 
+    private var _binding: FragmentGroupTextBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        myView = inflater.inflate(R.layout.fragment_group_text, container, false)
+        _binding = FragmentGroupTextBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.group_text)
@@ -73,9 +70,8 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
         Picasso.with(context).load(R.drawable.ic_check_enabled).fetch()
         Picasso.with(context).load(R.drawable.ic_check_disabled).fetch()
 
-        messageEt = view.findViewById(R.id.group_text_et)
 
-        messageEt.addTextChangedListener(object : TextWatcher {
+        binding.groupTextEt.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(s: Editable) {}
 
@@ -87,15 +83,14 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
                 messageString = s.toString()
             }
         })
-        messageEt.setOnEditorActionListener(DoneOnEditorActionListener())
+        binding.groupTextEt.setOnEditorActionListener(DoneOnEditorActionListener())
 
-        selectNoneBtn = view.findViewById(R.id.group_text_select_none_btn)
-        selectNoneBtn.setOnClickListener {
+        binding.groupTextSelectNoneBtn.setOnClickListener {
             if (batchNumber == 0) {
                 for (i in employeeCheckList.indices) {
                     employeeCheckList[i] = false
                 }
-                recyclerView.adapter?.notifyDataSetChanged()
+                binding.groupTextRv.adapter?.notifyDataSetChanged()
                 updateButtonText()
             }
             else {
@@ -107,7 +102,7 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
                     for (i in employeeCheckList.indices) {
                         employeeCheckList[i] = false
                     }
-                    recyclerView.adapter?.notifyDataSetChanged()
+                    binding.groupTextRv.adapter?.notifyDataSetChanged()
                     batchNumber = 0
                     updateButtonText()
                 }
@@ -117,14 +112,13 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
             }
         }
 
-        selectAllBtn = view.findViewById(R.id.group_text_select_all_btn)
-        selectAllBtn.setOnClickListener {
+        binding.groupTextSelectAllBtn.setOnClickListener {
             if (batchNumber == 0) {
                 for (i in employeeCheckList.indices) {
                     if (employeeList[i].phone != "" && employeeList[i].phone != "No Phone Number")
                         employeeCheckList[i] = true
                 }
-                recyclerView.adapter?.notifyDataSetChanged()
+                binding.groupTextRv.adapter?.notifyDataSetChanged()
                 updateButtonText()
             }
             else {
@@ -136,7 +130,7 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
                         if (employeeList[i].phone != "" && employeeList[i].phone != "No Phone Number")
                             employeeCheckList[i] = true
                     }
-                    recyclerView.adapter?.notifyDataSetChanged()
+                    binding.groupTextRv.adapter?.notifyDataSetChanged()
                     batchNumber = 0
                     updateButtonText()
                 }
@@ -146,8 +140,7 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
             }
         }
 
-        sendBtn = view.findViewById(R.id.group_text_send_btn)
-        sendBtn.setOnClickListener {
+        binding.groupTextSendBtn.setOnClickListener {
             var atLeastOneChecked = false
             for (i in employeeCheckList.indices) {
                 if (employeeCheckList[i]) {
@@ -264,17 +257,14 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
 
         }
 
-        recyclerView = view.findViewById(R.id.group_text_rv)
-
-
-        recyclerView.apply {
+        binding.groupTextRv.apply {
             layoutManager = LinearLayoutManager(activity)
 
             adapter = EmployeesTextAdapter(employeeList, employeeCheckList, this@GroupTextFragment)
 
             val itemDecoration: RecyclerView.ItemDecoration =
                 DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-            recyclerView.addItemDecoration(itemDecoration)
+            binding.groupTextRv.addItemDecoration(itemDecoration)
         }
 
         updateButtonText()
@@ -292,7 +282,7 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
         }
 
         if (amountChecked <= batchSize) {
-            sendBtn.text = getString(R.string.group_text_send)
+            binding.groupTextSendBtn.text = getString(R.string.group_text_send)
         }
         else {
             var totalBatches = amountChecked / batchSize
@@ -305,7 +295,7 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
                 currentBatch = 1
             }
 
-            sendBtn.text = getString(R.string.group_text_send_batch, currentBatch, totalBatches)
+            binding.groupTextSendBtn.text = getString(R.string.group_text_send_batch, currentBatch, totalBatches)
 
         }
     }

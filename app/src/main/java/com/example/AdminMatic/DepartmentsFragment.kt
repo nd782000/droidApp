@@ -9,11 +9,11 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentDepartmentsBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_main_menu.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -24,16 +24,10 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-
-    lateinit var recyclerView: RecyclerView
-    lateinit var footerText:TextView
-
     lateinit var departmentAdapter:DepartmentAdapter
     lateinit var crewAdapter:CrewAdapter
     lateinit var equipmentCrewAdapter:EquipmentCrewAdapter
 
-    private lateinit var tabLayout: TabLayout
     lateinit var tableMode:String
 
     private var departmentCount:Int = 0
@@ -49,13 +43,17 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
         }
     }
 
+    private var _binding: FragmentDepartmentsBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         // return inflater.inflate(R.layout.fragment_equipment, container, false)
-        myView = inflater.inflate(R.layout.fragment_departments, container, false)
+        _binding = FragmentDepartmentsBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         if (employee != null) {
@@ -65,8 +63,6 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.crews)
         }
 
-
-
         return myView
     }
 
@@ -75,21 +71,18 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pgsBar = view.findViewById(R.id.progress_bar)
-        recyclerView = view.findViewById(R.id.departments_recycler_view)
-        tabLayout = myView.findViewById(R.id.departments_table_tl)
-        footerText = myView.findViewById(R.id.department_footer_tv)
 
-        val tab = tabLayout.getTabAt(1)
+
+        val tab = binding.departmentsTableTl.getTabAt(1)
         tab!!.select()
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.departmentsTableTl.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab!!.position) {
                     0 -> {
                         tableMode = "DEPARTMENTS"
-                        recyclerView.adapter = departmentAdapter
-                        footerText.text = getString(R.string.x_departments, departmentCount)
+                        binding.recyclerView.adapter = departmentAdapter
+                        binding.departmentFooterTv.text = getString(R.string.x_departments, departmentCount)
                         if (employee != null) {
                             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_departments, employee!!.fname)
                         }
@@ -99,9 +92,9 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
                     }
                     1 -> {
-                        recyclerView.adapter = crewAdapter
+                        binding.recyclerView.adapter = crewAdapter
                         tableMode = "CREWS"
-                        footerText.text = getString(R.string.x_crews, crewCount)
+                        binding.departmentFooterTv.text = getString(R.string.x_crews, crewCount)
                         if (employee != null) {
                             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_crews, employee!!.fname)
                         }
@@ -110,9 +103,9 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                         }
                     }
                     2 -> {
-                        recyclerView.adapter = equipmentCrewAdapter
+                        binding.recyclerView.adapter = equipmentCrewAdapter
                         tableMode = "EQUIPMENT"
-                        footerText.text = getString(R.string.x_equipment, equipmentCount)
+                        binding.departmentFooterTv.text = getString(R.string.x_equipment, equipmentCount)
                         if (employee != null) {
                             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_equipment, employee!!.fname)
                         }
@@ -207,7 +200,7 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
                     departmentAdapter = DepartmentAdapter(departmentsList, this.myView.context, this@DepartmentsFragment)
                     println(departmentAdapter.itemCount)
-                    recyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    binding.recyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
 
                     departmentCount = departmentsList.size
 
@@ -283,7 +276,7 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
                     crewAdapter = CrewAdapter(crewsList, this.myView.context, this@DepartmentsFragment)
                     println(departmentAdapter.itemCount)
-                    recyclerView.adapter = crewAdapter
+                    binding.recyclerView.adapter = crewAdapter
 
                     getEquipmentCrews()
 
@@ -379,7 +372,7 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
                     println(departmentAdapter.itemCount)
 
                     //This is the final PHP get, so set the footer text now
-                    footerText.text = getString(R.string.x_crews, crewCount)
+                    binding.departmentFooterTv.text = getString(R.string.x_crews, crewCount)
 
                     hideProgressView()
 
@@ -411,17 +404,17 @@ class DepartmentsFragment : Fragment(), EmployeeCellClickListener, EquipmentCell
 
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        recyclerView.visibility = View.INVISIBLE
-        tabLayout.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.INVISIBLE
+        binding.departmentsTableTl.visibility = View.INVISIBLE
         //currentRecyclerView.visibility = View.INVISIBLE
         // historyRecyclerView.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        recyclerView.visibility = View.VISIBLE
-        tabLayout.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.recyclerView.visibility = View.VISIBLE
+        binding.departmentsTableTl.visibility = View.VISIBLE
         // currentRecyclerView.visibility = View.VISIBLE
         // historyRecyclerView.visibility = View.VISIBLE
     }

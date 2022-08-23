@@ -39,7 +39,8 @@
 
         <activity android:name="com.example.AdminMatic.MainActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
 
 
             <intent-filter>

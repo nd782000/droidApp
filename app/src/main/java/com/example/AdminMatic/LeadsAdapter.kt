@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.lead_list_item.view.*
 import java.util.*
 
 
@@ -41,11 +40,12 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
 
     override fun onBindViewHolder(holder: LeadViewHolder, position: Int) {
 
-
-
-
         val lead: Lead = filterList[position]
         holder.bind(lead)
+
+        val listLeadName = holder.itemView.findViewById<TextView>(R.id.list_lead_name_tv)
+        val listLeadDescription = holder.itemView.findViewById<TextView>(R.id.list_lead_description_tv)
+        val listLeadDate = holder.itemView.findViewById<TextView>(R.id.list_lead_date_tv)
 
         println("queryText = $queryText")
         //text highlighting for first string
@@ -91,24 +91,24 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_lead_name_tv.text = spannable
+                listLeadName.text = spannable
             } else {
                 if(!customerView){
-                    holder.itemView.list_lead_name_tv.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
-                    holder.itemView.list_lead_description_tv.text = filterList[position].description!!
-                    holder.itemView.list_lead_date_tv.text = daysAged
+                    listLeadName.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
+                    listLeadDescription.text = filterList[position].description!!
+                    listLeadDate.text = daysAged
                 }else{
-                    holder.itemView.list_lead_name_tv.text = filterList[position].description!!
+                    listLeadName.text = filterList[position].description!!
                 }
 
             }
         } else {
             if(!customerView){
-                holder.itemView.list_lead_name_tv.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
-                holder.itemView.list_lead_description_tv.text = filterList[position].description!!
-                holder.itemView.list_lead_date_tv.text = daysAged
+                listLeadName.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
+                listLeadDescription.text = filterList[position].description!!
+                listLeadDate.text = daysAged
             }else{
-                holder.itemView.list_lead_name_tv.text = filterList[position].description!!
+                listLeadName.text = filterList[position].description!!
             }
         }
 

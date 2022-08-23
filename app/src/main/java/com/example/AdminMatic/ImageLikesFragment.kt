@@ -4,22 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentImageLikesBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -33,16 +30,6 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
     lateinit var globalVars: GlobalVars
     lateinit var myView: View
 
-    private lateinit var allCL: ConstraintLayout
-    private lateinit var imageView: ImageView
-    private lateinit var titleTv: TextView
-    private lateinit var byTv: TextView
-    private lateinit var onTv: TextView
-    private lateinit var footerTv: TextView
-    private lateinit var recyclerView: RecyclerView
-
-    lateinit var pgsBar: ProgressBar
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -50,13 +37,17 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
         }
     }
 
+    private var _binding: FragmentImageLikesBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         // return inflater.inflate(R.layout.fragment_item, container, false)
-        myView = inflater.inflate(R.layout.fragment_image_likes, container, false)
+        _binding = FragmentImageLikesBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.image_likes_header)
@@ -71,23 +62,14 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
 
 
 
-        allCL = view.findViewById(R.id.all_cl)
-        pgsBar = view.findViewById(R.id.progress_bar)
-        imageView = view.findViewById(R.id.image_likes_iv)
-        titleTv = view.findViewById(R.id.image_likes_title_tv)
-        byTv = view.findViewById(R.id.image_likes_by_tv)
-        onTv = view.findViewById(R.id.image_likes_on_tv)
-        footerTv = view.findViewById(R.id.image_likes_footer_tv)
-        recyclerView = view.findViewById(R.id.image_likes_recycler_view)
-
         println("image = ${image!!.ID}")
         println("image path = ${GlobalVars.mediumBase + image!!.fileName}")
-        Picasso.with(context).load(GlobalVars.mediumBase + image!!.fileName).into(imageView)
+        Picasso.with(context).load(GlobalVars.mediumBase + image!!.fileName).into(binding.imageLikesIv)
 
-        titleTv.text = image!!.name
-        byTv.text = getString(R.string.image_likes_by, image!!.createdByName)
-        onTv.text = getString(R.string.image_likes_on, LocalDate.parse(image!!.dateAdded, GlobalVars.dateFormatterPHP).format(GlobalVars.dateFormatterShort))
-        footerTv.text = getString(R.string.image_likes_count, image!!.likes)
+        binding.imageLikesTitleTv.text = image!!.name
+        binding.imageLikesByTv.text = getString(R.string.image_likes_by, image!!.createdByName)
+        binding.imageLikesOnTv.text = getString(R.string.image_likes_on, LocalDate.parse(image!!.dateAdded, GlobalVars.dateFormatterPHP).format(GlobalVars.dateFormatterShort))
+        binding.imageLikesFooterTv.text = getString(R.string.image_likes_count, image!!.likes)
 
         getLikes()
 
@@ -131,7 +113,7 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
 
 
 
-                    recyclerView.apply {
+                    binding.imageLikesRecyclerView.apply {
                         layoutManager = LinearLayoutManager(activity)
 
                         adapter = activity?.let {
@@ -146,7 +128,7 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
                                 myView.context,
                                 DividerItemDecoration.VERTICAL
                             )
-                        recyclerView.addItemDecoration(itemDecoration)
+                        binding.imageLikesRecyclerView.addItemDecoration(itemDecoration)
 
 
                         //(adapter as EmployeesAdapter).notifyDataSetChanged()
@@ -189,12 +171,12 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCL.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCL.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 }

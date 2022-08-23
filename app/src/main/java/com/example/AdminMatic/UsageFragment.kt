@@ -4,17 +4,16 @@ import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentUsageBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -34,14 +33,6 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
     private lateinit var datePicker: DatePickerHelper
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-
-    private lateinit var allCl: ConstraintLayout
-    private lateinit var fromEditText: EditText
-    private lateinit var toEditText: EditText
-    private lateinit var usageRecycler: RecyclerView
-    private lateinit var footerText: TextView
-
     private var dateFrom: LocalDate = LocalDate.now(ZoneOffset.UTC)
     private var dateTo: LocalDate = LocalDate.now(ZoneOffset.UTC)
     private var dateFromDB = dateFrom.format(GlobalVars.dateFormatterYYYYMMDD)
@@ -54,17 +45,19 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
         }
     }
 
+    private var _binding: FragmentUsageBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        myView = inflater.inflate(R.layout.fragment_usage, container, false)
+        _binding = FragmentUsageBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_usage, employee!!.fname)
-
-
 
         return myView
     }
@@ -74,21 +67,14 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pgsBar = view.findViewById(R.id.progress_bar)
-        allCl = view.findViewById(R.id.all_cl)
 
-        usageRecycler = view.findViewById(R.id.usage_recycler_view)
-        footerText = view.findViewById(R.id.usage_footer_tv)
-
-
-        fromEditText = myView.findViewById(R.id.usage_from_et)
-        fromEditText.setText(dateFrom.format(GlobalVars.dateFormatterShortDashes))
-        fromEditText.setOnClickListener {
+        binding.usageFromEt.setText(dateFrom.format(GlobalVars.dateFormatterShortDashes))
+        binding.usageFromEt.setOnClickListener {
             datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
             datePicker.showDialog(dateFrom.year, dateFrom.monthValue-1, dateFrom.dayOfMonth, object : DatePickerHelper.Callback {
                 override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
                     dateFrom = LocalDate.of(year, month+1, dayOfMonth)
-                    fromEditText.setText(dateFrom.format(GlobalVars.dateFormatterShortDashes))
+                    binding.usageFromEt.setText(dateFrom.format(GlobalVars.dateFormatterShortDashes))
                     dateFromDB = dateFrom.format(GlobalVars.dateFormatterYYYYMMDD)
                     getUsage()
                 }
@@ -96,14 +82,13 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
         }
 
 
-        toEditText = myView.findViewById(R.id.usage_to_et)
-        toEditText.setText(dateTo.format(GlobalVars.dateFormatterShortDashes))
-        toEditText.setOnClickListener {
+        binding.usageToEt.setText(dateTo.format(GlobalVars.dateFormatterShortDashes))
+        binding.usageToEt.setOnClickListener {
             datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
             datePicker.showDialog(dateTo.year, dateTo.monthValue-1, dateTo.dayOfMonth, object : DatePickerHelper.Callback {
                 override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
                     dateTo = LocalDate.of(year, month+1, dayOfMonth)
-                    toEditText.setText(dateTo.format(GlobalVars.dateFormatterShortDashes))
+                    binding.usageToEt.setText(dateTo.format(GlobalVars.dateFormatterShortDashes))
                     dateToDB = dateTo.format(GlobalVars.dateFormatterYYYYMMDD)
                     getUsage()
                 }
@@ -150,7 +135,7 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
 
                     //employeeCountTv.text = getString(R.string.x_active_employees, employeesList.size)
 
-                    usageRecycler.apply {
+                    binding.usageRecyclerView.apply {
                         layoutManager = LinearLayoutManager(activity)
 
                         adapter = activity?.let {
@@ -160,7 +145,7 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
 
                         val itemDecoration: RecyclerView.ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        usageRecycler.addItemDecoration(itemDecoration)
+                        binding.usageRecyclerView.addItemDecoration(itemDecoration)
 
 
                         var totalHours = 0.0
@@ -168,7 +153,7 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
                             totalHours += it.qty.toDouble()
                         }
 
-                        footerText.text = getString(R.string.usage_footer_text, usageList.size, totalHours)
+                        binding.usageFooterTv.text = getString(R.string.usage_footer_text, usageList.size, totalHours)
 
                         (adapter as EmployeeUsageAdapter).notifyDataSetChanged()
 
@@ -211,13 +196,13 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        allCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        allCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 }

@@ -17,7 +17,6 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.employee_list_item.view.*
 import java.util.*
 
 
@@ -44,6 +43,7 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
     override fun onBindViewHolder(holder: EmployeeViewHolder, position: Int) {
 
         val employee: Employee = filterList[position]
+        val listName = holder.itemView.findViewById<TextView>(R.id.list_name)
         holder.bind(employee)
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
@@ -67,12 +67,12 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_name.text = spannable
+                listName.text = spannable
             } else {
-                holder.itemView.list_name.text = filterList[position].name
+                listName.text = filterList[position].name
             }
         } else {
-            holder.itemView.list_name.text = filterList[position].name
+            listName.text = filterList[position].name
         }
 
         val employeeImageView:ImageView = holder.itemView.findViewById(R.id.employee_item_image_view)

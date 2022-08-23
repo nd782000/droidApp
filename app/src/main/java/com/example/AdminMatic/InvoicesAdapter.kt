@@ -15,7 +15,6 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.invoice_list_item.view.*
 import java.util.*
 
 
@@ -39,7 +38,11 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
 
     override fun onBindViewHolder(holder: InvoiceViewHolder, position: Int) {
 
-
+        val listInvoiceNameTv = holder.itemView.findViewById<TextView>(R.id.list_invoice_name_tv)
+        val listInvoiceIDTv = holder.itemView.findViewById<TextView>(R.id.list_invoice_id_tv)
+        val listInvoiceDateTv = holder.itemView.findViewById<TextView>(R.id.list_invoice_date_tv)
+        val listInvoicePriceTv = holder.itemView.findViewById<TextView>(R.id.list_invoice_price_tv)
+        val listInvoiceStatusTv = holder.itemView.findViewById<TextView>(R.id.list_invoice_status_tv)
 
 
         val invoice: Invoice = filterList[position]
@@ -66,12 +69,12 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_invoice_name_tv.text = spannable
+                listInvoiceNameTv.text = spannable
             } else {
-                holder.itemView.list_invoice_name_tv.text = filterList[position].custName
+                listInvoiceNameTv.text = filterList[position].custName
             }
         } else {
-            holder.itemView.list_invoice_name_tv.text = filterList[position].custName
+            listInvoiceNameTv.text = filterList[position].custName
         }
 
         //text highlighting for ID
@@ -92,12 +95,12 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
                     endPos2,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_invoice_id_tv.text = spannable
+                listInvoiceIDTv.text = spannable
             } else {
-                holder.itemView.list_invoice_id_tv.text = filterList[position].ID
+                listInvoiceIDTv.text = filterList[position].ID
             }
         } else {
-            holder.itemView.list_invoice_id_tv.text = filterList[position].ID
+            listInvoiceIDTv.text = filterList[position].ID
         }
 
         //text highlighting for Date
@@ -118,15 +121,15 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
                     endPos2,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_invoice_date_tv.text = spannable
+                listInvoiceDateTv.text = spannable
             } else {
-                holder.itemView.list_invoice_date_tv.text = filterList[position].invoiceDate
+                listInvoiceDateTv.text = filterList[position].invoiceDate
             }
         } else {
-            holder.itemView.list_invoice_date_tv.text = filterList[position].invoiceDate
+            listInvoiceDateTv.text = filterList[position].invoiceDate
         }
 
-        holder.itemView.list_invoice_price_tv.text = context.getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(filterList[position].total.toDouble()))
+        listInvoicePriceTv.text = context.getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(filterList[position].total.toDouble()))
 
         when (filterList[position].invoiceStatus) {
             "0" -> {
@@ -138,7 +141,7 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
                     spannableString.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_invoice_status_tv.text = spannableString
+                listInvoiceStatusTv.text = spannableString
             }
             "1" -> {
                 val spannableString = SpannableString(context.getString(R.string.invoice_pending))
@@ -149,19 +152,19 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
                     spannableString.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_invoice_status_tv.text = spannableString
+                listInvoiceStatusTv.text = spannableString
             }
             "2" -> {
-                holder.itemView.list_invoice_status_tv.text = context.getString(R.string.invoice_final)
+                listInvoiceStatusTv.text = context.getString(R.string.invoice_final)
             }
             "3" -> {
-                holder.itemView.list_invoice_status_tv.text = context.getString(R.string.invoice_sent)
+                listInvoiceStatusTv.text = context.getString(R.string.invoice_sent)
             }
             "4" -> {
-                holder.itemView.list_invoice_status_tv.text = context.getString(R.string.invoice_paid)
+                listInvoiceStatusTv.text = context.getString(R.string.invoice_paid)
             }
             "5" -> {
-                holder.itemView.list_invoice_status_tv.text = context.getString(R.string.invoice_void)
+                listInvoiceStatusTv.text = context.getString(R.string.invoice_void)
             }
 
         }

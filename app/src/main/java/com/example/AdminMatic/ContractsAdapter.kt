@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.contract_list_item.view.*
 import java.util.*
 
 
@@ -72,6 +71,10 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
             }
         }
 
+        val listContractNameTv = holder.itemView.findViewById<TextView>(R.id.list_contract_name_tv)
+        val listContractDescriptionTv = holder.itemView.findViewById<TextView>(R.id.list_contract_description_tv)
+        val listContractDateTv = holder.itemView.findViewById<TextView>(R.id.list_contract_date_tv)
+
         if (queryText.isNotEmpty() && queryText != "") {
 
             val startPos1: Int = (filterList[position].custName!! + " - " + filterList[position].title).lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
@@ -90,24 +93,24 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_contract_name_tv.text = spannable
+                listContractNameTv.text = spannable
             } else {
                 if(!customerView){
-                    holder.itemView.list_contract_name_tv.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
-                    holder.itemView.list_contract_description_tv.text = filterList[position].title
-                    holder.itemView.list_contract_date_tv.text = daysAged
+                    listContractNameTv.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
+                    listContractDescriptionTv.text = filterList[position].title
+                    listContractDateTv.text = daysAged
                 }else{
-                    holder.itemView.list_contract_name_tv.text = filterList[position].title
+                    listContractNameTv.text = filterList[position].title
                 }
 
             }
         } else {
             if(!customerView){
-                holder.itemView.list_contract_name_tv.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
-                holder.itemView.list_contract_description_tv.text = filterList[position].title
-                holder.itemView.list_contract_date_tv.text = daysAged
+                listContractNameTv.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
+                listContractDescriptionTv.text = filterList[position].title
+                listContractDateTv.text = daysAged
             }else{
-                holder.itemView.list_contract_name_tv.text = filterList[position].title
+                listContractDateTv.text = filterList[position].title
             }
         }
 

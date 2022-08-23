@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import kotlinx.android.synthetic.main.spinner_right_aligned.view.*
 import com.AdminMatic.R
 
 
@@ -73,7 +72,7 @@ class EmpAdapter(context: Context, items: List<Employee>?) :
         println("employee = ${employee.toString()}")
 
         //var txt = row.findViewById<TextView>
-        row.textView.text = employee.toString()
+        row.findViewById<TextView>(R.id.textView).text = employee.toString()
 
        // row.foregroundGravity =
 

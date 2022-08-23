@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import kotlinx.android.synthetic.main.equipment_list_item.view.*
 import java.util.*
 import com.squareup.picasso.Picasso
 
@@ -42,10 +41,11 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
 
     override fun onBindViewHolder(holder: EquipmentViewHolder, position: Int) {
 
-
-
-
         val equipment: Equipment = filterList[position]
+
+        val listName = holder.itemView.findViewById<TextView>(R.id.list_name)
+        val listType = holder.itemView.findViewById<TextView>(R.id.list_type)
+
         holder.bind(equipment)
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
@@ -69,12 +69,12 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
                     endPos1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_name.text = spannable
+                listName.text = spannable
             } else {
-                holder.itemView.list_name.text = filterList[position].name
+                listName.text = filterList[position].name
             }
         } else {
-            holder.itemView.list_name.text = filterList[position].name
+            listName.text = filterList[position].name
         }
 
         //text highlighting for second string
@@ -97,16 +97,16 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
                     endPos2,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                holder.itemView.list_type.text = spannable
+                listType.text = spannable
             } else {
 
                 if (filterList[position].typeName != null){
-                    holder.itemView.list_type.text = filterList[position].typeName!!
+                    listType.text = filterList[position].typeName!!
                 }
             }
         } else {
             if (filterList[position].typeName != null){
-                holder.itemView.list_type.text = filterList[position].typeName!!
+                listType.text = filterList[position].typeName!!
             }
 
 

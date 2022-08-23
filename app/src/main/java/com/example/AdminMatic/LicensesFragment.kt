@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentLicensesBinding
 
 
 class LicensesFragment : Fragment() {
@@ -20,8 +21,6 @@ class LicensesFragment : Fragment() {
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-    private lateinit var recyclerView: RecyclerView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -29,12 +28,16 @@ class LicensesFragment : Fragment() {
         }
     }
 
+    private var _binding: FragmentLicensesBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        myView = inflater.inflate(R.layout.fragment_licenses, container, false)
+        _binding = FragmentLicensesBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_licenses, employee!!.fname)
@@ -51,12 +54,11 @@ class LicensesFragment : Fragment() {
             employee!!.licenses = emptyArray()
         }
 
-        recyclerView = view.findViewById(R.id.licenses_recycler_view)
         val licenseList = employee!!.licenses!!.toMutableList()
 
         if (licenseList.size > 0) {
 
-            recyclerView.apply {
+            binding.licensesRecyclerView.apply {
                 layoutManager = LinearLayoutManager(activity)
                 adapter = activity?.let {
                     LicensesAdapter(
@@ -67,13 +69,12 @@ class LicensesFragment : Fragment() {
 
                 val itemDecoration: RecyclerView.ItemDecoration =
                     DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                recyclerView.addItemDecoration(itemDecoration)
+                binding.licensesRecyclerView.addItemDecoration(itemDecoration)
                 //(adapter as WoItemsAdapter).notifyDataSetChanged()
             }
         }
         else {
-            val noLicensesTv : TextView = view.findViewById(R.id.licenses_no_licenses_tv)
-            noLicensesTv.visibility = View.VISIBLE
+            binding.licensesNoLicensesTv.visibility = View.VISIBLE
         }
 
 

@@ -10,21 +10,14 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.TextView
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentStackBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.equipment_list_item.*
-import kotlinx.android.synthetic.main.fragment_stack.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.time.LocalDate
-import java.time.OffsetDateTime
-import java.time.OffsetTime
-import java.time.ZoneOffset
 import java.util.HashMap
 
 
@@ -34,6 +27,7 @@ lateinit var stackView:View
          var ID:String = ""
 lateinit var delegate:StackDelegate
 
+/*
 lateinit var leadTxt:TextView
 lateinit var contractTxt:TextView
 lateinit var workOrderTxt:TextView
@@ -43,6 +37,8 @@ lateinit var leadSpinner:Spinner
 lateinit var contractSpinner:Spinner
 lateinit var workOrderSpinner:Spinner
 lateinit var invoiceSpinner:Spinner
+
+ */
 
 lateinit  var globalVars:GlobalVars
 
@@ -106,13 +102,17 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
      */
 
+    private var _binding: FragmentStackBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
 
         println("onCreateView")
         globalVars = GlobalVars()
-        stackView = inflater.inflate(R.layout.fragment_stack, container, false)
+        _binding = FragmentStackBinding.inflate(inflater, container, false)
+        stackView = binding.root
         return stackView
     }
 
@@ -120,6 +120,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
         super.onViewCreated(view, savedInstanceState)
         println("Stack View")
 
+        /*
        leadSpinner = stackView.findViewById(R.id.lead_spinner)
         contractSpinner = stackView.findViewById(R.id.contract_spinner)
         workOrderSpinner = stackView.findViewById(R.id.work_order_spinner)
@@ -129,6 +130,8 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
         contractTxt = stackView.findViewById(R.id.contract_txt)
         workOrderTxt = stackView.findViewById(R.id.work_order_txt)
         invoiceTxt = stackView.findViewById(R.id.invoice_txt)
+
+         */
 
 /*
         workOrderSpinner.onItemClickListener = object : AdapterView.OnItemClickListener{
@@ -177,7 +180,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
     fun getWorkOrderSpinner():Spinner{
         println("getWorkOrderSpinner")
-        return workOrderSpinner
+        return binding.workOrderSpinner
     }
 
 
@@ -199,7 +202,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
             0 -> {
                 println("stack leads")
 
-                leadTxt.setBackgroundColor(Color.parseColor(resources.getString(R.color.button)))
+                binding.leadTxt.setBackgroundColor(Color.parseColor(resources.getString(R.color.button)))
                 //leadSpinner.te
                 //leadSpinner.setBackgroundColor(Color.parseColor(resources.getString(R.color.button.toString())))
 
@@ -208,21 +211,21 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
             }
             1 -> {
                 println("stack contracts")
-                contractTxt.setBackgroundColor(Color.parseColor(resources.getString(R.color.button)))
+                binding.contractTxt.setBackgroundColor(Color.parseColor(resources.getString(R.color.button)))
 
                  params["contractID"] = ID
 
             }
             2 -> {
                 println("stack work orders")
-                workOrderTxt.setBackgroundColor(Color.parseColor(resources.getString(R.color.button)))
+                binding.workOrderTxt.setBackgroundColor(Color.parseColor(resources.getString(R.color.button)))
 
                 params["workOrderID"] = ID
 
             }
             3 -> {
                 println("stack invoices")
-                invoiceTxt.setBackgroundColor(Color.parseColor(resources.getString(R.color.button)))
+                binding.invoiceTxt.setBackgroundColor(Color.parseColor(resources.getString(R.color.button)))
                  params["invoiceID"] = ID
             }
         }
@@ -257,7 +260,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                     dummyLead.description = "Select Leads"
                     leadsList!!.add(0,dummyLead)
 
-                    leadTxt.text = getString(R.string.leads_amount, leadsJSON.length())
+                    binding.leadTxt.text = getString(R.string.leads_amount, leadsJSON.length())
 
                     val contractsJSON: JSONArray = parentObject.getJSONArray("contracts")
                     println("contractsJSON = $contractsJSON")
@@ -269,7 +272,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                     dummyContract.title = "Select Contracts"
                     contractsList!!.add(0,dummyContract)
 
-                    contractTxt.text = getString(R.string.contracts_amount, contractsJSON.length())
+                    binding.contractTxt.text = getString(R.string.contracts_amount, contractsJSON.length())
 
 
 
@@ -283,7 +286,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                     workOrdersList!!.add(0,dummyWorkOrder)
 
                    // leadsList.add(0,"Leads(${leadsList.count()})")
-                    workOrderTxt.text = getString(R.string.work_orders_amount, workOrdersJSON.length())
+                    binding.workOrderTxt.text = getString(R.string.work_orders_amount, workOrdersJSON.length())
 
                     val invoicesJSON: JSONArray = parentObject.getJSONArray("invoices")
                     println("invoicesJSON = $invoicesJSON")
@@ -296,7 +299,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                     dummyInvoice.title = "Select Invoices"
                     invoicesList!!.add(0,dummyInvoice)
 
-                    invoiceTxt.text = getString(R.string.invoices_amount, invoicesJSON.length())
+                    binding.invoiceTxt.text = getString(R.string.invoices_amount, invoicesJSON.length())
 
 
                     val leadAdapter: ArrayAdapter<Lead> = ArrayAdapter<Lead>(
@@ -304,7 +307,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                         android.R.layout.simple_spinner_dropdown_item, leadsList!!
                     )
                     leadAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-                    leadSpinner.adapter = leadAdapter
+                    binding.leadSpinner.adapter = leadAdapter
                    /// leadSpinner.setSpinnerText("Leads(${leadsList!!.count()})")
 
                     val contractAdapter: ArrayAdapter<Contract> = ArrayAdapter<Contract>(
@@ -312,7 +315,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                         android.R.layout.simple_spinner_dropdown_item, contractsList!!
                     )
                     contractAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-                    contractSpinner.adapter = contractAdapter
+                    binding.contractSpinner.adapter = contractAdapter
                     //contractSpinner.setSpinnerText("Contracts(${contractsList!!.count()})")
 
                     val workOrderAdapter: ArrayAdapter<WorkOrder> = ArrayAdapter<WorkOrder>(
@@ -320,14 +323,14 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                         android.R.layout.simple_spinner_dropdown_item, workOrdersList!!
                     )
                     workOrderAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-                    workOrderSpinner.adapter = workOrderAdapter
+                    binding.workOrderSpinner.adapter = workOrderAdapter
 
                     val invoiceAdapter: ArrayAdapter<Invoice> = ArrayAdapter<Invoice>(
                         myView.context,
                         android.R.layout.simple_spinner_dropdown_item, invoicesList!!
                     )
                     invoiceAdapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-                    invoiceSpinner.adapter = invoiceAdapter
+                    binding.invoiceSpinner.adapter = invoiceAdapter
 
 
 
@@ -341,11 +344,11 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                         if (GlobalVars.permissions!!.leads == "1") {
 
-                            leadSpinner.setSelection(0, false)
+                            binding.leadSpinner.setSelection(0, false)
 
                             if (leadsJSON.length() == 1) {
 
-                                leadTxt.setOnClickListener {
+                                binding.leadTxt.setOnClickListener {
                                     // your code to run when the user clicks on the TextView
                                     println("leadSpinner click")
                                     val lead: Lead = gson.fromJson(
@@ -358,7 +361,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                                 }
 
                             } else {
-                                leadSpinner.onItemSelectedListener =
+                                binding.leadSpinner.onItemSelectedListener =
                                     object : AdapterView.OnItemSelectedListener {
                                         override fun onItemSelected(
                                             parent: AdapterView<*>,
@@ -389,7 +392,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                             }
                         }
                         else {
-                            leadTxt.setOnClickListener {
+                            binding.leadTxt.setOnClickListener {
                                 globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads))
                             }
                         }
@@ -397,8 +400,8 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                     }else{
                         //leadTxt.isEnabled = false
                         //leadTxt.isClickable = false
-                        leadSpinner.isEnabled = false
-                        leadSpinner.isClickable = false
+                        binding.leadSpinner.isEnabled = false
+                        binding.leadSpinner.isClickable = false
                     }
 
                     //contracts
@@ -406,11 +409,11 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                         if (GlobalVars.permissions!!.contracts == "1") {
 
-                            contractSpinner.setSelection(0, false)
+                            binding.contractSpinner.setSelection(0, false)
 
                             if (contractsJSON.length() == 1) {
 
-                                contractTxt.setOnClickListener {
+                                binding.contractTxt.setOnClickListener {
                                     // your code to run when the user clicks on the TextView
                                     println("contractSpinner click")
                                     val contract: Contract = gson.fromJson(
@@ -424,7 +427,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                             }
                             else {
-                                contractSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                                binding.contractSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>,
                                         view: View,
@@ -454,7 +457,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                             }
                         }
                         else {
-                            contractTxt.setOnClickListener {
+                            binding.contractTxt.setOnClickListener {
                                 globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts))
                             }
                         }
@@ -462,8 +465,8 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                     }else{
                         //leadTxt.isEnabled = false
                         //leadTxt.isClickable = false
-                        contractSpinner.isEnabled = false
-                        contractSpinner.isClickable = false
+                        binding.contractSpinner.isEnabled = false
+                        binding.contractSpinner.isClickable = false
                     }
 
 
@@ -472,11 +475,11 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
 
                         if (GlobalVars.permissions!!.schedule == "1") {
 
-                            workOrderSpinner.setSelection(0, false)
+                            binding.workOrderSpinner.setSelection(0, false)
 
                             if (workOrdersJSON.length() == 1) {
 
-                                workOrderTxt.setOnClickListener {
+                                binding.workOrderTxt.setOnClickListener {
                                     // your code to run when the user clicks on the TextView
                                     println("workOrderSpinner click")
                                     val workOrder: WorkOrder = gson.fromJson(
@@ -489,7 +492,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                                 }
 
                             } else {
-                                workOrderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                                binding.workOrderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>,
                                         view: View,
@@ -519,7 +522,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                             }
                         }
                         else {
-                            workOrderTxt.setOnClickListener {
+                            binding.workOrderTxt.setOnClickListener {
                                 globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_schedule))
                             }
                         }
@@ -527,19 +530,19 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                     }else{
                         //leadTxt.isEnabled = false
                         //leadTxt.isClickable = false
-                        workOrderSpinner.isEnabled = false
-                        workOrderSpinner.isClickable = false
+                        binding.workOrderSpinner.isEnabled = false
+                        binding.workOrderSpinner.isClickable = false
                     }
 
                     //invoices
                     if (invoicesJSON.length() > 0) {
 
                         if (GlobalVars.permissions!!.invoices == "1") {
-                            invoiceSpinner.setSelection(0, false)
+                            binding.invoiceSpinner.setSelection(0, false)
 
                             if (invoicesJSON.length() == 1) {
 
-                                invoiceTxt.setOnClickListener {
+                                binding.invoiceTxt.setOnClickListener {
                                     // your code to run when the user clicks on the TextView
                                     println("invoiceSpinner click")
                                     val invoice: Invoice = gson.fromJson(
@@ -552,7 +555,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                                 }
 
                             } else {
-                                invoiceSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                                binding.invoiceSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>,
                                         view: View,
@@ -581,7 +584,7 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                             }
                         }
                         else {
-                            invoiceTxt.setOnClickListener {
+                            binding.invoiceTxt.setOnClickListener {
                                 globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_invoices))
                             }
                         }
@@ -589,8 +592,8 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
                     }else{
                         //leadTxt.isEnabled = false
                         //leadTxt.isClickable = false
-                        invoiceSpinner.isEnabled = false
-                        invoiceSpinner.isClickable = false
+                        binding.invoiceSpinner.isEnabled = false
+                        binding.invoiceSpinner.isClickable = false
                     }
 
 

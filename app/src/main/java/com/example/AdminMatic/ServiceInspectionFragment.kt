@@ -8,20 +8,15 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentServiceInspectionBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.google.gson.GsonBuilder
-
-import kotlinx.android.synthetic.main.fragment_equipment_list.*
-import kotlinx.android.synthetic.main.fragment_service_inspection.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -34,20 +29,13 @@ class ServiceInspectionFragment : Fragment() {
     private var equipment: Equipment? = null
     private var historyMode = false
 
-    lateinit var pgsBar: ProgressBar
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
-
-    lateinit var recyclerView: RecyclerView
-
-    private lateinit var submitBtn: Button
-    private lateinit var notesEditText: EditText
 
     lateinit var adapter:ServiceInspectionAdapter
 
     // The list is declared here so the recycler can be passed a reference to it and the radio buttons can edit it
     var questionsList:MutableList<InspectionQuestion> = emptyList<InspectionQuestion>().toMutableList()
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,28 +47,24 @@ class ServiceInspectionFragment : Fragment() {
         }
     }
 
+    private var _binding: FragmentServiceInspectionBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-
         println("onCreateView")
         globalVars = GlobalVars()
-        myView = inflater.inflate(R.layout.fragment_service_inspection, container, false)
-
+        _binding = FragmentServiceInspectionBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         val emptyList:MutableList<InspectionQuestion> = mutableListOf()
 
         adapter = ServiceInspectionAdapter(emptyList, historyMode)
 
-
-        //(activity as AppCompatActivity).supportActionBar?.title = "Equipment List"
-
         //TODO: fetch equipment name here instead of just ID
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.inspection_page_title, service!!.equipmentID)
-
-
 
         // Inflate the layout for this fragment
         return myView
@@ -88,16 +72,8 @@ class ServiceInspectionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-
-        //need to wait for this function to initialize views
-        //println(recyclerView)
-        recyclerView = view.findViewById(R.id.service_inspection_recycler_view)
-
-        pgsBar = view.findViewById(R.id.progressBar)
-        submitBtn = view.findViewById(R.id.service_inspection_submit_btn)
-        notesEditText = view.findViewById(R.id.inspection_notes_editTxt)
-        notesEditText.setText(service!!.completionNotes)
-        submitBtn.setOnClickListener{
+        binding.inspectionNotesEditTxt.setText(service!!.completionNotes)
+        binding.serviceInspectionSubmitBtn.setOnClickListener{
             println(questionsList[0].answer)
             val gson = GsonBuilder().disableHtmlEscaping().create()
             println("questions = " + gson.toJson(questionsList))
@@ -118,8 +94,8 @@ class ServiceInspectionFragment : Fragment() {
         }
 
         if (historyMode) {
-            submitBtn.visibility = View.GONE
-            notesEditText.isEnabled = false
+            binding.serviceInspectionSubmitBtn.visibility = View.GONE
+            binding.inspectionNotesEditTxt.isEnabled = false
         }
 
         getInspectionItems()
@@ -162,7 +138,7 @@ class ServiceInspectionFragment : Fragment() {
                     val gson = GsonBuilder().create()
                     questionsList = gson.fromJson(questions.toString(), Array<InspectionQuestion>::class.java).toMutableList()
 
-                    service_inspection_recycler_view.apply {
+                    binding.serviceInspectionRecyclerView.apply {
                         layoutManager = LinearLayoutManager(activity)
 
                         adapter = activity?.let {
@@ -171,7 +147,7 @@ class ServiceInspectionFragment : Fragment() {
 
                         val itemDecoration: ItemDecoration =
                             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        recyclerView.addItemDecoration(itemDecoration)
+                        binding.serviceInspectionRecyclerView.addItemDecoration(itemDecoration)
 
                         //(adapter as ServiceInspectionAdapter).notifyDataSetChanged()
                         println(adapter!!.itemCount)
@@ -308,7 +284,7 @@ class ServiceInspectionFragment : Fragment() {
                 params["ID"] = service!!.ID
                 params["completeValue"] = service!!.completionMileage.toString()
                 params["completedBy"] = loggedInEmployee!!.ID
-                params["completionNotes"] = notesEditText.text.toString()
+                params["completionNotes"] = binding.inspectionNotesEditTxt.text.toString()
                 params["nextValue"] = service!!.nextValue.toString()
                 params["questions"] = gson.toJson(questionsList)
                 params["status"] = "2"
@@ -373,13 +349,13 @@ class ServiceInspectionFragment : Fragment() {
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        recyclerView.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.serviceInspectionRecyclerView.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        recyclerView.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.serviceInspectionRecyclerView.visibility = View.VISIBLE
     }
 
 }

@@ -15,13 +15,12 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentEmployeeBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_employee_list.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -36,29 +35,6 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-    private lateinit var  empViewTop: ConstraintLayout
-    //lateinit var  empViewMenu: ConstraintLayout
-    //lateinit var  empViewContainer: ConstraintLayout
-    //lateinit var  empViewFooter: ConstraintLayout
-    lateinit var recyclerView: RecyclerView
-    lateinit var  swipeRefresh: SwipeRefreshLayout
-
-
-    private lateinit var empImageView:ImageView
-    private lateinit var empNameTextView:TextView
-    private lateinit var empPhoneBtn:ConstraintLayout
-    private lateinit var empEmaileBtn:ConstraintLayout
-    private lateinit var empPhoneBtnTxt:TextView
-    private lateinit var empEmaileBtnTxt:TextView
-
-
-    private lateinit var payrollBtn:Button
-    private lateinit var usageBtn:Button
-    private lateinit var shiftsBtn:Button
-    private lateinit var licensesBtn:Button
-    private lateinit var deptsBtn:Button
-
 
     lateinit var adapter:ImagesAdapter
 
@@ -67,9 +43,6 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     var refreshing = false
 
     private lateinit var logOutBtn:Button
-
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,7 +77,8 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     }
 
 
-
+    private var _binding: FragmentEmployeeBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -113,18 +87,12 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         // Inflate the layout for this fragment
 
        // employee = args
-        myView = inflater.inflate(R.layout.fragment_employee, container, false)
+        _binding = FragmentEmployeeBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         globalVars = GlobalVars()
-
-
-
         imageList = mutableListOf()
-
         adapter = ImagesAdapter(imageList,myView.context, false, this)
-
-
-        //(activity as AppCompatActivity).supportActionBar?.title = "Employee"
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.employee)
 
@@ -139,74 +107,56 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         println("employee = ${employee!!.fname}")
 
 
-
-
-        pgsBar = view.findViewById(R.id.progress_bar)
-        recyclerView = view.findViewById(R.id.list_recycler_view)
-        swipeRefresh= view.findViewById(R.id.customerSwipeContainer)
-        empViewTop = view.findViewById(R.id.emp_top_cl)
-
-        empImageView = view.findViewById(R.id.emp_pic_iv)
         Picasso.with(context)
             .load(GlobalVars.thumbBase + employee!!.pic)
             .placeholder(R.drawable.user_placeholder) //optional
             //.resize(imgWidth, imgHeight)         //optional
             //.centerCrop()                        //optional
-            .into(empImageView)                       //Your image view object.
+            .into(binding.empPicIv)                       //Your image view object.
 
 
-        empNameTextView = view.findViewById(R.id.emp_name_txt)
-        empNameTextView.text = employee!!.name
+        binding.empNameTxt.text = employee!!.name
 
-        empPhoneBtn = view.findViewById(R.id.emp_phone_btn_cl)
-        empPhoneBtn.setOnClickListener {
+        binding.empPhoneBtnCl.setOnClickListener {
             println("phone btn clicked ${employee!!.phone}")
 
             val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + employee!!.phone))
             startActivity(intent)
         }
-        empPhoneBtnTxt = view.findViewById(R.id.emp_phone_btn_tv)
-        empPhoneBtnTxt.text = employee!!.phone
+        binding.empPhoneBtnTv.text = employee!!.phone
 
-        empEmaileBtn = view.findViewById(R.id.emp_email_btn_cl)
-        empEmaileBtn.setOnClickListener {
+        binding.empEmailBtnCl.setOnClickListener {
             println("email btn clicked ${employee!!.email}")
         }
 
-        empEmaileBtnTxt = view.findViewById(R.id.emp_email_btn_tv)
-        empEmaileBtnTxt.text = employee!!.email
+        binding.empEmailBtnTv.text = employee!!.email
 
-        payrollBtn = view.findViewById((R.id.payroll_btn))
-        payrollBtn.setOnClickListener{
+        binding.payrollBtn.setOnClickListener{
             println("payroll btn clicked")
             //val directions = EmployeeListFragmentDirections.navigateToEmployee(data)
                 val directions = EmployeeFragmentDirections.navigateToPayroll(employee)
             myView.findNavController().navigate(directions)
         }
 
-        usageBtn = view.findViewById((R.id.usage_btn))
-        usageBtn.setOnClickListener{
+        binding.usageBtn.setOnClickListener{
             println("usage btn clicked")
             val directions = EmployeeFragmentDirections.navigateEmployeeToUsage(employee)
             myView.findNavController().navigate(directions)
         }
 
-        shiftsBtn = view.findViewById((R.id.shifts_btn))
-        shiftsBtn.setOnClickListener{
+        binding.shiftsBtn.setOnClickListener{
             println("shifts btn clicked")
             val directions = EmployeeFragmentDirections.navigateEmployeeToShifts(employee)
             myView.findNavController().navigate(directions)
         }
 
-        licensesBtn = view.findViewById((R.id.licenses_btn))
-        licensesBtn.setOnClickListener{
+        binding.licensesBtn.setOnClickListener{
             println("shifts btn clicked")
             val directions = EmployeeFragmentDirections.navigateEmployeeToLicenses(employee)
             myView.findNavController().navigate(directions)
         }
 
-        deptsBtn = view.findViewById((R.id.depts_btn))
-        deptsBtn.setOnClickListener{
+        binding.deptsBtn.setOnClickListener{
             println("shifts btn clicked")
             val directions = EmployeeFragmentDirections.navigateEmployeeToDepartments(employee)
             myView.findNavController().navigate(directions)
@@ -230,13 +180,13 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         val itemDecoration: RecyclerView.ItemDecoration =
             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-        recyclerView.addItemDecoration(itemDecoration)
+        binding.listRecyclerView.addItemDecoration(itemDecoration)
 
-        recyclerView.onScrollToEnd {
+        binding.listRecyclerView.onScrollToEnd {
             getImages()
         }
 
-        recyclerView.adapter = adapter
+        binding.listRecyclerView.adapter = adapter
 
         // recyclerView.apply {
         // layoutManager = GridLayoutManager(myView.context, 2)
@@ -244,17 +194,17 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         // }
 
-        recyclerView.layoutManager = GridLayoutManager(myView.context, 2)
+        binding.listRecyclerView.layoutManager = GridLayoutManager(myView.context, 2)
 
 
-        recyclerView.apply {
+        binding.listRecyclerView.apply {
 
 
 
             // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
             // Setup refresh listener which triggers new data loading
             // Setup refresh listener which triggers new data loading
-            swipeRefresh.setOnRefreshListener { // Your code to refresh the list here.
+            binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 //fetchTimelineAsync(0)
@@ -269,7 +219,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
             }
             // Configure the refreshing colors
             // Configure the refreshing colors
-            swipeRefresh.setColorSchemeResources(
+            binding.customerSwipeContainer.setColorSchemeResources(
                 R.color.button,
                 R.color.black,
                 R.color.colorAccent,
@@ -343,7 +293,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                         println("imageList count = ${imageList.count()}")
 
                         // Now we call setRefreshing(false) to signal refresh has finished
-                        customerSwipeContainer.isRefreshing = false
+                        binding.customerSwipeContainer.isRefreshing = false
 
                         Toast.makeText(
                             activity,
@@ -410,13 +360,13 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        recyclerView.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.listRecyclerView.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        recyclerView.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.listRecyclerView.visibility = View.VISIBLE
     }
 
 

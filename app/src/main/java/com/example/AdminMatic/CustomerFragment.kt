@@ -6,21 +6,17 @@ import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.AdminMatic.R
+import com.AdminMatic.databinding.FragmentCustomerBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_employee_list.*
-import kotlinx.android.synthetic.main.fragment_lead_list.*
-import kotlinx.android.synthetic.main.fragment_work_order.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -35,40 +31,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var  pgsBar: ProgressBar
-    private lateinit var custUI: ConstraintLayout
-
-
-    lateinit var leadsRecyclerView: RecyclerView
-    lateinit var contractsRecyclerView: RecyclerView
-    lateinit var workOrdersRecyclerView: RecyclerView
-    lateinit var invoicesRecyclerView: RecyclerView
-    lateinit var imagesRecyclerView: RecyclerView
-    lateinit var  swipeRefresh: SwipeRefreshLayout
-
-
-
-
-
-    private lateinit var custNameTextView:TextView
-    private lateinit var custPhoneBtn: ConstraintLayout
-    private lateinit var custEmailBtn: ConstraintLayout
-    private lateinit var custAddressBtn:ConstraintLayout
-    private lateinit var custPhoneBtnTxt:TextView
-    private lateinit var custEmailBtnTxt:TextView
-    private lateinit var custAddressBtnTxt:TextView
-    private lateinit var noImageCollectionTxt:TextView
-
-
-    private lateinit var contactsBtn: Button
-    private lateinit var settingsBtn: Button
-
-    private lateinit var tabLayout:TabLayout
     lateinit var tableMode:String
-
-
-
-
 
     lateinit var adapter:ImagesAdapter
 
@@ -91,53 +54,31 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         }
     }
 
+    private var _binding: FragmentCustomerBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_customer, container, false)
-        // employee = args
-        myView = inflater.inflate(R.layout.fragment_customer, container, false)
 
         globalVars = GlobalVars()
-
+        _binding = FragmentCustomerBinding.inflate(inflater, container, false)
+        myView = binding.root
 
         imageList = mutableListOf()
         adapter = ImagesAdapter(imageList,myView.context, true, this)
 
-
-
-
-
-
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.customer)
         setHasOptionsMenu(true)
+
+
         return myView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-       // println("customer = ${customer!!.ID}")
-
-
-        pgsBar = view.findViewById(R.id.progress_bar)
-
-        custUI = view.findViewById(R.id.customer_ui_cl)
-
-
-        leadsRecyclerView = myView.findViewById(R.id.customer_leads_rv)
-        contractsRecyclerView = myView.findViewById(R.id.customer_contracts_rv)
-        workOrdersRecyclerView = myView.findViewById(R.id.customer_wos_rv)
-        invoicesRecyclerView = myView.findViewById(R.id.customer_invoices_rv)
-        imagesRecyclerView = myView.findViewById(R.id.customer_images_rv)
-        noImageCollectionTxt = myView.findViewById(R.id.customer_no_image_collection_text)
-
-        tabLayout = myView.findViewById(R.id.customer_table_tl)
-
         getCustomer()
-
     }
 
     override fun onStop() {
@@ -272,8 +213,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                     val leadAdapter = LeadsAdapter(leadsList, this.myView.context, this, true)
 
-                    leadsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    leadsRecyclerView.adapter = leadAdapter
+                    binding.customerLeadsRv.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    binding.customerLeadsRv.adapter = leadAdapter
 
                     //layoutViews()
                     getContracts()
@@ -356,8 +297,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                     val contractAdapter = ContractsAdapter(contractsList, this.myView.context, this, true)
 
-                    contractsRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    contractsRecyclerView.adapter = contractAdapter
+                    binding.customerContractsRv.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    binding.customerContractsRv.adapter = contractAdapter
 
                     //layoutViews()
                     getWorkOrders()
@@ -432,8 +373,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                     val workOrderAdapter = WorkOrdersAdapter(workOrdersList, this.myView.context, this, true)
 
-                    workOrdersRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    workOrdersRecyclerView.adapter = workOrderAdapter
+                    binding.customerWosRv.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    binding.customerWosRv.adapter = workOrderAdapter
 
                     //layoutViews()
                     getInvoices()
@@ -509,8 +450,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                     val invoicesAdapter = InvoicesAdapter(invoicesList, com.example.AdminMatic.myView.context, this)
 
-                    invoicesRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    invoicesRecyclerView.adapter = invoicesAdapter
+                    binding.customerInvoicesRv.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                    binding.customerInvoicesRv.adapter = invoicesAdapter
 
                     layoutViews()
                    // getImages()
@@ -602,9 +543,9 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                     adapter.filterList = imageList
                     imagesLoaded = true
-                    imagesRecyclerView.adapter = adapter
+                    binding.customerImagesRv.adapter = adapter
 
-                    imagesRecyclerView.layoutManager = GridLayoutManager(myView.context, 2)
+                    binding.customerImagesRv.layoutManager = GridLayoutManager(myView.context, 2)
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -659,19 +600,13 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
        //  swipeRefresh= myView.findViewById(R.id.customerSwipeContainer)
 
 
-        custNameTextView = myView.findViewById(R.id.customer_name_txt)
-        custNameTextView.text = customer.sysname
+        binding.customerNameTxt.text = customer.sysname
 
-        custPhoneBtn = myView.findViewById(R.id.customer_phone_btn_cl)
-        custPhoneBtnTxt = myView.findViewById(R.id.customer_phone_btn_tv)
-        custPhoneBtnTxt.text = getString(R.string.no_phone_found)
+        binding.customerPhoneBtnTv.text = getString(R.string.no_phone_found)
 
-        custEmailBtn = myView.findViewById(R.id.customer_email_btn_cl)
-        custEmailBtnTxt = myView.findViewById(R.id.customer_email_btn_tv)
-        custEmailBtnTxt.text = getString(R.string.no_email_found)
+        binding.customerEmailBtnTv.text = getString(R.string.no_email_found)
 
-        custAddressBtn = myView.findViewById(R.id.customer_address_btn_cl)
-        custAddressBtn.setOnClickListener {
+        binding.customerAddressBtnIb.setOnClickListener {
             println("map btn clicked ${customer.mainAddr}")
 
             val lng: String
@@ -687,21 +622,20 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
             }
         }
 
-        custAddressBtnTxt = myView.findViewById(R.id.customer_address_btn_tv)
-        custAddressBtnTxt.text = getString(R.string.no_address_found)
+        binding.customerAddressBtnTv.text = getString(R.string.no_address_found)
 
         if (customer.mainAddr != ""){
-            custAddressBtnTxt.text = customer.mainAddr
+            binding.customerAddressBtnTv.text = customer.mainAddr
         }
 
 
-        if (customer.contacts.count() > 0){
+        if (customer.contacts.isNotEmpty()){
             for (contact in customer.contacts) {
                 when(contact.type) {
                     "1" -> {
                         println("1")
-                        custPhoneBtnTxt.text = contact.value!!
-                        custPhoneBtnTxt.setOnClickListener {
+                        binding.customerPhoneBtnTv.text = contact.value!!
+                        binding.customerPhoneBtnTv.setOnClickListener {
 
                             val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + contact.value!!))
                             com.example.AdminMatic.myView.context.startActivity(intent)
@@ -710,8 +644,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     }
                     "2" -> {
                         println("2")
-                        custEmailBtnTxt.text = contact.value!!
-                        custEmailBtn.setOnClickListener {
+                        binding.customerEmailBtnTv.text = contact.value!!
+                        binding.customerEmailBtnIb.setOnClickListener {
                             println("email btn clicked ${contact.value!!}")
                             val intent = Intent(Intent.ACTION_SENDTO)
                             intent.data = Uri.parse("mailto:") // only email apps should handle this
@@ -730,8 +664,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
             }
         }
 
-        contactsBtn = myView.findViewById((R.id.contacts_btn))
-        contactsBtn.setOnClickListener{
+        binding.contactsBtn.setOnClickListener{
             println("contacts btn clicked")
 
             val directions = CustomerFragmentDirections.navigateToCustomerContacts(customer)
@@ -742,8 +675,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         }
 
-        settingsBtn = myView.findViewById((R.id.customer_notes_btn))
-        settingsBtn.setOnClickListener{
+        binding.customerNotesBtn.setOnClickListener{
             println("notes btn clicked")
 
             val directions = CustomerFragmentDirections.navigateToCustomerNotes(customer)
@@ -755,7 +687,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         }
 
         addBtn = myView.findViewById((R.id.customer_add_btn))
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.customerTableTl.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
 
 
@@ -766,45 +698,45 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         tableMode = "LEADS"
                         addBtn.text = getString(R.string.add_lead)
                        // Toast.makeText(com.example.AdminMatic.myView.context, "Leads", Toast.LENGTH_SHORT).show()
-                        leadsRecyclerView.visibility = View.VISIBLE
-                        contractsRecyclerView.visibility = View.GONE
-                        workOrdersRecyclerView.visibility = View.GONE
-                        invoicesRecyclerView.visibility = View.GONE
-                        imagesRecyclerView.visibility = View.GONE
-                        noImageCollectionTxt.visibility = View.GONE
+                        binding.customerLeadsRv.visibility = View.VISIBLE
+                        binding.customerContractsRv.visibility = View.GONE
+                        binding.customerWosRv.visibility = View.GONE
+                        binding.customerInvoicesRv.visibility = View.GONE
+                        binding.customerImagesRv.visibility = View.GONE
+                        binding.customerNoImageCollectionText.visibility = View.GONE
                     }
                     1 -> {
                         tableMode = "CONTRACTS"
                         addBtn.text = getString(R.string.add_contract)
                         //Toast.makeText(com.example.AdminMatic.myView.context, "Contracts", Toast.LENGTH_SHORT).show()
-                        leadsRecyclerView.visibility = View.GONE
-                        contractsRecyclerView.visibility = View.VISIBLE
-                        workOrdersRecyclerView.visibility = View.GONE
-                        invoicesRecyclerView.visibility = View.GONE
-                        imagesRecyclerView.visibility = View.GONE
-                        noImageCollectionTxt.visibility = View.GONE
+                        binding.customerLeadsRv.visibility = View.GONE
+                        binding.customerContractsRv.visibility = View.VISIBLE
+                        binding.customerWosRv.visibility = View.GONE
+                        binding.customerInvoicesRv.visibility = View.GONE
+                        binding.customerImagesRv.visibility = View.GONE
+                        binding.customerNoImageCollectionText.visibility = View.GONE
                     }
                     2 -> {
                         tableMode = "WOS"
                         addBtn.text = getString(R.string.add_work_order)
                         //Toast.makeText(com.example.AdminMatic.myView.context, "Work Orders", Toast.LENGTH_SHORT).show()
-                        leadsRecyclerView.visibility = View.GONE
-                        contractsRecyclerView.visibility = View.GONE
-                        workOrdersRecyclerView.visibility = View.VISIBLE
-                        invoicesRecyclerView.visibility = View.GONE
-                        imagesRecyclerView.visibility = View.GONE
-                        noImageCollectionTxt.visibility = View.GONE
+                        binding.customerLeadsRv.visibility = View.GONE
+                        binding.customerContractsRv.visibility = View.GONE
+                        binding.customerWosRv.visibility = View.VISIBLE
+                        binding.customerInvoicesRv.visibility = View.GONE
+                        binding.customerImagesRv.visibility = View.GONE
+                        binding.customerNoImageCollectionText.visibility = View.GONE
                     }
                     3 -> {
                         tableMode = "INVOICES"
                         addBtn.text = getString(R.string.add_invoice)
                         //Toast.makeText(com.example.AdminMatic.myView.context, "Invoices", Toast.LENGTH_SHORT).show()
-                        leadsRecyclerView.visibility = View.GONE
-                        contractsRecyclerView.visibility = View.GONE
-                        workOrdersRecyclerView.visibility = View.GONE
-                        invoicesRecyclerView.visibility = View.VISIBLE
-                        imagesRecyclerView.visibility = View.GONE
-                        noImageCollectionTxt.visibility = View.GONE
+                        binding.customerLeadsRv.visibility = View.GONE
+                        binding.customerContractsRv.visibility = View.GONE
+                        binding.customerWosRv.visibility = View.GONE
+                        binding.customerInvoicesRv.visibility = View.VISIBLE
+                        binding.customerImagesRv.visibility = View.GONE
+                        binding.customerNoImageCollectionText.visibility = View.GONE
                     }
                     4 -> {
                         tableMode = "IMAGES"
@@ -818,13 +750,13 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                         }
                         else {
                             addBtn.visibility = View.GONE
-                            noImageCollectionTxt.visibility = View.VISIBLE
+                            binding.customerNoImageCollectionText.visibility = View.VISIBLE
                         }
-                        leadsRecyclerView.visibility = View.GONE
-                        contractsRecyclerView.visibility = View.GONE
-                        workOrdersRecyclerView.visibility = View.GONE
-                        invoicesRecyclerView.visibility = View.GONE
-                        imagesRecyclerView.visibility = View.VISIBLE
+                        binding.customerLeadsRv.visibility = View.GONE
+                        binding.customerContractsRv.visibility = View.GONE
+                        binding.customerWosRv.visibility = View.GONE
+                        binding.customerInvoicesRv.visibility = View.GONE
+                        binding.customerImagesRv.visibility = View.VISIBLE
                     }
 
                 }
@@ -845,7 +777,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         tableMode = "WOS"
         addBtn.text = getString(R.string.add_work_order)
-        tabLayout.getTabAt(2)!!.select()
+        binding.customerTableTl.getTabAt(2)!!.select()
 
 
 
@@ -890,13 +822,13 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
     }
 
     fun showProgressView() {
-        pgsBar.visibility = View.VISIBLE
-        custUI.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.customerUiCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        pgsBar.visibility = View.INVISIBLE
-        custUI.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.customerUiCl.visibility = View.VISIBLE
     }
 
 }
