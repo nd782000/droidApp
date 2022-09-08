@@ -40,7 +40,6 @@ class WorkOrdersAdapter(
     var queryText = ""
 
     init {
-
         filterList = list
     }
 
@@ -221,6 +220,7 @@ class WorkOrderViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     private var mCl: ConstraintLayout? = null
     private var mDateView: TextView? = null
     private var mLockIv: ImageView? = null
+    private var mSortView: TextView? = null
 
 
 
@@ -229,6 +229,7 @@ class WorkOrderViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         mCl = itemView.findViewById(R.id.work_order_list_item)
         mDateView = itemView.findViewById(R.id.list_date)
         mLockIv = itemView.findViewById(R.id.list_wo_lock_icon_iv)
+        mSortView = itemView.findViewById(R.id.sort_text)
     }
 
     fun bind(workOrder: WorkOrder, context: Context) {
@@ -239,6 +240,13 @@ class WorkOrderViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
             mDateView!!.setTextColor(ContextCompat.getColor(context, R.color.red));
             mCl!!.background = context.getColor(R.color.backgroundHighlight).toDrawable()
         }
+
+        if (workOrder.daySort != null) {
+            if (workOrder.daySort != "0") {
+                mSortView!!.text = context.getString(R.string.num, workOrder.daySort)
+            }
+        }
+
     }
 
 }

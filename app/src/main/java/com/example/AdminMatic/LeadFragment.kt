@@ -158,6 +158,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                     //lead.tasks =
 
                     setStatus(lead!!.statusID)
+                    println("Timetype: ${lead!!.timeType}")
 
                     if(lead!!.dateNice != null){
                         binding.leadScheduleValTv.text = lead!!.dateNice!!

@@ -96,7 +96,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
                 )
             binding.listRecyclerView.addItemDecoration(itemDecoration)
 
-
+            (adapter as ContactsAdapter).notifyDataSetChanged()
         }
 
         //scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment

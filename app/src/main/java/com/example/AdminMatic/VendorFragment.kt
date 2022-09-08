@@ -17,6 +17,7 @@ import com.android.volley.toolbox.StringRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.gson.GsonBuilder
 import org.json.JSONException
@@ -30,6 +31,7 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
 
+    private var mapFragment : SupportMapFragment? = null
     private lateinit var googleMapGlobal:GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +54,7 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.vendor)
+        mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
         return myView
     }
 
@@ -59,7 +62,8 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
 
-        binding.mapFrg.getMapAsync(this)
+        //binding.mapFrg.getMapAsync(this)
+        mapFragment!!.getMapAsync(this)
 
         hideProgressView()
 

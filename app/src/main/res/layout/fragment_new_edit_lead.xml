@@ -29,13 +29,10 @@
             android:accessibilityHeading="false"
             android:background="@drawable/text_view_layout"
             app:queryHint="@string/new_lead_customer_hint"
-
             app:actionViewClass="android.widget.SearchView"
             app:defaultQueryHint='Select Customer'
             app:iconifiedByDefault="false"
             app:layout_constraintLeft_toRightOf="@id/new_edit_lead_status_btn"
-
-
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:queryBackground="@null" />
@@ -88,6 +85,7 @@
                 android:inputType="text"
                 android:singleLine="true"
                 android:focusable="false"
+                android:textSize="16sp"
                 android:focusableInTouchMode="true"
                 android:hint="@string/new_lead_time_hint"
                 android:layout_marginLeft="5dp"
@@ -102,6 +100,7 @@
                 android:inputType="date"
                 android:singleLine="true"
                 android:focusable="false"
+                android:textSize="16sp"
                 android:focusableInTouchMode="true"
                 android:hint="@string/new_lead_date_hint"
                 android:layout_marginRight="5dp"
@@ -135,6 +134,7 @@
                 android:layout_height="40dp"
                 android:focusable="false"
                 android:focusableInTouchMode="true"
+                android:textSize="16sp"
                 android:hint="@string/new_lead_date_hint"
                 android:imeOptions="actionDone"
                 android:inputType="date"
@@ -199,7 +199,7 @@
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/new_edit_lead_sales_rep_search"
-                android:layout_width="200dp"
+                android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:accessibilityHeading="false"
                 android:background="@drawable/text_view_layout"

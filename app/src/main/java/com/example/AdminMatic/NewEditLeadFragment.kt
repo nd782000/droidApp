@@ -16,6 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentNewEditLeadBinding
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.google.gson.GsonBuilder
+import org.json.JSONException
+import org.json.JSONObject
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -66,6 +71,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
         _binding = FragmentNewEditLeadBinding.inflate(inflater, container, false)
         myView = binding.root
 
+
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // Handle the back button event
@@ -106,7 +112,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
 
         if (!editMode) {
             lead = Lead("0", "1")
-            lead!!.timeType = "1" //default to ASAP
+            lead!!.timeType = "0" //default to ASAP
         }
 
 
@@ -117,6 +123,12 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
         setStatusIcon()
 
         // Customer search
+
+
+        //binding.newEditLeadCustomerSearchRv.recycledViewPool.clear()
+
+        println("Customer list size: ${GlobalVars.customerList!!.size}")
+
         binding.newEditLeadCustomerSearchRv.apply {
             layoutManager = LinearLayoutManager(activity)
 
@@ -188,8 +200,10 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             datePicker.showDialog(dateToday.year, dateToday.monthValue-1, dateToday.dayOfMonth, object : DatePickerHelper.Callback {
                 override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
                     editsMade = true
-                    binding.newEditLeadAppointmentDateEt.setText(dateToday.format(GlobalVars.dateFormatterShortDashes))
-                    aptDate = dateToday.format(GlobalVars.dateFormatterYYYYMMDD)
+                    val selectedDate = LocalDate.of(year, month, dayOfMonth)
+                    binding.newEditLeadAppointmentDateEt.setText(selectedDate.format(GlobalVars.dateFormatterYYYYMMDD))
+                    aptDate = selectedDate.format(GlobalVars.dateFormatterYYYYMMDD)
+                    lead!!.date = aptDate
                 }
             })
         }
@@ -206,7 +220,8 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                     val minuteStr = if (minute < 10) "0${minute}" else "$minute"
 
                     //Set DB time
-                    aptTime = "$hourStr:$minuteStr:00"
+                    aptTime = "$hourStr:$minuteStr"
+                    lead!!.time = aptTime
 
                     //switch to 12 hour for display time
                     hourStr = hourOfDay.toString()
@@ -230,8 +245,9 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             datePicker.showDialog(dateToday.year, dateToday.monthValue-1, dateToday.dayOfMonth, object : DatePickerHelper.Callback {
                 override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
                     editsMade = true
-                    binding.newEditLeadDeadlineEt.setText(dateToday.format(GlobalVars.dateFormatterShortDashes))
-                    lead!!.deadline = dateToday.format(GlobalVars.dateFormatterYYYYMMDD)
+                    val selectedDate = LocalDate.of(year, month, dayOfMonth)
+                    binding.newEditLeadDeadlineEt.setText(selectedDate.format(GlobalVars.dateFormatterYYYYMMDD))
+                    lead!!.deadline = selectedDate.format(GlobalVars.dateFormatterYYYYMMDD)
                 }
             })
         }
@@ -319,9 +335,15 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 editsMade = true
-                lead!!.description = s.toString()
             }
         })
+
+        // Submit button
+        binding.newEditLeadSubmitBtn.setOnClickListener {
+            if (validateFields()) {
+                updateCustomer()
+            }
+        }
 
 
 
@@ -334,7 +356,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
 
             println("Time type: ${lead!!.timeType}")
             println("apt date: ${lead!!.aptDate}")
-            if (lead!!.timeType == "1") {
+            if (lead!!.timeType == "0") {
                 binding.newEditLeadScheduleTypeSpinner.setSelection(0)
             }
             else {
@@ -345,14 +367,13 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
 
             if (!lead!!.aptDate.isNullOrBlank()) {
                 println("setting date")
-                binding.newEditLeadAppointmentDateEt.setText(lead!!.aptDate!!.substring(0, 8))
-                binding.newEditLeadAppointmentTimeEt.setText(lead!!.aptDate!!.substring(8))
+                binding.newEditLeadAppointmentDateEt.setText(lead!!.date)
+                binding.newEditLeadAppointmentTimeEt.setText(lead!!.time)
             }
 
             if (!lead!!.deadline.isNullOrBlank()) {
                 println("setting deadline")
                 binding.newEditLeadDeadlineEt.setText(lead!!.deadline!!)
-                binding.newEditLeadDeadlineEt.setText("fuck")
             }
 
             if (lead!!.urgent == "1") {
@@ -375,7 +396,96 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
 
     }
 
+    private fun validateFields(): Boolean {
+        if (lead!!.customer.isNullOrBlank()) {
+            globalVars.simpleAlert(myView.context,getString(R.string.dialogue_incomplete_lead),getString(R.string.dialogue_incomplete_lead_select_customer))
+            return false
+        }
 
+        //Skipping schedule type checking here since droid spinners can't be empty so it defaults to ASAP
+
+        if (lead!!.timeType == "1") {
+            if (lead!!.date.isNullOrBlank()) {
+                globalVars.simpleAlert(myView.context,getString(R.string.dialogue_incomplete_lead),getString(R.string.dialogue_incomplete_lead_select_date))
+                return false
+            }
+
+        }
+
+        return true
+    }
+
+    private fun updateCustomer() {
+         println("updateCustomer")
+        showProgressView()
+
+        lead!!.description = binding.newEditLeadDescriptionTv.text.toString()
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/lead.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
+                    val gson = GsonBuilder().create()
+                    val leadsArray:Array<Lead> = gson.fromJson(parentObject["leads"].toString() , Array<Lead>::class.java)
+                    lead = leadsArray[0]
+                    globalVars.playSaveSound(myView.context)
+                    editsMade = false
+
+
+                    if (editMode) {
+                        myView.findNavController().popBackStack()
+                    }
+                    else {
+                        val directions = NewEditLeadFragmentDirections.navigateToLead(lead)
+                        myView.findNavController().navigate(directions)
+                    }
+
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["leadID"] = lead!!.ID
+                params["createdBy"] = GlobalVars.loggedInEmployee!!.ID
+                params["urgent"] = lead!!.urgent.toString()
+                params["repID"] = lead!!.salesRep.toString()
+                params["requestedByCust"] = lead!!.requestedByCust.toString()
+                params["description"] = lead!!.description.toString()
+                params["timeType"] = lead!!.timeType
+                params["date"] = lead!!.date.toString()
+                params["time"] = lead!!.time.toString()
+                params["deadline"] = lead!!.deadline.toString()
+                params["status"] = lead!!.statusID
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "customerNewEdit"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
 
 
     private fun showStatusMenu(){
@@ -417,14 +527,14 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
         println("Spinner was set")
         editsMade = true
         if (position == 0) {
-            lead!!.timeType = "1"
+            lead!!.timeType = "0"
             binding.newEditLeadAppointmentDateEt.isEnabled = false
             binding.newEditLeadAppointmentTimeEt.isEnabled = false
             binding.newEditLeadAppointmentDateEt.setText("")
             binding.newEditLeadAppointmentTimeEt.setText("")
         }
         else {
-            lead!!.timeType = "3"
+            lead!!.timeType = "1"
             binding.newEditLeadAppointmentDateEt.isEnabled = true
             binding.newEditLeadAppointmentTimeEt.isEnabled = true
         }

@@ -51,14 +51,12 @@
 
         </activity>
 
-
+        <uses-library
+            android:name="com.google.android.maps"
+            android:required="true" />
 
 
     </application>
-
-    <uses-feature
-        android:glEsVersion="0x00020000"
-        android:required="true"/>
 
 
 

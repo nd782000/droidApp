@@ -15,10 +15,10 @@ import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentMapBinding
 import com.example.AdminMatic.GlobalVars.Companion.globalLeadList
 import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.model.*
+
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
@@ -28,6 +28,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val pinMapWorkOrder = HashMap<Marker?, WorkOrder>()
     private val pinMapLead = HashMap<Marker?, Lead>()
     private lateinit var googleMapGlobal:GoogleMap
+    private var mapFragment : SupportMapFragment? = null
 
 
 
@@ -61,7 +62,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_map)
         }
 
-
+        mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
 
         // Inflate the layout for this fragment
         return myView
@@ -73,7 +74,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         (activity as MainActivity?)!!.setMap(this)
 
-        binding.mapFrg.getMapAsync(this)
+        //binding.mapFrg.getMapAsync(this)
+        mapFragment!!.getMapAsync(this)
 
         hideProgressView()
     }
@@ -252,6 +254,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
 
         googleMapGlobal.moveCamera(cu)
+
+        println("Marker list size: ${markerList.size}")
 
     }
 

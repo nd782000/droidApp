@@ -20,6 +20,7 @@
     <string name="employee">Employee</string>
     <string name="employees">Employees</string>
     <string name="customer">Customer</string>
+    <string name="customer_num">Customer #%1$s</string>
     <string name="customers">Customers</string>
     <string name="customer_button">%1$s %2$s</string>
     <string name="vendor">Vendor</string>
@@ -111,6 +112,7 @@
     <string name="no">No</string>
     <string name="select_none">Select None</string>
     <string name="select_all">Select All</string>
+    <string name="num">#%1$s</string>
 
     <string name="type">Type</string>
     <string name="status">Status</string>
@@ -559,6 +561,10 @@
     <string name="dialogue_billing_name_too_long_body">The billing name can have a maximum of 31 characters.</string>
     <string name="dialogue_edits_made_title">Unsaved Changes</string>
     <string name="dialogue_edits_made_body">Go back without saving?</string>
+    <string name="dialogue_incomplete_lead">Incomplete Lead</string>
+    <string name="dialogue_incomplete_lead_select_customer">Select a customer.</string>
+    <string name="dialogue_incomplete_lead_select_date">Select an appointment date.</string>
+
 
 
 

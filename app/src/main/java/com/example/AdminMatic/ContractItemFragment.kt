@@ -150,7 +150,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                 val itemDecoration: RecyclerView.ItemDecoration =
                     DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
                 binding.contractItemTasksRv.addItemDecoration(itemDecoration)
-                //(adapter as ContractTasksAdapter).notifyDataSetChanged()
+                (adapter as ContractTasksAdapter).notifyDataSetChanged()
             }
 
         }
@@ -336,7 +336,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                         binding.contractItemSearchRv.addItemDecoration(itemDecoration)
 
 
-                        //(adapter as SearchItemsAdapter).notifyDataSetChanged()
+                        (adapter as SearchItemsAdapter).notifyDataSetChanged()
 
 
                         binding.contractItemSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,

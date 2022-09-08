@@ -39,9 +39,9 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_customer.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_customer_list.xml" value="0.22" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_customer_lookup.xml" value="0.22" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_departments.xml" value="0.1" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_departments.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_employee.xml" value="0.33" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_employee_list.xml" value="0.33" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_employee_list.xml" value="0.29936594202898553" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_equipment.xml" value="0.22" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_equipment_details.xml" value="0.25815217391304346" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_equipment_list.xml" value="0.25" />
@@ -64,9 +64,8 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_map.xml" value="0.18" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_customer.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_edit_customer.xml" value="0.33" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_edit_lead.xml" value="0.1" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_edit_lead.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_service.xml" value="0.25" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_payroll.xml" value="0.24048913043478262" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_service.xml" value="0.2612359550561798" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_service_inspection.xml" value="0.2418478260869565" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_shifts.xml" value="0.24818840579710144" />
@@ -106,7 +105,6 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/delete_menu.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/emp_options_menu.xml" value="0.1" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/invoice_menu.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/lead_menu.xml" value="0.1" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/main_menu_menu.xml" value="0.1" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/menu.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/new_service_type_menu.xml" value="0.1" />
@@ -124,6 +122,7 @@
         <entry key="app/src/main/res/layout/fragment_contract.xml" value="0.5166666666666667" />
         <entry key="app/src/main/res/layout/fragment_customer.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_customer_list.xml" value="0.2755208333333333" />
+        <entry key="app/src/main/res/layout/fragment_customer_lookup.xml" value="0.34375" />
         <entry key="app/src/main/res/layout/fragment_customer_notes.xml" value="0.18072916666666666" />
         <entry key="app/src/main/res/layout/fragment_employee.xml" value="0.34375" />
         <entry key="app/src/main/res/layout/fragment_employee_list.xml" value="0.5194746376811594" />
@@ -138,7 +137,10 @@
         <entry key="app/src/main/res/layout/fragment_lead_list.xml" value="0.3786231884057971" />
         <entry key="app/src/main/res/layout/fragment_log_in.xml" value="0.29375" />
         <entry key="app/src/main/res/layout/fragment_main_menu.xml" value="0.12047101449275362" />
+        <entry key="app/src/main/res/layout/fragment_map.xml" value="0.13722826086956522" />
+        <entry key="app/src/main/res/layout/fragment_new_edit_lead.xml" value="0.20677083333333332" />
         <entry key="app/src/main/res/layout/fragment_payroll.xml" value="0.5194746376811594" />
+        <entry key="app/src/main/res/layout/fragment_usage_entry.xml" value="0.16717325227963525" />
         <entry key="app/src/main/res/layout/fragment_vendor.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_wo_item.xml" value="0.23541666666666666" />
         <entry key="app/src/main/res/layout/fragment_work_order.xml" value="0.23541666666666666" />
@@ -149,8 +151,9 @@
         <entry key="app/src/main/res/layout/lead_list_item.xml" value="0.3786231884057971" />
         <entry key="app/src/main/res/layout/lead_task_list_item.xml" value="0.23541666666666666" />
         <entry key="app/src/main/res/layout/service_list_item.xml" value="0.2760416666666667" />
+        <entry key="app/src/main/res/layout/usage_list_item.xml" value="0.16717325227963525" />
         <entry key="app/src/main/res/layout/wo_item_list_item.xml" value="0.34375" />
-        <entry key="app/src/main/res/layout/work_order_list_item.xml" value="0.20104166666666667" />
+        <entry key="app/src/main/res/layout/work_order_list_item.xml" value="0.33" />
         <entry key="app/src/main/res/menu/menu.xml" value="0.5166666666666667" />
         <entry key="app/src/main/res/menu/options_menu.xml" value="0.5166666666666667" />
       </map>

@@ -159,6 +159,8 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
 
                 })
             }
+
+            binding.listRecyclerView.adapter!!.notifyDataSetChanged()
         }
     }
 

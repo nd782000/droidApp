@@ -14,7 +14,7 @@
     <color name="backgroundPure">#000000</color>
     <color name="backgroundHighlight">#555500</color>
     <color name="button">#225CB3</color>
-
+    <color name="colorGreen">#009000</color>
     <color name="colorPrimary">#2A70DA</color>
     <color name="colorPrimaryDark">#225CB3</color>
     <color name="colorAccent">#9FC5FF</color>

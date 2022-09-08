@@ -62,6 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:paddingRight="16dp"
+        android:textColor="@color/red"
         android:text="@string/frequency"
         android:textSize="12sp"
         android:textStyle="bold"
