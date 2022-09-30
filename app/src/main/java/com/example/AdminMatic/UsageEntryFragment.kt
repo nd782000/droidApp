@@ -11,6 +11,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +23,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -142,12 +146,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     }
 
-
-
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         println("Usage Entry View")
 
         println("item = ${woItem!!.item}")
@@ -160,46 +161,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.enter_usage)
 
 
-
-        binding.usageEmpSpinner.setBackgroundResource(R.drawable.text_view_layout)
-
-        binding.startBtn.setOnClickListener{
-            start()
-        }
-        binding.stopBtn.setOnClickListener{
-            stop()
-        }
-
-        binding.usageSubmitBtn.setOnClickListener{
-            submitUsage()
-        }
-
-
-        val empAdapter = EmpAdapter(myView.context,GlobalVars.employeeList!!.toList())
-        binding.usageEmpSpinner.adapter = empAdapter
-
-
-
-        binding.usageEmpSpinner.onItemSelectedListener = this@UsageEntryFragment
-
-
-
-        hideProgressView()
-
-        println("woItem!!.type = ${woItem!!.type}")
-        if (woItem!!.type != "1"){
-            binding.usageEmpSpinner.visibility = View.GONE
-            binding.startStopCl.visibility = View.GONE
-        }
-
-
-        usageToLog.clear()
-        addActiveUsage()
-
-
-        val itemDecoration: RecyclerView.ItemDecoration =
-            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-        binding.usageEntryRv.addItemDecoration(itemDecoration)
+        // We do already have the woitem passed, but we call get here to ensure that when the receipt is added, it will show up. A bit brute force, but works for now
+        getWoItem()
 
     }
 
@@ -1091,8 +1054,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
                             }
                         }
-
-
                     }
 
                 }else{
@@ -1150,6 +1111,16 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                     println("parentObject = $parentObject")
                     globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
+
+                    val usageNew: JSONArray = parentObject.getJSONArray("usage")
+
+                    val gson = GsonBuilder().create()
+                    woItem!!.usage = gson.fromJson(usageNew.toString(), Array<Usage>::class.java)
+                    binding.usageEntryRv.adapter!!.notifyDataSetChanged()
+                    usageToLog.clear()
+                    addActiveUsage()
+
+
                     globalVars.playSaveSound(myView.context)
 
                     hideProgressView()
@@ -1185,31 +1156,13 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE
-        binding.usageEntryRv.visibility = View.INVISIBLE
-        binding.usageSubmitBtn.visibility = View.INVISIBLE
-        if (woItem!!.type == "1") {
-            binding.startStopCl.visibility = View.INVISIBLE
-            binding.usageEmpSpinner.visibility = View.INVISIBLE
-        }
-
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
-        println("hideProgressView")
         binding.progressBar.visibility = View.INVISIBLE
-        binding.usageEntryRv.visibility = View.VISIBLE
-        binding.usageSubmitBtn.visibility = View.VISIBLE
-        if (woItem!!.type == "1"){
-            binding.startStopCl.visibility = View.VISIBLE
-            binding.usageEmpSpinner.visibility = View.VISIBLE
-        }
+        binding.allCl.visibility = View.VISIBLE
     }
-
-
-
-
-
-
 
 
     override fun editQty(row: Int, qty: String, actionID:Int) {
@@ -1288,6 +1241,98 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         //This isn't needed because the spinner display updates itself, also calling it here creates an infinite loop?
         //updateUsageTable()
+    }
+
+    private fun getWoItem(){
+        println("get woItem")
+
+
+        //if (!pgsBar.isVisible){
+        showProgressView()
+        // }
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/workOrderItem.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
+                    val gson = GsonBuilder().create()
+                    woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
+
+                    binding.usageEmpSpinner.setBackgroundResource(R.drawable.text_view_layout)
+
+                    binding.startBtn.setOnClickListener{
+                        start()
+                    }
+                    binding.stopBtn.setOnClickListener{
+                        stop()
+                    }
+
+                    binding.usageSubmitBtn.setOnClickListener{
+                        submitUsage()
+                    }
+
+
+                    val empAdapter = EmpAdapter(myView.context,GlobalVars.employeeList!!.toList())
+                    binding.usageEmpSpinner.adapter = empAdapter
+
+
+
+                    binding.usageEmpSpinner.onItemSelectedListener = this@UsageEntryFragment
+
+                    val itemDecoration: RecyclerView.ItemDecoration =
+                        DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                    binding.usageEntryRv.addItemDecoration(itemDecoration)
+
+                    hideProgressView()
+
+                    println("woItem!!.type = ${woItem!!.type}")
+                    if (woItem!!.type != "1"){
+                        binding.usageEmpSpinner.visibility = View.GONE
+                        binding.startStopCl.visibility = View.GONE
+                    }
+
+
+                    usageToLog.clear()
+                    addActiveUsage()
+
+
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["woItemID"] = woItem!!.ID
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "usageEntry"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun showHistory() {

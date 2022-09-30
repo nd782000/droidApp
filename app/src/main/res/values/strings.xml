@@ -31,6 +31,8 @@
     <string name="leads">Leads</string>
     <string name="lead">Lead</string>
     <string name="lead_map">Lead Map</string>
+    <string name="no_zone">No Zone</string>
+    <string name="no_payment_terms">No Payment Terms</string>
 
     <string name="lead_list">Lead List</string>
     <string name="schedule">Work Orders</string>
@@ -52,6 +54,10 @@
     <string name="equipment_details">Equipment Details</string>
     <string name="current_service_check">Current Service Check:</string>
     <string name="add_service">Add Service</string>
+
+    <string name="menu_reload_company_data">Reload Company Data</string>
+    <string name="menu_privacy_policy">Privacy Policy</string>
+    <string name="menu_support">Support</string>
 
     <string name="customer_name">Customer Name</string>
     <string name="customer_ph_number">(401)863.2121</string>
@@ -163,9 +169,10 @@
 
     <!--Permissions stuff-->
     <string name="access_denied">Access Denied</string>
-    <string name="no_permission_leads">You don\'t have permission to edit leads.</string>
-    <string name="no_permission_leads_edit">You don\'t have permission to access leads.</string>
+    <string name="no_permission_leads">You don\'t have permission to access leads.</string>
+    <string name="no_permission_leads_edit">You don\'t have permission to edit leads.</string>
     <string name="no_permission_contracts">You don\'t have permission to access contracts.</string>
+    <string name="no_permission_contracts_edit">You don\'t have permission to edit contracts.</string>
     <string name="no_permission_schedule">You don\'t have permission to access work orders.</string>
     <string name="no_permission_invoices">You don\'t have permission to access invoices.</string>
     <string name="no_permission_images">You don\'t have permission to access images.</string>
@@ -316,7 +323,6 @@
 
     <!--New Lead stuff-->
     <string name="edit_lead_menu">Edit Lead</string>
-    <string name="edit_leadu">Edit Lead #%1$s</string>
     <string name="new_lead">New Lead</string>
     <string name="edit_lead">Edit Lead #%1$s</string>
     <string name="new_lead_schedule_type">Schedule Type:</string>
@@ -326,17 +332,82 @@
     <string name="new_lead_sales_rep">Sales Rep:</string>
     <string name="new_lead_requested_by_customer">Requested By Customer:</string>
     <string name="new_lead_general_description">General Description:</string>
-    <string name="new_lead_customer_hint">Customer…</string>
+    <string name="customer_hint">Customer…</string>
     <string name="new_lead_date_hint">Date…</string>
     <string name="new_lead_time_hint">Time…</string>
     <string name="new_lead_sales_rep_hint">Sales Rep…</string>
     <string name="new_lead_schedule_type_asap">ASAP (No Appointment)</string>
     <string name="new_lead_schedule_type_firm">FIRM (Appointment)</string>
 
+    <!--New Work Order stuff-->
+    <string name="edit_work_order_menu">Edit Work Order</string>
+    <string name="new_wo_customer">Customer:</string>
+    <string name="new_wo_title">Title:</string>
+    <string name="new_wo_charge_type">Charge Type:</string>
+    <string name="new_wo_invoice_type">Invoice Type:</string>
+    <string name="new_wo_schedule_type">Schedule Type:</string>
+    <string name="new_wo_options">Options</string>
+    <string name="new_wo_unscheduled">Un-scheduled</string>
+    <string name="new_wo_department">Department:</string>
+    <string name="new_wo_crew">Crew:</string>
+    <string name="new_wo_notes">Notes:</string>
+    <string name="new_work_order">New Work Order</string>
+    <string name="edit_work_order">Edit Work Order #%1$s</string>
+    <string name="invoice_type_upon_completion">Upon Completion</string>
+    <string name="invoice_type_batch">Batch</string>
+    <string name="invoice_type_no_invoice">No Invoice</string>
+    <string name="title_hint">Title…</string>
+    <string name="notes_hint">Notes…</string>
 
+    <!--New Contract stuff-->
+    <string name="edit_contract_menu">Edit Contract</string>
+    <string name="edit_contract_bar">Edit Contract #%1$s</string>
+    <string name="new_contract_bar">New Contract</string>
+    <string name="new_contract_payment_terms">Payment Terms:</string>
 
+    <!--Customer Settings stuff-->
+    <string name="customer_settings_bar">Customer Settings</string>
+    <string name="customer_settings_notes">Customer Notes:</string>
+    <string name="customer_settings_property_size">Property Size (Ft):</string>
+    <string name="customer_settings_lawn_size">Lawn Size (Ft):</string>
+    <string name="customer_settings_garden_size">Garden Size (Ft):</string>
+    <string name="customer_settings_driveway_size">Driveway Size (Ft):</string>
+    <string name="customer_settings_floor_size">Floor Size (Ft):</string>
+    <string name="customer_settings_zone">Zone:</string>
+    <string name="customer_settings_allow_images">Allow Images:</string>
+    <string name="customer_settings_active">Active:</string>
 
+    <!--Payroll Summary stuff-->
+    <string name="payroll_summary_last_week">Last Week</string>
+    <string name="payroll_summary_menu">Payroll Summary</string>
+    <string name="payroll_summary_bar">%1$s\'s Payroll</string>
+    <string name="payroll_summary_for">%1$s\'s payroll for:</string>
+    <string name="payroll_summary_date">(%1$s) %2$s</string>
+    <string name="payroll_summary_verified">Verified</string>
+    <string name="payroll_summary_unverified">Un-Verified</string>
+    <string name="payroll_summary_pending">Pending</string>
+    <string name="payroll_summary_totals">Totals - Payroll Shifts: %1$s, Hours: %2$s</string>
+    <string name="payroll_summary_pay">Pay: %1$s</string>
 
+    <!--New contact stuff-->
+    <string name="add_new_contact">Add New Contact</string>
+    <string name="new_contact_bar">New Contact</string>
+    <string name="edit_contact_bar">Edit Contact</string>
+    <string name="new_contact_type">Type:</string>
+    <string name="new_contact_name_main_phone">Name (ex: John\'s Phone)</string>
+    <string name="new_contact_name_main_email">Name (ex: John\'s Email)</string>
+    <string name="new_contact_name_website">Name (ex: John\'s Website)</string>
+    <string name="new_contact_name_alt_contact">Name (ex: John\'s Care-Taker)</string>
+    <string name="new_contact_name_fax">Name (ex: John\'s Fax)</string>
+    <string name="new_contact_name_alt_phone">Name (ex: John\'s Alt Phone)</string>
+    <string name="new_contact_name_alt_email">Name (ex: John\'s Alt Email)</string>
+    <string name="new_contact_name_cell">Name (ex: John\'s Cell)</string>
+    <string name="new_contact_name_alt_cell">Name (ex: John\'s Alt Cell)</string>
+    <string name="new_contact_name_home">Name (ex: John\'s Home Phone)</string>
+    <string name="new_contact_value_phone">Value (ex: 555–123–4567)</string>
+    <string name="new_contact_value_email">Value (ex: john456@email.com)</string>
+    <string name="new_contact_value_website">Value (ex: www.johnsSite.com)</string>
+    <string name="new_contact_preferred">Preferred Contact?</string>
 
 
     <string name="add_equipment">Add Equipment</string>
@@ -402,19 +473,23 @@
     <string name="in_progress">In Progress</string>
     <string name="finished">Finished</string>
     <string name="skip_visit">Skip Visit</string>
-    <string name="scheduled">Scheduled</string>
-    <string name="awarded">Awarded</string>
+    <string name="contract_status_scheduled">Scheduled</string>
+    <string name="contract_status_awarded">Awarded</string>
     <string name="declined">Declined</string>
     <string name="waiting">Waiting</string>
     <string name="canceled">Canceled</string>
-    <string name="new_contract">New</string>
-    <string name="sent">Sent</string>
+    <string name="contract_status_new">New</string>
+    <string name="contract_status_sent">Sent</string>
+    <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="deactivate">Deactivate</string>
     <string name="current_date">Current Date:</string>
     <string name="next_date">Next:</string>
     <string name="completion_notes">Completion Notes:</string>
     <string name="submit">Submit</string>
     <string name="description">Description:</string>
+    <string name="mileage_hours">Mileage/Hours…</string>
+
 
     <string name="woScheduleLbl">Schedule:</string>
     <string name="woChargeLbl">Charge:</string>
@@ -564,6 +639,17 @@
     <string name="dialogue_incomplete_lead">Incomplete Lead</string>
     <string name="dialogue_incomplete_lead_select_customer">Select a customer.</string>
     <string name="dialogue_incomplete_lead_select_date">Select an appointment date.</string>
+    <string name="dialogue_inactive_payroll_title">Could Not Find Employee</string>
+    <string name="dialogue_inactive_payroll_body">Could not find your employee ID in the active employees list, and cannot add payroll. You may be set to inactive.</string>
+    <string name="dialogue_incomplete_wo">Incomplete Work Order</string>
+    <string name="dialogue_incomplete_wo_set_title">Provide a title.</string>
+    <string name="dialogue_incomplete_contract">Incomplete Contract</string>
+    <string name="dialogue_incomplete_contract_select_sales_rep">Select a sales rep.</string>
+    <string name="dialogue_delete_contact_title">Delete Contact?</string>
+    <string name="dialogue_delete_contact_body">Are you sure you want to delete this contact?</string>
+    <string name="dialogue_incomplete_contact">Incomplete Contact</string>
+    <string name="dialogue_incomplete_contact_enter_name">Provide a name.</string>
+    <string name="dialogue_incomplete_contact_enter_value">Provide a value.</string>
 
 
 

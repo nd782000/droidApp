@@ -75,9 +75,13 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         }
 
         binding.newLeadBtn.setOnClickListener{
-            println("Map button clicked!")
-            val directions = LeadListFragmentDirections.navigateToNewEditLead(null)
-            myView.findNavController().navigate(directions)
+            if (GlobalVars.permissions!!.leadsEdit == "1") {
+                val directions = LeadListFragmentDirections.navigateToNewEditLead(null)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads_edit))
+            }
         }
         getLeads()
     }

@@ -114,7 +114,6 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
                     binding.listRecyclerView.apply {
                         layoutManager = LinearLayoutManager(activity)
 
-
                         adapter = activity?.let {
                             InvoicesAdapter(
                                 invoicesList, it,

@@ -143,7 +143,7 @@ class WorkOrdersAdapter(
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }
@@ -156,29 +156,19 @@ class WorkOrdersAdapter(
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charSearch = constraint.toString()
                 queryText = charSearch
+                var resultList:MutableList<WorkOrder> = mutableListOf()
 
                 if (charSearch.isEmpty()) {
-                    //filterList.clear()
-                    filterList = list
+                    resultList = list
                 } else {
-
-                    val resultList:MutableList<WorkOrder> = mutableListOf()
                     for (row in list) {
-                        //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
-                       // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
                         if (row.custName!!.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.title.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
-
-                            println("add row")
-
                             resultList.add(row)
-
-                            println("resultList.count = ${resultList.count()}")
                         }
                     }
-                    filterList = resultList
                 }
                 val filterResults = FilterResults()
-                filterResults.values = filterList
+                filterResults.values = resultList
 
                println("filterResults = ${filterResults.values}")
                 return filterResults
@@ -237,7 +227,7 @@ class WorkOrderViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         mDateView?.text = workOrder.dateNice
         if (workOrder.locked == "1") {
             mLockIv!!.visibility = View.VISIBLE
-            mDateView!!.setTextColor(ContextCompat.getColor(context, R.color.red));
+            mDateView!!.setTextColor(ContextCompat.getColor(context, R.color.red))
             mCl!!.background = context.getColor(R.color.backgroundHighlight).toDrawable()
         }
 

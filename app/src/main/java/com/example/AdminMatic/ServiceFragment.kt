@@ -2,6 +2,7 @@ package com.example.AdminMatic
 
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.*
 import android.widget.*
@@ -16,6 +17,7 @@ import com.example.AdminMatic.GlobalVars.Companion.dateFormatterPHP
 import com.example.AdminMatic.GlobalVars.Companion.dateFormatterShort
 import org.json.JSONException
 import org.json.JSONObject
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 
@@ -64,14 +66,10 @@ class ServiceFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable) {}
 
-            override fun beforeTextChanged(s: CharSequence, start: Int,
-                                           count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence, start: Int,
-                                       before: Int, count: Int) {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 service!!.completionNotes = s.toString()
-                println("${service!!.completionNotes}")
             }
         })
 
@@ -85,7 +83,7 @@ class ServiceFragment : Fragment() {
         println(service!!.createDate)
         val createDate = LocalDateTime.parse(service!!.createDate, dateFormatterPHP)
         val currentDate = LocalDateTime.now()
-        val nextDate = createDate.plusDays(service!!.frequency!!.toLong())
+        val nextDate = createDate.plusDays(service!!.nextValue!!.toLong())
 
 
         binding.serviceNameTxt.text = service!!.name
@@ -105,19 +103,48 @@ class ServiceFragment : Fragment() {
         when (service!!.type) {
             "0" -> { //one time
                 binding.serviceTypeTxt.text = getString(R.string.service_type, getString(R.string.service_type_one_time))
+                binding.serviceNextTitleTxt.visibility = View.GONE
                 binding.nextEditTxt.visibility = View.GONE
-                if(service!!.completionDate != null){
-                    binding.serviceDueTxt.text = activity!!.getString(R.string.service_due, activity!!.getString(R.string.now), "")
-                }
+                binding.currentEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
+                binding.serviceCurrentTitleTxt.text = getString(R.string.new_service_current_miles_km)
+                binding.serviceDueTxt.text = activity!!.getString(R.string.service_due, activity!!.getString(R.string.now), "")
+                binding.serviceDueTxt.setTextColor(ContextCompat.getColor(myView.context, R.color.red))
                 binding.serviceFrequencyTxt.text = activity!!.getString(R.string.service_frequency, getString(R.string.na), "")
+                binding.currentEditTxt.setText(service!!.currentValue)
+
+
             }
             "1" -> { //date based
                 binding.serviceTypeTxt.text = getString(R.string.service_type, getString(R.string.service_type_date_based))
-                binding.nextEditTxt.setText(dateFormatterShort.format(nextDate))
+
                 binding.serviceDueTxt.text = activity!!.getString(R.string.service_due, nextDate.format(dateFormatterShort), "")
                 if (service!!.frequency != null) {
                     binding.serviceFrequencyTxt.text = activity!!.getString(R.string.service_frequency, service!!.frequency, activity!!.getString(R.string.days))
                 }
+                if (currentDate > nextDate) {
+                    binding.serviceDueTxt.setTextColor(ContextCompat.getColor(myView.context, R.color.red))
+                }
+                binding.currentEditTxt.isEnabled = false
+                binding.serviceCurrentTitleTxt.text = getString(R.string.new_service_current)
+                binding.nextEditTxt.setText(dateFormatterShort.format(nextDate))
+
+                binding.nextEditTxt.isFocusable = false
+                binding.nextEditTxt.setOnClickListener {
+                    val datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
+
+                    datePicker.showDialog(nextDate.year, nextDate.monthValue-1, nextDate.dayOfMonth, object : DatePickerHelper.Callback {
+                        override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+                            //editsMade = true
+                            val selectedDate = LocalDate.of(year, month+1, dayOfMonth)
+                            binding.nextEditTxt.setText(selectedDate.format(GlobalVars.dateFormatterShort))
+                            //aptDate = selectedDate.format(GlobalVars.dateFormatterYYYYMMDD)
+                            //lead!!.date = aptDate
+                        }
+                    })
+                }
+
+
+
             }
             "2" -> { //mile/km. based
                 binding.serviceTypeTxt.text = getString(R.string.service_type, getString(R.string.service_type_mile_km_based))

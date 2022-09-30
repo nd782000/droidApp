@@ -122,7 +122,7 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }
@@ -135,29 +135,19 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charSearch = constraint.toString()
                 queryText = charSearch
+                var resultList:MutableList<Lead> = mutableListOf()
 
                 if (charSearch.isEmpty()) {
-                    //filterList.clear()
-                    filterList = list
+                    resultList = list
                 } else {
-
-                    val resultList:MutableList<Lead> = mutableListOf()
                     for (row in list) {
-                        //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
-                       // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
                         if ((row.custName!! + " - " + row.description!!).lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
-
-                            println("add row")
-
                             resultList.add(row)
-
-                            println("resultList.count = ${resultList.count()}")
                         }
                     }
-                    filterList = resultList
                 }
                 val filterResults = FilterResults()
-                filterResults.values = filterList
+                filterResults.values = resultList
 
                println("filterResults = ${filterResults.values}")
                 return filterResults

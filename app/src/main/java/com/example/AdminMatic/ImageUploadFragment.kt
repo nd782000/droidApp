@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -857,6 +858,7 @@ private  fun saveTask(){
     //Lead Task
 
     println("save task")
+    showProgressView()
 
     var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/leadTask.php"
     val currentTimestamp = System.currentTimeMillis()
@@ -876,8 +878,13 @@ private  fun saveTask(){
 
                 taskID = gson.fromJson(parentObject["leadTaskID"].toString() , String::class.java)
 
-
-                uploadImage()
+                // If the lead tasks has no images, just pop back now
+                if (selectedUris.size > 0) {
+                    uploadImage()
+                }
+                else {
+                    activity!!.supportFragmentManager.popBackStack()
+                }
 
 
             } catch (e: JSONException) {
@@ -909,7 +916,7 @@ private  fun saveTask(){
         //imageData?: return
 
 
-        //showProgressView()
+        showProgressView()
 
         uploadedImageCount = 0
 
@@ -938,6 +945,7 @@ private  fun saveTask(){
                 Response.Listener {
 
                     println("response is: ${it.headers}")
+                    println("data is:${it.data}")
 
                     pb.visibility = View.INVISIBLE
                     tv.visibility = View.VISIBLE
@@ -948,6 +956,7 @@ private  fun saveTask(){
                         //upload complete
                         back()
                     }
+
                     //hideProgressView()
                     //back()
                 },
@@ -1157,12 +1166,8 @@ private  fun saveTask(){
     fun back(){
         println("back")
 
-
-
         (activity as MainActivity?)!!.refreshImages()
-
-        activity!!.supportFragmentManager.popBackStack()
-
+        requireActivity().supportFragmentManager.popBackStack()
     }
 
     fun showProgressView() {

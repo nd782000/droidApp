@@ -788,28 +788,10 @@ class LogInFragment : Fragment() {
 
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                    println("parentObject get fields = $parentObject")
                     globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
-
-                    // Todo: fetch and parse all the data types
-
-                    thumbBase = parentObject.getString("thumbBase")
-                    mediumBase = parentObject.getString("mediumBase")
-                    rawBase = parentObject.getString("rawBase")
-
-                    val gson = GsonBuilder().create()
-                    val hearTypes:JSONArray = parentObject.getJSONArray("hearTypes")
-                    GlobalVars.hearTypes = gson.fromJson(hearTypes.toString() , Array<HearType>::class.java)
-                    println("Hear Types Size: ${GlobalVars.hearTypes!!.size}")
-
-                    GlobalVars.hearTypes!!.forEach {
-                        print(it.ID)
-                        println(it.type)
-                    }
-
-                    println("thumbBase= $thumbBase")
-
+                    globalVars.populateFields(context, parentObject)
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -843,7 +825,7 @@ class LogInFragment : Fragment() {
     }
 
 
-  fun getEmployees(){
+    fun getEmployees(){
         println("getEmployees")
 
 

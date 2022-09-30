@@ -171,6 +171,9 @@
         <action
             android:id="@+id/navigateToContract"
             app:destination="@id/contractFragment" />
+        <action
+            android:id="@+id/navigateToNewEditContract"
+            app:destination="@id/newEditContractFragment" />
     </fragment>
     <fragment
         android:id="@+id/workOrderListFragment"
@@ -186,6 +189,29 @@
         <action
             android:id="@+id/navigateToDepartments"
             app:destination="@id/departmentsFragment" />
+        <action
+            android:id="@+id/navigateToNewEditWorkOrder"
+            app:destination="@id/newEditWorkOrderFragment" />
+        <action
+            android:id="@+id/navigateToNewEditContract"
+            app:destination="@id/newEditContractFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newEditWorkOrderFragment"
+        android:name="com.example.AdminMatic.NewEditWorkOrderFragment"
+        android:label="fragment_new_edit_work_order"
+        tools:layout="@layout/fragment_new_edit_work_order" >
+        <action
+            android:id="@+id/navigateToWorkOrder"
+            app:destination="@id/workOrderFragment"
+            app:popUpTo="@id/workOrderListFragment"
+            app:popUpToInclusive="false"/>
+        <argument
+            android:name="workOrder"
+            app:argType="com.example.AdminMatic.WorkOrder"
+            app:nullable="true" />
+
+
     </fragment>
     <fragment
         android:id="@+id/departmentsFragment"
@@ -325,6 +351,19 @@
             android:name="employee"
             app:argType="com.example.AdminMatic.Employee"
             app:nullable="true" />
+        <action
+            android:id="@+id/navigateToPayrollSummary"
+            app:destination="@id/payrollSummaryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/payrollSummaryFragment"
+        android:name="com.example.AdminMatic.PayrollSummaryFragment"
+        android:label="fragment_payroll_summary"
+        tools:layout="@layout/fragment_payroll_summary" >
+        <argument
+            android:name="employee"
+            app:argType="com.example.AdminMatic.Employee"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/workOrderFragment"
@@ -358,6 +397,9 @@
         <action
             android:id="@+id/navigateToWoItem"
             app:destination="@id/woItemFragment" />
+        <action
+            android:id="@+id/navigateToNewEditWorkOrder"
+            app:destination="@id/newEditWorkOrderFragment" />
     </fragment>
     <fragment
         android:id="@+id/customerFragment"
@@ -469,9 +511,9 @@
         android:label="fragment_contract"
         tools:layout="@layout/fragment_contract" >
         <argument
-            android:name="contract"
-            app:argType="com.example.AdminMatic.Contract"
-            app:nullable="true" />
+            android:name="contractID"
+            app:argType="string"
+            app:nullable="false" />
         <action
             android:id="@+id/navigateContractToLead"
             app:destination="@id/leadFragment" />
@@ -487,6 +529,24 @@
         <action
             android:id="@+id/navigateContractToContractItem"
             app:destination="@id/contractItemFragment" />
+        <action
+            android:id="@+id/navigateContractToNewEditContract"
+            app:destination="@id/newEditContractFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newEditContractFragment"
+        android:name="com.example.AdminMatic.NewEditContractFragment"
+        android:label="fragment_contract"
+        tools:layout="@layout/fragment_new_edit_contract" >
+        <argument
+            android:name="contract"
+            app:argType="com.example.AdminMatic.Contract"
+            app:nullable="true" />
+        <action
+            android:id="@+id/navigateToContract"
+            app:destination="@id/contractFragment"
+            app:popUpTo="@id/contractListFragment"
+            app:popUpToInclusive="false"/>
     </fragment>
     <fragment
         android:id="@+id/contractItemFragment"
@@ -540,6 +600,9 @@
         <action
             android:id="@+id/navigateImageToImageLikes"
             app:destination="@id/imageLikesFragment" />
+        <action
+            android:id="@+id/navigateImageToCustomer"
+            app:destination="@id/customerFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageLikesFragment"
@@ -683,6 +746,23 @@
         <argument
             android:name="customer"
             app:argType="com.example.AdminMatic.Customer" />
+        <action
+            android:id="@+id/navigateToNewEditContact"
+            app:destination="@id/newEditContactFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newEditContactFragment"
+        android:name="com.example.AdminMatic.NewEditContactFragment"
+        android:label="newEditContactFragment"
+        tools:layout="@layout/fragment_new_edit_contact">
+        <argument
+            android:name="contact"
+            app:argType="com.example.AdminMatic.Contact"
+            app:nullable="true"/>
+        <argument
+            android:name="customer"
+            app:argType="com.example.AdminMatic.Customer"
+            app:nullable="false"/>
     </fragment>
     <fragment
         android:id="@+id/customerNotesFragment"

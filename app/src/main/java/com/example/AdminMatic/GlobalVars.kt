@@ -39,6 +39,12 @@ class GlobalVars: Application() {
         var rawBase:String? = null
 
         var hearTypes:Array<HearType>? = null
+        var departments:Array<Department>? = null
+        var crews:Array<Crew>? = null
+        var zones:Array<Zone>? = null
+        var paymentTerms:Array<PaymentTerms>? = null
+        var contactTypes:Array<ContactType>? = null
+
         var states:Array<String> = arrayOf("Select a State",
             "AK - Alaska",
             "AL - Alabama",
@@ -173,6 +179,9 @@ class GlobalVars: Application() {
         val dateFormatterShortDashes: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd-yy") //format to display
         val dateFormatterYYYYMMDD: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd") //format to display
 
+        val dateFormatterHHMM: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+        val dateFormatterHMMA: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+
         val moneyFormatter: NumberFormat = DecimalFormat("#,###,##0.00")
     }
 
@@ -191,6 +200,67 @@ class GlobalVars: Application() {
     fun playErrorSound(context: Context) {
         val mediaPlayer = MediaPlayer.create(context, R.raw.error)
         mediaPlayer.start()
+    }
+
+    fun populateFields(context:Context?, parentObject:JSONObject) {
+        thumbBase = parentObject.getString("thumbBase")
+        mediumBase = parentObject.getString("mediumBase")
+        rawBase = parentObject.getString("rawBase")
+
+        val gson = GsonBuilder().create()
+        val hearTypes:JSONArray = parentObject.getJSONArray("hearTypes")
+        GlobalVars.hearTypes = gson.fromJson(hearTypes.toString() , Array<HearType>::class.java)
+
+        val departments:JSONArray = parentObject.getJSONArray("departments")
+        GlobalVars.departments = gson.fromJson(departments.toString() , Array<Department>::class.java)
+
+        val crews:JSONArray = parentObject.getJSONArray("crews")
+        GlobalVars.crews = gson.fromJson(crews.toString() , Array<Crew>::class.java)
+
+        val zones:JSONArray = parentObject.getJSONArray("zones")
+        GlobalVars.zones = gson.fromJson(zones.toString() , Array<Zone>::class.java)
+        // Add "no zone" field
+        val noZone = Zone("0", context!!.getString(R.string.no_zone))
+        var zonesMutableList: MutableList<Zone>
+        GlobalVars.zones.let {
+            zonesMutableList = it!!.toMutableList()
+        }
+        zonesMutableList.add(0, noZone)
+        GlobalVars.zones = zonesMutableList.toTypedArray()
+
+        println("zones size: ${GlobalVars.zones!!.size}")
+
+        val paymentTerms:JSONArray = parentObject.getJSONArray("terms")
+        GlobalVars.paymentTerms = gson.fromJson(paymentTerms.toString() , Array<PaymentTerms>::class.java)
+        println("payment terms size: ${GlobalVars.paymentTerms!!.size}")
+        // Add "no payment terms" field
+        val noTerms = PaymentTerms("0", context.getString(R.string.no_payment_terms))
+        var termsMutableList: MutableList<PaymentTerms>
+        GlobalVars.paymentTerms.let {
+            termsMutableList = it!!.toMutableList()
+        }
+        termsMutableList.add(0, noTerms)
+        GlobalVars.paymentTerms = termsMutableList.toTypedArray()
+
+        val contactTypes:JSONArray = parentObject.getJSONArray("contactTypes")
+        GlobalVars.contactTypes = gson.fromJson(contactTypes.toString() , Array<ContactType>::class.java)
+
+        val contactTypesFiltered = mutableListOf<ContactType>()
+
+        // Remove jobSite, billing Addr or invoice Addr
+        // (Code copied from iOS)
+        GlobalVars.contactTypes.let {
+            it!!.forEach { ct->
+                if (ct.ID != "3" && ct.ID != "4" && ct.ID != "14") {
+                    contactTypesFiltered.add(ct)
+                }
+            }
+        }
+
+        GlobalVars.contactTypes = contactTypesFiltered.toTypedArray()
+
+
+        println("thumbBase= $thumbBase")
     }
 
 
@@ -305,7 +375,7 @@ class GlobalVars: Application() {
     }
     
     
-    fun checkPHPWarningsAndErrors(jsonObject: JSONObject, context:Context, myView_: View) {
+    fun checkPHPWarningsAndErrors(jsonObject: JSONObject, context:Context, myView_: View): Boolean {
 
         val gson = GsonBuilder().create()
 
@@ -336,6 +406,7 @@ class GlobalVars: Application() {
                 )
             }
             listener.logOut(myView_)
+            return false
         }
         else if (warnings.isNotEmpty()) {
             playErrorSound(context)
@@ -345,7 +416,10 @@ class GlobalVars: Application() {
                 warningString += "\n"
             }
             simpleAlert(context, context.getString(R.string.dialogue_php_warning), warningString)
+            return false
         }
+
+        return true
     }
 
 

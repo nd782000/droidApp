@@ -144,7 +144,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                 println("Response $response")
                 try {
                     val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
+                    println("getLead parentObject = $parentObject")
                     globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val gson = GsonBuilder().create()
@@ -289,7 +289,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
             showProgressView()
 
-            var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/workOrderStatus.php"
+            var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/leadStatus.php"
 
             val currentTimestamp = System.currentTimeMillis()
             println("urlString = ${"$urlString?cb=$currentTimestamp"}")
@@ -413,7 +413,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
     override fun newContractView(_contract: Contract) {
         println("newContractView ${_contract.ID}")
-        val directions = LeadFragmentDirections.navigateLeadToContract(_contract)
+        val directions = LeadFragmentDirections.navigateLeadToContract(_contract.ID)
         myView.findNavController().navigate(directions)
     }
 

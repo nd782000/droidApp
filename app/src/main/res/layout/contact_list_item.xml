@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout2"
+    android:id="@+id/contact_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal">
@@ -11,7 +11,7 @@
         android:id="@+id/contact_icon_view"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="12dp"
+
         android:layout_weight="1"
         android:padding="5dp"
         android:src="@drawable/ic_person"
@@ -23,13 +23,13 @@
     <TextView
         android:id="@+id/list_name"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="0dp"
 
-        android:paddingLeft="8dp"
-        android:paddingTop="16dp"
 
         android:text="Contact Value"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:textAlignment="viewStart"
 
@@ -44,14 +44,29 @@
         android:layout_height="wrap_content"
         android:text="TextView"
 
-
-        android:paddingLeft="24dp"
+        android:layout_margin="5dp"
+        android:paddingLeft="12dp"
 
         app:layout_constraintStart_toEndOf="@+id/contact_icon_view"
 
         app:layout_constraintLeft_toRightOf="@+id/contact_icon_view"
-        app:layout_constraintTop_toBottomOf="@+id/list_name"
+        app:layout_constraintTop_toBottomOf="@id/list_name"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
+        />
+
+    <TextView
+        android:id="@+id/textViewOptions"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="6dp"
+        android:text="&#8942;"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
 

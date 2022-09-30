@@ -2,6 +2,7 @@ package com.example.AdminMatic
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
@@ -22,6 +23,8 @@ import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneOffset
 
 
@@ -113,6 +116,8 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
         if (!editMode) {
             lead = Lead("0", "1")
             lead!!.timeType = "0" //default to ASAP
+            lead!!.urgent = "0"
+            lead!!.requestedByCust = "0"
         }
 
 
@@ -148,18 +153,18 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    //customerRecyclerView.visibility = View.GONE
+                    //customerRecyclerView.visibility = View.INVISIBLE
                     return false
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     println("onQueryTextChange = $newText")
-                    (adapter as CustomersAdapter).filter.filter(newText)
                     if(newText == ""){
-                        binding.newEditLeadCustomerSearchRv.visibility = View.GONE
+                        binding.newEditLeadCustomerSearchRv.visibility = View.INVISIBLE
                     }else{
                         binding.newEditLeadCustomerSearchRv.visibility = View.VISIBLE
                     }
+                    (adapter as CustomersAdapter).filter.filter(newText)
                     return false
                 }
 
@@ -172,13 +177,13 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 lead!!.customer = "0"
                 myView.hideKeyboard()
                 binding.newEditLeadCustomerSearch.clearFocus()
-                binding.newEditLeadCustomerSearchRv.visibility = View.GONE
+                binding.newEditLeadCustomerSearchRv.visibility = View.INVISIBLE
             }
 
             binding.newEditLeadCustomerSearch.setOnQueryTextFocusChangeListener { _, isFocused ->
                 if (!isFocused) {
                     binding.newEditLeadCustomerSearch.setQuery(lead!!.custName, false)
-                    binding.newEditLeadCustomerSearchRv.visibility = View.GONE
+                    binding.newEditLeadCustomerSearchRv.visibility = View.INVISIBLE
                 }
             }
         }
@@ -200,8 +205,8 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             datePicker.showDialog(dateToday.year, dateToday.monthValue-1, dateToday.dayOfMonth, object : DatePickerHelper.Callback {
                 override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
                     editsMade = true
-                    val selectedDate = LocalDate.of(year, month, dayOfMonth)
-                    binding.newEditLeadAppointmentDateEt.setText(selectedDate.format(GlobalVars.dateFormatterYYYYMMDD))
+                    val selectedDate = LocalDate.of(year, month+1, dayOfMonth)
+                    binding.newEditLeadAppointmentDateEt.setText(selectedDate.format(GlobalVars.dateFormatterShort))
                     aptDate = selectedDate.format(GlobalVars.dateFormatterYYYYMMDD)
                     lead!!.date = aptDate
                 }
@@ -216,24 +221,15 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                     h = hourOfDay
                     m = minute
 
-                    var hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "$hourOfDay"
-                    val minuteStr = if (minute < 10) "0${minute}" else "$minute"
+                    val selectedTime = LocalTime.of(h, m)
 
                     //Set DB time
-                    aptTime = "$hourStr:$minuteStr"
+                    aptTime = selectedTime.format(GlobalVars.dateFormatterHHMM)
                     lead!!.time = aptTime
+                    println(aptTime)
 
-                    //switch to 12 hour for display time
-                    hourStr = hourOfDay.toString()
-                    var amPm = "AM"
-                    if (hourOfDay == 0) {
-                        hourStr = "12"
-                    }
-                    else if (hourOfDay > 12) {
-                        hourStr = (hourOfDay-12).toString()
-                        amPm = "PM"
-                    }
-                    binding.newEditLeadAppointmentTimeEt.setText("$hourStr:$minuteStr $amPm")
+                    // Display 12 hour time
+                    binding.newEditLeadAppointmentTimeEt.setText(selectedTime.format(GlobalVars.dateFormatterHMMA))
                 }
             })
         }
@@ -245,8 +241,8 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             datePicker.showDialog(dateToday.year, dateToday.monthValue-1, dateToday.dayOfMonth, object : DatePickerHelper.Callback {
                 override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
                     editsMade = true
-                    val selectedDate = LocalDate.of(year, month, dayOfMonth)
-                    binding.newEditLeadDeadlineEt.setText(selectedDate.format(GlobalVars.dateFormatterYYYYMMDD))
+                    val selectedDate = LocalDate.of(year, month+1, dayOfMonth)
+                    binding.newEditLeadDeadlineEt.setText(selectedDate.format(GlobalVars.dateFormatterShort))
                     lead!!.deadline = selectedDate.format(GlobalVars.dateFormatterYYYYMMDD)
                 }
             })
@@ -283,18 +279,18 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    //customerRecyclerView.visibility = View.GONE
+                    //customerRecyclerView.visibility = View.INVISIBLE
                     return false
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     println("onQueryTextChange = $newText")
-                    (adapter as EmployeesAdapter).filter.filter(newText)
                     if(newText == ""){
-                        binding.newEditLeadSalesRepSearchRv.visibility = View.GONE
+                        binding.newEditLeadSalesRepSearchRv.visibility = View.INVISIBLE
                     }else{
                         binding.newEditLeadSalesRepSearchRv.visibility = View.VISIBLE
                     }
+                    (adapter as EmployeesAdapter).filter.filter(newText)
                     return false
                 }
 
@@ -306,13 +302,13 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 lead!!.salesRep = ""
                 myView.hideKeyboard()
                 binding.newEditLeadSalesRepSearch.clearFocus()
-                binding.newEditLeadSalesRepSearchRv.visibility = View.GONE
+                binding.newEditLeadSalesRepSearchRv.visibility = View.INVISIBLE
             }
 
             binding.newEditLeadSalesRepSearch.setOnQueryTextFocusChangeListener { _, isFocused ->
                 if (!isFocused) {
                     binding.newEditLeadSalesRepSearch.setQuery(lead!!.repName, false)
-                    binding.newEditLeadSalesRepSearchRv.visibility = View.GONE
+                    binding.newEditLeadSalesRepSearchRv.visibility = View.INVISIBLE
                 }
             }
         }
@@ -341,7 +337,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
         // Submit button
         binding.newEditLeadSubmitBtn.setOnClickListener {
             if (validateFields()) {
-                updateCustomer()
+                updateLead()
             }
         }
 
@@ -352,7 +348,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             setStatusIcon()
 
             binding.newEditLeadCustomerSearch.setQuery(lead!!.custName, false)
-            binding.newEditLeadCustomerSearchRv.visibility = View.GONE
+            //binding.newEditLeadCustomerSearchRv.visibility = View.INVISIBLE
 
             println("Time type: ${lead!!.timeType}")
             println("apt date: ${lead!!.aptDate}")
@@ -362,18 +358,24 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             else {
                 println("setting type to firm")
                 binding.newEditLeadScheduleTypeSpinner.setSelection(1)
+
+                if (!lead!!.aptDate.isNullOrBlank()) {
+                    println("setting date")
+
+                    val displayDate = LocalDate.parse(lead!!.date, GlobalVars.dateFormatterYYYYMMDD)
+                    binding.newEditLeadAppointmentDateEt.setText(displayDate.format(GlobalVars.dateFormatterShort))
+
+                    val displayTime = LocalTime.parse(lead!!.time, GlobalVars.dateFormatterHHMM)
+                    binding.newEditLeadAppointmentTimeEt.setText(displayTime.format(GlobalVars.dateFormatterHMMA))
+                }
             }
 
 
-            if (!lead!!.aptDate.isNullOrBlank()) {
-                println("setting date")
-                binding.newEditLeadAppointmentDateEt.setText(lead!!.date)
-                binding.newEditLeadAppointmentTimeEt.setText(lead!!.time)
-            }
 
-            if (!lead!!.deadline.isNullOrBlank()) {
+
+            if (!lead!!.deadlineNice.isNullOrBlank()) {
                 println("setting deadline")
-                binding.newEditLeadDeadlineEt.setText(lead!!.deadline!!)
+                binding.newEditLeadDeadlineEt.setText(lead!!.deadlineNice!!)
             }
 
             if (lead!!.urgent == "1") {
@@ -382,7 +384,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             }
 
             binding.newEditLeadSalesRepSearch.setQuery(lead!!.repName, false)
-            binding.newEditLeadSalesRepSearchRv.visibility = View.GONE
+            //binding.newEditLeadSalesRepSearchRv.visibility = View.INVISIBLE
 
             if (lead!!.requestedByCust == "1") {
                 binding.newEditLeadRequestedSwitch.isChecked = true
@@ -393,6 +395,8 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
         }
 
         editsMade = false
+        binding.newEditLeadCustomerSearchRv.visibility = View.INVISIBLE
+        binding.newEditLeadSalesRepSearchRv.visibility = View.INVISIBLE
 
     }
 
@@ -415,11 +419,11 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
         return true
     }
 
-    private fun updateCustomer() {
-         println("updateCustomer")
+    private fun updateLead() {
+         println("updateLead")
         showProgressView()
 
-        lead!!.description = binding.newEditLeadDescriptionTv.text.toString()
+        lead!!.description = binding.newEditLeadDescriptionEt.text.toString()
 
         var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/lead.php"
 
@@ -439,8 +443,8 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                     globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val gson = GsonBuilder().create()
-                    val leadsArray:Array<Lead> = gson.fromJson(parentObject["leads"].toString() , Array<Lead>::class.java)
-                    lead = leadsArray[0]
+                    val newLeadID:String = gson.fromJson(parentObject["leadID"].toString() , String::class.java)
+                    lead!!.ID = newLeadID
                     globalVars.playSaveSound(myView.context)
                     editsMade = false
 
@@ -477,6 +481,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 params["time"] = lead!!.time.toString()
                 params["deadline"] = lead!!.deadline.toString()
                 params["status"] = lead!!.statusID
+                params["custID"] = lead!!.customer.toString()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 println("params = $params")

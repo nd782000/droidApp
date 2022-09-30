@@ -127,10 +127,12 @@ data class Contract(var ID: String = "0",
                     var subTotal:String? = "",
                     var taxTotal:String? = "",
                     var total:String? = "",
+                    @field:SerializedName(value="paymentTermsID", alternate= ["paymentTerms", "terms"])
                     var paymentTermsID:String? = "",
                     var termsDescription:String? = "",
                     var daysAged:String? = "",
                     var repSignature:String? = "",
+                    var customerSignature:String? = "",
                     var customerSigned:String? = "",
                     var repSignaturePath:String? = "",
                     var customerSignaturePath:String? = "",
@@ -255,9 +257,9 @@ data class Customer(
     var billZip: String? = "",
     var billState: String? = "",
 
-    @field:SerializedName(value="phone", alternate= ["primaryPhone"])
+    @field:SerializedName(value="phone", alternate= ["primaryPhone", "mainPhone"])
     var phone: String? = "",
-    @field:SerializedName(value="email", alternate= ["primaryEmail"])
+    @field:SerializedName(value="email", alternate= ["primaryEmail", "mainEmail"])
     var email: String? = "",
 
     var lng: String? = "",
@@ -311,7 +313,7 @@ data class HearType(var ID:String,
                     var type: String,
 
 
-): Parcelable{
+                    ): Parcelable{
     override fun toString(): String {
         return type
     }
@@ -637,6 +639,24 @@ data class Payroll(var ID: String?,
 }
 
 
+@Parcelize
+data class PayrollArray(var combinedTotal: String?,
+        var regTotal: String?,
+        var otTotal: String?,
+        var regPay: String?,
+        var otPay: String?,
+        var totalPay: String?,
+        var totalShifts: String?,
+        var pending: String?,
+        var payroll: Array<Payroll>? = null
+
+): Parcelable{
+    override fun toString(): String {
+        return ID ?: "NULL"
+    }
+}
+
+
 
 @Parcelize
 data class Signature(
@@ -874,9 +894,11 @@ data class WorkOrder(var woID: String = "0",
                      var notes:String? = "",
                      var charge:String? = "",
                      var chargeName:String? = "",
+                     @field:SerializedName(value="invoiceType", alternate= ["invoice"])
                      var invoiceType:String? = "",
                      var nextPlannedDate:String? = "",
                      var locked:String? = "",
+                     @field:SerializedName(value="department", alternate= ["departmentID"])
                      var department:String? = "",
                      var crew:String? = "",
                      var crewName:String? = "",
@@ -889,6 +911,8 @@ data class WorkOrder(var woID: String = "0",
                      var skipped:String? = "",
 
                      var items:Array<WoItem>? = null,
+                     var lead:Lead? = null,
+                     var contract:Contract? = null,
 
                      var crews:Array<Crew>? = null,
                     var emps:MutableList<Employee> = mutableListOf()
@@ -969,6 +993,45 @@ data class Permissions(
         return "Permissions"
         }
 }
+
+
+@Parcelize
+data class PaymentTerms(
+    var ID: String,
+    @field:SerializedName(value="name", alternate= ["Name"])
+    var name: String,
+
+    ) : Parcelable {
+
+        override fun toString(): String {
+            return "name"
+        }
+}
+
+@Parcelize
+data class ContactType(
+    var ID: String,
+    var name: String,
+
+    ) : Parcelable {
+
+    override fun toString(): String {
+        return "name"
+    }
+}
+
+@Parcelize
+data class Zone(
+    var ID: String,
+    var name: String = "Name",
+
+    ) : Parcelable {
+
+    override fun toString(): String {
+        return "name"
+    }
+}
+
 
 
 //Extensions

@@ -85,7 +85,7 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }
@@ -98,29 +98,19 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charSearch = constraint.toString()
                 queryText = charSearch
+                var resultList:MutableList<Item> = mutableListOf()
 
                 if (charSearch.isEmpty()) {
-                    //filterList.clear()
-                    filterList = list
+                    resultList = list
                 } else {
-
-                    val resultList:MutableList<Item> = mutableListOf()
                     for (row in list) {
-                        //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
-                       // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
                         if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
-
-                            println("add row")
-
                             resultList.add(row)
-
-                            println("resultList.count = ${resultList.count()}")
                         }
                     }
-                    filterList = resultList
                 }
                 val filterResults = FilterResults()
-                filterResults.values = filterList
+                filterResults.values = resultList
 
                println("filterResults = ${filterResults.values}")
                 return filterResults

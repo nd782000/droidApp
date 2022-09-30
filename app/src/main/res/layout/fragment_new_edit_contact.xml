@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_new_edit_contract">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/type_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/new_contact_type"
+            android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <Spinner
+            android:id="@+id/type_spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:singleLine="true"
+            android:background="@drawable/text_view_layout"
+            android:hint="@string/title_hint"
+            android:layout_margin="5dp"
+            app:layout_constraintTop_toBottomOf="@id/type_text"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/new_contact_name_main_phone"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/type_spinner"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <EditText
+            android:id="@+id/name_edit_text"
+            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/name_text"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/value_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/new_contact_value_phone"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/name_edit_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <EditText
+            android:id="@+id/value_edit_text"
+            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/value_text"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/preferred_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="15dp"
+            android:checked="false"
+            app:layout_constraintTop_toBottomOf="@id/value_edit_text"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+        <TextView
+            android:id="@+id/preferred_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/new_contact_preferred"
+            android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="@id/preferred_switch"
+            app:layout_constraintBottom_toBottomOf="@id/preferred_switch"
+            app:layout_constraintLeft_toRightOf="@id/preferred_switch"
+            />
+
+        <Button
+            android:id="@+id/submit_btn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+
+            android:text="@string/submit"
+            android:layout_marginHorizontal="5dp"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:visibility="invisible"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/button"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

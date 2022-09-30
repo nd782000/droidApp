@@ -1,6 +1,8 @@
 package com.example.AdminMatic
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -12,9 +14,14 @@ import androidx.navigation.findNavController
 import com.AdminMatic.BuildConfig
 import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentMainMenuBinding
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.thumbBase
 import com.squareup.picasso.Picasso
+import org.json.JSONException
+import org.json.JSONObject
+
 
 // Todo: Look into refactoring this, it warns about memory leaks but nearly every other file relies on this in the global space
 lateinit var myView:View
@@ -47,9 +54,20 @@ class MainMenuFragment : Fragment() {
         // Handle action bar item clicks here.
         val id = item.itemId
 
-        if (id == R.id.send_invoice_item) {
-            return true
+        when (id) {
+            R.id.privacy_policy_item -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.adminmatic.com/app/privacy"))
+                startActivity(intent)
+            }
+            R.id.support_item -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.adminmatic.com/support"))
+                startActivity(intent)
+            }
+            R.id.reload_company_data_item -> {
+                getFields()
+            }
         }
+
         return super.onOptionsItemSelected(item)
 
     }
@@ -246,5 +264,67 @@ class MainMenuFragment : Fragment() {
     }
 
 
+    private fun getFields(){
+        showProgressView()
+        println("getFields")
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/fields.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject get fields = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
+
+                    globalVars.populateFields(context, parentObject)
+                    hideProgressView()
+
+
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = loggedInEmployee!!.companyUnique
+                params["sessionKey"] = loggedInEmployee!!.sessionKey
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "logIn"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
+
+    fun showProgressView() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
+    }
+
+    fun hideProgressView() {
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
+    }
 
 }

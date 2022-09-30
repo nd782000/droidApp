@@ -129,6 +129,13 @@ class ImageFragment : Fragment() {
             }
         }
 
+        binding.imageCustomerTv.setOnClickListener {
+            if (!image!!.customer.isNullOrBlank() && image!!.customer!= "0") {
+                val directions = ImageFragmentDirections.navigateImageToCustomer(image!!.customer!!)
+                myView.findNavController().navigate(directions)
+            }
+        }
+
         getImage()
 
     }

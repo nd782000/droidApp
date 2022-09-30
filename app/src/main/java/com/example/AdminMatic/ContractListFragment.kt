@@ -77,6 +77,16 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         //need to wait for this function to initialize views
         println("onViewCreated")
 
+        binding.newContractBtn.setOnClickListener{
+            if (GlobalVars.permissions!!.contractsEdit == "1") {
+                val directions = ContractListFragmentDirections.navigateToNewEditContract(null)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts_edit))
+            }
+        }
+
         getContracts()
 
     }
@@ -241,7 +251,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         myView.hideKeyboard()
 
         data.let {
-            val directions = ContractListFragmentDirections.navigateToContract(data)
+            val directions = ContractListFragmentDirections.navigateToContract(data.ID)
             myView.findNavController().navigate(directions)
         }
     }

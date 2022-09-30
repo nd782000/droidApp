@@ -28,7 +28,7 @@
             android:layout_margin="5dp"
             android:accessibilityHeading="false"
             android:background="@drawable/text_view_layout"
-            app:queryHint="@string/new_lead_customer_hint"
+            app:queryHint="@string/customer_hint"
             app:actionViewClass="android.widget.SearchView"
             app:defaultQueryHint='Select Customer'
             app:iconifiedByDefault="false"
@@ -275,11 +275,12 @@
             android:layout_margin="5dp"
             android:gravity="start"
             android:padding="5dp"
+            android:background="@drawable/text_view_layout"
             app:layout_constraintTop_toBottomOf="@id/new_edit_lead_description_tv"
             app:layout_constraintBottom_toTopOf="@id/new_edit_lead_submit_btn"
             app:layout_constraintLeft_toLeftOf="parent"
             android:imeOptions="actionDone"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             />
 
         <Button
@@ -299,8 +300,8 @@
             android:id="@+id/new_edit_lead_customer_search_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:visibility="gone"
             android:background="@color/white"
+            android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@+id/new_edit_lead_customer_search"
             app:layout_constraintBottom_toBottomOf="parent"
             />
@@ -309,8 +310,8 @@
             android:id="@+id/new_edit_lead_sales_rep_search_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:visibility="gone"
             android:background="@color/white"
+            android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@+id/new_edit_lead_sales_rep_cl"
             app:layout_constraintBottom_toBottomOf="parent"
             />

@@ -5,15 +5,13 @@ package com.example.AdminMatic
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentPayrollBinding
 import com.android.volley.Response
@@ -63,6 +61,8 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         _binding = FragmentPayrollBinding.inflate(inflater, container, false)
         myView = binding.root
 
+        setHasOptionsMenu(true)
+
         // Inflate the layout for this fragment
         return myView
     }
@@ -77,97 +77,127 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.enter_payroll)
 
         binding.startBtn.setOnClickListener {
-            start()
+            if (GlobalVars.permissions!!.payrollApp == "1") {
+                start()
+            }
+            else {
+                globalVars.simpleAlert(com.example.AdminMatic.myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))
+            }
         }
         binding.stopBtn.setOnClickListener {
-            stop()
+            if (GlobalVars.permissions!!.payrollApp == "1") {
+                stop()
+            }
+            else {
+                globalVars.simpleAlert(com.example.AdminMatic.myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))
+            }
         }
         binding.resetBtn.setOnClickListener {
-            reset()
+            if (GlobalVars.permissions!!.payrollApp == "1") {
+                reset()
+            }
+            else {
+                globalVars.simpleAlert(com.example.AdminMatic.myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))
+            }
         }
 
         binding.startEditTxt.setOnClickListener {
-            editStart()
+            if (GlobalVars.permissions!!.payrollApp == "1") {
+                editStart()
+            }
+            else {
+                globalVars.simpleAlert(com.example.AdminMatic.myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))
+            }
         }
         binding.stopEditTxt.setOnClickListener {
-            editStop()
+            if (GlobalVars.permissions!!.payrollApp == "1") {
+                editStop()
+            }
+            else {
+                globalVars.simpleAlert(com.example.AdminMatic.myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))
+            }
         }
 
+        if (GlobalVars.permissions!!.payrollApp == "1") {
+            binding.breakEditTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
+            binding.breakEditTxt.setSelectAllOnFocus(true)
+            binding.breakEditTxt.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+                override  fun onEditorAction(
+                    v: TextView?,
+                    actionId: Int,
+                    event: KeyEvent?
+                ): Boolean {
 
-        binding.breakEditTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
-        binding.breakEditTxt.setSelectAllOnFocus(true)
+                    //var numeric = true
 
-        binding.breakEditTxt.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-          override  fun onEditorAction(
-                v: TextView?,
-                actionId: Int,
-                event: KeyEvent?
-            ): Boolean {
+                    try {
+                        if (isResumed) {
+                            val num = parseDouble(binding.breakEditTxt.text.toString())
+                        }
+                    } catch (e: NumberFormatException) {
+                        // numeric = false
 
-              //var numeric = true
-
-              try {
-                  if (isResumed) {
-                      val num = parseDouble(binding.breakEditTxt.text.toString())
-                  }
-              } catch (e: NumberFormatException) {
-                 // numeric = false
-
-                  globalVars.simpleAlert(myView.context,"Break Time Error","Break Time must be a Number of Minutes")
-                  //Toast.makeText(myView.context, "Break Time must be a Number of Minutes", Toast.LENGTH_LONG).show()
-
-                  binding.breakEditTxt.setText("0")
-                  return false
-              }
-
-
-
-
-
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-
-
-                    println("currentPayroll.startTime = ${currentPayroll.startTime}")
-                    //validate break time
-                    if (currentPayroll.startTime == null)
-                    {
-                        // Toast.makeText(myView.context,"Add Start Time First",Toast.LENGTH_LONG).show()
-
-                        globalVars.simpleAlert(myView.context,"Break Time Error","Add start time before break time.")
-
+                        globalVars.simpleAlert(myView.context,"Break Time Error","Break Time must be a Number of Minutes")
+                        //Toast.makeText(myView.context, "Break Time must be a Number of Minutes", Toast.LENGTH_LONG).show()
 
                         binding.breakEditTxt.setText("0")
                         return false
                     }
 
 
-                    println("currentPayroll.total = ${currentPayroll.total}")
-                    // make sure there is a stop time
-                    if (currentPayroll.total  != null){
 
-                        val totalMins = currentPayroll.total!!.toFloat() * 60
 
-                        if (binding.breakEditTxt.text.toString().toFloat() >= totalMins){
 
-                            globalVars.simpleAlert(myView.context,"Break Time Error","Break time can not be equal or greater then total shift time.")
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                           // Toast.makeText(myView.context,"Break time can not be equal or greater then total shift time.",Toast.LENGTH_LONG).show()
+
+
+                        println("currentPayroll.startTime = ${currentPayroll.startTime}")
+                        //validate break time
+                        if (currentPayroll.startTime == null)
+                        {
+                            // Toast.makeText(myView.context,"Add Start Time First",Toast.LENGTH_LONG).show()
+
+                            globalVars.simpleAlert(myView.context,"Break Time Error","Add start time before break time.")
+
+
                             binding.breakEditTxt.setText("0")
                             return false
                         }
 
+
+                        println("currentPayroll.total = ${currentPayroll.total}")
+                        // make sure there is a stop time
+                        if (currentPayroll.total  != null){
+
+                            val totalMins = currentPayroll.total!!.toFloat() * 60
+
+                            if (binding.breakEditTxt.text.toString().toFloat() >= totalMins){
+
+                                globalVars.simpleAlert(myView.context,"Break Time Error","Break time can not be equal or greater then total shift time.")
+
+                                // Toast.makeText(myView.context,"Break time can not be equal or greater then total shift time.",Toast.LENGTH_LONG).show()
+                                binding.breakEditTxt.setText("0")
+                                return false
+                            }
+
+                        }
+
+                        binding.breakEditTxt.hideKeyboard()
+
+                        currentPayroll.lunch = binding.breakEditTxt.text.toString()
+                        submitPayroll()
+                        return true
                     }
-
-                    binding.breakEditTxt.hideKeyboard()
-
-                    currentPayroll.lunch = binding.breakEditTxt.text.toString()
-                    submitPayroll()
-                    return true
+                    return false
                 }
-                return false
-            }
-        })
+            })
+        }
+        else {
+            binding.breakEditTxt.isEnabled = false
+            binding.breakEditTxt.isFocusable = false
+        }
+
 
 
 
@@ -190,7 +220,6 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
             println(emp.name) // or your logic to catch the "B"
             if (emp.ID == employee!!.ID){
-
                 println("set selected with ${emp.name} position $i")
                 binding.empSpinner.setSelection(i, false)
             }
@@ -202,6 +231,22 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
         getPayroll()
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.payroll_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.payroll_summary_item) {
+            val directions = PayrollFragmentDirections.navigateToPayrollSummary(employee)
+            myView.findNavController().navigate(directions)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onStop() {

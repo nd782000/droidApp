@@ -31,7 +31,8 @@ interface AddContractItemButtonListener {
 
 class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListener, AddContractItemButtonListener {
 
-    private  var contract: Contract? = null
+    private var contract: Contract? = null
+    private var contractID: String? = null
 
 
     lateinit var globalVars:GlobalVars
@@ -43,7 +44,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            contract = it.getParcelable("contract")
+            contractID = it.getString("contractID")
         }
     }
 
@@ -61,8 +62,8 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         globalVars = GlobalVars()
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text =
-            getString(R.string.contract_number, contract!!.ID)
-
+            getString(R.string.contract_number, contractID)
+        setHasOptionsMenu(true)
         return myView
     }
 
@@ -70,95 +71,36 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         super.onViewCreated(view, savedInstanceState)
         println("Contract View")
 
-        println("employee = ${contract!!.title}")
-
-
-
-
         binding.progressBar.visibility = View.INVISIBLE
 
-        stackFragment = StackFragment(1,contract!!.ID,this)
+        stackFragment = StackFragment(1,contractID!!,this)
 
-        //TODO: Figure out how to hide and show the stack view here during progress bar
-        val ft = childFragmentManager.beginTransaction()
-        ft.add(R.id.contract_cl, stackFragment, "stackFrag")
-        ft.commitAllowingStateLoss()
-
-        binding.contractStatusBtn.setOnClickListener{
-            println("status btn clicked")
-            showStatusMenu()
-        }
-
-        binding.contractCustomerBtn.text = getString(R.string.contract_customer_button_text, contract!!.custName, contract!!.addr)
-        binding.contractCustomerBtn.setOnClickListener{
-            println("customer btn clicked")
-            val customer = Customer(contract!!.customer!!)
-            val directions = ContractFragmentDirections.navigateContractToCustomer(customer.ID)
-            myView.findNavController().navigate(directions)
-
-        }
-
-
-
-        val chargeName:String = when (contract!!.chargeType) {
-            "1" -> {
-                getString(R.string.contract_charge_nc)
-            }
-            "2" -> {
-                getString(R.string.contract_charge_fl)
-            }
-            "3" -> {
-                getString(R.string.contract_charge_tm)
-            }
-            else -> {
-                ""
-            }
-        }
-
-        binding.contractTitleValTv.text = contract!!.title
-        binding.contractChargeValTv.text = chargeName
-
-        when (contract!!.paymentTermsID) {
-            "0" -> {
-                binding.contractPaymentValTv.text = getString(R.string.contract_payment_none)
-            }
-            "3" -> {
-                binding.contractPaymentValTv.text = getString(R.string.contract_payment_2percent10net30)
-            }
-            "4" -> {
-                binding.contractPaymentValTv.text = getString(R.string.contract_payment_prepay)
-            }
-            "6" -> {
-                binding.contractPaymentValTv.text = getString(R.string.contract_payment_due_on_receipt)
-            }
-            "7" -> {
-                binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_15)
-            }
-            "8" -> {
-                binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_30)
-            }
-            "9" -> {
-                binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_60)
-            }
-            else -> {
-                binding.contractPaymentValTv.text = contract!!.paymentTermsID
-            }
-        }
-
-        binding.contractSalesRepValTv.text =contract!!.repName
-        binding.contractNotesValTv.text = contract!!.notes
-        binding.contractNotesValTv.movementMethod = ScrollingMovementMethod()
-        //Todo: maybe find a way to add the comma to money numbers without having to cast to a double
-        // We also need to consider how this will be handled for other regions with other forms of currency
-        binding.contractPriceTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(contract!!.total!!.toDouble()))
-
-
-
-        setStatus(contract!!.status)
-
-        // get items
         getContract()
 
+
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.contract_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.edit_contract_item) {
+            if (GlobalVars.permissions!!.leadsEdit == "1") {
+                val directions = ContractFragmentDirections.navigateContractToNewEditContract(contract)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts_edit))
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onStop() {
@@ -172,10 +114,10 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         val popUp = PopupMenu(myView.context,binding.contractStatusBtn)
         popUp.inflate(R.menu.task_status_menu)
         //popUp.menu.add(0, 0, 1,globalVars.menuIconWithText(globalVars.resize(myView.context.getDrawable(R.drawable.ic_not_started)!!,myView.context)!!, myView.context.getString(R.string.new_contract)))
-        popUp.menu.add(0, 0, 1,globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_not_started)!!,myView.context), myView.context.getString(R.string.new_contract)))
-        popUp.menu.add(0, 1, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_in_progress)!!,myView.context), myView.context.getString(R.string.sent)))
-        popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_awarded)!!,myView.context), myView.context.getString(R.string.awarded)))
-        popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_done)!!,myView.context), myView.context.getString(R.string.scheduled)))
+        popUp.menu.add(0, 0, 1,globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_not_started)!!,myView.context), myView.context.getString(R.string.contract_status_new)))
+        popUp.menu.add(0, 1, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_in_progress)!!,myView.context), myView.context.getString(R.string.contract_status_sent)))
+        popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_awarded)!!,myView.context), myView.context.getString(R.string.contract_status_awarded)))
+        popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_done)!!,myView.context), myView.context.getString(R.string.contract_status_scheduled)))
         popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_canceled)!!,myView.context), myView.context.getString(R.string.declined)))
         popUp.menu.add(0, 5, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_waiting)!!,myView.context), myView.context.getString(R.string.waiting)))
         popUp.menu.add(0, 6, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_canceled)!!,myView.context), myView.context.getString(R.string.canceled)))
@@ -183,10 +125,10 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
             contract!!.status = item!!.itemId.toString()
 
-            /*
+
             setStatus(contract!!.status)
-            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
-             */
+            //Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
+
 
             showProgressView()
 
@@ -208,6 +150,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
                         println("parentObject = $parentObject")
 
                         globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
 
                         hideProgressView()
 
@@ -316,7 +259,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
 
     private fun getContract(){
-        println("getCustomer = ${contract!!.ID}")
+        println("getContract = ${contractID}")
         //showProgressView()
 
 
@@ -363,6 +306,86 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
                         binding.contractItemRv.addItemDecoration(itemDecoration)
                         (adapter as ContractItemAdapter).notifyDataSetChanged()
                     }
+
+                    //TODO: Figure out how to hide and show the stack view here during progress bar
+                    val ft = childFragmentManager.beginTransaction()
+                    ft.add(R.id.contract_cl, stackFragment, "stackFrag")
+                    ft.commitAllowingStateLoss()
+
+                    binding.contractStatusBtn.setOnClickListener{
+                        println("status btn clicked")
+                        showStatusMenu()
+                    }
+
+                    binding.contractCustomerBtn.text = getString(R.string.contract_customer_button_text, contract!!.custName, contract!!.addr)
+                    binding.contractCustomerBtn.setOnClickListener{
+                        println("customer btn clicked")
+                        val customer = Customer(contract!!.customer!!)
+                        val directions = ContractFragmentDirections.navigateContractToCustomer(customer.ID)
+                        myView.findNavController().navigate(directions)
+
+                    }
+
+
+
+                    val chargeName:String = when (contract!!.chargeType) {
+                        "1" -> {
+                            getString(R.string.contract_charge_nc)
+                        }
+                        "2" -> {
+                            getString(R.string.contract_charge_fl)
+                        }
+                        "3" -> {
+                            getString(R.string.contract_charge_tm)
+                        }
+                        else -> {
+                            ""
+                        }
+                    }
+
+                    binding.contractTitleValTv.text = contract!!.title
+                    binding.contractChargeValTv.text = chargeName
+
+                    when (contract!!.paymentTermsID) {
+                        "0" -> {
+                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_none)
+                        }
+                        "3" -> {
+                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_2percent10net30)
+                        }
+                        "4" -> {
+                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_prepay)
+                        }
+                        "6" -> {
+                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_due_on_receipt)
+                        }
+                        "7" -> {
+                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_15)
+                        }
+                        "8" -> {
+                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_30)
+                        }
+                        "9" -> {
+                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_60)
+                        }
+                        else -> {
+                            binding.contractPaymentValTv.text = contract!!.paymentTermsID
+                        }
+                    }
+
+                    binding.contractSalesRepValTv.text =contract!!.repName
+                    binding.contractNotesValTv.text = contract!!.notes
+                    binding.contractNotesValTv.movementMethod = ScrollingMovementMethod()
+                    //Todo: maybe find a way to add the comma to money numbers without having to cast to a double
+                    // We also need to consider how this will be handled for other regions with other forms of currency
+
+                    //if (GlobalVars.permissions!!.mon)
+                    binding.contractPriceTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(contract!!.total!!.toDouble()))
+
+
+
+                    setStatus(contract!!.status)
+
                     hideProgressView()
 
                 } catch (e: JSONException) {
@@ -379,7 +402,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["contractID"] = contract!!.ID
+                params["contractID"] = contractID.toString()
 
                 println("params = $params")
                 return params
@@ -413,7 +436,6 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         else {
             myView.findNavController().navigate(directions)
         }
-
 
 
 

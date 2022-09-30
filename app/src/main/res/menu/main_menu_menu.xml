@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/reload_company_data_item"
+        android:title="@string/menu_reload_company_data"
+        android:enabled="true"/>
+    <item
+        android:id="@+id/privacy_policy_item"
+        android:title="@string/menu_privacy_policy"
+        android:enabled="true"/>
+    <item
+        android:id="@+id/support_item"
+        android:title="@string/menu_support"
+        android:enabled="true"/>
+    <item
         android:id="@+id/version_item"
         android:title=""
         android:enabled="false"/>

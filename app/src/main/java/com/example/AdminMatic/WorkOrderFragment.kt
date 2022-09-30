@@ -38,35 +38,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
     lateinit var context: AppCompatActivity
 
-
     private lateinit var  stackFragment: StackFragment
-
-    /*
-    lateinit var  pgsBar: ProgressBar
-    private lateinit var statusBtn:ImageButton
-    private lateinit var customerBtn:Button
-
-    lateinit var titleTxt:TextView
-    lateinit var scheduleTxt:TextView
-    lateinit var crewTxt:TextView
-    lateinit var chargeTxt:TextView
-    lateinit var repTxt:TextView
-
-    private lateinit var priceTxt:TextView
-    private lateinit var costTxt:TextView
-    private lateinit var profitTxt:TextView
-    private lateinit var profitPercentTxt:TextView
-    private lateinit var profitBar:ProgressBar
-
-    private lateinit var allCL: ConstraintLayout
-    private lateinit var statusCustCL:ConstraintLayout
-    private lateinit var dataCL:ConstraintLayout
-    private lateinit var footerCL:ConstraintLayout
-    private lateinit var headerCL:ConstraintLayout
-
-    lateinit var itemRecyclerView:RecyclerView
-
-     */
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +66,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         myView = binding.root
 
         println("Work Order: $workOrder")
-
+        setHasOptionsMenu(true)
         // Inflate the layout for this fragment
         return myView
     }
@@ -103,38 +75,29 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         println("WorkOrder View")
-        /*
-        pgsBar = myView.findViewById(R.id.progress_bar)
-        allCL = myView.findViewById(R.id.all_cl)
-        customerBtn = myView.findViewById(R.id.customer_btn)
-        statusBtn = myView.findViewById(R.id.status_btn)
-
-
-        titleTxt = myView.findViewById(R.id.title_val_tv)
-        scheduleTxt = myView.findViewById(R.id.schedule_val_tv)
-        //deptTxt = myView.findViewById(R.id.dept_val_tv)
-        crewTxt = myView.findViewById(R.id.crew_val_tv)
-        chargeTxt = myView.findViewById(R.id.charge_val_tv)
-        repTxt = myView.findViewById(R.id.rep_val_tv)
-
-        priceTxt = myView.findViewById(R.id.price_tv)
-        costTxt = myView.findViewById(R.id.cost_tv)
-        profitTxt = myView.findViewById(R.id.profit_tv)
-        profitPercentTxt = myView.findViewById(R.id.profit_percent_tv)
-        profitBar = myView.findViewById(R.id.profit_bar)
-
-        statusCustCL = myView.findViewById(R.id.status_cust_cl)
-        dataCL = myView.findViewById(R.id.work_order_data_cl)
-        footerCL = myView.findViewById(R.id.work_order_footer_cl)
-        headerCL = myView.findViewById(R.id.header_cl)
-
-        itemRecyclerView = myView.findViewById(R.id.work_order_items_rv)
-
-         */
-
-
         getWorkOrder()
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.work_order_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.edit_work_order_item) {
+            if (GlobalVars.permissions!!.scheduleEdit == "1") {
+                val directions = WorkOrderFragmentDirections.navigateToNewEditWorkOrder(workOrder)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_schedule_edit))
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onStop() {
@@ -144,7 +107,8 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
     private fun getWorkOrder(){
         println("getWorkOrder")
-
+        //println("DEPARTMENT BEFORE GET/WORKORDER ${workOrder!!.department}")
+        //println("CREW BEFORE GET/WORKORDER ${workOrder!!.crew}")
         var woID = workOrderID
         if (workOrder != null) {
             woID = workOrder!!.woID
@@ -264,7 +228,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                             workOrder!!.chargeName = ""
                         }
                     }
-                    binding.chargeLblTv.text = workOrder!!.chargeName
+                    binding.chargeValTv.text = workOrder!!.chargeName
 
 
                     val profit:Float = workOrder!!.totalPriceRaw.toFloat() - workOrder!!.totalCostRaw.toFloat()
@@ -275,6 +239,9 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     binding.profitTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
                     binding.profitPercentTv.text = profitPercent.toString()
                     binding.profitBar.progress = 100 - profitPercent
+
+                    println("DEPARTMENT AFTER GET/WORKORDER ${workOrder!!.department}")
+                    println("CREW AFTER GET/WORKORDER ${workOrder!!.crew}")
 
 
                     val woItemJSON: JSONArray = parentObject.getJSONArray("items")
@@ -489,7 +456,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
     override fun newContractView(_contract: Contract) {
         println("newContractView ${_contract.ID}")
-        val directions = WorkOrderFragmentDirections.navigateWorkOrderToContract(_contract)
+        val directions = WorkOrderFragmentDirections.navigateWorkOrderToContract(_contract.ID)
         myView.findNavController().navigate(directions)
     }
 

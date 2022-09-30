@@ -21,6 +21,7 @@ import com.AdminMatic.databinding.FragmentNewEditCustomerBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import kotlin.collections.set
@@ -29,6 +30,7 @@ import kotlin.collections.set
 class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, CustomerCellClickListener {
 
     private var editsMade = false
+    private var alreadyHadParent = false
 
     private var customerID: String? = null
     private lateinit var customer: Customer
@@ -137,6 +139,9 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             }
             else {
                 binding.newCustomerParentSearch.visibility = View.GONE
+                println("clearing parent from switch")
+                customer.parentID = "0"
+                customer.parentName = ""
             }
         }
 
@@ -162,7 +167,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    //customerRecyclerView.visibility = View.GONE
+                    //customerRecyclerView.visibility = View.INVISIBLE
                     return false
                 }
 
@@ -170,7 +175,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                     println("onQueryTextChange = $newText")
                     (adapter as CustomersAdapter).filter.filter(newText)
                     if(newText == ""){
-                        binding.newCustomerParentSearchRv.visibility = View.GONE
+                        binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
                     }else{
                         binding.newCustomerParentSearchRv.visibility = View.VISIBLE
                     }
@@ -184,17 +189,18 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             val closeButton: View? = binding.newCustomerParentSearch.findViewById(androidx.appcompat.R.id.search_close_btn)
             closeButton?.setOnClickListener {
                 binding.newCustomerParentSearch.setQuery("", false)
+                println("clearing parentID via X click")
                 customer.parentID = "0"
                 parentName = ""
                 myView.hideKeyboard()
                 binding.newCustomerParentSearch.clearFocus()
-                binding.newCustomerParentSearchRv.visibility = View.GONE
+                binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
             }
 
             binding.newCustomerParentSearch.setOnQueryTextFocusChangeListener { _, isFocused ->
                 if (!isFocused) {
                     binding.newCustomerParentSearch.setQuery(parentName, false)
-                    binding.newCustomerParentSearchRv.visibility = View.GONE
+                    binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
                 }
             }
 
@@ -248,14 +254,17 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
         binding.newCustomerNameSystemEt.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                if (customer.parentID == "0") {
+                if (!binding.newCustomerParentSwitch.isChecked) {
                     if (binding.newCustomerNameSystemEt.text.isBlank() && binding.newCustomerNameFirstEt.text.isNotBlank() && binding.newCustomerNameLastEt.text.isNotBlank()) {
                         binding.newCustomerNameSystemEt.setText(getString(R.string.new_customer_autofill_sysname, binding.newCustomerNameLastEt.text, binding.newCustomerNameFirstEt.text))
                     }
                 }
+                /*
                 else {
                     binding.newCustomerNameSystemEt.setText(customer.billStreet1)
                 }
+
+                 */
             }
         }
 
@@ -574,17 +583,22 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
         println("populateFields")
 
+        if (!fromSelected) {
+            alreadyHadParent = customer.parentID != "0"
+        }
 
         if (!fromSelected) {
             if (customer.parentID != "0") {
                 for (it in GlobalVars.customerList!!) {
                     if (it.ID == customer.parentID) {
-                        parentName = it.sysname
+
                         binding.newCustomerParentSearch.setQuery(it.sysname, false)
                         binding.newCustomerParentSearch.clearFocus()
-                        binding.newCustomerParentSearchRv.visibility = View.GONE
+                        binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
                         binding.newCustomerParentSwitch.isChecked = true
                         binding.newCustomerParentSwitch.jumpDrawablesToCurrentState()
+                        println("setting parent name from selected customer")
+                        parentName = it.sysname
                         break
                     }
                 }
@@ -628,6 +642,10 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 binding.newCustomerAddressStateSpinner.setSelection(addressStateIndex)
             }
             binding.newCustomerAddressZipEt.setText(customer.jobZip)
+
+            binding.newCustomerContactPhoneEt.setText(customer.phone)
+            binding.newCustomerContactEmailEt.setText(customer.email)
+
         }
 
         binding.newCustomerBillingAddressStreet1Et.setText(customer.billStreet1)
@@ -654,7 +672,6 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             binding.newCustomerBillingSameSwitch.isChecked = false
             binding.newCustomerBillingSameSwitch.jumpDrawablesToCurrentState()
         }
-
 
 
 
@@ -694,24 +711,28 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val gson = GsonBuilder().create()
-                    val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
-                    customer = customerArray.customers[0]
-                    globalVars.playSaveSound(myView.context)
-                    editsMade = false
 
-                    if (editMode) {
-                        populateFields(false)
+                        val gson = GsonBuilder().create()
+                        val customerArray =
+                            gson.fromJson(parentObject.toString(), CustomerArray::class.java)
+                        customer = customerArray.customers[0]
+                        globalVars.playSaveSound(myView.context)
                         editsMade = false
-                        hideProgressView()
-                    }
-                    else {
-                        val directions = NewEditCustomerFragmentDirections.navigateToCustomer(customer.ID)
-                        myView.findNavController().navigate(directions)
+
+                        if (editMode) {
+                            editsMade = false
+                            myView.findNavController().popBackStack()
+
+                        } else {
+                            val directions =
+                                NewEditCustomerFragmentDirections.navigateToCustomer(customer.ID)
+                            myView.findNavController().navigate(directions)
+                        }
                     }
 
+                    hideProgressView()
 
 
 
@@ -737,13 +758,16 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 params["middleName"] = binding.newCustomerNameMiddleEt.text.toString()
                 params["lastName"] = binding.newCustomerNameLastEt.text.toString()
                 params["sysName"] = binding.newCustomerNameSystemEt.text.toString()
+                params["nameChange"] = "0"
                 if (editMode) {
                     if (binding.newCustomerNameSystemEt.text.toString() != customer.sysname) {
+                        println("edit mode, name was changed, so nameChange = 1")
                         params["nameChange"] = "1"
                     }
-                    else {
-                        params["nameChange"] = "0"
-                    }
+                }
+                if (!alreadyHadParent && customer.parentID != "0") {
+                    println("had no parent before but do now, so 1nameChange = 1")
+                    params["nameChange"] = "1"
                 }
                 params["mainPhone"] = binding.newCustomerContactPhoneEt.text.toString()
                 params["mainEmail"] = binding.newCustomerContactEmailEt.text.toString()
@@ -855,12 +879,13 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                     val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
                     val customerSelected = customerArray.customers[0]
 
-                    customer.parentID = customerSelected.parentID
+                    println("setting parentID to ${customerSelected.ID} from PHP call")
+                    customer.parentID = customerSelected.ID
                     parentName = customerSelected.sysname
                     binding.newCustomerParentSearch.setQuery(parentName, false)
                     binding.newCustomerParentSearch.clearFocus()
                     myView.hideKeyboard()
-                    binding.newCustomerParentSearchRv.visibility = View.GONE
+                    binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
 
                     customer.salutation = customerSelected.salutation
                     customer.fname = customerSelected.fname

@@ -45,6 +45,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
     override fun onBindViewHolder(holder: UsageViewHolder, position: Int) {
 
+        println("BINDING")
 
         val usage: Usage = list[position]
         holder.bind(usage)
@@ -223,7 +224,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             if (!usage.locked!!) {
                 vendorSelectText.setOnClickListener {
                     println("status click")
-                    val popUp = PopupMenu(myView.context, holder.itemView)
+                    val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.textViewOptions))
                     popUp.inflate(R.menu.task_status_menu)
 
                     woItem.vendors.forEach { v->
@@ -395,7 +396,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             val receiptImageView:ImageView = holder.itemView.findViewById(R.id.usage_receipt_iv)
             if(list[position].receipt != null){
                 Picasso.with(context)
-                    .load(GlobalVars.thumbBase + list[position].receipt!!)
+                    .load(GlobalVars.thumbBase + list[position].receipt!!.fileName)
                     .placeholder(R.drawable.ic_images) //optional
                     //.resize(imgWidth, imgHeight)         //optional
                     //.centerCrop()                        //optional

@@ -133,9 +133,25 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         binding.payrollBtn.setOnClickListener{
             println("payroll btn clicked")
-            //val directions = EmployeeListFragmentDirections.navigateToEmployee(data)
+
+            var i = 0
+            var wasFound = false
+            for (emp in GlobalVars.employeeList!!) {
+                println(emp.name) // or your logic to catch the "B"
+                if (emp.ID == employee!!.ID){
+                    wasFound = true
+                }
+                i += 1
+            }
+
+            if (wasFound) {
                 val directions = EmployeeFragmentDirections.navigateToPayroll(employee)
-            myView.findNavController().navigate(directions)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.dialogue_inactive_payroll_title),getString(R.string.dialogue_inactive_payroll_body))
+            }
+
         }
 
         binding.usageBtn.setOnClickListener{

@@ -1,17 +1,307 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_customer_notes">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/notes_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/customer_settings_notes"
+            android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:ignore="RtlHardcoded" />
+
+        <EditText
+            android:id="@+id/notes_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_margin="5dp"
+            android:gravity="start"
+            android:padding="5dp"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:inputType="textMultiLine"
+            android:hint="@string/notes_hint"
+            app:layout_constraintTop_toBottomOf="@id/notes_text"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+
+            />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintGuide_percent="0.5"/>
+
+        <!--Property Size-->
+        <TextView
+            android:id="@+id/property_size_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/customer_settings_property_size"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/notes_edit_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:ignore="RtlHardcoded" />
+
+        <EditText
+            android:id="@+id/property_size_edit_text"
+            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:selectAllOnFocus="true"
+            app:layout_constraintTop_toBottomOf="@id/property_size_text"
+            app:layout_constraintRight_toLeftOf="@id/guideline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <!--Lawn Size-->
+        <TextView
+            android:id="@+id/lawn_size_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/customer_settings_lawn_size"
+            android:textSize="14sp"
+
+            app:layout_constraintTop_toBottomOf="@id/notes_edit_text"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            tools:ignore="RtlHardcoded" />
+
+        <EditText
+            android:id="@+id/lawn_size_edit_text"
+            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:selectAllOnFocus="true"
+            app:layout_constraintTop_toBottomOf="@id/property_size_text"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <!--Garden Size-->
+        <TextView
+            android:id="@+id/garden_size_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/customer_settings_garden_size"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/lawn_size_edit_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:ignore="RtlHardcoded" />
+
+        <EditText
+            android:id="@+id/garden_size_edit_text"
+            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:selectAllOnFocus="true"
+            app:layout_constraintTop_toBottomOf="@id/garden_size_text"
+            app:layout_constraintRight_toLeftOf="@id/guideline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <!--Driveway Size-->
+        <TextView
+            android:id="@+id/driveway_size_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/customer_settings_driveway_size"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/lawn_size_edit_text"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            tools:ignore="RtlHardcoded" />
+
+        <EditText
+            android:id="@+id/driveway_size_edit_text"
+            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:selectAllOnFocus="true"
+            app:layout_constraintTop_toBottomOf="@id/driveway_size_text"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <!--Floor Size-->
+        <TextView
+            android:id="@+id/floor_size_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/customer_settings_floor_size"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/garden_size_edit_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:ignore="RtlHardcoded" />
+
+        <EditText
+            android:id="@+id/floor_size_edit_text"
+            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:selectAllOnFocus="true"
+            app:layout_constraintTop_toBottomOf="@id/floor_size_text"
+            app:layout_constraintRight_toLeftOf="@id/guideline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <!--Zone-->
+        <TextView
+            android:id="@+id/zone_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/customer_settings_zone"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/floor_size_edit_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:ignore="RtlHardcoded" />
+
+        <Spinner
+            android:id="@+id/zone_spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:singleLine="true"
+            android:background="@drawable/text_view_layout"
+            android:layout_margin="5dp"
+            android:enabled="false"
+            app:layout_constraintTop_toBottomOf="@id/zone_text"
+            app:layout_constraintRight_toRightOf="@id/guideline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <!--Allow Images-->
+        <TextView
+            android:id="@+id/allow_images_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/customer_settings_allow_images"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/zone_spinner"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:ignore="RtlHardcoded" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/allow_images_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:checked="false"
+            app:layout_constraintTop_toBottomOf="@id/allow_images_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <!--Active-->
+        <TextView
+            android:id="@+id/active_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+
+            android:text="@string/customer_settings_active"
+            android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="@id/allow_images_text"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            tools:ignore="RtlHardcoded" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/active_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:checked="false"
+            app:layout_constraintTop_toBottomOf="@id/active_text"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            />
 
 
 
 
+        <Button
+            android:id="@+id/submit_btn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+
+            android:text="@string/submit"
+            android:layout_marginHorizontal="5dp"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
 
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:visibility="invisible"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/button"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
-

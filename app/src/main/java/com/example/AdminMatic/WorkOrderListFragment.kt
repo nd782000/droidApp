@@ -2,9 +2,7 @@ package com.example.AdminMatic
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -36,23 +34,8 @@ interface WorkOrderCellClickListener {
 
 class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterView.OnItemSelectedListener {
 
-
-
     lateinit var myView:View
     private lateinit var adapter:WorkOrdersAdapter
-    /*
-    private lateinit var  pgsBar: ProgressBar
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var searchView:androidx.appcompat.widget.SearchView
-    private lateinit var  swipeRefresh:SwipeRefreshLayout
-
-    private lateinit var scheduleSpinner:Spinner
-    private lateinit var crewBtn:Button
-    private lateinit var mapBtn:Button
-    private lateinit var countTextView: TextView
-    private lateinit var allCL: ConstraintLayout
-
-     */
 
     //update eq
     private var datesArray:Array<String> = arrayOf(
@@ -145,6 +128,16 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
             myView.findNavController().navigate(directions)
         }
 
+        binding.addWorkOrderBtn.setOnClickListener{
+            if (GlobalVars.permissions!!.scheduleEdit == "1") {
+                val directions = WorkOrderListFragmentDirections.navigateToNewEditWorkOrder(null)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_schedule_edit))
+            }
+        }
+
         binding.mapBtn.setOnClickListener{
             println("Map button clicked!")
             val directions = WorkOrderListFragmentDirections.navigateToMap(0)
@@ -167,22 +160,11 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
             binding.scheduleSpinner.adapter = adapter
 
-
-
-
             //triggers first get workOrders
             binding.scheduleSpinner.setTag(R.id.pos, scheduleSpinnerPosition)
             binding.scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
 
             binding.scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
-
-
-
-
-
-
-
-
 
             println("today personal")
             val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -242,6 +224,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         println("onAttach")
         super.onAttach(context)
     }
+
+
 
     override fun onStop() {
         super.onStop()
@@ -350,12 +334,17 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 )
             }
 
-            val itemDecoration: ItemDecoration =
-                DividerItemDecoration(
-                    myView.context,
-                    DividerItemDecoration.VERTICAL
-                )
-            binding.listRecyclerView.addItemDecoration(itemDecoration)
+
+            if (binding.listRecyclerView.itemDecorationCount == 0) {
+                val itemDecoration: ItemDecoration =
+                    DividerItemDecoration(
+                        myView.context,
+                        DividerItemDecoration.VERTICAL
+                    )
+                binding.listRecyclerView.addItemDecoration(itemDecoration)
+            }
+
+
 
 
             // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout

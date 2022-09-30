@@ -261,7 +261,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
 
     override fun newContractView(_contract: Contract) {
         println("newContractView ${_contract.ID}")
-        val directions = InvoiceFragmentDirections.navigateInvoiceToContract(_contract)
+        val directions = InvoiceFragmentDirections.navigateInvoiceToContract(_contract.ID)
         myView.findNavController().navigate(directions)
     }
 

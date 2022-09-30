@@ -10,6 +10,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -116,8 +117,9 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
         holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
             println("menu click")
 
-            val popUp = PopupMenu(myView.context,holder.itemView)
+            val popUp = PopupMenu(myView.context,holder.itemView.findViewById<TextView>(R.id.textViewOptions))
             popUp.inflate(R.menu.emp_options_menu)
+            popUp.gravity = Gravity.CENTER
             popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
@@ -176,7 +178,7 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }
@@ -189,31 +191,21 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charSearch = constraint.toString()
                 queryText = charSearch
+                var resultList:MutableList<Employee> = mutableListOf()
 
                 if (charSearch.isEmpty()) {
-                    //filterList.clear()
-                    filterList = list
+                    resultList = list
                 } else {
-
-                    val resultList:MutableList<Employee> = mutableListOf()
                     for (row in list) {
-                        //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
-                       // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
                         if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
-
-                            println("add row")
-
                             resultList.add(row)
-
-                            println("resultList.count = ${resultList.count()}")
                         }
                     }
-                    filterList = resultList
                 }
                 val filterResults = FilterResults()
-                filterResults.values = filterList
+                filterResults.values = resultList
 
-               println("filterResults = ${filterResults.values}")
+                println("filterResults = ${filterResults.values}")
                 return filterResults
             }
 

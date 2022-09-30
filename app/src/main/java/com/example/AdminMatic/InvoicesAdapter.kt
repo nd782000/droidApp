@@ -202,7 +202,7 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }
@@ -215,29 +215,20 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charSearch = constraint.toString()
                 queryText = charSearch
+                var resultList:MutableList<Invoice> = mutableListOf()
 
                 if (charSearch.isEmpty()) {
-                    //filterList.clear()
-                    filterList = list
+                    resultList = list
                 } else {
-
-                    val resultList:MutableList<Invoice> = mutableListOf()
                     for (row in list) {
-                        //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
-                       // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
+
                         if (row.custName.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.ID.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.invoiceDate.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
-
-                            println("add row")
-
-                            resultList.add(row)
-
-                            println("resultList.count = ${resultList.count()}")
+                             resultList.add(row)
                         }
                     }
-                    filterList = resultList
                 }
                 val filterResults = FilterResults()
-                filterResults.values = filterList
+                filterResults.values = resultList
 
                println("filterResults = ${filterResults.values}")
                 return filterResults

@@ -106,7 +106,6 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
             return true
         }
         return super.onOptionsItemSelected(item)
-
     }
 
     private fun getCustomer(){
@@ -333,7 +332,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
-            val directions = CustomerFragmentDirections.navigateCustomerToContract(it)
+            val directions = CustomerFragmentDirections.navigateCustomerToContract(data.ID)
             myView.findNavController().navigate(directions)
         }
 
@@ -606,7 +605,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         binding.customerEmailBtnTv.text = getString(R.string.no_email_found)
 
-        binding.customerAddressBtnIb.setOnClickListener {
+        binding.customerAddressBtnTv.setOnClickListener {
             println("map btn clicked ${customer.mainAddr}")
 
             val lng: String
@@ -645,7 +644,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     "2" -> {
                         println("2")
                         binding.customerEmailBtnTv.text = contact.value!!
-                        binding.customerEmailBtnIb.setOnClickListener {
+                        binding.customerEmailBtnTv.setOnClickListener {
                             println("email btn clicked ${contact.value!!}")
                             val intent = Intent(Intent.ACTION_SENDTO)
                             intent.data = Uri.parse("mailto:") // only email apps should handle this
@@ -653,7 +652,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                             intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
                             // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
                             // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
-                            com.example.AdminMatic.myView.context.startActivity(intent)
+                            myView.context.startActivity(intent)
                         }
 
                     }

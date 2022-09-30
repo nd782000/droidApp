@@ -157,41 +157,28 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
                 //isSearching = true
                 val charSearch = constraint.toString()
                 queryText = charSearch
+                var resultList:MutableList<Image> = mutableListOf()
 
                 if (charSearch.isEmpty()) {
-                    //filterList.clear()
-                    filterList = list
+                    resultList = list
                 } else {
-
-                    val resultList:MutableList<Image> = mutableListOf()
                     for (row in list) {
                         //println("row.sysname.toLowerCase(Locale.ROOT) = ${row.sysname.toLowerCase(Locale.ROOT)}")
                        // println("charSearch.toLowerCase(Locale.ROOT) = ${charSearch.toLowerCase(Locale.ROOT)}")
                         if (row.customerName == null){
                             if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
-
-                                println("add row")
-
                                 resultList.add(row)
-
-                                println("resultList.count = ${resultList.count()}")
                             }
                         }else{
                             if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.customerName.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
-
-                                println("add row")
-
                                 resultList.add(row)
-
-                                println("resultList.count = ${resultList.count()}")
                             }
                         }
 
                     }
-                    filterList = resultList
                 }
                 val filterResults = FilterResults()
-                filterResults.values = filterList
+                filterResults.values = resultList
 
                println("filterResults = ${filterResults.values}")
                 return filterResults

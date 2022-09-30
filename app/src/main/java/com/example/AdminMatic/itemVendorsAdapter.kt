@@ -2,6 +2,7 @@ package com.example.AdminMatic
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -63,7 +64,16 @@ class ItemVendorViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     fun bind(vendor: Vendor, context: Context, unit: String) {
         mNameView?.text = vendor.name
-        mCostView?.text = context.getString(R.string.item_price_each, vendor.cost, unit)
+
+        // Only show value if items money permission is available
+        if (GlobalVars.permissions!!.itemsMoney == "1") {
+            mCostView!!.visibility = View.VISIBLE
+            mCostView?.text = context.getString(R.string.item_price_each, vendor.cost, unit)
+        }
+        else {
+            mCostView!!.visibility = View.INVISIBLE
+        }
+
 
         if (vendor.prefered == "1") {
             mCl!!.background = context.getColor(R.color.backgroundHighlight).toDrawable()

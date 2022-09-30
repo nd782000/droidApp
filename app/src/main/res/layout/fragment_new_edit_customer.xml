@@ -948,7 +948,7 @@
                     android:id="@+id/new_customer_parent_search_rv"
                     android:layout_width="match_parent"
                     android:layout_height="400dp"
-                    android:visibility="gone"
+                    android:visibility="invisible"
                     android:background="@color/background"
 
                     android:nestedScrollingEnabled="false"

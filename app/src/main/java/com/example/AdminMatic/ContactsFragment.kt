@@ -1,27 +1,40 @@
 package com.example.AdminMatic
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentContactListBinding
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import org.json.JSONObject
 
 interface ContactCellClickListener {
     fun onContactCellClickListener(data:Contact)
 }
 
+interface ContactEditListener {
+    fun onContactEditListener(contact: Contact)
+}
 
+interface ContactDeleteListener {
+    fun onContactDeleteListener(contact: Contact, position:Int)
+}
 
-class ContactsFragment : Fragment(), ContactCellClickListener  {
+class ContactsFragment : Fragment(), ContactCellClickListener, ContactEditListener, ContactDeleteListener  {
 
     private  var customer: Customer? = null
 
@@ -59,12 +72,25 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
         //need to wait for this function to initialize views
         println("onViewCreated")
 
+        binding.addContactBtn.setOnClickListener {
+            if (GlobalVars.permissions!!.customersEdit == "1") {
+                val directions = ContactsFragmentDirections.navigateToNewEditContact(null, customer!!)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_customers_edit))
+            }
+        }
+
        //recyclerView.adapter = adapter
         layoutViews()
     }
 
 
-
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("contacts")
+    }
 
 
 
@@ -84,8 +110,8 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
                 //ContactsAdapter(customer.contacts)
 
                 ContactsAdapter(
-                    customer!!.contacts.toMutableList(),
-                    this@ContactsFragment
+                    customer!!.contacts.toMutableList(), myView.context,
+                    this@ContactsFragment, this@ContactsFragment, this@ContactsFragment
                 )
             }
 
@@ -104,14 +130,81 @@ class ContactsFragment : Fragment(), ContactCellClickListener  {
 
     }
 
+    override fun onContactEditListener(contact: Contact) {
+        if (GlobalVars.permissions!!.customersEdit == "0") {
+            globalVars.simpleAlert(myView.context, getString(R.string.access_denied), getString(R.string.no_permission_schedule_edit))
+        }
+        else {
+            val directions = ContactsFragmentDirections.navigateToNewEditContact(contact, customer!!)
+            myView.findNavController().navigate(directions)
+        }
+    }
+
+    override fun onContactDeleteListener(contact: Contact, position: Int) {
+        if (GlobalVars.permissions!!.customersEdit == "0") {
+            globalVars.simpleAlert(myView.context, getString(R.string.access_denied), getString(R.string.no_permission_schedule_edit))
+        }
+        else {
+            val builder = AlertDialog.Builder(myView.context)
+            builder.setTitle(getString(R.string.dialogue_delete_contact_title))
+            builder.setMessage(getString(R.string.dialogue_delete_contact_body))
+            builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
+
+                var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/delete/customerEmail.php"
+
+                val currentTimestamp = System.currentTimeMillis()
+                println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+                urlString = "$urlString?cb=$currentTimestamp"
+
+                val postRequest1: StringRequest = object : StringRequest(
+                    Method.POST, urlString,
+                    Response.Listener { response -> // response
+                        //Log.d("Response", response)
+
+                        println("Response $response")
+
+                        val parentObject = JSONObject(response)
+                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
+                        (binding.listRecyclerView.adapter as ContactsAdapter).filterList.removeAt(position)
+
+                        binding.listRecyclerView.adapter!!.notifyDataSetChanged()
+
+                    },
+                    Response.ErrorListener { // error
 
 
+                        // Log.e("VOLLEY", error.toString())
+                        // Log.d("Error.Response", error())
+                    }
+                ) {
+                    override fun getParams(): Map<String, String> {
+                        val params: MutableMap<String, String> = HashMap()
+                        params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                        params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                        params["custID"] = customer!!.ID
+                        params["contactID"] = contact.ID
+                        println("params = $params")
+                        return params
+                    }
+                }
+                postRequest1.tag = "contacts"
+                VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+            }
+            builder.setNegativeButton(getString(R.string.no)) { _, _ ->
+
+            }
+            builder.show()
+
+
+        }
+    }
 
 
 
 
     override fun onContactCellClickListener(data:Contact) {
-        //Toast.makeText(activity, "${data.value} Clicked", Toast.LENGTH_SHORT).show()
+
 
         println("Cell clicked with contact: ${data.value}")
 
