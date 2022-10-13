@@ -417,6 +417,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     }
 
 
+
     //Stack delegates
     override fun newLeadView(_lead: Lead) {
         println("newLeadView ${_lead.ID}")
