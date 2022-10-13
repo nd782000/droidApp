@@ -164,11 +164,13 @@ class ContactsFragment : Fragment(), ContactCellClickListener, ContactEditListen
                         println("Response $response")
 
                         val parentObject = JSONObject(response)
-                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                        (binding.listRecyclerView.adapter as ContactsAdapter).filterList.removeAt(position)
+                            (binding.listRecyclerView.adapter as ContactsAdapter).filterList.removeAt(position)
+                            globalVars.playSaveSound(myView.context)
 
-                        binding.listRecyclerView.adapter!!.notifyDataSetChanged()
+                            binding.listRecyclerView.adapter!!.notifyDataSetChanged()
+                        }
 
                     },
                     Response.ErrorListener { // error

@@ -426,7 +426,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${list.size}")
+        //print("getItemCount = ${list.size}")
         return list.size
 
     }

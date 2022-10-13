@@ -67,7 +67,7 @@ class EquipmentDetailAdapter(list: MutableList<String>, private val cellClickLis
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }

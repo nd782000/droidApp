@@ -254,32 +254,36 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
-                    println("workOrders = $workOrders")
-                    println("workOrders count = ${workOrders.length()}")
+                        val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
+                        println("workOrders = $workOrders")
+                        println("workOrders count = ${workOrders.length()}")
 
-                    if (globalWorkOrdersList != null) {
-                        globalWorkOrdersList!!.clear()
+                        if (globalWorkOrdersList != null) {
+                            globalWorkOrdersList!!.clear()
+                        }
+
+
+                        val gson = GsonBuilder().create()
+
+                        globalWorkOrdersList =
+                            gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
+                                .toMutableList()
+
+                        //(activity as MainActivity?)!!.updateMap()
+
+                        binding.workOrderCountTextview.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+
+                        if (this.isVisible) {
+                            layoutViews()
+                        }
+
+                        updateScheduleInfo(scheduleSpinnerPosition)
                     }
-
-
-                    val gson = GsonBuilder().create()
-
-                    globalWorkOrdersList =
-                        gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
-                            .toMutableList()
-
-                    //(activity as MainActivity?)!!.updateMap()
-
-                    binding.workOrderCountTextview.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
-
-                    if (this.isVisible){
-                        layoutViews()
+                    else {
+                        hideProgressView()
                     }
-
-                    updateScheduleInfo(scheduleSpinnerPosition)
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {

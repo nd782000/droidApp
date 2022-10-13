@@ -86,13 +86,13 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                     builder.setTitle(getString(R.string.dialogue_edits_made_title))
                     builder.setMessage(R.string.dialogue_edits_made_body)
                     builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-                        parentFragmentManager.popBackStackImmediate()
+                        myView.findNavController().navigateUp()
                     }
                     builder.setNegativeButton(R.string.no) { _, _ ->
                     }
                     builder.show()
                 }else{
-                    parentFragmentManager.popBackStackImmediate()
+                    myView.findNavController().navigateUp()
                 }
             }
         }
@@ -541,15 +541,16 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val gson = GsonBuilder().create()
-                    val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
+                        val gson = GsonBuilder().create()
+                        val customerArray = gson.fromJson(parentObject.toString(), CustomerArray::class.java)
 
-                    customer = customerArray.customers[0]
+                        customer = customerArray.customers[0]
 
 
-                    populateFields(false)
+                        populateFields(false)
+                    }
 
 
 
@@ -723,7 +724,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
                         if (editMode) {
                             editsMade = false
-                            myView.findNavController().popBackStack()
+                            myView.findNavController().navigateUp()
 
                         } else {
                             val directions =
@@ -873,40 +874,42 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val gson = GsonBuilder().create()
-                    val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
-                    val customerSelected = customerArray.customers[0]
+                        val gson = GsonBuilder().create()
+                        val customerArray = gson.fromJson(parentObject.toString(), CustomerArray::class.java)
+                        val customerSelected = customerArray.customers[0]
 
-                    println("setting parentID to ${customerSelected.ID} from PHP call")
-                    customer.parentID = customerSelected.ID
-                    parentName = customerSelected.sysname
-                    binding.newCustomerParentSearch.setQuery(parentName, false)
-                    binding.newCustomerParentSearch.clearFocus()
-                    myView.hideKeyboard()
-                    binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
+                        println("setting parentID to ${customerSelected.ID} from PHP call")
+                        customer.parentID = customerSelected.ID
+                        parentName = customerSelected.sysname
+                        binding.newCustomerParentSearch.setQuery(parentName, false)
+                        binding.newCustomerParentSearch.clearFocus()
+                        myView.hideKeyboard()
+                        binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
 
-                    customer.salutation = customerSelected.salutation
-                    customer.fname = customerSelected.fname
-                    customer.mname = customerSelected.mname
-                    customer.lname = customerSelected.lname
-                    customer.companyName = customerSelected.companyName
-                    //customer.sysName = ???
-                    customer.phone = customerSelected.phone
-                    customer.email = customerSelected.email
-                    customer.billStreet1 = customerSelected.billStreet1
-                    customer.billStreet2 = customerSelected.billStreet2
-                    customer.billStreet3 = customerSelected.billStreet3
-                    customer.billStreet4 = customerSelected.billStreet4
-                    customer.billCity = customerSelected.billCity
-                    customer.billState = customerSelected.billState
-                    customer.billZip = customerSelected.billZip
+                        customer.salutation = customerSelected.salutation
+                        customer.fname = customerSelected.fname
+                        customer.mname = customerSelected.mname
+                        customer.lname = customerSelected.lname
+                        customer.companyName = customerSelected.companyName
+                        //customer.sysName = ???
+                        customer.phone = customerSelected.phone
+                        customer.email = customerSelected.email
+                        customer.billStreet1 = customerSelected.billStreet1
+                        customer.billStreet2 = customerSelected.billStreet2
+                        customer.billStreet3 = customerSelected.billStreet3
+                        customer.billStreet4 = customerSelected.billStreet4
+                        customer.billCity = customerSelected.billCity
+                        customer.billState = customerSelected.billState
+                        customer.billZip = customerSelected.billZip
 
-                    customer.hear = customerSelected.hear
-                    customer.active = customerSelected.active
+                        customer.hear = customerSelected.hear
+                        customer.active = customerSelected.active
 
-                    populateFields(true)
+                        populateFields(true)
+                    }
+                    hideProgressView()
                     
                 } catch (e: JSONException) {
                     println("JSONException")

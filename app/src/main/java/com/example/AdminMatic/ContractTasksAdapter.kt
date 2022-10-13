@@ -48,7 +48,7 @@ class ContractTasksAdapter(list: MutableList<ContractTask>, private val context:
     }
 
     override fun getItemCount(): Int{
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
     }
 

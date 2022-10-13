@@ -50,7 +50,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
         myView = binding.root
 
         val emptyList:MutableList<Employee> = mutableListOf()
-        adapter = EmployeesAdapter(emptyList, myView.context, this)
+        adapter = EmployeesAdapter(emptyList, true, myView.context, this)
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.employee_list)
 
 
@@ -119,93 +119,95 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     //println("parentObject = ${parentObject.toString()}")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val employees:JSONArray = parentObject.getJSONArray("employees")
-                   // println("employees = ${employees.toString()}")
-                   // println("employees count = ${employees.length()}")
-
-
-
-                    val gson = GsonBuilder().create()
-                    employeesList = gson.fromJson(employees.toString() , Array<Employee>::class.java).toMutableList()
-
-                    binding.employeeCountTextview.text = getString(R.string.x_active_employees, employeesList.size)
-
-                    binding.employeesRecyclerView.apply {
-                        layoutManager = LinearLayoutManager(activity)
+                        val employees: JSONArray = parentObject.getJSONArray("employees")
+                        // println("employees = ${employees.toString()}")
+                        // println("employees count = ${employees.length()}")
 
 
-                        adapter = activity?.let {
-                            EmployeesAdapter(employeesList,
-                                it, this@EmployeeListFragment)
-                        }
+                        val gson = GsonBuilder().create()
+                        employeesList =
+                            gson.fromJson(employees.toString(), Array<Employee>::class.java)
+                                .toMutableList()
 
-                        val itemDecoration: ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.employeesRecyclerView.addItemDecoration(itemDecoration)
+                        binding.employeeCountTextview.text =
+                            getString(R.string.x_active_employees, employeesList.size)
 
-                        //for item animations
-                        // recyclerView.itemAnimator = SlideInUpAnimator()
-
+                        binding.employeesRecyclerView.apply {
+                            layoutManager = LinearLayoutManager(activity)
 
 
-                        // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
-                        // Setup refresh listener which triggers new data loading
-                        // Setup refresh listener which triggers new data loading
-                        binding.employeeSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
-                            // Make sure you call swipeContainer.setRefreshing(false)
-                            // once the network request has completed successfully.
-                            //fetchTimelineAsync(0)
-                            binding.employeesSearch.setQuery("", false)
-                            binding.employeesSearch.clearFocus()
-                            getEmployees()
-                        }
-                        // Configure the refreshing colors
-                        // Configure the refreshing colors
-                        binding.employeeSwipeContainer.setColorSchemeResources(
-                            R.color.button,
-                            R.color.black,
-                            R.color.colorAccent,
-                            R.color.colorPrimaryDark
-                        )
-
-
-
-                        //(adapter as EmployeesAdapter).notifyDataSetChanged()
-
-                        // Remember to CLEAR OUT old items before appending in the new ones
-
-                        // ...the data has come back, add new items to your adapter...
-
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                        binding.employeeSwipeContainer.isRefreshing = false
-
-                        // Toast.makeText(activity,"${employeesList.count()} Employees Loaded",Toast.LENGTH_SHORT).show()
-
-
-
-                        //search listener
-                        binding.employeesSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-
-                            override fun onQueryTextSubmit(query: String?): Boolean {
-                                return false
+                            adapter = activity?.let {
+                                EmployeesAdapter(
+                                    employeesList, true, it, this@EmployeeListFragment
+                                )
                             }
 
-                            override fun onQueryTextChange(newText: String?): Boolean {
-                                println("onQueryTextChange = $newText")
-                                (adapter as EmployeesAdapter).filter.filter(newText)
-                                return false
+                            val itemDecoration: ItemDecoration =
+                                DividerItemDecoration(
+                                    myView.context,
+                                    DividerItemDecoration.VERTICAL
+                                )
+                            binding.employeesRecyclerView.addItemDecoration(itemDecoration)
+
+                            //for item animations
+                            // recyclerView.itemAnimator = SlideInUpAnimator()
+
+
+                            // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+                            // Setup refresh listener which triggers new data loading
+                            // Setup refresh listener which triggers new data loading
+                            binding.employeeSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
+                                // Make sure you call swipeContainer.setRefreshing(false)
+                                // once the network request has completed successfully.
+                                //fetchTimelineAsync(0)
+                                binding.employeesSearch.setQuery("", false)
+                                binding.employeesSearch.clearFocus()
+                                getEmployees()
                             }
+                            // Configure the refreshing colors
+                            // Configure the refreshing colors
+                            binding.employeeSwipeContainer.setColorSchemeResources(
+                                R.color.button,
+                                R.color.black,
+                                R.color.colorAccent,
+                                R.color.colorPrimaryDark
+                            )
 
-                        })
+
+                            //(adapter as EmployeesAdapter).notifyDataSetChanged()
+
+                            // Remember to CLEAR OUT old items before appending in the new ones
+
+                            // ...the data has come back, add new items to your adapter...
+
+                            // Now we call setRefreshing(false) to signal refresh has finished
+                            binding.employeeSwipeContainer.isRefreshing = false
+
+                            // Toast.makeText(activity,"${employeesList.count()} Employees Loaded",Toast.LENGTH_SHORT).show()
 
 
+                            //search listener
+                            binding.employeesSearch.setOnQueryTextListener(object :
+                                SearchView.OnQueryTextListener,
+                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
 
+                                override fun onQueryTextSubmit(query: String?): Boolean {
+                                    return false
+                                }
 
+                                override fun onQueryTextChange(newText: String?): Boolean {
+                                    println("onQueryTextChange = $newText")
+                                    (adapter as EmployeesAdapter).filter.filter(newText)
+                                    return false
+                                }
+
+                            })
+
+
+                        }
                     }
 
 

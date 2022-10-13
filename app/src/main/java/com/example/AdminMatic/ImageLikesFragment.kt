@@ -102,7 +102,7 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
 
                 try {
                     val parentObject = JSONObject(response)
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
                     val employees: JSONArray = parentObject.getJSONArray("employees")
 
@@ -118,8 +118,7 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
 
                         adapter = activity?.let {
                             EmployeesAdapter(
-                                employeesList,
-                                it, this@ImageLikesFragment
+                                employeesList, true, it, this@ImageLikesFragment
                             )
                         }
 
@@ -129,6 +128,7 @@ class ImageLikesFragment : Fragment(), EmployeeCellClickListener {
                                 DividerItemDecoration.VERTICAL
                             )
                         binding.imageLikesRecyclerView.addItemDecoration(itemDecoration)
+                    }
 
 
                         //(adapter as EmployeesAdapter).notifyDataSetChanged()

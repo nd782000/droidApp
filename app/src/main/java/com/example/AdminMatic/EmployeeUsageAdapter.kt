@@ -71,7 +71,7 @@ class EmployeeUsageAdapter(list: MutableList<Usage>, private val context: Contex
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }

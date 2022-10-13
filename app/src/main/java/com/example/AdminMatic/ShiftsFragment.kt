@@ -124,11 +124,12 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    shiftsJSON = JSONObject(response)
+                        shiftsJSON = JSONObject(response)
 
-                    parseShiftsJSON()
+                        parseShiftsJSON()
+                    }
 
                 } catch (e: JSONException) {
                     println("JSONException")

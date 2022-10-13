@@ -81,7 +81,7 @@ class ServiceAdapter(list: MutableList<EquipmentService>, private val context: C
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }

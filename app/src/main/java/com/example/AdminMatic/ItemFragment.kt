@@ -262,45 +262,48 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                     val parentObject = JSONObject(response)
                     //val parentObject = JSONObject(testWarnings)
 
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    println("parentObject = $parentObject")
-                    val items: JSONArray = parentObject.getJSONArray("items")
-                    println("items = $items")
-                    println("items count = ${items.length()}")
+                        println("parentObject = $parentObject")
+                        val items: JSONArray = parentObject.getJSONArray("items")
+                        println("items = $items")
+                        println("items count = ${items.length()}")
 
-                    val gson = GsonBuilder().create()
-
-
+                        val gson = GsonBuilder().create()
 
 
+                        val itemArray = gson.fromJson(items.toString(), Array<Item>::class.java).toMutableList()
+                        item = itemArray[0]
+                        item!!.ID = storedItemID
 
+                        remainingQty = 0.0
+                        item!!.workOrders!!.forEach {
+                            remainingQty += it.remQty!!.toDouble()
+                        }
 
-                    val itemArray = gson.fromJson(items.toString(), Array<Item>::class.java).toMutableList()
-                    item = itemArray[0]
-                    item!!.ID = storedItemID
+                        vendorsAdapter = ItemVendorsAdapter(item!!.vendors!!.toMutableList(), this.myView.context, item!!.unit!!, this)
+                        workOrdersAdapter = ItemWorkOrdersAdapter(item!!.workOrders!!.toMutableList(), this.myView.context, item!!.unit!!, this)
+                        binding.itemRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        binding.itemRecyclerView.addItemDecoration(itemDecoration)
 
-                    remainingQty = 0.0
-                    item!!.workOrders!!.forEach {
-                        remainingQty += it.remQty!!.toDouble()
-                    }
-
-                    vendorsAdapter = ItemVendorsAdapter(item!!.vendors!!.toMutableList(), this.myView.context, item!!.unit!!, this)
-                    workOrdersAdapter = ItemWorkOrdersAdapter(item!!.workOrders!!.toMutableList(), this.myView.context, item!!.unit!!, this)
-                    binding.itemRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    val itemDecoration: RecyclerView.ItemDecoration =
-                        DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                    binding.itemRecyclerView.addItemDecoration(itemDecoration)
-
-                    if (item!!.vendors!!.isEmpty()) {
-                        globalVars.simpleAlert(myView.context,getString(R.string.dialogue_item_no_vendors_title),getString(R.string.dialogue_item_no_vendors_body))
-                        tabLayout.selectTab(tabLayout.getTabAt(2))
-                        tabLayout.getTabAt(0)?.view?.isClickable = false
-                        tabLayout.getTabAt(1)?.view?.isClickable = false
-                        hideProgressView()
+                        if (item!!.vendors!!.isEmpty()) {
+                            globalVars.simpleAlert(
+                                myView.context,
+                                getString(R.string.dialogue_item_no_vendors_title),
+                                getString(R.string.dialogue_item_no_vendors_body)
+                            )
+                            tabLayout.selectTab(tabLayout.getTabAt(2))
+                            tabLayout.getTabAt(0)?.view?.isClickable = false
+                            tabLayout.getTabAt(1)?.view?.isClickable = false
+                            hideProgressView()
+                        } else {
+                            updateMap()
+                        }
                     }
                     else {
-                        updateMap()
+                        hideProgressView()
                     }
 
 

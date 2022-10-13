@@ -128,90 +128,88 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val leads:JSONArray = parentObject.getJSONArray("leads")
-                    println("leads = $leads")
-                    println("leads count = ${leads.length()}")
-
-
-                    if (globalLeadList != null) {
-                        globalLeadList!!.clear()
-                    }
-                    val gson = GsonBuilder().create()
-                    globalLeadList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
-                    binding.leadCountTextview.text = getString(R.string.x_active_leads, globalLeadList!!.size)
-
-                    binding.listRecyclerView.apply {
-                        layoutManager = LinearLayoutManager(activity)
+                        val leads: JSONArray = parentObject.getJSONArray("leads")
+                        println("leads = $leads")
+                        println("leads count = ${leads.length()}")
 
 
-                        adapter = activity?.let {
-                            LeadsAdapter(
-                                globalLeadList!!, context,this@LeadListFragment
+                        if (globalLeadList != null) {
+                            globalLeadList!!.clear()
+                        }
+                        val gson = GsonBuilder().create()
+                        globalLeadList = gson.fromJson(leads.toString(), Array<Lead>::class.java).toMutableList()
+                        binding.leadCountTextview.text = getString(R.string.x_active_leads, globalLeadList!!.size)
+
+                        binding.listRecyclerView.apply {
+                            layoutManager = LinearLayoutManager(activity)
+
+
+                            adapter = activity?.let {
+                                LeadsAdapter(
+                                    globalLeadList!!, context, this@LeadListFragment
+                                )
+                            }
+
+                            val itemDecoration: ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            binding.listRecyclerView.addItemDecoration(itemDecoration)
+
+                            //for item animations
+                            // recyclerView.itemAnimator = SlideInUpAnimator()
+
+
+                            // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+                            // Setup refresh listener which triggers new data loading
+                            // Setup refresh listener which triggers new data loading
+                            binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
+                                // Make sure you call swipeContainer.setRefreshing(false)
+                                // once the network request has completed successfully.
+                                //fetchTimelineAsync(0)
+                                binding.leadsSearch.setQuery("", false)
+                                binding.leadsSearch.clearFocus()
+                                getLeads()
+                            }
+                            // Configure the refreshing colors
+                            // Configure the refreshing colors
+                            binding.customerSwipeContainer.setColorSchemeResources(
+                                R.color.button,
+                                R.color.black,
+                                R.color.colorAccent,
+                                R.color.colorPrimaryDark
                             )
+
+
+                            //(adapter as LeadsAdapter).notifyDataSetChanged();
+
+                            // Remember to CLEAR OUT old items before appending in the new ones
+
+                            // ...the data has come back, add new items to your adapter...
+
+                            // Now we call setRefreshing(false) to signal refresh has finished
+                            binding.customerSwipeContainer.isRefreshing = false
+
+                            // Toast.makeText(activity,"${leadsList.count()} Leads Loaded",Toast.LENGTH_SHORT).show()
+
+
+                            //search listener
+                            binding.leadsSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+
+                                override fun onQueryTextSubmit(query: String?): Boolean {
+                                    return false
+                                }
+
+                                override fun onQueryTextChange(newText: String?): Boolean {
+                                    println("onQueryTextChange = $newText")
+                                    (adapter as LeadsAdapter).filter.filter(newText)
+                                    return false
+                                }
+
+                            })
                         }
-
-                        val itemDecoration: ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.listRecyclerView.addItemDecoration(itemDecoration)
-
-                        //for item animations
-                        // recyclerView.itemAnimator = SlideInUpAnimator()
-
-
-
-                        // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
-                        // Setup refresh listener which triggers new data loading
-                        // Setup refresh listener which triggers new data loading
-                        binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
-                            // Make sure you call swipeContainer.setRefreshing(false)
-                            // once the network request has completed successfully.
-                            //fetchTimelineAsync(0)
-                            binding.leadsSearch.setQuery("", false)
-                            binding.leadsSearch.clearFocus()
-                            getLeads()
-                        }
-                        // Configure the refreshing colors
-                        // Configure the refreshing colors
-                        binding.customerSwipeContainer.setColorSchemeResources(
-                            R.color.button,
-                            R.color.black,
-                            R.color.colorAccent,
-                            R.color.colorPrimaryDark
-                        )
-
-
-
-                        //(adapter as LeadsAdapter).notifyDataSetChanged();
-
-                        // Remember to CLEAR OUT old items before appending in the new ones
-
-                        // ...the data has come back, add new items to your adapter...
-
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                        binding.customerSwipeContainer.isRefreshing = false
-
-                        // Toast.makeText(activity,"${leadsList.count()} Leads Loaded",Toast.LENGTH_SHORT).show()
-
-
-
-                        //search listener
-                        binding.leadsSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-
-                            override fun onQueryTextSubmit(query: String?): Boolean {
-                                return false
-                            }
-
-                            override fun onQueryTextChange(newText: String?): Boolean {
-                                println("onQueryTextChange = $newText")
-                                (adapter as LeadsAdapter).filter.filter(newText)
-                                return false
-                            }
-
-                        })
                     }
 
                     /* Here 'response' is a String containing the response you received from the website... */

@@ -74,13 +74,13 @@ class NewEditContractFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                     builder.setTitle(getString(R.string.dialogue_edits_made_title))
                     builder.setMessage(R.string.dialogue_edits_made_body)
                     builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-                        parentFragmentManager.popBackStackImmediate()
+                        myView.findNavController().navigateUp()
                     }
                     builder.setNegativeButton(R.string.no) { _, _ ->
                     }
                     builder.show()
                 }else{
-                    parentFragmentManager.popBackStackImmediate()
+                    myView.findNavController().navigateUp()
                 }
             }
         }
@@ -212,8 +212,7 @@ class NewEditContractFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
             adapter = activity?.let {
                 EmployeesAdapter(
-                    GlobalVars.employeeList!!.toMutableList(),
-                    myView.context, this@NewEditContractFragment
+                    GlobalVars.employeeList!!.toMutableList(), false, myView.context, this@NewEditContractFragment
                 )
             }
 
@@ -367,22 +366,23 @@ class NewEditContractFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val gson = GsonBuilder().create()
-                    val newContractID:String = gson.fromJson(parentObject["contractID"].toString() , String::class.java)
-                    contract!!.ID = newContractID
-                    globalVars.playSaveSound(myView.context)
-                    editsMade = false
+                        val gson = GsonBuilder().create()
+                        val newContractID: String = gson.fromJson(parentObject["contractID"].toString(), String::class.java)
+                        contract!!.ID = newContractID
+                        globalVars.playSaveSound(myView.context)
+                        editsMade = false
 
 
-                    if (editMode) {
-                        myView.findNavController().popBackStack()
+                        if (editMode) {
+                            myView.findNavController().navigateUp()
+                        } else {
+                            val directions = NewEditContractFragmentDirections.navigateToContract(contract!!.ID)
+                            myView.findNavController().navigate(directions)
+                        }
                     }
-                    else {
-                        val directions = NewEditContractFragmentDirections.navigateToContract(contract!!.ID)
-                        myView.findNavController().navigate(directions)
-                    }
+                    hideProgressView()
 
 
                 } catch (e: JSONException) {

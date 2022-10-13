@@ -184,13 +184,15 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val customers: JSONArray = parentObject.getJSONArray("customers")
+                        val customers: JSONArray = parentObject.getJSONArray("customers")
 
-                    val gson = GsonBuilder().create()
-                    GlobalVars.customerList = gson.fromJson(customers.toString(), Array<Customer>::class.java).toMutableList()
-
+                        val gson = GsonBuilder().create()
+                        GlobalVars.customerList =
+                            gson.fromJson(customers.toString(), Array<Customer>::class.java)
+                                .toMutableList()
+                    }
                     showCustomers()
 
                     /* Here 'response' is a String containing the response you received from the website... */

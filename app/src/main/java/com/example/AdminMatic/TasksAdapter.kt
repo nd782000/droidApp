@@ -197,15 +197,21 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
                         try {
                             val parentObject = JSONObject(response)
                             println("parentObject = $parentObject")
-                            // var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                            // println("payroll = ${payrollJSON.toString()}")
-                            // println("payroll count = ${payrollJSON.length()}")
 
-                            cellClickListener.hideProgressView()
+                            if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                                // var payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                                // println("payroll = ${payrollJSON.toString()}")
+                                // println("payroll count = ${payrollJSON.length()}")
 
-                            // getPayroll()
+                                cellClickListener.hideProgressView()
 
-                            cellClickListener.getWoItem(true)
+                                // getPayroll()
+
+                                cellClickListener.getWoItem(true)
+                                globalVars.playSaveSound(myView.context)
+                            }
+
+
 
 
                             /* Here 'response' is a String containing the response you received from the website... */
@@ -286,7 +292,7 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${list.size}")
+        //print("getItemCount = ${list.size}")
         return list.size
 
     }

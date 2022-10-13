@@ -26,6 +26,7 @@
         android:gravity="center_vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/item"
         android:textSize="14sp"
         android:textStyle="bold"
@@ -36,7 +37,7 @@
 
     <TextView
         android:id="@+id/list_act_tv"
-        android:layout_width="50dp"
+        android:layout_width="55dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -53,7 +54,7 @@
 
     <TextView
         android:id="@+id/list_est_tv"
-        android:layout_width="50dp"
+        android:layout_width="55dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -90,7 +91,6 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:gravity="center_vertical"
-        android:singleLine="true"
         android:ellipsize="end"
         android:text="@string/description"
         android:textSize="14sp"

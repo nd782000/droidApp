@@ -23,7 +23,7 @@
         android:id="@+id/list_cust_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="5dp"
         android:paddingLeft="16dp"
         android:text="@string/customer"
         android:textSize="18sp"
@@ -48,7 +48,8 @@
 
 
         app:layout_constraintLeft_toLeftOf="@+id/list_cust_name"
-        app:layout_constraintTop_toBottomOf="@+id/list_cust_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
     <ImageView
@@ -68,10 +69,11 @@
         android:id="@+id/list_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:paddingLeft="28dp"
         android:text="@string/work_order"
         app:layout_constraintLeft_toRightOf="@+id/list_wo_lock_icon_iv"
-        app:layout_constraintTop_toBottomOf="@+id/list_title"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/sort_text"

@@ -42,7 +42,7 @@ class ItemVendorsAdapter(list: MutableList<Vendor>, private val context: Context
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }

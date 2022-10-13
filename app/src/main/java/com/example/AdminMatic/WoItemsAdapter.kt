@@ -78,6 +78,25 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
 
 
+        // Populate description string
+        var descriptionString = ""
+        val iterator = woItem.tasks.iterator()
+        while (iterator.hasNext()) {
+            val item = iterator.next()
+            if (item.task!!.startsWith('-')) {
+                descriptionString = descriptionString + item.task
+            }
+            else {
+                descriptionString = descriptionString + "-" + item.task
+            }
+            if (iterator.hasNext()) {
+                descriptionString += "\n"
+            }
+        }
+        holder.mDescriptionView!!.text = descriptionString
+
+
+
 
         val data = filterList[position]
         holder.itemView.setOnClickListener {
@@ -129,10 +148,15 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
                                                 println("Response $response")
 
                                                 val parentObject = JSONObject(response)
-                                                globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
-                                                filterList.removeAt(position)
-                                                notifyDataSetChanged()
+                                                if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                                                    globalVars.playSaveSound(myView.context)
+                                                    filterList.removeAt(position)
+                                                    notifyDataSetChanged()
+                                                }
+
+
+
 
                                             },
                                             Response.ErrorListener { // error
@@ -211,7 +235,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }

@@ -171,46 +171,46 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val gson = GsonBuilder().create()
-                    woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
-                    binding.woItemDescriptionTv.text = woItem!!.empDesc
+                        val gson = GsonBuilder().create()
+                        woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
+                        binding.woItemDescriptionTv.text = woItem!!.empDesc
 
-                    setStatus(woItem!!.status)
+                        setStatus(woItem!!.status)
 
-                    val taskJSON: JSONArray = parentObject.getJSONArray("tasks")
-                    val taskList = gson.fromJson(taskJSON.toString(), Array<Task>::class.java)
-                        .toMutableList()
+                        val taskJSON: JSONArray = parentObject.getJSONArray("tasks")
+                        val taskList = gson.fromJson(taskJSON.toString(), Array<Task>::class.java)
+                            .toMutableList()
 
-                    binding.woItemTasksRv.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            TasksAdapter(
-                                taskList,
-                                it,
-                                requireActivity().application,
-                                this@WoItemFragment,
-                                woItem as WoItem
-                            )
+                        binding.woItemTasksRv.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = activity?.let {
+                                TasksAdapter(
+                                    taskList,
+                                    it,
+                                    requireActivity().application,
+                                    this@WoItemFragment,
+                                    woItem as WoItem
+                                )
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(
+                                    myView.context,
+                                    DividerItemDecoration.VERTICAL
+                                )
+                            binding.woItemTasksRv.addItemDecoration(itemDecoration)
+
+
+                            //(adapter as TasksAdapter).notifyDataSetChanged()
                         }
-
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(
-                                myView.context,
-                                DividerItemDecoration.VERTICAL
-                            )
-                        binding.woItemTasksRv.addItemDecoration(itemDecoration)
-
-
-
-                        //(adapter as TasksAdapter).notifyDataSetChanged()
-                    }
-                    fillProfitCl()
-                    setUpViews()
-                    hideProgressView()
-                    if (taskUpdated) {
-                        checkForWoStatus()
+                        fillProfitCl()
+                        setUpViews()
+                        hideProgressView()
+                        if (taskUpdated) {
+                            checkForWoStatus()
+                        }
                     }
 
                 } catch (e: JSONException) {
@@ -345,11 +345,14 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
-                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                            globalVars.playSaveSound(myView.context)
+                            checkForWoStatus()
+                        }
 
                         hideProgressView()
 
-                        checkForWoStatus()
+
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {
@@ -405,10 +408,11 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    if (listIndex >= 0) {
-                        GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder)
+                        if (listIndex >= 0) {
+                            GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder)
+                        }
                     }
                     hideProgressView()
 

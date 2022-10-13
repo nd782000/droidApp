@@ -145,80 +145,79 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("getLead parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val gson = GsonBuilder().create()
-                    //var leadJSONObject:JSONObject
-                    //leadJSONObject = gson.fromJson(parentObject["leads"].toString() , JSONObject::class.java)
+                        val gson = GsonBuilder().create()
+                        //var leadJSONObject:JSONObject
+                        //leadJSONObject = gson.fromJson(parentObject["leads"].toString() , JSONObject::class.java)
 
-                    val leadsArray:Array<Lead> = gson.fromJson(parentObject["leads"].toString() , Array<Lead>::class.java)
-                    //var leadsArray:Array<Lead> = leadJSONObject["leads"] as Array<Lead>
-                    //leadJSONObject = gson.fromJson(parentObject.toString(), )
-                    lead = leadsArray[0]
-                    //lead.tasks =
+                        val leadsArray: Array<Lead> = gson.fromJson(parentObject["leads"].toString(), Array<Lead>::class.java)
+                        //var leadsArray:Array<Lead> = leadJSONObject["leads"] as Array<Lead>
+                        //leadJSONObject = gson.fromJson(parentObject.toString(), )
+                        lead = leadsArray[0]
+                        //lead.tasks =
 
-                    setStatus(lead!!.statusID)
-                    println("Timetype: ${lead!!.timeType}")
+                        setStatus(lead!!.statusID)
+                        println("Timetype: ${lead!!.timeType}")
 
-                    if(lead!!.dateNice != null){
-                        binding.leadScheduleValTv.text = lead!!.dateNice!!
-                    }
-                    if(lead!!.deadlineNice != null){
-                        binding.leadDeadlineValTv.text = lead!!.deadlineNice!!
-                    }
-                    if(lead!!.repName != null){
-                        binding.leadSalesRepValTv.text = lead!!.repName!!
-                    }
-                    if(lead!!.requestedByCust != null){
-                        if (lead!!.requestedByCust!! == "1") {
-                            binding.leadRequestedValTv.text = getString(R.string.yes)
+                        if (lead!!.dateNice != null) {
+                            binding.leadScheduleValTv.text = lead!!.dateNice!!
                         }
-                        else {
-                            binding.leadRequestedValTv.text = getString(R.string.no)
+                        if (lead!!.deadlineNice != null) {
+                            binding.leadDeadlineValTv.text = lead!!.deadlineNice!!
                         }
-                    }
-                    if(lead!!.description != null){
-                        binding.leadDescriptionValTv.text = lead!!.description!!
-                    }
-
-                   // var leadObj:JSONObject = parentObject["leads"][0] as JSONObject
-                   // var taskJSON: JSONArray = parentObject[0].getJSONArray("tasks")
-                   // val taskList = gson.fromJson(taskJSON.toString() , Array<Task>::class.java).toMutableList()
-
-
-                    //var leadTaskJSON: JSONArray = leadsArray[0].getJSONArray("tasks")
-                    //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
-
-                   // var woItemJSON: JSONArray = parentObject.getJSONArray("items")
-                    //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
-
-
-                   // var leadTaskJSON: JSONArray = parentObject.getJSONArray("tasks")
-                   // val taskList = gson.fromJson(leadTaskJSON.toString() , Array<Task>::class.java).toMutableList()
-                    println("lead.cust = ${lead!!.custName!!}")
-                   // if(lead!!.tasks != null && ){
-                       // println("tasks 1 = ${lead!!.tasks!![0].task}")
-                   // }
-
-
-                    binding.leadTaskRv.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            LeadTasksAdapter(
-                                lead!!.tasks!!.toMutableList(),
-                                it, requireActivity().application,
-                                this@LeadFragment,
-                                lead as Lead
-                            )
+                        if (lead!!.repName != null) {
+                            binding.leadSalesRepValTv.text = lead!!.repName!!
+                        }
+                        if (lead!!.requestedByCust != null) {
+                            if (lead!!.requestedByCust!! == "1") {
+                                binding.leadRequestedValTv.text = getString(R.string.yes)
+                            } else {
+                                binding.leadRequestedValTv.text = getString(R.string.no)
+                            }
+                        }
+                        if (lead!!.description != null) {
+                            binding.leadDescriptionValTv.text = lead!!.description!!
                         }
 
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.leadTaskRv.addItemDecoration(itemDecoration)
+                        // var leadObj:JSONObject = parentObject["leads"][0] as JSONObject
+                        // var taskJSON: JSONArray = parentObject[0].getJSONArray("tasks")
+                        // val taskList = gson.fromJson(taskJSON.toString() , Array<Task>::class.java).toMutableList()
 
 
+                        //var leadTaskJSON: JSONArray = leadsArray[0].getJSONArray("tasks")
+                        //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
 
-                        //(adapter as LeadTasksAdapter).notifyDataSetChanged()
+                        // var woItemJSON: JSONArray = parentObject.getJSONArray("items")
+                        //val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
+
+
+                        // var leadTaskJSON: JSONArray = parentObject.getJSONArray("tasks")
+                        // val taskList = gson.fromJson(leadTaskJSON.toString() , Array<Task>::class.java).toMutableList()
+                        println("lead.cust = ${lead!!.custName!!}")
+                        // if(lead!!.tasks != null && ){
+                        // println("tasks 1 = ${lead!!.tasks!![0].task}")
+                        // }
+
+
+                        binding.leadTaskRv.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = activity?.let {
+                                LeadTasksAdapter(
+                                    lead!!.tasks!!.toMutableList(),
+                                    it, requireActivity().application,
+                                    this@LeadFragment,
+                                    lead as Lead
+                                )
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            binding.leadTaskRv.addItemDecoration(itemDecoration)
+
+
+                            //(adapter as LeadTasksAdapter).notifyDataSetChanged()
+                        }
                     }
                     hideProgressView()
 
@@ -305,7 +304,9 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
-                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                            globalVars.playSaveSound(myView.context)
+                        }
 
                         hideProgressView()
 

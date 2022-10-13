@@ -246,33 +246,34 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
 
-                    val images: JSONArray = parentObject.getJSONArray("images")
-                    println("images = $images")
-                    println("images count = ${images.length()}")
+                        val images: JSONArray = parentObject.getJSONArray("images")
+                        println("images = $images")
+                        println("images count = ${images.length()}")
 
 
-                    val gson = GsonBuilder().create()
-                    loadMoreImageList =
-                        gson.fromJson(images.toString(), Array<Image>::class.java)
-                            .toMutableList()
-                    println("loadMoreImageList count = ${loadMoreImageList.count()}")
-                    imageList.addAll(loadMoreImageList)
-                    println("imageList count = ${imageList.count()}")
+                        val gson = GsonBuilder().create()
+                        loadMoreImageList =
+                            gson.fromJson(images.toString(), Array<Image>::class.java)
+                                .toMutableList()
+                        println("loadMoreImageList count = ${loadMoreImageList.count()}")
+                        imageList.addAll(loadMoreImageList)
+                        println("imageList count = ${imageList.count()}")
 
-                    // Now we call setRefreshing(false) to signal refresh has finished
-                    binding.customerSwipeContainer.isRefreshing = false
+                        // Now we call setRefreshing(false) to signal refresh has finished
+                        binding.customerSwipeContainer.isRefreshing = false
 
-                    // Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
+                        // Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
 
 
-                    adapter.filterList = imageList
+                        adapter.filterList = imageList
 
-                    adapter.notifyDataSetChanged()
+                        adapter.notifyDataSetChanged()
 
-                    imagesLoaded = true
+                        imagesLoaded = true
+                    }
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -326,7 +327,8 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
     /*
      fun onUploadComplete() {
         println("Upload Complete")
-        myView.findNavController().popBackStack()
+        myView.findNavController().navigateUp()
+        //myView.findNavController().popBackStack()
          imageList = mutableListOf()
          getImages()
     }

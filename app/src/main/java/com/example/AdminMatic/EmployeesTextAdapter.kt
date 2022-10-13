@@ -51,7 +51,7 @@ class EmployeesTextAdapter(private val list: Array<Employee>, private val checkL
     }
 
     override fun getItemCount(): Int{
-        print("getItemCount = ${list.size}")
+        //print("getItemCount = ${list.size}")
         return list.size
     }
 

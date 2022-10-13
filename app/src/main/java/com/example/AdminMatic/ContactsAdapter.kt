@@ -165,7 +165,7 @@ class ContactsAdapter(list: MutableList<Contact>, context_: Context, private val
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }

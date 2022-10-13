@@ -264,6 +264,8 @@ class MainMenuFragment : Fragment() {
     }
 
 
+
+
     private fun getFields(){
         showProgressView()
         println("getFields")

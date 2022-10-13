@@ -306,7 +306,86 @@
             app:layout_constraintTop_toBottomOf="@id/contract_item_search" />
 
 
-        <!--  Lead Task  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contract_item_description_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/contract_item_total_cl">
+
+            <TextView
+                android:id="@+id/contract_item_description_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginVertical="12dp"
+                android:text="@string/new_lead_general_description"
+                android:textSize="18sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+
+            <EditText
+                android:id="@+id/contract_item_description_et"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_margin="5dp"
+                android:gravity="start"
+                android:padding="5dp"
+                android:background="@drawable/text_view_layout"
+                app:layout_constraintTop_toBottomOf="@id/contract_item_description_tv"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contract_item_image_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/contract_item_description_cl">
+
+            <TextView
+                android:id="@+id/contract_item_image_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginVertical="12dp"
+                android:text="@string/contract_item_image"
+                android:textSize="18sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/contract_item_image_iv"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_margin="5dp"
+                app:srcCompat="@drawable/ic_images"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contract_item_image_tv"/>
+
+            <TextView
+                android:id="@+id/contract_item_image_count_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text=""
+                android:textSize="18sp"
+                app:layout_constraintTop_toTopOf="@+id/contract_item_image_iv"
+                app:layout_constraintRight_toRightOf="@+id/contract_item_image_iv"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 
 
@@ -318,6 +397,7 @@
             android:layout_height="0dp"
             android:layout_marginHorizontal="3dp"
             android:layout_marginVertical="3dp"
+            android:visibility="gone"
             android:background="@color/backgroundPure"
             app:layout_constraintTop_toBottomOf="@+id/contract_item_total_cl"
             app:layout_constraintBottom_toBottomOf="parent"

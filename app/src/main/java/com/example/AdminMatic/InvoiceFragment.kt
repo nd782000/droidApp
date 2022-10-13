@@ -119,99 +119,125 @@ class InvoiceFragment : Fragment(), StackDelegate {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val gson = GsonBuilder().create()
+                        val gson = GsonBuilder().create()
 
-                    val savedStatus = invoice!!.invoiceStatus
-                    invoice = gson.fromJson(parentObject.toString() , Invoice::class.java)
-                    invoice!!.invoiceStatus = savedStatus
-
-
-
-                    val itemJSON: JSONArray = parentObject.getJSONArray("items")
-                    val itemList = gson.fromJson(itemJSON.toString() , Array<InvoiceItem>::class.java).toMutableList()
-                    println("TASKJSON $itemJSON")
-                    //println("Number of items: ${itemList.size}")
+                        val savedStatus = invoice!!.invoiceStatus
+                        invoice = gson.fromJson(parentObject.toString(), Invoice::class.java)
+                        invoice!!.invoiceStatus = savedStatus
 
 
+                        val itemJSON: JSONArray = parentObject.getJSONArray("items")
+                        val itemList =
+                            gson.fromJson(itemJSON.toString(), Array<InvoiceItem>::class.java)
+                                .toMutableList()
+                        println("TASKJSON $itemJSON")
+                        //println("Number of items: ${itemList.size}")
 
-                    binding.invoiceTitleValTv.text = invoice!!.title
-                    binding.invoiceDateValTv.text = invoice!!.invoiceDate
-                    binding.invoiceChargeValTv.text = invoice!!.charge
 
-                    when (invoice!!.charge) {
-                        "1" -> {
-                            binding.invoiceChargeValTv.text = getString(R.string.wo_charge_nc)
+                        binding.invoiceTitleValTv.text = invoice!!.title
+                        binding.invoiceDateValTv.text = invoice!!.invoiceDate
+                        binding.invoiceChargeValTv.text = invoice!!.charge
+
+                        when (invoice!!.charge) {
+                            "1" -> {
+                                binding.invoiceChargeValTv.text = getString(R.string.wo_charge_nc)
+                            }
+                            "2" -> {
+                                binding.invoiceChargeValTv.text = getString(R.string.wo_charge_fl)
+                            }
+                            "3" -> {
+                                binding.invoiceChargeValTv.text = getString(R.string.wo_charge_tm)
+                            }
                         }
-                        "2" -> {
-                            binding.invoiceChargeValTv.text = getString(R.string.wo_charge_fl)
+
+                        when (invoice!!.invoiceStatus) {
+                            "0" -> {
+                                Picasso.with(context).load(R.drawable.ic_sync)
+                                    .into(binding.invoiceStatusIv)
+                                Picasso.with(context).load(R.drawable.ic_tag_sync)
+                                    .into(binding.invoiceStatusTagIv)
+                            }
+                            "1" -> {
+                                Picasso.with(context).load(R.drawable.ic_pending)
+                                    .into(binding.invoiceStatusIv)
+                                Picasso.with(context).load(R.drawable.ic_tag_pending)
+                                    .into(binding.invoiceStatusTagIv)
+                            }
+                            "2" -> {
+                                Picasso.with(context).load(R.drawable.ic_awarded)
+                                    .into(binding.invoiceStatusIv)
+                                Picasso.with(context).load(R.drawable.ic_tag_final)
+                                    .into(binding.invoiceStatusTagIv)
+                            }
+                            "3" -> {
+                                Picasso.with(context).load(R.drawable.ic_awarded)
+                                    .into(binding.invoiceStatusIv)
+                                Picasso.with(context).load(R.drawable.ic_tag_sent)
+                                    .into(binding.invoiceStatusTagIv)
+                            }
+                            "4" -> {
+                                Picasso.with(context).load(R.drawable.ic_done)
+                                    .into(binding.invoiceStatusIv)
+                                Picasso.with(context).load(R.drawable.ic_tag_paid)
+                                    .into(binding.invoiceStatusTagIv)
+                            }
+                            "5" -> {
+                                Picasso.with(context).load(R.drawable.ic_canceled)
+                                    .into(binding.invoiceStatusIv)
+                                Picasso.with(context).load(R.drawable.ic_tag_void)
+                                    .into(binding.invoiceStatusTagIv)
+                            }
+
                         }
-                        "3" -> {
-                            binding.invoiceChargeValTv.text = getString(R.string.wo_charge_tm)
+
+                        binding.invoiceSalesRepValTv.text = invoice!!.salesRepName
+                        binding.invoiceSubtotalTv.text = getString(
+                            R.string.invoice_subtotal,
+                            GlobalVars.moneyFormatter.format(invoice!!.subTotal!!.toDouble())
+                        )
+                        binding.invoiceTaxTv.text = getString(
+                            R.string.invoice_sales_tax,
+                            GlobalVars.moneyFormatter.format(invoice!!.taxTotal!!.toDouble())
+                        )
+                        binding.invoiceTotalTv.text = getString(
+                            R.string.dollar_sign,
+                            GlobalVars.moneyFormatter.format(invoice!!.total.toDouble())
+                        )
+
+
+                        binding.invoiceItemRv.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = activity?.let {
+                                InvoiceItemsAdapter(
+                                    itemList,
+                                    context
+                                )
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(
+                                    myView.context,
+                                    DividerItemDecoration.VERTICAL
+                                )
+                            binding.invoiceItemRv.addItemDecoration(itemDecoration)
+                            //(adapter as WoItemsAdapter).notifyDataSetChanged()
                         }
+
+
+
+                        binding.invoiceCustomerBtn.setOnClickListener {
+                            println("customer btn clicked")
+                            val customer = Customer(invoice!!.customer)
+                            val directions =
+                                InvoiceFragmentDirections.navigateInvoiceToCustomer(customer.ID)
+                            myView.findNavController().navigate(directions)
+                        }
+                        //customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
+                        binding.invoiceCustomerBtn.text =
+                            getString(R.string.customer_button, invoice!!.custName, "")
                     }
-
-                    when (invoice!!.invoiceStatus) {
-                        "0" -> {
-                            Picasso.with(context).load(R.drawable.ic_sync).into(binding.invoiceStatusIv)
-                            Picasso.with(context).load(R.drawable.ic_tag_sync).into(binding.invoiceStatusTagIv)
-                        }
-                        "1" -> {
-                            Picasso.with(context).load(R.drawable.ic_pending).into(binding.invoiceStatusIv)
-                            Picasso.with(context).load(R.drawable.ic_tag_pending).into(binding.invoiceStatusTagIv)
-                        }
-                        "2" -> {
-                            Picasso.with(context).load(R.drawable.ic_awarded).into(binding.invoiceStatusIv)
-                            Picasso.with(context).load(R.drawable.ic_tag_final).into(binding.invoiceStatusTagIv)
-                        }
-                        "3" -> {
-                            Picasso.with(context).load(R.drawable.ic_awarded).into(binding.invoiceStatusIv)
-                            Picasso.with(context).load(R.drawable.ic_tag_sent).into(binding.invoiceStatusTagIv)
-                        }
-                        "4" -> {
-                            Picasso.with(context).load(R.drawable.ic_done).into(binding.invoiceStatusIv)
-                            Picasso.with(context).load(R.drawable.ic_tag_paid).into(binding.invoiceStatusTagIv)
-                        }
-                        "5" -> {
-                            Picasso.with(context).load(R.drawable.ic_canceled).into(binding.invoiceStatusIv)
-                            Picasso.with(context).load(R.drawable.ic_tag_void).into(binding.invoiceStatusTagIv)
-                        }
-
-                    }
-
-                    binding.invoiceSalesRepValTv.text = invoice!!.salesRepName
-                    binding.invoiceSubtotalTv.text = getString(R.string.invoice_subtotal, GlobalVars.moneyFormatter.format(invoice!!.subTotal!!.toDouble()))
-                    binding.invoiceTaxTv.text = getString(R.string.invoice_sales_tax, GlobalVars.moneyFormatter.format(invoice!!.taxTotal!!.toDouble()))
-                    binding.invoiceTotalTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(invoice!!.total.toDouble()))
-
-
-                    binding.invoiceItemRv.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            InvoiceItemsAdapter(
-                                itemList,
-                                context
-                            )
-                        }
-
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.invoiceItemRv.addItemDecoration(itemDecoration)
-                        //(adapter as WoItemsAdapter).notifyDataSetChanged()
-                    }
-
-
-
-                    binding.invoiceCustomerBtn.setOnClickListener{
-                        println("customer btn clicked")
-                        val customer = Customer(invoice!!.customer)
-                        val directions = InvoiceFragmentDirections.navigateInvoiceToCustomer(customer.ID)
-                        myView.findNavController().navigate(directions)
-                    }
-                    //customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
-                    binding.invoiceCustomerBtn.text = getString(R.string.customer_button, invoice!!.custName, "")
-
 
                     hideProgressView()
 

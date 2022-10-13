@@ -112,7 +112,7 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }
@@ -444,7 +444,7 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${list.size}")
+        //print("getItemCount = ${list.size}")
         return list.size
 
     }

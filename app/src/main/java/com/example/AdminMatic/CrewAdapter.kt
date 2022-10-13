@@ -47,7 +47,7 @@ class CrewAdapter(list: MutableList<Crew>, private val context: Context, cellCli
         println("queryText = $queryText")
 
         val empList = crew.emps!!.toMutableList()
-        val adapter = EmployeesAdapter(empList, context, cCL)
+        val adapter = EmployeesAdapter(empList, true, context, cCL)
 
         //holder.mRecycler!!.setHasFixedSize(true)
         holder.mRecycler!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

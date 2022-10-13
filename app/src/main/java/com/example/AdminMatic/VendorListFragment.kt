@@ -103,95 +103,91 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val vendors:JSONArray = parentObject.getJSONArray("vendors")
-                    println("vendors = $vendors")
-                    println("vendors count = ${vendors.length()}")
-
-
-
-                    val gson = GsonBuilder().create()
-                    val vendorsList = gson.fromJson(vendors.toString() , Array<Vendor>::class.java).toMutableList()
+                        val vendors: JSONArray = parentObject.getJSONArray("vendors")
+                        println("vendors = $vendors")
+                        println("vendors count = ${vendors.length()}")
 
 
-                    binding.listRecyclerView.apply {
-                        layoutManager = LinearLayoutManager(activity)
+                        val gson = GsonBuilder().create()
+                        val vendorsList = gson.fromJson(vendors.toString(), Array<Vendor>::class.java).toMutableList()
 
 
-                        adapter = activity?.let {
-                            VendorsAdapter(
-                                vendorsList,
-                                this@VendorListFragment
+                        binding.listRecyclerView.apply {
+                            layoutManager = LinearLayoutManager(activity)
+
+
+                            adapter = activity?.let {
+                                VendorsAdapter(
+                                    vendorsList,
+                                    this@VendorListFragment
+                                )
+                            }
+
+                            val itemDecoration: ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            binding.listRecyclerView.addItemDecoration(itemDecoration)
+
+                            //for item animations
+                            // recyclerView.itemAnimator = SlideInUpAnimator()
+
+
+                            // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+                            // Setup refresh listener which triggers new data loading
+                            // Setup refresh listener which triggers new data loading
+                            binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
+                                // Make sure you call swipeContainer.setRefreshing(false)
+                                // once the network request has completed successfully.
+                                //fetchTimelineAsync(0)
+                                binding.vendorsSearch.setQuery("", false)
+                                binding.vendorsSearch.clearFocus()
+                                getVendors()
+                            }
+                            // Configure the refreshing colors
+                            // Configure the refreshing colors
+                            binding.customerSwipeContainer.setColorSchemeResources(
+                                R.color.button,
+                                R.color.black,
+                                R.color.colorAccent,
+                                R.color.colorPrimaryDark
                             )
+
+
+                            //(adapter as VendorsAdapter).notifyDataSetChanged()
+
+                            // Remember to CLEAR OUT old items before appending in the new ones
+
+                            // ...the data has come back, add new items to your adapter...
+
+                            // Now we call setRefreshing(false) to signal refresh has finished
+                            binding.customerSwipeContainer.isRefreshing = false
+
+                            //  Toast.makeText(activity,"${vendorsList.count()} Vendors Loaded",Toast.LENGTH_SHORT).show()
+
+
+                            //search listener
+                            binding.vendorsSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+
+                                override fun onQueryTextSubmit(query: String?): Boolean {
+                                    return false
+                                }
+
+                                override fun onQueryTextChange(newText: String?): Boolean {
+                                    println("onQueryTextChange = $newText")
+                                    (adapter as VendorsAdapter).filter.filter(newText)
+                                    return false
+                                }
+
+                            })
+
                         }
 
-                        val itemDecoration: ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.listRecyclerView.addItemDecoration(itemDecoration)
-
-                        //for item animations
-                        // recyclerView.itemAnimator = SlideInUpAnimator()
-
-
-
-                        // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
-                        // Setup refresh listener which triggers new data loading
-                        // Setup refresh listener which triggers new data loading
-                        binding.customerSwipeContainer.setOnRefreshListener { // Your code to refresh the list here.
-                            // Make sure you call swipeContainer.setRefreshing(false)
-                            // once the network request has completed successfully.
-                            //fetchTimelineAsync(0)
-                            binding.vendorsSearch.setQuery("", false)
-                            binding.vendorsSearch.clearFocus()
-                            getVendors()
-                        }
-                        // Configure the refreshing colors
-                        // Configure the refreshing colors
-                        binding.customerSwipeContainer.setColorSchemeResources(
-                            R.color.button,
-                            R.color.black,
-                            R.color.colorAccent,
-                            R.color.colorPrimaryDark
-                        )
-
-
-
-                        //(adapter as VendorsAdapter).notifyDataSetChanged()
-
-                        // Remember to CLEAR OUT old items before appending in the new ones
-
-                        // ...the data has come back, add new items to your adapter...
-
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                        binding.customerSwipeContainer.isRefreshing = false
-
-                        //  Toast.makeText(activity,"${vendorsList.count()} Vendors Loaded",Toast.LENGTH_SHORT).show()
-
-
-
-                        //search listener
-                        binding.vendorsSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-
-                            override fun onQueryTextSubmit(query: String?): Boolean {
-                                return false
-                            }
-
-                            override fun onQueryTextChange(newText: String?): Boolean {
-                                println("onQueryTextChange = $newText")
-                                (adapter as VendorsAdapter).filter.filter(newText)
-                                return false
-                            }
-
-                        })
+                        binding.footerTv.text = getString(R.string.x_active_vendors, vendorsList.size)
 
                     }
-
-                    binding.footerTv.text = getString(R.string.x_active_vendors, vendorsList.size)
-
-
 
 
                     /* Here 'response' is a String containing the response you received from the website... */

@@ -131,46 +131,46 @@ class PayrollSummaryFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
 
-
-                    val payroll: JSONArray = parentObject.getJSONArray("payroll")
-
-
-                    val gson = GsonBuilder().create()
-                    //payrollList = gson.fromJson(payroll.toString() , Array<Payroll>::class.java).toMutableList()
-                    //println("Payroll list size: ${payrollList.size}")
-
-                    payrollArray = gson.fromJson(response, PayrollArray::class.java)
+                        val payroll: JSONArray = parentObject.getJSONArray("payroll")
 
 
-                    binding.recyclerView.apply {
-                        layoutManager = LinearLayoutManager(activity)
+                        val gson = GsonBuilder().create()
+                        //payrollList = gson.fromJson(payroll.toString() , Array<Payroll>::class.java).toMutableList()
+                        //println("Payroll list size: ${payrollList.size}")
 
-                        adapter = activity?.let {
-                            PayrollAdapter(payrollArray.payroll!!.toMutableList(), it)
+                        payrollArray = gson.fromJson(response, PayrollArray::class.java)
+
+
+                        binding.recyclerView.apply {
+                            layoutManager = LinearLayoutManager(activity)
+
+                            adapter = activity?.let {
+                                PayrollAdapter(payrollArray.payroll!!.toMutableList(), it)
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            binding.recyclerView.addItemDecoration(itemDecoration)
+
                         }
 
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.recyclerView.addItemDecoration(itemDecoration)
+                        // Totals view
+                        if (payrollArray.pending == "1") {
+                            binding.totalTv.text =
+                                getString(R.string.payroll_summary_totals, payrollArray.totalShifts, getString(R.string.payroll_summary_pending))
+                        } else {
+                            binding.totalTv.text = getString(R.string.payroll_summary_totals, payrollArray.totalShifts, payrollArray.combinedTotal)
+                        }
 
-                    }
-
-                    // Totals view
-                    if (payrollArray.pending == "1") {
-                        binding.totalTv.text = getString(R.string.payroll_summary_totals, payrollArray.totalShifts, getString(R.string.payroll_summary_pending))
-                    }
-                    else{
-                        binding.totalTv.text = getString(R.string.payroll_summary_totals, payrollArray.totalShifts, payrollArray.combinedTotal)
-                    }
-
-                    // Pay view
-                    if (payrollArray.pending == "1") {
-                        binding.payTv.text = getString(R.string.payroll_summary_pay, getString(R.string.payroll_summary_pending))
-                    }else{
-                        binding.payTv.text = getString(R.string.payroll_summary_pay, payrollArray.totalPay)
+                        // Pay view
+                        if (payrollArray.pending == "1") {
+                            binding.payTv.text = getString(R.string.payroll_summary_pay, getString(R.string.payroll_summary_pending))
+                        } else {
+                            binding.payTv.text = getString(R.string.payroll_summary_pay, payrollArray.totalPay)
+                        }
                     }
 
                 } catch (e: JSONException) {

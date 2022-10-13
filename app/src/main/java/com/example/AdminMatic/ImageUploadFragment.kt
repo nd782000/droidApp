@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -871,19 +872,21 @@ private  fun saveTask(){
             try {
                 val parentObject = JSONObject(response)
                 println("parentObject = $parentObject")
-                globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                val gson = GsonBuilder().create()
+                    val gson = GsonBuilder().create()
 
 
-                taskID = gson.fromJson(parentObject["leadTaskID"].toString() , String::class.java)
+                    taskID = gson.fromJson(parentObject["leadTaskID"].toString() , String::class.java)
 
-                // If the lead tasks has no images, just pop back now
-                if (selectedUris.size > 0) {
-                    uploadImage()
-                }
-                else {
-                    activity!!.supportFragmentManager.popBackStack()
+                    // If the lead tasks has no images, just pop back now
+                    if (selectedUris.size > 0) {
+                        uploadImage()
+                    }
+                    else {
+                        globalVars.playSaveSound(myView.context)
+                        myView.findNavController().navigateUp()
+                    }
                 }
 
 
@@ -954,6 +957,7 @@ private  fun saveTask(){
 
                     if (uploadedImageCount == selectedUris.count()){
                         //upload complete
+                        globalVars.playSaveSound(myView.context)
                         back()
                     }
 
@@ -1167,7 +1171,8 @@ private  fun saveTask(){
         println("back")
 
         (activity as MainActivity?)!!.refreshImages()
-        requireActivity().supportFragmentManager.popBackStack()
+        //requireActivity().supportFragmentManager.popBackStack()
+        myView.findNavController().navigateUp()
     }
 
     fun showProgressView() {

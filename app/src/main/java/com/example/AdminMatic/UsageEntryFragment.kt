@@ -110,7 +110,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                         // android.R.string.yes, Toast.LENGTH_SHORT).show()
                         println("go back")
 
-                        parentFragmentManager.popBackStackImmediate()
+                        myView.findNavController().navigateUp()
 
 
                     }
@@ -124,7 +124,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 }else{
                     println("go back")
 
-                    parentFragmentManager.popBackStackImmediate()
+                    myView.findNavController().navigateUp()
 
                     //val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
                     //val navController = navHostFragment.navController
@@ -1109,19 +1109,20 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
 
-                    val usageNew: JSONArray = parentObject.getJSONArray("usage")
+                        val usageNew: JSONArray = parentObject.getJSONArray("usage")
 
-                    val gson = GsonBuilder().create()
-                    woItem!!.usage = gson.fromJson(usageNew.toString(), Array<Usage>::class.java)
-                    binding.usageEntryRv.adapter!!.notifyDataSetChanged()
-                    usageToLog.clear()
-                    addActiveUsage()
+                        val gson = GsonBuilder().create()
+                        woItem!!.usage = gson.fromJson(usageNew.toString(), Array<Usage>::class.java)
+                        binding.usageEntryRv.adapter!!.notifyDataSetChanged()
+                        usageToLog.clear()
+                        addActiveUsage()
 
 
-                    globalVars.playSaveSound(myView.context)
+                        globalVars.playSaveSound(myView.context)
+                    }
 
                     hideProgressView()
 
@@ -1268,47 +1269,48 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val gson = GsonBuilder().create()
-                    woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
+                        val gson = GsonBuilder().create()
+                        woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
 
-                    binding.usageEmpSpinner.setBackgroundResource(R.drawable.text_view_layout)
+                        binding.usageEmpSpinner.setBackgroundResource(R.drawable.text_view_layout)
 
-                    binding.startBtn.setOnClickListener{
-                        start()
+                        binding.startBtn.setOnClickListener {
+                            start()
+                        }
+                        binding.stopBtn.setOnClickListener {
+                            stop()
+                        }
+
+                        binding.usageSubmitBtn.setOnClickListener {
+                            submitUsage()
+                        }
+
+
+                        val empAdapter = EmpAdapter(myView.context, GlobalVars.employeeList!!.toList())
+                        binding.usageEmpSpinner.adapter = empAdapter
+
+
+
+                        binding.usageEmpSpinner.onItemSelectedListener = this@UsageEntryFragment
+
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        binding.usageEntryRv.addItemDecoration(itemDecoration)
+
+                        hideProgressView()
+
+                        println("woItem!!.type = ${woItem!!.type}")
+                        if (woItem!!.type != "1") {
+                            binding.usageEmpSpinner.visibility = View.GONE
+                            binding.startStopCl.visibility = View.GONE
+                        }
+
+
+                        usageToLog.clear()
+                        addActiveUsage()
                     }
-                    binding.stopBtn.setOnClickListener{
-                        stop()
-                    }
-
-                    binding.usageSubmitBtn.setOnClickListener{
-                        submitUsage()
-                    }
-
-
-                    val empAdapter = EmpAdapter(myView.context,GlobalVars.employeeList!!.toList())
-                    binding.usageEmpSpinner.adapter = empAdapter
-
-
-
-                    binding.usageEmpSpinner.onItemSelectedListener = this@UsageEntryFragment
-
-                    val itemDecoration: RecyclerView.ItemDecoration =
-                        DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                    binding.usageEntryRv.addItemDecoration(itemDecoration)
-
-                    hideProgressView()
-
-                    println("woItem!!.type = ${woItem!!.type}")
-                    if (woItem!!.type != "1"){
-                        binding.usageEmpSpinner.visibility = View.GONE
-                        binding.startStopCl.visibility = View.GONE
-                    }
-
-
-                    usageToLog.clear()
-                    addActiveUsage()
 
 
 

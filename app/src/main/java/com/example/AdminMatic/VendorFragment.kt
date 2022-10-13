@@ -260,21 +260,22 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
-                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                        val gson = GsonBuilder().create()
+                            val gson = GsonBuilder().create()
 
-                        val vendorArray = gson.fromJson(parentObject.toString() ,VendorArray::class.java)
+                            val vendorArray = gson.fromJson(parentObject.toString(), VendorArray::class.java)
 
-                        vendor = vendorArray.vendors[0]
-                        if (vendor!!.lat == null) {
-                            vendor!!.lat = "0"
+                            vendor = vendorArray.vendors[0]
+                            if (vendor!!.lat == null) {
+                                vendor!!.lat = "0"
+                            }
+                            if (vendor!!.lng == null) {
+                                vendor!!.lng = "0"
+                            }
+
+                            populateVendorView()
                         }
-                        if (vendor!!.lng == null) {
-                            vendor!!.lng = "0"
-                        }
-
-                        populateVendorView()
 
 
                     } catch (e: JSONException) {

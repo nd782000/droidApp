@@ -125,38 +125,41 @@ class UsageFragment : Fragment(), EmployeeUsageCellClickListener {
                 hideProgressView()
                 try {
                     val parentObject = JSONObject(response)
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val employees:JSONArray = parentObject.getJSONArray("usages")
+                        val employees: JSONArray = parentObject.getJSONArray("usages")
 
 
-                    val gson = GsonBuilder().create()
-                    val usageList = gson.fromJson(employees.toString() , Array<Usage>::class.java).toMutableList()
+                        val gson = GsonBuilder().create()
+                        val usageList = gson.fromJson(employees.toString(), Array<Usage>::class.java).toMutableList()
 
-                    //employeeCountTv.text = getString(R.string.x_active_employees, employeesList.size)
+                        //employeeCountTv.text = getString(R.string.x_active_employees, employeesList.size)
 
-                    binding.usageRecyclerView.apply {
-                        layoutManager = LinearLayoutManager(activity)
+                        binding.usageRecyclerView.apply {
+                            layoutManager = LinearLayoutManager(activity)
 
-                        adapter = activity?.let {
-                            EmployeeUsageAdapter(usageList,
-                                it, this@UsageFragment)
+                            adapter = activity?.let {
+                                EmployeeUsageAdapter(
+                                    usageList,
+                                    it, this@UsageFragment
+                                )
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            binding.usageRecyclerView.addItemDecoration(itemDecoration)
+
+
+                            var totalHours = 0.0
+                            usageList.forEach {
+                                totalHours += it.qty.toDouble()
+                            }
+
+                            binding.usageFooterTv.text = getString(R.string.usage_footer_text, usageList.size, totalHours)
+
+                            (adapter as EmployeeUsageAdapter).notifyDataSetChanged()
+
                         }
-
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.usageRecyclerView.addItemDecoration(itemDecoration)
-
-
-                        var totalHours = 0.0
-                        usageList.forEach {
-                            totalHours += it.qty.toDouble()
-                        }
-
-                        binding.usageFooterTv.text = getString(R.string.usage_footer_text, usageList.size, totalHours)
-
-                        (adapter as EmployeeUsageAdapter).notifyDataSetChanged()
-
                     }
 
                 } catch (e: JSONException) {

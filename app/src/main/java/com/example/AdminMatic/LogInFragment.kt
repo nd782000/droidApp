@@ -122,6 +122,7 @@ class LogInFragment : Fragment() {
         menu.clear()
         inflater.inflate(R.menu.main_menu_menu, menu)
         menu.findItem(R.id.version_item).title = getString(R.string.version, BuildConfig.VERSION_NAME)
+        menu.removeItem(R.id.reload_company_data_item)
         super.onCreateOptionsMenu(menu, inflater)
         ((activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false))
     }
@@ -526,6 +527,7 @@ class LogInFragment : Fragment() {
 
     }
 
+    /*
     private fun getStyles(){
         println("getStyles")
 
@@ -546,7 +548,6 @@ class LogInFragment : Fragment() {
                     println("parentObject = $parentObject")
                     globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
-                    // Todo: finish storing and wiring in these color values
                     myView.findNavController().navigate(R.id.navigateToMainMenu)
 
 
@@ -581,7 +582,7 @@ class LogInFragment : Fragment() {
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
 
     }
-
+    */
 
 
 
@@ -718,6 +719,7 @@ class LogInFragment : Fragment() {
                             putString("deviceID",deviceID)
                             apply()
                         }
+                        globalVars.playSaveSound(myView.context)
                         getFields()
                     }
 

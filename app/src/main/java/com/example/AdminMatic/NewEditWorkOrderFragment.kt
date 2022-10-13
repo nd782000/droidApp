@@ -75,13 +75,14 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
                     builder.setTitle(getString(R.string.dialogue_edits_made_title))
                     builder.setMessage(R.string.dialogue_edits_made_body)
                     builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-                        parentFragmentManager.popBackStackImmediate()
+                        myView.findNavController().navigateUp()
+
                     }
                     builder.setNegativeButton(R.string.no) { _, _ ->
                     }
                     builder.show()
                 }else{
-                    parentFragmentManager.popBackStackImmediate()
+                    myView.findNavController().navigateUp()
                 }
             }
         }
@@ -202,8 +203,7 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
 
             adapter = activity?.let {
                 EmployeesAdapter(
-                    GlobalVars.employeeList!!.toMutableList(),
-                    myView.context, this@NewEditWorkOrderFragment
+                    GlobalVars.employeeList!!.toMutableList(), false, myView.context, this@NewEditWorkOrderFragment
                 )
             }
 
@@ -396,13 +396,15 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    globalVars.playSaveSound(myView.context)
-                    editsMade = false
+                        globalVars.playSaveSound(myView.context)
+                        editsMade = false
 
 
-                    myView.findNavController().popBackStack()
+                        myView.findNavController().navigateUp()
+                    }
+                    hideProgressView()
 
 
                 } catch (e: JSONException) {
@@ -475,23 +477,24 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val gson = GsonBuilder().create()
-                    val newWoID:String = gson.fromJson(parentObject["woID"].toString() , String::class.java)
-                    workOrder!!.woID = newWoID
-                    globalVars.playSaveSound(myView.context)
-                    editsMade = false
+                        val gson = GsonBuilder().create()
+                        val newWoID: String = gson.fromJson(parentObject["woID"].toString(), String::class.java)
+                        workOrder!!.woID = newWoID
+                        globalVars.playSaveSound(myView.context)
+                        editsMade = false
 
 
-                    if (editMode) {
-                        myView.findNavController().popBackStack()
+                        if (editMode) {
+                            myView.findNavController().navigateUp()
+                        } else {
+                            val directions = NewEditWorkOrderFragmentDirections.navigateToWorkOrder(null)
+                            directions.workOrderID = newWoID
+                            myView.findNavController().navigate(directions)
+                        }
                     }
-                    else {
-                        val directions = NewEditWorkOrderFragmentDirections.navigateToWorkOrder(null)
-                        directions.workOrderID = newWoID
-                        myView.findNavController().navigate(directions)
-                    }
+                    hideProgressView()
 
 
                 } catch (e: JSONException) {

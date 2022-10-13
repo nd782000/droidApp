@@ -149,7 +149,9 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
 
-                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                            globalVars.playSaveSound(myView.context)
+                        }
 
 
                         hideProgressView()
@@ -413,12 +415,15 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
     }
 
     override fun onContractItemCellClickListener(data:ContractItem) {
+        val asdf = myView.findNavController().currentDestination
+        println("navigating to contract item from ${asdf}")
+
         val directions = ContractFragmentDirections.navigateContractToContractItem(data, false)
         myView.findNavController().navigate(directions)
     }
 
     override fun onAddContractItemButtonListener() {
-
+        println("onAddContractItemButtonListener()")
         val blankContractItem = ContractItem("0", "", "2", "0", contract!!.ID, "0")
         val directions = ContractFragmentDirections.navigateContractToContractItem(blankContractItem, true)
 

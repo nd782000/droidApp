@@ -44,7 +44,7 @@ class ShiftsAdapter(list: MutableList<Shift>, private val context: Context) : Re
 
     override fun getItemCount(): Int{
 
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
 
     }

@@ -69,7 +69,7 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_edit_contract.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_edit_customer.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_edit_lead.xml" value="0.24157303370786518" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_edit_work_order.xml" value="0.25" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_edit_work_order.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_new_service.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_payroll.xml" value="0.27445652173913043" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_payroll_summary.xml" value="0.22" />
@@ -109,8 +109,9 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/usage_material_list_item.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/vendor_list_item.xml" value="0.24048913043478262" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/wo_item_list_item.xml" value="0.25" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/work_order_list_item.xml" value="0.25" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/work_order_list_item.xml" value="0.75" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/contact_options_menu.xml" value="0.1" />
+        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/contract_item_menu.xml" value="0.11851851851851852" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/contract_menu.xml" value="0.365625" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/customer_menu.xml" value="0.1" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/menu/delete_menu.xml" value="0.25" />

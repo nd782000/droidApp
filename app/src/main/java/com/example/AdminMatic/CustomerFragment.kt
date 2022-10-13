@@ -131,12 +131,14 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
-                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                        val gson = GsonBuilder().create()
-                        val customerArray = gson.fromJson(parentObject.toString() ,CustomerArray::class.java)
+                            val gson = GsonBuilder().create()
+                            val customerArray =
+                                gson.fromJson(parentObject.toString(), CustomerArray::class.java)
 
-                        customer = customerArray.customers[0]
+                            customer = customerArray.customers[0]
+                        }
 
                         getLeads()
 
@@ -199,23 +201,26 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val leads: JSONArray = parentObject.getJSONArray("leads")
-                    println("leads = $leads")
-                    println("leads count = ${leads.length()}")
-
-
-                    val gson = GsonBuilder().create()
-                    val leadsList = gson.fromJson(leads.toString() , Array<Lead>::class.java).toMutableList()
+                        val leads: JSONArray = parentObject.getJSONArray("leads")
+                        println("leads = $leads")
+                        println("leads count = ${leads.length()}")
 
 
-                    val leadAdapter = LeadsAdapter(leadsList, this.myView.context, this, true)
+                        val gson = GsonBuilder().create()
+                        val leadsList =
+                            gson.fromJson(leads.toString(), Array<Lead>::class.java).toMutableList()
 
-                    binding.customerLeadsRv.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    binding.customerLeadsRv.adapter = leadAdapter
 
-                    //layoutViews()
+                        val leadAdapter = LeadsAdapter(leadsList, this.myView.context, this, true)
+
+                        binding.customerLeadsRv.layoutManager =
+                            LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        binding.customerLeadsRv.adapter = leadAdapter
+
+
+                    }
                     getContracts()
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -285,21 +290,26 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val contracts: JSONArray = parentObject.getJSONArray("contracts")
-                    println("contracts = $contracts")
-                    println("contracts count = ${contracts.length()}")
+                        val contracts: JSONArray = parentObject.getJSONArray("contracts")
+                        println("contracts = $contracts")
+                        println("contracts count = ${contracts.length()}")
 
-                    val gson = GsonBuilder().create()
-                    val contractsList = gson.fromJson(contracts.toString() , Array<Contract>::class.java).toMutableList()
+                        val gson = GsonBuilder().create()
+                        val contractsList =
+                            gson.fromJson(contracts.toString(), Array<Contract>::class.java)
+                                .toMutableList()
 
-                    val contractAdapter = ContractsAdapter(contractsList, this.myView.context, this, true)
+                        val contractAdapter =
+                            ContractsAdapter(contractsList, this.myView.context, this, true)
 
-                    binding.customerContractsRv.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    binding.customerContractsRv.adapter = contractAdapter
+                        binding.customerContractsRv.layoutManager =
+                            LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        binding.customerContractsRv.adapter = contractAdapter
 
-                    //layoutViews()
+
+                    }
                     getWorkOrders()
 
 
@@ -361,21 +371,27 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
-                    println("workOrders = $workOrders")
-                    println("workOrders count = ${workOrders.length()}")
 
-                    val gson = GsonBuilder().create()
-                    val workOrdersList = gson.fromJson(workOrders.toString() , Array<WorkOrder>::class.java).toMutableList()
+                        val workOrders: JSONArray = parentObject.getJSONArray("workOrders")
+                        println("workOrders = $workOrders")
+                        println("workOrders count = ${workOrders.length()}")
 
-                    val workOrderAdapter = WorkOrdersAdapter(workOrdersList, this.myView.context, this, true)
+                        val gson = GsonBuilder().create()
+                        val workOrdersList =
+                            gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
+                                .toMutableList()
 
-                    binding.customerWosRv.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    binding.customerWosRv.adapter = workOrderAdapter
+                        val workOrderAdapter =
+                            WorkOrdersAdapter(workOrdersList, this.myView.context, this, true)
 
-                    //layoutViews()
+                        binding.customerWosRv.layoutManager =
+                            LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        binding.customerWosRv.adapter = workOrderAdapter
+
+
+                    }
                     getInvoices()
 
 
@@ -437,21 +453,28 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val invoices: JSONArray = parentObject.getJSONArray("invoices")
-                    println("invoices = $invoices")
-                    println("invoices count = ${invoices.length()}")
+                        val invoices: JSONArray = parentObject.getJSONArray("invoices")
+                        println("invoices = $invoices")
+                        println("invoices count = ${invoices.length()}")
 
-                    val gson = GsonBuilder().create()
-                    val invoicesList = gson.fromJson(invoices.toString() , Array<Invoice>::class.java).toMutableList()
+                        val gson = GsonBuilder().create()
+                        val invoicesList =
+                            gson.fromJson(invoices.toString(), Array<Invoice>::class.java)
+                                .toMutableList()
 
 
-                    val invoicesAdapter = InvoicesAdapter(invoicesList, com.example.AdminMatic.myView.context, this)
+                        val invoicesAdapter = InvoicesAdapter(
+                            invoicesList,
+                            com.example.AdminMatic.myView.context,
+                            this
+                        )
 
-                    binding.customerInvoicesRv.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-                    binding.customerInvoicesRv.adapter = invoicesAdapter
-
+                        binding.customerInvoicesRv.layoutManager =
+                            LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
+                        binding.customerInvoicesRv.adapter = invoicesAdapter
+                    }
                     layoutViews()
                    // getImages()
 
@@ -526,25 +549,33 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val images:JSONArray = parentObject.getJSONArray("images")
-                    println("images = $images")
-                    println("images count = ${images.length()}")
+                        val images: JSONArray = parentObject.getJSONArray("images")
+                        println("images = $images")
+                        println("images count = ${images.length()}")
 
-                    val gson = GsonBuilder().create()
-                    loadMoreImageList = gson.fromJson(images.toString() , Array<Image>::class.java).toMutableList()
-                    println("loadMoreImageList count = ${loadMoreImageList.count()}")
-                    imageList.addAll(loadMoreImageList)
-                    println("imageList count = ${imageList.count()}")
+                        val gson = GsonBuilder().create()
+                        loadMoreImageList =
+                            gson.fromJson(images.toString(), Array<Image>::class.java)
+                                .toMutableList()
+                        println("loadMoreImageList count = ${loadMoreImageList.count()}")
+                        imageList.addAll(loadMoreImageList)
+                        println("imageList count = ${imageList.count()}")
 
-                    Toast.makeText(activity,"${imageList.count()} Images Loaded",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            activity,
+                            "${imageList.count()} Images Loaded",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
-                    adapter.filterList = imageList
-                    imagesLoaded = true
-                    binding.customerImagesRv.adapter = adapter
+                        adapter.filterList = imageList
+                        imagesLoaded = true
+                        binding.customerImagesRv.adapter = adapter
 
-                    binding.customerImagesRv.layoutManager = GridLayoutManager(myView.context, 2)
+                        binding.customerImagesRv.layoutManager =
+                            GridLayoutManager(myView.context, 2)
+                    }
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {

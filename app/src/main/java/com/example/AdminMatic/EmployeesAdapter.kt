@@ -10,10 +10,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
@@ -21,7 +18,7 @@ import com.squareup.picasso.Picasso
 import java.util.*
 
 
-class EmployeesAdapter(private val list: MutableList<Employee>, private val context: Context,private val cellClickListener: EmployeeCellClickListener)
+class EmployeesAdapter(private val list: MutableList<Employee>, val showMenu:Boolean, private val context: Context,private val cellClickListener: EmployeeCellClickListener)
 
     : RecyclerView.Adapter<EmployeeViewHolder>(), Filterable {
 
@@ -114,62 +111,67 @@ class EmployeesAdapter(private val list: MutableList<Employee>, private val cont
 
 
         //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
-            println("menu click")
+        if (showMenu) {
+            holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
+                println("menu click")
 
-            val popUp = PopupMenu(myView.context,holder.itemView.findViewById<TextView>(R.id.textViewOptions))
-            popUp.inflate(R.menu.emp_options_menu)
-            popUp.gravity = Gravity.CENTER
-            popUp.setOnMenuItemClickListener { item: MenuItem? ->
+                val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.textViewOptions))
+                popUp.inflate(R.menu.emp_options_menu)
+                popUp.gravity = Gravity.CENTER
+                popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
-                when (item!!.itemId) {
-                    R.id.call -> {
-                        //Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-                        println("phone btn clicked ${employee.phone}")
+                    when (item!!.itemId) {
+                        R.id.call -> {
+                            //Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
+                            println("phone btn clicked ${employee.phone}")
 
-                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.phone))
-                        myView.context.startActivity(intent)
-                    }
-                    R.id.text -> {
+                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.phone))
+                            myView.context.startActivity(intent)
+                        }
+                        R.id.text -> {
 
 
-                        // val intent = Intent(Intent.ACTION_SEND, Uri.parse("tel:" + data.phone))
-                        //intent.putExtra("sms_body", "Here goes your message...")
-                        // myView.context.startActivity(intent)
-                        // val number =
-                        // "12346556" // The number on which you want to send SMS
+                            // val intent = Intent(Intent.ACTION_SEND, Uri.parse("tel:" + data.phone))
+                            //intent.putExtra("sms_body", "Here goes your message...")
+                            // myView.context.startActivity(intent)
+                            // val number =
+                            // "12346556" // The number on which you want to send SMS
 
-                        myView.context.startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.fromParts("sms", data.phone, null)
+                            myView.context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.fromParts("sms", data.phone, null)
+                                )
                             )
-                        )
-                        //startActivity(Intent.createChooser(intent, "Send Email Using: "));
+                            //startActivity(Intent.createChooser(intent, "Send Email Using: "));
 
-                        // Toast.makeText(myView.context, data.ID, Toast.LENGTH_SHORT).show()
-                        // val intent = Intent(Intent., Uri.parse("tel:" + employee!!.phone))
-                        // myView.context.startActivity(intent)
+                            // Toast.makeText(myView.context, data.ID, Toast.LENGTH_SHORT).show()
+                            // val intent = Intent(Intent., Uri.parse("tel:" + employee!!.phone))
+                            // myView.context.startActivity(intent)
+                        }
+
                     }
 
+                    true
                 }
 
-                true
-            }
 
 
+                popUp.show()
 
-            popUp.show()
-
-            /*
+                /*
             fun onClick(view: View?) {
                 println("menu click")
                 //will show popup menu here
             }*/
 
-            holder.employee = employee
+                holder.employee = employee
 
 
+            }
+        }
+        else { //show menu
+            holder.itemView.findViewById<TextView>(R.id.textViewOptions).visibility = View.GONE
         }
 
 

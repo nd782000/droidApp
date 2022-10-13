@@ -32,13 +32,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.MutableList
-import kotlin.collections.MutableMap
-import kotlin.collections.count
-import kotlin.collections.mutableListOf
 import kotlin.collections.set
 
 
@@ -69,8 +62,6 @@ interface StackDelegate {
    // fun suggestNewWorkOrderFromContract()
 
 }
-
-
 
 
 //Data Classes
@@ -309,11 +300,12 @@ data class Department(var ID:String,
 
 
 @Parcelize
-data class HearType(var ID:String,
-                    var type: String,
+data class HearType(
+    var ID: String,
+    var type: String,
 
 
-                    ): Parcelable{
+    ): Parcelable{
     override fun toString(): String {
         return type
     }
@@ -896,6 +888,7 @@ data class WorkOrder(var woID: String = "0",
                      var chargeName:String? = "",
                      @field:SerializedName(value="invoiceType", alternate= ["invoice"])
                      var invoiceType:String? = "",
+                     var invoiceID:String? = "0",
                      var nextPlannedDate:String? = "",
                      var locked:String? = "",
                      @field:SerializedName(value="department", alternate= ["departmentID"])
@@ -915,7 +908,7 @@ data class WorkOrder(var woID: String = "0",
                      var contract:Contract? = null,
 
                      var crews:Array<Crew>? = null,
-                    var emps:MutableList<Employee> = mutableListOf()
+                     var emps:MutableList<Employee> = mutableListOf()
 
                      ) : Parcelable {
 
@@ -1485,7 +1478,7 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
             super.onBackPressed()
             //additional code
         } else {
-            supportFragmentManager.popBackStack()
+            myView.findNavController().navigateUp()
         }
     }
     */

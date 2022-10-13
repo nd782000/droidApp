@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -129,29 +130,30 @@ class ServiceInspectionFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val questions:JSONArray = parentObject.getJSONArray("questions")
-                    println("questions = $questions")
-                    //println("questions count = ${questions.length()}")
+                        val questions: JSONArray = parentObject.getJSONArray("questions")
+                        println("questions = $questions")
+                        //println("questions count = ${questions.length()}")
 
-                    val gson = GsonBuilder().create()
-                    questionsList = gson.fromJson(questions.toString(), Array<InspectionQuestion>::class.java).toMutableList()
+                        val gson = GsonBuilder().create()
+                        questionsList = gson.fromJson(questions.toString(), Array<InspectionQuestion>::class.java).toMutableList()
 
-                    binding.serviceInspectionRecyclerView.apply {
-                        layoutManager = LinearLayoutManager(activity)
+                        binding.serviceInspectionRecyclerView.apply {
+                            layoutManager = LinearLayoutManager(activity)
 
-                        adapter = activity?.let {
-                            ServiceInspectionAdapter(questionsList, historyMode)
+                            adapter = activity?.let {
+                                ServiceInspectionAdapter(questionsList, historyMode)
+                            }
+
+                            val itemDecoration: ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            binding.serviceInspectionRecyclerView.addItemDecoration(itemDecoration)
+
+                            //(adapter as ServiceInspectionAdapter).notifyDataSetChanged()
+                            println(adapter!!.itemCount)
+
                         }
-
-                        val itemDecoration: ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.serviceInspectionRecyclerView.addItemDecoration(itemDecoration)
-
-                        //(adapter as ServiceInspectionAdapter).notifyDataSetChanged()
-                        println(adapter!!.itemCount)
-
                     }
 
 
@@ -189,7 +191,7 @@ class ServiceInspectionFragment : Fragment() {
     private fun submitInspection() {
 
         //Todo: check for status here, line 395 at https://github.com/nd782000/adminMatic.ios/blob/master/AdminMatic/Equipment/EquipmentInspectionViewController.swift
-
+        //Todo: add
         showProgressView()
 
         var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/equipmentServiceComplete.php"
@@ -259,11 +261,13 @@ class ServiceInspectionFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        globalVars.playSaveSound(myView.context)
+                    }
 
                     hideProgressView()
 
-                    parentFragmentManager.popBackStackImmediate()
+                    myView.findNavController().navigateUp()
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -322,7 +326,7 @@ class ServiceInspectionFragment : Fragment() {
                     globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     hideProgressView()
-                    parentFragmentManager.popBackStackImmediate()
+                    myView.findNavController().navigateUp()
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {

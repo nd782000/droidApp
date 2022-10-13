@@ -3,14 +3,13 @@ package com.example.AdminMatic
 import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +18,11 @@ import com.AdminMatic.databinding.FragmentContractItemBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
+import com.squareup.picasso.Picasso
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import kotlin.contracts.contract
 import kotlin.math.roundToInt
 
 interface ContractTaskCellClickListener {
@@ -86,19 +87,21 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                     builder.setTitle("Unsaved Changes")
                     builder.setMessage("Go back without saving?")
                     builder.setPositiveButton("YES") { _, _ ->
-                        parentFragmentManager.popBackStackImmediate()
+                        //parentFragmentManager.popBackStackImmediate()
+                        myView.findNavController().navigateUp()
                     }
                     builder.setNegativeButton("NO") { _, _ ->
                     }
                     builder.show()
                 }else{
-                    parentFragmentManager.popBackStackImmediate()
+                    //parentFragmentManager.popBackStackImmediate()
+                    myView.findNavController().navigateUp()
                 }
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
-
+        setHasOptionsMenu(true)
         return myView
 
     }
@@ -111,27 +114,55 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
         //contractItemSearch.isSubmitButtonEnabled = false
 
+        println("contract item type: ${contractItem!!.type}")
+
+        if (contractItem!!.type == "2") { // material
+            binding.contractItemDescriptionCl.visibility = View.VISIBLE
+            binding.contractItemImageCl.visibility = View.VISIBLE
+            binding.contractItemTasksRv.visibility = View.GONE
+
+            if (contractItem!!.tasks != null) {
+                binding.contractItemDescriptionEt.setText(contractItem!!.tasks!![0].taskDescription)
+
+
+                if(contractItem!!.tasks!![0].images!!.isNotEmpty()){
+                    Picasso.with(context)
+                        .load(GlobalVars.thumbBase + contractItem!!.tasks!![0].images!![0].fileName)
+                        .placeholder(R.drawable.ic_images) //optional
+                        //.resize(imgWidth, imgHeight)         //optional
+                        //.centerCrop()                        //optional
+                        .into(binding.contractItemImageIv)                       //Your image view object.
+                }
+
+                if (contractItem!!.tasks!![0].images!!.size > 1){
+                    binding.contractItemImageCountTv.text = getString(R.string.plus_x, contractItem!!.tasks!![0].images!!.size - 1)
+                }else{
+                    binding.contractItemImageCountTv.text = ""
+                }
+            }
+        }
+        else {
+            binding.contractItemDescriptionCl.visibility = View.GONE
+            binding.contractItemImageCl.visibility = View.GONE
+            binding.contractItemTasksRv.visibility = View.VISIBLE
+        }
+
         if (addMode == true) {
             binding.contractItemTasksRv.visibility = View.GONE
-            editMode = true
+            enableEditMode(true)
 
         }
         else {
-            binding.contractItemSearch.isEnabled = false
-            binding.contractItemChargeSpinner.isEnabled = false
-            binding.contractItemQtyValEt.isEnabled = false
-            binding.contractItemPriceValEt.isEnabled = false
-            binding.contractItemTotalValEt.isEnabled = false
-            binding.contractItemHideQtySwitch.isEnabled = false
-            binding.contractItemTaxableSwitch.isEnabled = false
-
+            enableEditMode(false)
 
             if (contractItem!!.hideUnits == "1") {
                 binding.contractItemHideQtySwitch.isChecked = true
+                binding.contractItemHideQtySwitch.jumpDrawablesToCurrentState()
             }
 
             if (contractItem!!.taxType == "1") {
                 binding.contractItemTaxableSwitch.isChecked = true
+                binding.contractItemTaxableSwitch.jumpDrawablesToCurrentState()
             }
             //contractItemSearch.setQuery(contractItem!!.name, false)
 
@@ -249,19 +280,41 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
 
         binding.contractItemSubmitBtn.setOnClickListener {
-            println("Crew Click")
 
-            if (contractItem!!.itemID.isEmpty() || contractItem!!.qty.isEmpty() || contractItem!!.price.isNullOrEmpty()) {
+            if (contractItem!!.itemID.isEmpty() || contractItem!!.qty.isEmpty() || contractItem!!.price.isNullOrEmpty() || contractItem!!.qty == "0" || contractItem!!.qty == "0.00") {
                 globalVars.simpleAlert(myView.context,getString(R.string.dialogue_fields_missing_title),getString(R.string.dialogue_fields_missing_body))
             }
             else {
-                //submitContractItem()
+                enableEditMode(false)
+
+                updateContractItem()
             }
         }
 
 
         getItems()
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.contract_item_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.edit_contract_item_item) {
+            if (GlobalVars.permissions!!.contractsEdit == "1") {
+                enableEditMode(true)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts_edit))
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onStop() {
@@ -271,13 +324,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
     private fun getItems(){
         println("getItems")
-
-
-        // println("pgsBar = $pgsBar")
-
-
         showProgressView()
-
 
         var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/items.php"
 
@@ -301,67 +348,83 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val items: JSONArray = parentObject.getJSONArray("items")
-                    println("items = $items")
-                    println("items count = ${items.length()}")
-
-
-
-                    val gson = GsonBuilder().create()
-                    itemsList = gson.fromJson(items.toString() , Array<Item>::class.java).toMutableList()
+                        val items: JSONArray = parentObject.getJSONArray("items")
+                        println("items = $items")
+                        println("items count = ${items.length()}")
 
 
-                    val searchItemsList = mutableListOf<SearchItem>()
-                    itemsList.forEachIndexed {index, element ->
-                        searchItemsList.add(SearchItem(element.name, index))
-                    }
+                        val gson = GsonBuilder().create()
+                        itemsList =
+                            gson.fromJson(items.toString(), Array<Item>::class.java).toMutableList()
 
 
-                    binding.contractItemSearchRv.apply {
-                        layoutManager = LinearLayoutManager(activity)
-
-
-                        adapter = activity?.let {
-                            SearchItemsAdapter(
-                                searchItemsList,
-                                context,
-                                this@ContractItemFragment
-                            )
+                        val searchItemsList = mutableListOf<SearchItem>()
+                        itemsList.forEachIndexed { index, element ->
+                            searchItemsList.add(SearchItem(element.name, index))
                         }
 
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.contractItemSearchRv.addItemDecoration(itemDecoration)
+
+                        binding.contractItemSearchRv.apply {
+                            layoutManager = LinearLayoutManager(activity)
 
 
-                        (adapter as SearchItemsAdapter).notifyDataSetChanged()
-
-
-                        binding.contractItemSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
-                            androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-                            override fun onQueryTextSubmit(query: String?): Boolean {
-                                //customerRecyclerView.visibility = View.GONE
-                                return false
+                            adapter = activity?.let {
+                                SearchItemsAdapter(
+                                    searchItemsList,
+                                    context,
+                                    this@ContractItemFragment
+                                )
                             }
 
-                            override fun onQueryTextChange(newText: String?): Boolean {
-                                println("onQueryTextChange = $newText")
-                                (adapter as SearchItemsAdapter).filter.filter(newText)
-                                if(newText == ""){
-                                    binding.contractItemSearchRv.visibility = View.GONE
-                                }else{
-                                    binding.contractItemSearchRv.visibility = View.VISIBLE
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(
+                                    myView.context,
+                                    DividerItemDecoration.VERTICAL
+                                )
+                            binding.contractItemSearchRv.addItemDecoration(itemDecoration)
+
+
+                            (adapter as SearchItemsAdapter).notifyDataSetChanged()
+
+
+                            binding.contractItemSearch.setOnQueryTextListener(object :
+                                SearchView.OnQueryTextListener,
+                                androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+                                override fun onQueryTextSubmit(query: String?): Boolean {
+                                    //customerRecyclerView.visibility = View.GONE
+                                    return false
                                 }
 
-                                return false
-                            }
+                                override fun onQueryTextChange(newText: String?): Boolean {
+                                    println("onQueryTextChange = $newText")
+                                    (adapter as SearchItemsAdapter).filter.filter(newText)
+                                    if (newText == "") {
+                                        binding.contractItemSearchRv.visibility = View.GONE
+                                    } else {
+                                        binding.contractItemSearchRv.visibility = View.VISIBLE
+                                    }
 
-                        })
+                                    return false
+                                }
 
+                            })
+
+                        }
                     }
+
+                    if (!addMode!!) {
+                        for (i in 0 until itemsList.size) {
+                            if (itemsList[i].ID == contractItem!!.itemID) {
+                                println("FOund it")
+                                binding.contractItemSearch.setQuery(itemsList[i].name, false)
+                                binding.contractItemSearchRv.visibility = View.INVISIBLE
+                            }
+                        }
+                    }
+
                     editsMade = false
 
                 } catch (e: JSONException) {
@@ -384,7 +447,80 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
+    private fun updateContractItem(){
+        println("updateContractItem")
+        showProgressView()
 
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/contractItem.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        //val queue = Volley.newRequestQueue(myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                //Log.d("Response", response)
+
+                println("Response $response")
+
+                hideProgressView()
+
+
+                try {
+
+                    val parentObject = JSONObject(response)
+                    println("update/contractItem parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        val gson = GsonBuilder().create()
+                        contractItem = gson.fromJson(response, ContractItem::class.java)
+                    }
+
+                    editsMade = false
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+
+                var subcontractorString = ""
+                if (contractItem!!.subcontractor != null) {
+                    subcontractorString = contractItem!!.subcontractor.toString()
+                }
+
+                val params: MutableMap<String, String> = HashMap()
+                params["contractItemID"] = contractItem!!.ID
+                params["contractID"] = contractItem!!.contractID
+                params["itemID"] = contractItem!!.itemID
+                params["type"] = contractItem!!.type.toString()
+                params["chargeType"] = contractItem!!.chargeType
+                params["qty"] = contractItem!!.qty
+                params["price"] = contractItem!!.price.toString()
+                params["total"] = contractItem!!.total.toString()
+                params["name"] = contractItem!!.name
+                params["subcontractor"] = subcontractorString
+                params["hideUnits"] = contractItem!!.hideUnits.toString()
+                params["materialDescription"] = binding.contractItemDescriptionEt.text.toString()
+                params["createdBy"] = GlobalVars.loggedInEmployee!!.ID
+
+
+                params["taxCode"] = contractItem!!.taxType.toString()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "contractItem"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
 
     override fun onContractTaskCellClickListener(data:ContractTask) {
         println("Clicked on contract task #${data.ID}")
@@ -398,6 +534,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         binding.contractItemSearch.setQuery(itemsList[data.index].name, false)
         binding.contractItemSearch.clearFocus()
         contractItem!!.itemID = itemsList[data.index].ID
+        contractItem!!.name = data.name
         binding.contractItemSearchRv.visibility = View.GONE
 
         if (itemsList[data.index].price != "") {
@@ -428,6 +565,33 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         val totalCost = (contractItem!!.qty.toDouble() * contractItem!!.price!!.toDouble())
         contractItem!!.total = String.format("%.2f", totalCost)
         binding.contractItemTotalValEt.setText(contractItem!!.total)
+    }
+
+    private fun enableEditMode(value:Boolean) {
+        editMode = value
+
+        if (editMode == true) {
+            binding.contractItemSearch.isEnabled = true
+            binding.contractItemChargeSpinner.isEnabled = true
+            binding.contractItemQtyValEt.isEnabled = true
+            binding.contractItemPriceValEt.isEnabled = true
+            binding.contractItemTotalValEt.isEnabled = true
+            binding.contractItemHideQtySwitch.isEnabled = true
+            binding.contractItemTaxableSwitch.isEnabled = true
+            globalVars.enableSearchView(binding.contractItemSearch, true)
+            binding.contractItemSubmitBtn.visibility = View.VISIBLE
+        }
+        else {
+            binding.contractItemSearch.isEnabled = false
+            binding.contractItemChargeSpinner.isEnabled = false
+            binding.contractItemQtyValEt.isEnabled = false
+            binding.contractItemPriceValEt.isEnabled = false
+            binding.contractItemTotalValEt.isEnabled = false
+            binding.contractItemHideQtySwitch.isEnabled = false
+            binding.contractItemTaxableSwitch.isEnabled = false
+            globalVars.enableSearchView(binding.contractItemSearch, false)
+            binding.contractItemSubmitBtn.visibility = View.GONE
+        }
     }
 
     fun showProgressView() {

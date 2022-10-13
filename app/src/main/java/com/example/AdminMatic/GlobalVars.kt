@@ -14,6 +14,7 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.ImageSpan
 import android.view.View
+import android.view.ViewGroup
 import com.AdminMatic.R
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
@@ -200,6 +201,19 @@ class GlobalVars: Application() {
     fun playErrorSound(context: Context) {
         val mediaPlayer = MediaPlayer.create(context, R.raw.error)
         mediaPlayer.start()
+    }
+
+
+    // Cleanly enable to disable a SearchView
+    fun enableSearchView(view: View, enabled: Boolean) {
+        view.isEnabled = enabled
+        if (view is ViewGroup) {
+            val viewGroup = view
+            for (i in 0 until viewGroup.childCount) {
+                val child = viewGroup.getChildAt(i)
+                enableSearchView(child, enabled)
+            }
+        }
     }
 
     fun populateFields(context:Context?, parentObject:JSONObject) {

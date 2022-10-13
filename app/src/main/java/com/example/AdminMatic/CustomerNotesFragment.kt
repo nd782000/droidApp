@@ -68,13 +68,13 @@ class CustomerNotesFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     builder.setTitle(getString(R.string.dialogue_edits_made_title))
                     builder.setMessage(R.string.dialogue_edits_made_body)
                     builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-                        parentFragmentManager.popBackStackImmediate()
+                        myView.findNavController().navigateUp()
                     }
                     builder.setNegativeButton(R.string.no) { _, _ ->
                     }
                     builder.show()
                 }else{
-                    parentFragmentManager.popBackStackImmediate()
+                    myView.findNavController().navigateUp()
                 }
             }
         }
@@ -199,13 +199,14 @@ class CustomerNotesFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
 
-                    globalVars.playSaveSound(myView.context)
-                    editsMade = false
+                        globalVars.playSaveSound(myView.context)
+                        editsMade = false
 
-                    myView.findNavController().popBackStack()
+                        myView.findNavController().navigateUp()
+                    }
 
 
 

@@ -2,6 +2,7 @@ package com.example.AdminMatic
 
 //import androidx.test.core.app.ApplicationProvider.getApplicationContext
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
@@ -94,7 +95,16 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
         }
         binding.resetBtn.setOnClickListener {
             if (GlobalVars.permissions!!.payrollApp == "1") {
-                reset()
+                val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
+                builder.setTitle(getString(R.string.dialogue_reset_payroll_title))
+                builder.setMessage(getString(R.string.dialogue_reset_payroll_body))
+                builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
+                    reset()
+                }
+                builder.setNegativeButton(getString(R.string.no)) { _, _ ->
+
+                }
+                builder.show()
             }
             else {
                 globalVars.simpleAlert(com.example.AdminMatic.myView.context,getString(R.string.access_denied),getString(R.string.no_permission_payroll))

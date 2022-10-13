@@ -293,34 +293,35 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                     if (isResumed) {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
-                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                        val images: JSONArray = parentObject.getJSONArray("images")
-                        println("images = $images")
-                        println("images count = ${images.length()}")
-
-
-                        val gson = GsonBuilder().create()
-                        loadMoreImageList =
-                            gson.fromJson(images.toString(), Array<Image>::class.java)
-                                .toMutableList()
-                        println("loadMoreImageList count = ${loadMoreImageList.count()}")
-                        imageList.addAll(loadMoreImageList)
-                        println("imageList count = ${imageList.count()}")
-
-                        // Now we call setRefreshing(false) to signal refresh has finished
-                        binding.customerSwipeContainer.isRefreshing = false
-
-                        Toast.makeText(
-                            activity,
-                            "${imageList.count()} Images Loaded",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        //employee!!.fName = fName
+                            val images: JSONArray = parentObject.getJSONArray("images")
+                            println("images = $images")
+                            println("images count = ${images.length()}")
 
 
-                        adapter.filterList = imageList
+                            val gson = GsonBuilder().create()
+                            loadMoreImageList =
+                                gson.fromJson(images.toString(), Array<Image>::class.java)
+                                    .toMutableList()
+                            println("loadMoreImageList count = ${loadMoreImageList.count()}")
+                            imageList.addAll(loadMoreImageList)
+                            println("imageList count = ${imageList.count()}")
+
+                            // Now we call setRefreshing(false) to signal refresh has finished
+                            binding.customerSwipeContainer.isRefreshing = false
+
+                            Toast.makeText(
+                                activity,
+                                "${imageList.count()} Images Loaded",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            //employee!!.fName = fName
+
+
+                            adapter.filterList = imageList
+                        }
 
                         //adapter.notifyDataSetChanged();
                     }

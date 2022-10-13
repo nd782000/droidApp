@@ -97,6 +97,15 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             }
             return true
         }
+        else if (id == R.id.invoice_work_order_item) {
+            if (GlobalVars.permissions!!.scheduleEdit == "1" && GlobalVars.permissions!!.invoices == "1") {
+                createInvoice()
+            }
+            else {
+                com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_create_invoice))
+            }
+            return true
+        }
         return super.onOptionsItemSelected(item)
     }
 
@@ -131,175 +140,121 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     //val parentObject = JSONObject(fuck)
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    val gson = GsonBuilder().create()
-                    /*
-                    Elements fetched by current get/workOrder.php:
-                    woID
-                    customer
-                    custName
-                    custAddress
-                    title
-                    status
-                    skipped
-                    urgent
-                    charge
-                    chargeName
-                    invoice
-                    timeType
-                    date
-                    dateRaw
-                    deadline
-                    prompt
-                    crews
-                    mainCrew
-                    salesRep
-                    salesRepName
-                    recID
-                    items
-                    progress
-                    totalPrice
-                    totalCost
-                    totalPriceRaw
-                    totalCostRaw
-                    profit
-                    profitAmount
-                    notes
-                    dateAdded
-                    addedBy
-                    customerID
-                    allowImages
-                    nextPlannedDate
-
-                     */
-
-                    // Copy missing elements over from the original work order (temp band aid fix until PHP script is fixed)
-
-                    /*val workOrderNew = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
-                    workOrderNew.statusName = workOrder!!.statusName
-                    workOrderNew.dateNice = workOrder!!.dateNice
-                    workOrderNew.locked = workOrder!!.locked
-                    workOrderNew.daySort = workOrder!!.daySort
-                    workOrderNew.lat = workOrder!!.lat
-                    workOrderNew.lng= workOrder!!.lng
-                    workOrder = workOrderNew
-                     */
+                        val gson = GsonBuilder().create()
 
 
+                        workOrder = gson.fromJson(parentObject.toString(), WorkOrder::class.java)
 
 
-
-
-
-                    workOrder = gson.fromJson(parentObject.toString() , WorkOrder::class.java)
-
-
-                    setStatusIcon(workOrder!!.status)
-                    binding.titleValTv.text = workOrder!!.title
-                    if(workOrder!!.nextPlannedDate != null){
-                        binding.scheduleValTv.text = workOrder!!.nextPlannedDate
-                    }
-                    /*
+                        setStatusIcon(workOrder!!.status)
+                        binding.titleValTv.text = workOrder!!.title
+                        if (workOrder!!.nextPlannedDate != null) {
+                            binding.scheduleValTv.text = workOrder!!.nextPlannedDate
+                        }
+                        /*
                     if(workOrder!!.department != null){
                         deptTxt.text = workOrder!!.department!!
                     }
 
                      */
-                    if(workOrder!!.crewName != null){
-                        binding.crewValTv.text = workOrder!!.mainCrew!!
-                    }
-                    if(workOrder!!.salesRepName != null){
-                        binding.repValTv.text = workOrder!!.salesRepName!!
-                    }
-
-                    println("Charge Name: ${workOrder!!.chargeName}")
-                    when (workOrder!!.charge) {
-                        "1" -> {
-                            workOrder!!.chargeName = getString(R.string.wo_charge_nc)
+                        if (workOrder!!.crewName != null) {
+                            binding.crewValTv.text = workOrder!!.mainCrew!!
                         }
-                        "2" -> {
-                            workOrder!!.chargeName = getString(R.string.wo_charge_fl)
-                        }
-                        "3" -> {
-                            workOrder!!.chargeName = getString(R.string.wo_charge_tm)
-                        }
-                        else -> {
-                            workOrder!!.chargeName = ""
-                        }
-                    }
-                    binding.chargeValTv.text = workOrder!!.chargeName
-
-
-                    val profit:Float = workOrder!!.totalPriceRaw.toFloat() - workOrder!!.totalCostRaw.toFloat()
-                    val profitPercent:Int = (profit / workOrder!!.totalPriceRaw.toFloat() * 100).toInt()
-
-                    binding.priceTv.text = workOrder!!.totalPrice
-                    binding.costTv.text = workOrder!!.totalCost
-                    binding.profitTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
-                    binding.profitPercentTv.text = profitPercent.toString()
-                    binding.profitBar.progress = 100 - profitPercent
-
-                    println("DEPARTMENT AFTER GET/WORKORDER ${workOrder!!.department}")
-                    println("CREW AFTER GET/WORKORDER ${workOrder!!.crew}")
-
-
-                    val woItemJSON: JSONArray = parentObject.getJSONArray("items")
-                    val itemList = gson.fromJson(woItemJSON.toString() , Array<WoItem>::class.java).toMutableList()
-                    println("woItemJSON $woItemJSON")
-
-                    itemList.forEach {
-                        it.woID = workOrder!!.woID
-                    }
-
-                    binding.workOrderItemsRv.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            WoItemsAdapter(
-                                itemList,
-                                context,
-                                requireActivity().application,
-                                this@WorkOrderFragment
-                            )
+                        if (workOrder!!.salesRepName != null) {
+                            binding.repValTv.text = workOrder!!.salesRepName!!
                         }
 
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.workOrderItemsRv.addItemDecoration(itemDecoration)
-                        //(adapter as WoItemsAdapter).notifyDataSetChanged()
-                    }
+                        println("Charge Name: ${workOrder!!.chargeName}")
+                        when (workOrder!!.charge) {
+                            "1" -> {
+                                workOrder!!.chargeName = getString(R.string.wo_charge_nc)
+                            }
+                            "2" -> {
+                                workOrder!!.chargeName = getString(R.string.wo_charge_fl)
+                            }
+                            "3" -> {
+                                workOrder!!.chargeName = getString(R.string.wo_charge_tm)
+                            }
+                            else -> {
+                                workOrder!!.chargeName = ""
+                            }
+                        }
+                        binding.chargeValTv.text = workOrder!!.chargeName
+
+
+                        val profit: Float = workOrder!!.totalPriceRaw.toFloat() - workOrder!!.totalCostRaw.toFloat()
+                        val profitPercent: Int = (profit / workOrder!!.totalPriceRaw.toFloat() * 100).toInt()
+
+                        binding.priceTv.text = workOrder!!.totalPrice
+                        binding.costTv.text = workOrder!!.totalCost
+                        binding.profitTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
+                        binding.profitPercentTv.text = profitPercent.toString()
+                        binding.profitBar.progress = 100 - profitPercent
+
+                        println("DEPARTMENT AFTER GET/WORKORDER ${workOrder!!.department}")
+                        println("CREW AFTER GET/WORKORDER ${workOrder!!.crew}")
+
+
+                        val woItemJSON: JSONArray = parentObject.getJSONArray("items")
+                        val itemList = gson.fromJson(woItemJSON.toString(), Array<WoItem>::class.java).toMutableList()
+                        println("woItemJSON $woItemJSON")
+
+                        itemList.forEach {
+                            it.woID = workOrder!!.woID
+                        }
+
+                        binding.workOrderItemsRv.apply {
+                            layoutManager = LinearLayoutManager(activity)
+                            adapter = activity?.let {
+                                WoItemsAdapter(
+                                    itemList,
+                                    context,
+                                    requireActivity().application,
+                                    this@WorkOrderFragment
+                                )
+                            }
+
+                            val itemDecoration: RecyclerView.ItemDecoration =
+                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                            binding.workOrderItemsRv.addItemDecoration(itemDecoration)
+                            //(adapter as WoItemsAdapter).notifyDataSetChanged()
+                        }
 
 
 
-                    stackFragment = StackFragment(2,workOrder!!.woID,this)
+                        stackFragment = StackFragment(2, workOrder!!.woID, this)
 
-                    val ft = childFragmentManager.beginTransaction()
-                    ft.add(R.id.work_order_cl, stackFragment, "stackFrag")
-                    ft.commitAllowingStateLoss()
+                        val ft = childFragmentManager.beginTransaction()
+                        ft.add(R.id.work_order_cl, stackFragment, "stackFrag")
+                        ft.commitAllowingStateLoss()
 
-                    binding.statusBtn.setOnClickListener{
-                        println("status btn clicked")
-                        showStatusMenu()
-                    }
+                        binding.statusBtn.setOnClickListener {
+                            println("status btn clicked")
+                            showStatusMenu()
+                        }
 
-                    binding.customerBtn.setOnClickListener{
-                        println("customer btn clicked")
-                        val customer = Customer(workOrder!!.customer!!)
-                        val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer.ID)
-                        myView.findNavController().navigate(directions)
-                    }
-                    //customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
-                    binding.customerBtn.text = getString(R.string.customer_button, workOrder!!.custName, workOrder!!.custAddress)
+                        binding.customerBtn.setOnClickListener {
+                            println("customer btn clicked")
+                            val customer = Customer(workOrder!!.customer!!)
+                            val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer.ID)
+                            myView.findNavController().navigate(directions)
+                        }
+                        //customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
+                        binding.customerBtn.text = getString(R.string.customer_button, workOrder!!.custName, workOrder!!.custAddress)
 
-                    println("lat: ${workOrder!!.lat}")
-                    println("lng: ${workOrder!!.lng}")
-                    //scheduleTxt.text = workOrder!!.dateNice
-                    ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.work_order_number, workOrder!!.woID)
+                        println("lat: ${workOrder!!.lat}")
+                        println("lng: ${workOrder!!.lng}")
+                        //scheduleTxt.text = workOrder!!.dateNice
+                        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text =
+                            getString(R.string.work_order_number, workOrder!!.woID)
 
-                    workOrder!!.setEmps()
+                        workOrder!!.setEmps()
 
-                    if (GlobalVars.permissions!!.scheduleMoney == "0") {
-                        binding.workOrderFooterCl.visibility = View.GONE
+                        if (GlobalVars.permissions!!.scheduleMoney == "0") {
+                            binding.workOrderFooterCl.visibility = View.GONE
+                        }
                     }
 
                     hideProgressView()
@@ -353,7 +308,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 builder.setView(et)
 
                 // Set up the buttons
-                builder.setPositiveButton("OK") { dialog, which ->
+                builder.setPositiveButton("OK") { _, _ ->
                     // Here you get get input text from the Edittext
                     workOrder!!.status = item.itemId.toString()
                     workOrder!!.notes = et.text.toString()
@@ -367,7 +322,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     updateStatus()
 
                 }
-                builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+                builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
 
                 builder.show()
 
@@ -414,7 +369,9 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        globalVars.playSaveSound(com.example.AdminMatic.myView.context)
+                    }
 
                     hideProgressView()
 
@@ -443,6 +400,20 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             }
         }
         queue.add(postRequest1)
+    }
+
+    private fun createInvoice() {
+        if (workOrder!!.status != "3") {
+            com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.invoice_not_done))
+            return
+        }
+        else if (workOrder!!.invoiceType != "2") {
+            com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.invoice_type_wrong))
+            return
+        }
+
+        //todo: add create invoice script once done and move to the invoice here
+        Toast.makeText(com.example.AdminMatic.myView.context, "Create invoice", Toast.LENGTH_SHORT).show()
     }
 
 

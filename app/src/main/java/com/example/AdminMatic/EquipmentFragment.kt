@@ -179,51 +179,58 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
 
-                    //current adapter
-                    val services:JSONArray = parentObject.getJSONArray("services")
-                    println("services = $services")
-                    println("services count = ${services.length()}")
+                        //current adapter
+                        val services: JSONArray = parentObject.getJSONArray("services")
+                        println("services = $services")
+                        println("services count = ${services.length()}")
 
-                    val servicesListCurrent = gson.fromJson(services.toString() , Array<EquipmentService>::class.java).toMutableList()
-                    println("ServiceCount = ${servicesListCurrent.count()}")
+                        val servicesListCurrent =
+                            gson.fromJson(services.toString(), Array<EquipmentService>::class.java)
+                                .toMutableList()
+                        println("ServiceCount = ${servicesListCurrent.count()}")
 
-                    currentServicesAdapter = ServiceAdapter(servicesListCurrent,this.myView.context, false,this)
+                        currentServicesAdapter =
+                            ServiceAdapter(servicesListCurrent, this.myView.context, false, this)
 
-                    //history adapter
-                    val servicesHistory:JSONArray = parentObject.getJSONArray("serviceHistory")
-                    println("servicesHistory = $servicesHistory")
-                    println("servicesHistory count = ${servicesHistory.length()}")
+                        //history adapter
+                        val servicesHistory: JSONArray = parentObject.getJSONArray("serviceHistory")
+                        println("servicesHistory = $servicesHistory")
+                        println("servicesHistory count = ${servicesHistory.length()}")
 
-                    val servicesListHistory = gson.fromJson(servicesHistory.toString() , Array<EquipmentService>::class.java).toMutableList()
-                    println("ServiceHistoryCount = ${servicesListHistory.count()}")
+                        val servicesListHistory = gson.fromJson(
+                            servicesHistory.toString(),
+                            Array<EquipmentService>::class.java
+                        ).toMutableList()
+                        println("ServiceHistoryCount = ${servicesListHistory.count()}")
 
-                    println(equipment!!.dealer)
+                        println(equipment!!.dealer)
 
-                    historyServicesAdapter = ServiceAdapter(servicesListHistory,this.myView.context, true,this)
-
-
-                    binding.serviceRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
-
-
-                    //status
-                    val equipmentJSON:JSONObject = parentObject.getJSONObject("equipment")
-
-                    val equipmentNew = gson.fromJson(equipmentJSON.toString(), Equipment::class.java)
-                    equipment!!.status = equipmentNew.status
-                    setStatus(equipment!!.status)
-
-                    binding.serviceRecyclerView.adapter = currentServicesAdapter
+                        historyServicesAdapter =
+                            ServiceAdapter(servicesListHistory, this.myView.context, true, this)
 
 
+                        binding.serviceRecyclerView.layoutManager =
+                            LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
 
 
-                    val itemDecoration: RecyclerView.ItemDecoration =
-                        DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                    binding.serviceRecyclerView.addItemDecoration(itemDecoration)
+                        //status
+                        val equipmentJSON: JSONObject = parentObject.getJSONObject("equipment")
 
+                        val equipmentNew =
+                            gson.fromJson(equipmentJSON.toString(), Equipment::class.java)
+                        equipment!!.status = equipmentNew.status
+                        setStatus(equipment!!.status)
+
+                        binding.serviceRecyclerView.adapter = currentServicesAdapter
+
+
+                        val itemDecoration: RecyclerView.ItemDecoration =
+                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+                        binding.serviceRecyclerView.addItemDecoration(itemDecoration)
+                    }
                     /*
                     currentRecyclerView.apply {
                         layoutManager = LinearLayoutManager(activity)
@@ -332,7 +339,9 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
-                        globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                            globalVars.playSaveSound(myView.context)
+                        }
 
                         hideProgressView()
 

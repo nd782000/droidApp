@@ -43,7 +43,7 @@ class SearchItemsAdapter(private val list: MutableList<SearchItem>, private val 
     }
 
     override fun getItemCount(): Int{
-        print("getItemCount = ${filterList.size}")
+        //print("getItemCount = ${filterList.size}")
         return filterList.size
     }
 
