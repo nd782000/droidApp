@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">AdminMatic</string>
-    <string name="version">Version %1$s</string>
+    <string name="version">Version %1$s (PHP %2$s)</string>
 
     <string name="Welcome">Welcome, User!</string>
     <string name="welcome_name">Welcome %1$s!</string>
@@ -64,6 +64,7 @@
     <string name="customer_email">john@atlantic...den.com</string>
     <string name="customer_address">123 Any Street</string>
     <string name="customer_contacts">All Contacts</string>
+    <string name="customer_documents">Documents</string>
     <string name="customer_notes">Notes &amp; Settings</string>
     <string name="customer_list">Customer List</string>
     <string name="no_image_collection">No Image Collection</string>
@@ -123,7 +124,7 @@
     <string name="type">Type</string>
     <string name="status">Status</string>
 
-
+    
     <string name="leads_amount">Leads(%1$d)</string>
     <string name="contracts_amount">Contracts(%1$d)</string>
     <string name="work_orders_amount">Work Orders(%1$d)</string>
@@ -192,6 +193,8 @@
     <string name="no_permission_create_invoice">You don\'t have permission to create invoices.</string>
     <string name="invoice_not_done">An invoice can only be made from a finished work order.</string>
     <string name="invoice_type_wrong">An invoice can\'t be made from a batch or no invoice work order.</string>
+    <string name="invoice_no_total">An invoice can\'t be made from a work order with no price.</string>
+    <string name="invoiced_wo_cant_edit">An invoiced work order can\'t be edited.</string>
 
     <!--Usage stuff-->
     <string name="usage_from">From:</string>
@@ -245,6 +248,13 @@
     <string name="license_expires">Expires: %1$s</string>
     <string name="license_number">Lic.# %1$s</string>
     <string name="license_none_recorded">No Recorded Licenses</string>
+
+    <!--Documents stuff-->
+    <string name="xs_documents">%1$s\'s Documents</string>>
+    <string name="documents_none">No Documents on File</string>
+    <string name="documents_file_type">.%1$s (%2$s)</string>
+    <string name="documents_added_by">By %1$s on %2$s</string>
+    <string name="share">Share</string>
 
     <!--Items stuff-->
     <string name="item_price_each">$%1$s/%2$s</string>

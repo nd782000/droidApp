@@ -415,9 +415,6 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
     }
 
     override fun onContractItemCellClickListener(data:ContractItem) {
-        val asdf = myView.findNavController().currentDestination
-        println("navigating to contract item from ${asdf}")
-
         val directions = ContractFragmentDirections.navigateContractToContractItem(data, false)
         myView.findNavController().navigate(directions)
     }

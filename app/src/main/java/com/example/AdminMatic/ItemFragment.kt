@@ -276,12 +276,17 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                         item = itemArray[0]
                         item!!.ID = storedItemID
 
+                        if (item!!.unit == null) {
+                            item!!.unit = ""
+                        }
+
                         remainingQty = 0.0
                         item!!.workOrders!!.forEach {
                             remainingQty += it.remQty!!.toDouble()
                         }
-
+                        println("Vendors: ${item!!.unit!!}")
                         vendorsAdapter = ItemVendorsAdapter(item!!.vendors!!.toMutableList(), this.myView.context, item!!.unit!!, this)
+
                         workOrdersAdapter = ItemWorkOrdersAdapter(item!!.workOrders!!.toMutableList(), this.myView.context, item!!.unit!!, this)
                         binding.itemRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)
                         val itemDecoration: RecyclerView.ItemDecoration =

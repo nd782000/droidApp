@@ -16,7 +16,6 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/new_service_name"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="14sp"
         android:layout_marginTop="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -26,9 +25,11 @@
         android:id="@+id/new_service_name_editTxt"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:gravity="top"
-        android:inputType="textMultiLine"
+        android:inputType="text"
         android:paddingHorizontal="4dp"
+        android:layout_margin="5dp"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_service_name_title_txt"/>
@@ -42,27 +43,40 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/new_service_type"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="14sp"
         android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_service_name_editTxt" />
+
+
+    <Spinner
+        android:id="@+id/new_service_type_spinner"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/text_view_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_service_type_title_txt"
+        />
+
+    <!--
     <TextView
         android:id="@+id/new_service_type_txt"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:gravity="top"
         android:textColor="?attr/editTextColor"
-        android:background="?attr/editTextBackground"
+        android:background="@drawable/text_view_layout"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_margin="5dp"
 
         android:paddingHorizontal="4dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_service_type_title_txt"
         />
-    <!--
+
     <EditText
         android:id="@+id/new_service_type_editTxt"
         android:layout_width="0dp"
@@ -85,19 +99,19 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/new_service_frequency"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="14sp"
         android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_service_type_txt" />
+        app:layout_constraintTop_toBottomOf="@+id/new_service_type_spinner" />
     <EditText
         android:id="@+id/new_service_frequency_editTxt"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:gravity="top"
         android:inputType="number"
         android:paddingHorizontal="4dp"
+        android:layout_margin="5dp"
+        android:imeOptions="actionDone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_service_frequency_title_txt" />
@@ -128,7 +142,6 @@
                 android:paddingHorizontal="4dp"
                 android:singleLine="true"
                 android:text="@string/new_service_current"
-                android:textColor="@color/colorPrimaryDark"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"
 
@@ -141,6 +154,8 @@
                 android:layout_height="40dp"
                 android:paddingHorizontal="4dp"
                 android:inputType="number"
+                android:layout_margin="5dp"
+                android:imeOptions="actionDone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/new_service_current_title_txt"/>
@@ -165,7 +180,6 @@
                 android:paddingHorizontal="4dp"
                 android:singleLine="true"
                 android:text="@string/new_service_next"
-                android:textColor="@color/colorPrimaryDark"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"
 
@@ -178,6 +192,7 @@
                 android:layout_height="40dp"
                 android:inputType="number"
                 android:paddingHorizontal="4dp"
+                android:layout_margin="5dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/new_service_next_title_txt"/>
@@ -194,7 +209,6 @@
         android:paddingHorizontal="4dp"
         android:singleLine="true"
         android:text="@string/new_service_instructions"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="14sp"
         android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -206,7 +220,9 @@
         android:layout_height="0dp"
         android:gravity="top"
         android:inputType="text"
+        android:imeOptions="actionDone"
         android:paddingHorizontal="4dp"
+        android:layout_margin="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_service_instructions_title_txt"

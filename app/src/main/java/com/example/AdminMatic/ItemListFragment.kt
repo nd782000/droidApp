@@ -35,6 +35,8 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
     lateinit var adapter:ItemsAdapter
 
+    var dataLoaded:Boolean = false
+
     private var _binding: FragmentItemListBinding? = null
     private val binding get() = _binding!!
 
@@ -49,6 +51,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
         myView = binding.root
 
         val emptyList:MutableList<Item> = mutableListOf()
+
         adapter = ItemsAdapter(emptyList, myView.context, this)
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.item_list)
@@ -61,7 +64,10 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         println("onViewCreated")
-        getItems()
+        if (!dataLoaded) {
+            println("data not loaded")
+            getItems()
+        }
     }
 
     override fun onStop() {
@@ -187,6 +193,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
                         }
 
                         binding.footerTv.text = getString(R.string.x_active_items, itemsList.size)
+
                     }
 
                     /* Here 'response' is a String containing the response you received from the website... */

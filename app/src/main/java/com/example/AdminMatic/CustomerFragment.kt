@@ -705,6 +705,15 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
         }
 
+        binding.documentsBtn.setOnClickListener{
+            println("documents btn clicked")
+
+            val directions = CustomerFragmentDirections.navigateToDocuments(customer)
+            myView.findNavController().navigate(directions)
+
+        }
+
+
         binding.customerNotesBtn.setOnClickListener{
             println("notes btn clicked")
 

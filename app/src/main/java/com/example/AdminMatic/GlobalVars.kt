@@ -169,7 +169,7 @@ class GlobalVars: Application() {
 
         var deviceID:String? = null
 
-        var phpVersion:String = "1-0"
+        var phpVersion:String = "1-1"
 
         var customerList: MutableList<Customer>? = null
 
@@ -401,7 +401,7 @@ class GlobalVars: Application() {
         val errors = gson.fromJson(errorArray.toString(), Array<String>::class.java)
 
         println("warning size: ${warnings.size}")
-        println("warning size: ${errors.size}")
+        println("error size: ${errors.size}")
 
         if (errors.isNotEmpty()) {
             playErrorSound(context)
@@ -419,6 +419,8 @@ class GlobalVars: Application() {
                     "$context must implement LogOut"
                 )
             }
+            println("Attempting to log out")
+            VolleyRequestQueue.getInstance(context.applicationContext).requestQueue.cancelAll { true }
             listener.logOut(myView_)
             return false
         }

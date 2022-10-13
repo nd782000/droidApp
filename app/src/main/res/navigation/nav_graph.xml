@@ -410,6 +410,9 @@
             android:id="@+id/navigateToCustomerContacts"
             app:destination="@id/customerContactFragment" />
         <action
+            android:id="@+id/navigateToDocuments"
+            app:destination="@id/documentsFragment" />
+        <action
             android:id="@+id/navigateToCustomerNotes"
             app:destination="@id/customerNotesFragment" />
         <action
@@ -436,6 +439,27 @@
         <action
             android:id="@+id/navigateToNewEditCustomer"
             app:destination="@id/newEditCustomerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/documentsFragment"
+        android:name="com.example.AdminMatic.DocumentsFragment"
+        android:label="fragment_documents"
+        tools:layout="@layout/fragment_documents" >
+        <argument
+            android:name="customer"
+            app:argType="com.example.AdminMatic.Customer" />
+        <action
+            android:id="@+id/navigateToPdf"
+            app:destination="@id/pdfFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pdfFragment"
+        android:name="com.example.AdminMatic.PdfFragment"
+        android:label="fragment_pdf"
+        tools:layout="@layout/fragment_pdf" >
+        <argument
+            android:name="document"
+            app:argType="com.example.AdminMatic.Document" />
     </fragment>
     <fragment
         android:id="@+id/groupTextFragment"
@@ -572,6 +596,10 @@
             android:name="invoice"
             app:argType="com.example.AdminMatic.Invoice"
             app:nullable="true" />
+        <argument
+            android:name="invoiceID"
+            app:argType="string"
+            android:defaultValue="0" />
         <action
             android:id="@+id/navigateInvoiceToLead"
             app:destination="@id/leadFragment" />

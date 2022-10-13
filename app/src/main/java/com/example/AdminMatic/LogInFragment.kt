@@ -121,7 +121,7 @@ class LogInFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
         inflater.inflate(R.menu.main_menu_menu, menu)
-        menu.findItem(R.id.version_item).title = getString(R.string.version, BuildConfig.VERSION_NAME)
+        menu.findItem(R.id.version_item).title = getString(R.string.version, BuildConfig.VERSION_NAME, GlobalVars.phpVersion)
         menu.removeItem(R.id.reload_company_data_item)
         super.onCreateOptionsMenu(menu, inflater)
         ((activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false))
@@ -286,7 +286,7 @@ class LogInFragment : Fragment() {
         binding.loginLayout.addView(submitBtn)
 
         versionText = TextView(myView.context)
-        versionText.text = getString(R.string.version, BuildConfig.VERSION_NAME)
+        versionText.text = getString(R.string.version, BuildConfig.VERSION_NAME, GlobalVars.phpVersion)
         versionText.gravity = Gravity.CENTER_HORIZONTAL
         versionText.id = generateViewId()
         binding.loginLayout.addView(versionText)
@@ -750,9 +750,11 @@ class LogInFragment : Fragment() {
                 params["remember"] = rememberMe
                 params["device"] = globalVars.getDeviceName()
                 params["deviceToken"] = "345"
+                params["notificationType"] = "2" // 1 = iOS, 2 = Android
                 params["phpVersion"] = GlobalVars.phpVersion
                 params["appVersion"] = BuildConfig.VERSION_NAME
                 params["deviceInfo"] = globalVars.getDeviceName()
+                //params["autokill"] = "1"
 
                 params["logins"] = logIns.toString()
 
@@ -791,9 +793,13 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject get fields = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
-
-                    globalVars.populateFields(context, parentObject)
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        globalVars.populateFields(context, parentObject)
+                        getEmployees()
+                    }
+                    else {
+                        createLogInView()
+                    }
 
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -803,7 +809,7 @@ class LogInFragment : Fragment() {
                 }
 
 
-                getEmployees()
+
                // myView.findNavController().navigate(R.id.navigateToMainMenu)
             },
             Response.ErrorListener { // error
