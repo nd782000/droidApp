@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso
 import org.json.JSONObject
 
 
-class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, private val appContext: Context, private val cellClickListener: WoItemCellClickListener) : RecyclerView.Adapter<WoItemViewHolder>() {
+class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, private val appContext: Context, private val workOrder:WorkOrder, private val cellClickListener: WoItemCellClickListener) : RecyclerView.Adapter<WoItemViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
@@ -120,82 +120,88 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
                     R.id.menu1 -> {
                         //Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
                         // Todo: reorganize these ugly nested ifs
-                        if (GlobalVars.permissions!!.scheduleEdit == "0") {
-                            globalVars.simpleAlert(myView.context, context.getString(R.string.access_denied), context.getString(R.string.no_permission_schedule_edit))
-                        }
-                        else {
 
-                            if (filterList.size > 1) {
-                                if (woItem.usageQty == "0.00") {
+                        if (workOrder.invoiceID == "0") {
 
-                                    val builder = AlertDialog.Builder(myView.context)
-                                    builder.setTitle(context.getString(R.string.dialogue_delete_wo_item_title))
-                                    builder.setMessage(context.getString(R.string.dialogue_delete_wo_item_body))
-                                    builder.setPositiveButton(context.getString(R.string.yes)) { _, _ ->
-
-                                        var urlString =
-                                            "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/delete/workOrderItem.php"
-
-                                        val currentTimestamp = System.currentTimeMillis()
-                                        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-                                        urlString = "$urlString?cb=$currentTimestamp"
-
-                                        val postRequest1: StringRequest = object : StringRequest(
-                                            Method.POST, urlString,
-                                            Response.Listener { response -> // response
-                                                //Log.d("Response", response)
-
-                                                println("Response $response")
-
-                                                val parentObject = JSONObject(response)
-
-                                                if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
-                                                    globalVars.playSaveSound(myView.context)
-                                                    filterList.removeAt(position)
-                                                    notifyDataSetChanged()
-                                                }
-
-
-
-
-                                            },
-                                            Response.ErrorListener { // error
-
-
-                                                // Log.e("VOLLEY", error.toString())
-                                                // Log.d("Error.Response", error())
-                                            }
-                                        ) {
-                                            override fun getParams(): Map<String, String> {
-                                                val params: MutableMap<String, String> = HashMap()
-                                                params["companyUnique"] =
-                                                    GlobalVars.loggedInEmployee!!.companyUnique
-                                                params["sessionKey"] =
-                                                    GlobalVars.loggedInEmployee!!.sessionKey
-                                                params["workOrderID"] = woItem.woID
-                                                params["workOrderItemID"] = woItem.ID
-                                                println("params = $params")
-                                                return params
-                                            }
-                                        }
-                                        postRequest1.tag = "woItem"
-                                        VolleyRequestQueue.getInstance(appContext).addToRequestQueue(postRequest1)
-                                    }
-                                    builder.setNegativeButton(context.getString(R.string.no)) { _, _ ->
-
-                                    }
-                                    builder.show()
-                                }
-                                else {
-                                    globalVars.simpleAlert(myView.context,context.getString(R.string.dialogue_usage_exists_title),context.getString(R.string.dialogue_usage_exists_body))
-                                }
+                            if (GlobalVars.permissions!!.scheduleEdit == "0") {
+                                globalVars.simpleAlert(myView.context, context.getString(R.string.access_denied), context.getString(R.string.no_permission_schedule_edit))
                             }
                             else {
-                                globalVars.simpleAlert(myView.context,context.getString(R.string.dialogue_only_wo_item_title),context.getString(R.string.dialogue_only_wo_item_body))
 
+                                if (filterList.size > 1) {
+                                    if (woItem.usageQty == "0.00") {
+
+                                        val builder = AlertDialog.Builder(myView.context)
+                                        builder.setTitle(context.getString(R.string.dialogue_delete_wo_item_title))
+                                        builder.setMessage(context.getString(R.string.dialogue_delete_wo_item_body))
+                                        builder.setPositiveButton(context.getString(R.string.yes)) { _, _ ->
+
+                                            var urlString =
+                                                "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/delete/workOrderItem.php"
+
+                                            val currentTimestamp = System.currentTimeMillis()
+                                            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+                                            urlString = "$urlString?cb=$currentTimestamp"
+
+                                            val postRequest1: StringRequest = object : StringRequest(
+                                                Method.POST, urlString,
+                                                Response.Listener { response -> // response
+                                                    //Log.d("Response", response)
+
+                                                    println("Response $response")
+
+                                                    val parentObject = JSONObject(response)
+
+                                                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                                                        globalVars.playSaveSound(myView.context)
+                                                        filterList.removeAt(position)
+                                                        notifyDataSetChanged()
+                                                    }
+
+
+
+
+                                                },
+                                                Response.ErrorListener { // error
+
+
+                                                    // Log.e("VOLLEY", error.toString())
+                                                    // Log.d("Error.Response", error())
+                                                }
+                                            ) {
+                                                override fun getParams(): Map<String, String> {
+                                                    val params: MutableMap<String, String> = HashMap()
+                                                    params["companyUnique"] =
+                                                        GlobalVars.loggedInEmployee!!.companyUnique
+                                                    params["sessionKey"] =
+                                                        GlobalVars.loggedInEmployee!!.sessionKey
+                                                    params["workOrderID"] = woItem.woID
+                                                    params["workOrderItemID"] = woItem.ID
+                                                    println("params = $params")
+                                                    return params
+                                                }
+                                            }
+                                            postRequest1.tag = "woItem"
+                                            VolleyRequestQueue.getInstance(appContext).addToRequestQueue(postRequest1)
+                                        }
+                                        builder.setNegativeButton(context.getString(R.string.no)) { _, _ ->
+
+                                        }
+                                        builder.show()
+                                    }
+                                    else {
+                                        globalVars.simpleAlert(myView.context,context.getString(R.string.dialogue_usage_exists_title),context.getString(R.string.dialogue_usage_exists_body))
+                                    }
+                                }
+                                else {
+                                    globalVars.simpleAlert(myView.context,context.getString(R.string.dialogue_only_wo_item_title),context.getString(R.string.dialogue_only_wo_item_body))
+
+                                }
                             }
                         }
-
+                        else { // invoiceID != 0
+                            globalVars.simpleAlert(myView.context, context.getString(R.string.dialogue_error), context.getString(R.string.invoiced_wo_cant_edit))
+                        }
 
                     }
                 }

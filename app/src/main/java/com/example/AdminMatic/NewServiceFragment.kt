@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +20,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 
-class NewServiceFragment : Fragment() {
+class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private var equipment: Equipment? = null
     private var newService: EquipmentService? = null
@@ -30,6 +31,9 @@ class NewServiceFragment : Fragment() {
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
+
+    private lateinit var typeAdapter: ArrayAdapter<String>
+    private lateinit var typeArray:Array<String>
 
 
 
@@ -116,6 +120,7 @@ class NewServiceFragment : Fragment() {
                     when (newService!!.type) {
                         "1" -> { // date based
                             if (newService!!.frequency != null) {
+                                println ("frequency: ${newService!!.frequency}")
                                 nextDate = currentDate.plusDays(newService!!.frequency!!.toLong())
                             }
                             binding.newServiceNextEditTxt.setText(GlobalVars.dateFormatterShort.format(nextDate))
@@ -136,8 +141,64 @@ class NewServiceFragment : Fragment() {
                     }
                 }
             }
-
         })
+
+
+
+        binding.newServiceFrequencyEditTxt.setOnEditorActionListener { _, actionId, _ ->
+            //var numeric = true
+
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+
+                binding.newServiceFrequencyEditTxt.clearFocus()
+
+                // Check for numerical
+                try {
+                    val num = java.lang.Double.parseDouble(binding.newServiceFrequencyEditTxt.text.toString().replace(',', '.'))
+                } catch (e: NumberFormatException) {
+                    // numeric = false
+
+                    globalVars.playErrorSound(com.example.AdminMatic.myView.context)
+                    globalVars.simpleAlert(com.example.AdminMatic.myView.context,"Frequency Error","Frequency must be a number.")
+
+                    newService!!.frequency = "0"
+                }
+
+
+                when (newService!!.type) {
+                    "1" -> { // date based
+                        if (newService!!.frequency != null) {
+                            println ("frequency: ${newService!!.frequency}")
+                            nextDate = currentDate.plusDays(newService!!.frequency!!.toLong())
+                        }
+                        binding.newServiceNextEditTxt.setText(GlobalVars.dateFormatterShort.format(nextDate))
+                        newService!!.nextValue = GlobalVars.dateFormatterPHP.format(nextDate)
+                    }
+                    "2" -> { // mile/km based
+                        val tempNext =
+                            newService!!.currentValue!!.toInt() + newService!!.frequency!!.toInt()
+                        newService!!.nextValue = tempNext.toString()
+                        binding.newServiceNextEditTxt.setText(tempNext.toString())
+                    }
+                    "3" -> { // engine hour based
+                        nextDate = currentDate.plusDays(newService!!.frequency!!.toLong())
+                        val tempNext = newService!!.currentValue!!.toInt() + newService!!.frequency!!.toInt()
+                        newService!!.nextValue = tempNext.toString()
+                        binding.newServiceNextEditTxt.setText(tempNext.toString())
+                    }
+                }
+
+
+
+
+                true
+            } else {
+                false
+            }
+        }
+
+
+
         binding.newServiceCurrentEditTxt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -165,10 +226,30 @@ class NewServiceFragment : Fragment() {
             }
         })
 
+
+        typeArray = arrayOf(getString(R.string.service_type_one_time),
+            getString(R.string.service_type_date_based),
+            getString(R.string.service_type_mile_km_based),
+            getString(R.string.service_type_engine_hour_based),
+            getString(R.string.service_type_inspection))
+
+        binding.newServiceTypeSpinner.setBackgroundResource(R.drawable.text_view_layout)
+        typeAdapter = ArrayAdapter<String>(
+            myView.context,
+            android.R.layout.simple_spinner_dropdown_item,
+            typeArray
+        )
+        binding.newServiceTypeSpinner.adapter = typeAdapter
+        binding.newServiceTypeSpinner.onItemSelectedListener = this@NewServiceFragment
+
+
+
+        /*
         binding.newServiceTypeTxt.setOnClickListener{
             showTypeMenu()
             hideKeyboard()
         }
+         */
 
         val dateSetListenerCurrent =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -217,7 +298,7 @@ class NewServiceFragment : Fragment() {
 
         //Set up the elements to start in "one time" mode
         //nameEditTxt.setText(R.string.new_service_name)
-        binding.newServiceTypeTxt.setText(R.string.service_type_one_time)
+        //binding.newServiceTypeTxt.setText(R.string.service_type_one_time)
         binding.newServiceFrequencyEditTxt.isFocusable = false
         binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = false
         binding.newServiceCurrentEditTxt.isFocusable = false
@@ -229,132 +310,123 @@ class NewServiceFragment : Fragment() {
 
     }
 
-    private fun showTypeMenu(){
-        println("showTypeMenu")
-
-        val popUp = PopupMenu(com.example.AdminMatic.myView.context,binding.newServiceTypeTxt)
-        popUp.inflate(R.menu.new_service_type_menu)
-        popUp.setOnMenuItemClickListener { item: MenuItem? ->
-
-            when (item!!.itemId) {
-                R.id.new_service_type_menu_one_time -> {
-                    newService!!.type = "0"
-                    newService!!.typeName = getString(R.string.service_type_one_time)
-                    binding.newServiceTypeTxt.setText(R.string.service_type_one_time)
-                    binding.newServiceFrequencyTitleTxt.setText(R.string.new_service_frequency_days)
-                    binding.newServiceCurrentTitleTxt.setText(R.string.new_service_current)
-                    binding.newServiceNextTitleTxt.setText(R.string.new_service_next)
-                    binding.newServiceFrequencyEditTxt.isFocusable = false
-                    binding.newServiceCurrentEditTxt.isFocusable = false
-                    binding.newServiceNextEditTxt.isFocusable = false
-                    binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = false
-                    binding.newServiceCurrentEditTxt.isFocusableInTouchMode = false
-                    binding.newServiceNextEditTxt.isFocusableInTouchMode = false
-                    binding.newServiceFrequencyEditTxt.text = null
-                    binding.newServiceCurrentEditTxt.text = null
-                    binding.newServiceNextEditTxt.text = null
-                    newService!!.frequency = null
-                    newService!!.currentValue = null
-                    newService!!.nextValue = null
-                }
-                R.id.new_service_type_menu_date_based -> {
-                    newService!!.type = "1"
-                    newService!!.typeName = getString(R.string.service_type_date_based)
-                    binding.newServiceTypeTxt.setText(R.string.service_type_date_based)
-                    binding.newServiceFrequencyTitleTxt.setText(R.string.new_service_frequency_days)
-                    binding.newServiceCurrentTitleTxt.setText(R.string.new_service_current)
-                    binding.newServiceNextTitleTxt.setText(R.string.new_service_next)
-                    binding.newServiceFrequencyEditTxt.isFocusable = true
-                    binding.newServiceCurrentEditTxt.isFocusable = false
-                    binding.newServiceNextEditTxt.isFocusable = false
-                    binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = true
-                    binding.newServiceCurrentEditTxt.isFocusableInTouchMode = false
-                    binding.newServiceNextEditTxt.isFocusableInTouchMode = false
-                    binding.newServiceFrequencyEditTxt.text = null
-                    binding.newServiceCurrentEditTxt.text = null
-                    binding.newServiceNextEditTxt.text = null
-                    binding.newServiceFrequencyEditTxt.inputType = InputType.TYPE_CLASS_DATETIME
-                    binding.newServiceNextEditTxt.inputType = InputType.TYPE_CLASS_DATETIME
-                    newService!!.frequency = "0"
-                    binding.newServiceFrequencyEditTxt.setText(GlobalVars.dateFormatterShort.format(currentDate))
-                    binding.newServiceNextEditTxt.setText(GlobalVars.dateFormatterShort.format(nextDate))
-                    newService!!.currentValue = GlobalVars.dateFormatterPHP.format(currentDate)
-                    newService!!.nextValue = GlobalVars.dateFormatterPHP.format(nextDate)
-                }
-                R.id.new_service_type_menu_mile_km_based -> {
-                    newService!!.type = "2"
-                    newService!!.typeName = getString(R.string.service_type_mile_km_based)
-                    binding.newServiceTypeTxt.setText(R.string.service_type_mile_km_based)
-                    binding.newServiceFrequencyTitleTxt.setText(R.string.new_service_frequency_miles_km)
-                    binding.newServiceCurrentTitleTxt.setText(R.string.new_service_current_miles_km)
-                    binding.newServiceNextTitleTxt.setText(R.string.new_service_next_miles_km)
-                    binding.newServiceFrequencyEditTxt.isFocusable = true
-                    binding.newServiceCurrentEditTxt.isFocusable = true
-                    binding.newServiceNextEditTxt.isFocusable = true
-                    binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = true
-                    binding.newServiceCurrentEditTxt.isFocusableInTouchMode = true
-                    binding.newServiceNextEditTxt.isFocusableInTouchMode = true
-                    binding.newServiceFrequencyEditTxt.text = null
-                    binding.newServiceCurrentEditTxt.setText("0")
-                    binding.newServiceNextEditTxt.setText("0")
-                    binding.newServiceCurrentEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
-                    binding.newServiceNextEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
-                    newService!!.frequency = "0"
-                    newService!!.currentValue = "0"
-                    newService!!.nextValue = "0"
-                }
-                R.id.new_service_type_menu_engine_hour_based -> {
-                    newService!!.type = "3"
-                    newService!!.typeName = getString(R.string.service_type_engine_hour_based)
-                    binding.newServiceTypeTxt.setText(R.string.service_type_engine_hour_based)
-                    binding.newServiceFrequencyTitleTxt.setText(R.string.new_service_frequency_engine_hours)
-                    binding.newServiceCurrentTitleTxt.setText(R.string.new_service_current_engine_hours)
-                    binding.newServiceNextTitleTxt.setText(R.string.new_service_next_engine_hours)
-                    binding.newServiceFrequencyEditTxt.isFocusable = true
-                    binding.newServiceCurrentEditTxt.isFocusable = true
-                    binding.newServiceNextEditTxt.isFocusable = true
-                    binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = true
-                    binding.newServiceCurrentEditTxt.isFocusableInTouchMode = true
-                    binding.newServiceNextEditTxt.isFocusableInTouchMode = true
-                    binding.newServiceFrequencyEditTxt.text = null
-                    binding.newServiceCurrentEditTxt.setText("0")
-                    binding.newServiceNextEditTxt.setText("0")
-                    binding.newServiceCurrentEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
-                    binding.newServiceNextEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
-                    newService!!.frequency = "0"
-                    newService!!.currentValue = "0"
-                    newService!!.nextValue = "0"
-                }
-                R.id.new_service_type_menu_inspection -> {
-                    newService!!.type = "4"
-                    newService!!.typeName = getString(R.string.service_type_inspection)
-                    binding.newServiceTypeTxt.setText(R.string.service_type_inspection)
-                    binding.newServiceFrequencyTitleTxt.setText(R.string.new_service_frequency_days)
-                    binding.newServiceCurrentTitleTxt.setText(R.string.new_service_current)
-                    binding.newServiceNextTitleTxt.setText(R.string.new_service_next)
-                    binding.newServiceFrequencyEditTxt.isFocusable = false
-                    binding.newServiceCurrentEditTxt.isFocusable = false
-                    binding.newServiceNextEditTxt.isFocusable = false
-                    binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = false
-                    binding.newServiceCurrentEditTxt.isFocusableInTouchMode = false
-                    binding.newServiceNextEditTxt.isFocusableInTouchMode = false
-                    binding.newServiceFrequencyEditTxt.text = null
-                    binding.newServiceCurrentEditTxt.text = null
-                    binding.newServiceNextEditTxt.text = null
-                    newService!!.frequency = null
-                    newService!!.currentValue = null
-                    newService!!.nextValue = null
-                }
-            }
-
-            true
-        }
-
-        popUp.show()
-
-        popUp.gravity = Gravity.START
-        popUp.show()
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        println("onNothingSelected")
     }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        //editsMade = true
+
+        println("${typeArray[position]} selected")
+
+        when (position) {
+            0 -> {
+                newService!!.type = "0"
+                newService!!.typeName = getString(R.string.service_type_one_time)
+                binding.newServiceFrequencyTitleTxt.setText(R.string.new_service_frequency_days)
+                binding.newServiceCurrentTitleTxt.setText(R.string.new_service_current)
+                binding.newServiceNextTitleTxt.setText(R.string.new_service_next)
+                binding.newServiceFrequencyEditTxt.isFocusable = false
+                binding.newServiceCurrentEditTxt.isFocusable = false
+                binding.newServiceNextEditTxt.isFocusable = false
+                binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = false
+                binding.newServiceCurrentEditTxt.isFocusableInTouchMode = false
+                binding.newServiceNextEditTxt.isFocusableInTouchMode = false
+                binding.newServiceFrequencyEditTxt.text = null
+                binding.newServiceCurrentEditTxt.text = null
+                binding.newServiceNextEditTxt.text = null
+                newService!!.frequency = null
+                newService!!.currentValue = null
+                newService!!.nextValue = null
+            }
+            1 -> {
+                newService!!.type = "1"
+                newService!!.typeName = getString(R.string.service_type_date_based)
+                binding.newServiceFrequencyTitleTxt.setText(R.string.new_service_frequency_days)
+                binding.newServiceCurrentTitleTxt.setText(R.string.new_service_current)
+                binding.newServiceNextTitleTxt.setText(R.string.new_service_next)
+                binding.newServiceFrequencyEditTxt.isFocusable = true
+                binding.newServiceCurrentEditTxt.isFocusable = false
+                binding.newServiceNextEditTxt.isFocusable = false
+                binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = true
+                binding.newServiceCurrentEditTxt.isFocusableInTouchMode = false
+                binding.newServiceNextEditTxt.isFocusableInTouchMode = false
+                binding.newServiceFrequencyEditTxt.text = null
+                binding.newServiceCurrentEditTxt.text = null
+                binding.newServiceNextEditTxt.text = null
+                binding.newServiceFrequencyEditTxt.inputType = InputType.TYPE_CLASS_DATETIME
+                binding.newServiceNextEditTxt.inputType = InputType.TYPE_CLASS_DATETIME
+                newService!!.frequency = "0"
+                binding.newServiceCurrentEditTxt.setText(GlobalVars.dateFormatterShort.format(currentDate))
+                binding.newServiceNextEditTxt.setText(GlobalVars.dateFormatterShort.format(nextDate))
+                newService!!.currentValue = GlobalVars.dateFormatterPHP.format(currentDate)
+                newService!!.nextValue = GlobalVars.dateFormatterPHP.format(nextDate)
+            }
+            2 -> {
+                newService!!.type = "2"
+                newService!!.typeName = getString(R.string.service_type_mile_km_based)
+                binding.newServiceFrequencyTitleTxt.setText(R.string.new_service_frequency_miles_km)
+                binding.newServiceCurrentTitleTxt.setText(R.string.new_service_current_miles_km)
+                binding.newServiceNextTitleTxt.setText(R.string.new_service_next_miles_km)
+                binding.newServiceFrequencyEditTxt.isFocusable = true
+                binding.newServiceCurrentEditTxt.isFocusable = true
+                binding.newServiceNextEditTxt.isFocusable = true
+                binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = true
+                binding.newServiceCurrentEditTxt.isFocusableInTouchMode = true
+                binding.newServiceNextEditTxt.isFocusableInTouchMode = true
+                binding.newServiceFrequencyEditTxt.text = null
+                binding.newServiceCurrentEditTxt.setText("0")
+                binding.newServiceNextEditTxt.setText("0")
+                binding.newServiceCurrentEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
+                binding.newServiceNextEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
+                newService!!.frequency = "0"
+                newService!!.currentValue = "0"
+                newService!!.nextValue = "0"
+            }
+            3 -> {
+                newService!!.type = "3"
+                newService!!.typeName = getString(R.string.service_type_engine_hour_based)
+                binding.newServiceFrequencyTitleTxt.setText(R.string.new_service_frequency_engine_hours)
+                binding.newServiceCurrentTitleTxt.setText(R.string.new_service_current_engine_hours)
+                binding.newServiceNextTitleTxt.setText(R.string.new_service_next_engine_hours)
+                binding.newServiceFrequencyEditTxt.isFocusable = true
+                binding.newServiceCurrentEditTxt.isFocusable = true
+                binding.newServiceNextEditTxt.isFocusable = true
+                binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = true
+                binding.newServiceCurrentEditTxt.isFocusableInTouchMode = true
+                binding.newServiceNextEditTxt.isFocusableInTouchMode = true
+                binding.newServiceFrequencyEditTxt.text = null
+                binding.newServiceCurrentEditTxt.setText("0")
+                binding.newServiceNextEditTxt.setText("0")
+                binding.newServiceCurrentEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
+                binding.newServiceNextEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
+                newService!!.frequency = "0"
+                newService!!.currentValue = "0"
+                newService!!.nextValue = "0"
+            }
+            4 -> {
+                newService!!.type = "4"
+                newService!!.typeName = getString(R.string.service_type_inspection)
+                binding.newServiceFrequencyTitleTxt.setText(R.string.new_service_frequency_days)
+                binding.newServiceCurrentTitleTxt.setText(R.string.new_service_current)
+                binding.newServiceNextTitleTxt.setText(R.string.new_service_next)
+                binding.newServiceFrequencyEditTxt.isFocusable = false
+                binding.newServiceCurrentEditTxt.isFocusable = false
+                binding.newServiceNextEditTxt.isFocusable = false
+                binding.newServiceFrequencyEditTxt.isFocusableInTouchMode = false
+                binding.newServiceCurrentEditTxt.isFocusableInTouchMode = false
+                binding.newServiceNextEditTxt.isFocusableInTouchMode = false
+                binding.newServiceFrequencyEditTxt.text = null
+                binding.newServiceCurrentEditTxt.text = null
+                binding.newServiceNextEditTxt.text = null
+                newService!!.frequency = null
+                newService!!.currentValue = null
+                newService!!.nextValue = null
+            }
+        }
+    }
+
+
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE
@@ -364,9 +436,5 @@ class NewServiceFragment : Fragment() {
         binding.progressBar.visibility = View.INVISIBLE
     }
 
-    private fun hideKeyboard() {
-        val imm = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
-    }
 
 }

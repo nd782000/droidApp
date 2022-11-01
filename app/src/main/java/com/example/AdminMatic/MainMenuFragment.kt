@@ -44,7 +44,7 @@ class MainMenuFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu_menu, menu)
-        menu.findItem(R.id.version_item).title = getString(R.string.version, BuildConfig.VERSION_NAME)
+        menu.findItem(R.id.version_item).title = getString(R.string.version, BuildConfig.VERSION_NAME, GlobalVars.phpVersion)
         super.onCreateOptionsMenu(menu, inflater)
         ((activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false))
     }
@@ -52,9 +52,8 @@ class MainMenuFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
-        val id = item.itemId
 
-        when (id) {
+        when (item.itemId) {
             R.id.privacy_policy_item -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.adminmatic.com/app/privacy"))
                 startActivity(intent)

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1014505300298",
+    "project_id": "adminmatic-a8467",
+    "storage_bucket": "adminmatic-a8467.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014505300298:android:d96baa617a87f9e4dae1b3",
+        "android_client_info": {
+          "package_name": "com.adminmatic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1014505300298-pusfhpk73g9hm886qhgdt1aqo187438s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adminmatic",
+            "certificate_hash": "9c86893d5bfe060437141eac2402ca9ef6ecb40d"
+          }
+        },
+        {
+          "client_id": "1014505300298-9uva3pmi1dsm0n3ftnotgru8h6kukdu5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4zwuXBGsvRQg5BaYsILFLQWKuAVBuVK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1014505300298-9uva3pmi1dsm0n3ftnotgru8h6kukdu5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

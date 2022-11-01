@@ -82,10 +82,14 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         println("Work Order Item Customer: ${workOrder.customer}")
         binding.woItemUsageBtn.setOnClickListener{
-
-            if (woItem != null){
-                val directions = WoItemFragmentDirections.navigateToUsageEntry(woItem!!,workOrder)
-                myView.findNavController().navigate(directions)
+            if (workOrder!!.invoiceID != "0") {
+                globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.invoiced_wo_cant_edit))
+            }
+            else {
+                if (woItem != null) {
+                    val directions = WoItemFragmentDirections.navigateToUsageEntry(woItem!!, workOrder)
+                    myView.findNavController().navigate(directions)
+                }
             }
 
         }
@@ -317,73 +321,75 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_done)!!,myView.context), myView.context.getString(R.string.finished)))
         popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_canceled)!!,myView.context), myView.context.getString(R.string.canceled)))
 
-
-        popUp.setOnMenuItemClickListener { item: MenuItem? ->
-
-            woItem!!.status = item!!.itemId.toString()
-
-
-
-            setStatus(woItem!!.status)
-            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT)
-                .show()
-
-            showProgressView()
-
-            var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/workOrderItemStatus.php"
-
-            val currentTimestamp = System.currentTimeMillis()
-            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-            urlString = "$urlString?cb=$currentTimestamp"
-
-            val postRequest1: StringRequest = object : StringRequest(
-                Method.POST, urlString,
-                Response.Listener { response -> // response
-
-                    println("Response $response")
-
-                    try {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
-                            globalVars.playSaveSound(myView.context)
-                            checkForWoStatus()
-                        }
-
-                        hideProgressView()
-
-
-
-                        /* Here 'response' is a String containing the response you received from the website... */
-                    } catch (e: JSONException) {
-                        println("JSONException")
-                        e.printStackTrace()
-                    }
-                },
-                Response.ErrorListener { // error
-
-                }
-            ) {
-                override fun getParams(): Map<String, String> {
-                    val params: MutableMap<String, String> = java.util.HashMap()
-                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                    params["status"] = woItem!!.status
-                    params["woID"] = workOrder.woID
-                    params["woItemID"] = woItem!!.ID
-                    params["empID"] = GlobalVars.loggedInEmployee!!.ID
-                    println("params = $params")
-                    return params
-                }
-            }
-            postRequest1.tag = "woItem"
-            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
-            true
+        if (workOrder!!.invoiceID != "0") {
+            globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.invoiced_wo_cant_edit))
         }
+        else {
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
+
+                woItem!!.status = item!!.itemId.toString()
 
 
-        popUp.gravity = Gravity.START
-        popUp.show()
+
+                setStatus(woItem!!.status)
+                Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT)
+                    .show()
+
+                showProgressView()
+
+                var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/workOrderItemStatus.php"
+
+                val currentTimestamp = System.currentTimeMillis()
+                println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+                urlString = "$urlString?cb=$currentTimestamp"
+
+                val postRequest1: StringRequest = object : StringRequest(
+                    Method.POST, urlString,
+                    Response.Listener { response -> // response
+
+                        println("Response $response")
+
+                        try {
+                            val parentObject = JSONObject(response)
+                            println("parentObject = $parentObject")
+                            if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                                globalVars.playSaveSound(myView.context)
+                                checkForWoStatus()
+                            }
+
+                            hideProgressView()
+
+
+                            /* Here 'response' is a String containing the response you received from the website... */
+                        } catch (e: JSONException) {
+                            println("JSONException")
+                            e.printStackTrace()
+                        }
+                    },
+                    Response.ErrorListener { // error
+
+                    }
+                ) {
+                    override fun getParams(): Map<String, String> {
+                        val params: MutableMap<String, String> = java.util.HashMap()
+                        params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                        params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                        params["status"] = woItem!!.status
+                        params["woID"] = workOrder.woID
+                        params["woItemID"] = woItem!!.ID
+                        params["empID"] = GlobalVars.loggedInEmployee!!.ID
+                        println("params = $params")
+                        return params
+                    }
+                }
+                postRequest1.tag = "woItem"
+                VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+                true
+            }
+
+            popUp.gravity = Gravity.START
+            popUp.show()
+        }
     }
 
     private fun updateWorkOrderStatus(newStatus: String) {

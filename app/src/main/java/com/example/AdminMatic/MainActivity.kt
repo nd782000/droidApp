@@ -25,6 +25,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import org.json.JSONException
@@ -265,6 +266,25 @@ data class Customer(
     }
 }
 
+@Parcelize
+data class Document(
+
+    var ID: String,
+    var name: String,
+    var fname: String,
+    var fsize: String,
+    var custID: String? = "0",
+    var custName: String? = "",
+    var dateAdded: String = "",
+    var empName: String? = "",
+    var type: String = ""
+
+    ): Parcelable{
+    override fun toString(): String {
+        return name
+    }
+}
+
 
 @Parcelize
 data class CustomerArray(var customers: Array<Customer>
@@ -500,7 +520,8 @@ data class Invoice(var ID: String = "0",
                    var salesRepName:String? = "",
                    var notes:String? = "",
                    var subTotal:String? = "",
-                   var taxTotal:String? = ""
+                   var taxTotal:String? = "",
+                   var items:Array<InvoiceItem>? = null
 ): Parcelable{
     override fun toString(): String {
         return title ?: ID
@@ -517,7 +538,7 @@ data class Item(
     val type:String?,
     val remQty:String?,
     val price:String?,
-    val unit:String?,
+    var unit:String?,
     val salesDescription:String?,
     val tax:String?,
     var vendors: Array<Vendor>? = null,
@@ -1131,8 +1152,37 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (!it.isSuccessful) {
+                return@addOnCompleteListener
+            }
+            val token = it.result //this is the token retrieved
+            println("Firebase Messaging Token: $token")
+        }
 
+        /*
+
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener(OnCompleteListener { task ->
+                // 2
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "getInstanceId failed", task.exception)
+                    return@OnCompleteListener
+                }
+                // 3
+                val token = task.result?.token
+
+                // 4
+                val msg = getString(R.string.token_prefix, token)
+                Log.d(TAG, msg)
+                Toast.makeText(baseContext, msg, Toast.LENGTH_LONG).show()
+            })
+
+         */
     }
+
+
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -1250,7 +1300,8 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
                         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
                         val navController = navHostFragment.navController
 
-                        navController.popBackStack(R.id.logInFragment, false)
+
+
 
                         // Clear existing data
                         if (GlobalVars.globalWorkOrdersList != null) {
@@ -1266,6 +1317,10 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
                         GlobalVars.loggedInEmployee = null
                         GlobalVars.permissions = null
                         GlobalVars.employeeList = null
+
+                        hideProgressView()
+                        navController.popBackStack(R.id.logInFragment, false)
+
 
                         /* Here 'response' is a String containing the response you received from the website... */
                     } catch (e: JSONException) {

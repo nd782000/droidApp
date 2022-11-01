@@ -78,6 +78,9 @@ class ImageListFragment : Fragment(), ImageCellClickListener{//, ImageUploadInte
 
 
         }
+        else {
+            println("images already loaded")
+        }
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.image_list)
 

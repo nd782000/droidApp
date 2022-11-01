@@ -92,6 +92,9 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 val directions = WorkOrderFragmentDirections.navigateToNewEditWorkOrder(workOrder)
                 myView.findNavController().navigate(directions)
             }
+            else if (workOrder!!.invoiceID != "0") {
+                globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.invoiced_wo_cant_edit))
+            }
             else {
                 com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_schedule_edit))
             }
@@ -212,6 +215,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                                     itemList,
                                     context,
                                     requireActivity().application,
+                                    workOrder!!,
                                     this@WorkOrderFragment
                                 )
                             }
@@ -255,6 +259,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         if (GlobalVars.permissions!!.scheduleMoney == "0") {
                             binding.workOrderFooterCl.visibility = View.GONE
                         }
+
                     }
 
                     hideProgressView()
@@ -291,28 +296,50 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         if (workOrder!!.skipped != null) {
             popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_canceled)!!,myView.context), myView.context.getString(R.string.skip_visit)))
         }
-        popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
-            if (item!!.itemId == 4) { //skipped
+        if (workOrder!!.invoiceID != "0") {
+            globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.invoiced_wo_cant_edit))
+        }
+        else {
 
-                val builder: AlertDialog.Builder = AlertDialog.Builder(myView.context)
-                builder.setTitle(getString(R.string.dialogue_wo_reason_for_skip))
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
 
-                //Todo: make this use the background resource with correct margins
-                val et = EditText(myView.context)
-                //et.setBackgroundResource(R.drawable.text_view_layout)
-                //et.setPadding(5,0,5,0)
+                if (item!!.itemId == 4) { //skipped
 
-                et.inputType = InputType.TYPE_CLASS_TEXT
-                builder.setView(et)
+                    val builder: AlertDialog.Builder = AlertDialog.Builder(myView.context)
+                    builder.setTitle(getString(R.string.dialogue_wo_reason_for_skip))
 
-                // Set up the buttons
-                builder.setPositiveButton("OK") { _, _ ->
-                    // Here you get get input text from the Edittext
+
+                    //Todo: make this use the background resource with correct margins
+                    val et = EditText(myView.context)
+                    //et.setBackgroundResource(R.drawable.text_view_layout)
+                    //et.setPadding(5,0,5,0)
+
+                    et.inputType = InputType.TYPE_CLASS_TEXT
+                    builder.setView(et)
+
+                    // Set up the buttons
+                    builder.setPositiveButton("OK") { _, _ ->
+                        // Here you get get input text from the Edittext
+                        workOrder!!.status = item.itemId.toString()
+                        workOrder!!.notes = et.text.toString()
+                        workOrder!!.skipped = "1"
+
+                        if (listIndex >= 0) {
+                            GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder!!)
+                        }
+
+                        setStatusIcon(workOrder!!.status)
+                        updateStatus()
+
+                    }
+                    builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+
+                    builder.show()
+
+                } else {
                     workOrder!!.status = item.itemId.toString()
-                    workOrder!!.notes = et.text.toString()
-                    workOrder!!.skipped = "1"
 
                     if (listIndex >= 0) {
                         GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder!!)
@@ -320,32 +347,17 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                     setStatusIcon(workOrder!!.status)
                     updateStatus()
-
-                }
-                builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
-
-                builder.show()
-
-            }
-            else {
-                workOrder!!.status = item.itemId.toString()
-
-                if (listIndex >= 0) {
-                    GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder!!)
                 }
 
-                setStatusIcon(workOrder!!.status)
-                updateStatus()
+
+
+
+
+                true
             }
-
-
-
-
-
-            true
+            popUp.gravity = Gravity.START
+            popUp.show()
         }
-        popUp.gravity = Gravity.START
-        popUp.show()
     }
 
 
@@ -407,14 +419,72 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.invoice_not_done))
             return
         }
-        else if (workOrder!!.invoiceType != "2") {
+        else if (workOrder!!.invoiceType != "1") {
             com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.invoice_type_wrong))
             return
         }
+        else if (workOrder!!.totalPriceRaw == "0" || workOrder!!.totalPriceRaw == "0.00") {
+            com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.invoice_no_total))
+            return
+        }
 
-        //todo: add create invoice script once done and move to the invoice here
-        Toast.makeText(com.example.AdminMatic.myView.context, "Create invoice", Toast.LENGTH_SHORT).show()
+
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/new/invoice.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+                        val gson = GsonBuilder().create()
+                        val newInvoiceID: String = gson.fromJson(parentObject["invoiceID"].toString(), String::class.java)
+                        globalVars.playSaveSound(myView.context)
+                        val directions = WorkOrderFragmentDirections.navigateWorkOrderToInvoice(null)
+                        directions.invoiceID = newInvoiceID
+                        myView.findNavController().navigate(directions)
+                    }
+                    hideProgressView()
+
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+
+                params["woID"] = workOrder!!.woID
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "workOrder"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+
+
     }
+
 
 
     //Stack delegates
@@ -459,7 +529,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
             val directions = WorkOrderFragmentDirections.navigateToWoItem(it, workOrder!!)
             directions.listIndex = listIndex
-
+            println("fuck")
             myView.findNavController().navigate(directions)
 
 

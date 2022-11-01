@@ -26,7 +26,8 @@ import org.json.JSONObject
 class InvoiceFragment : Fragment(), StackDelegate {
 
 
-    private  var invoice: Invoice? = null
+    private var invoice: Invoice? = null
+    private var invoiceID: String? = "0"
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
@@ -37,6 +38,11 @@ class InvoiceFragment : Fragment(), StackDelegate {
         super.onCreate(savedInstanceState)
         arguments?.let {
             invoice = it.getParcelable("invoice")
+            invoiceID = it.getString("invoiceID")
+        }
+
+        if (invoice != null) {
+            invoiceID = invoice!!.ID
         }
     }
 
@@ -53,7 +59,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
         myView = binding.root
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.invoice_header, invoice!!.ID)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.invoice_header, invoiceID)
         setHasOptionsMenu(true)
         return myView
     }
@@ -65,9 +71,9 @@ class InvoiceFragment : Fragment(), StackDelegate {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        println("invoice = ${invoice!!.title}")
+        //println("invoice = ${invoice!!.title}")
 
-        stackFragment = StackFragment(3,invoice!!.ID,this)
+        stackFragment = StackFragment(3,invoiceID!!,this)
 
 
 
@@ -104,7 +110,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
     }
 
     private fun getInvoice(){
-        println("getWorkOrder")
+        println("getInvoice")
 
         showProgressView()
         var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/invoice.php"
@@ -123,17 +129,36 @@ class InvoiceFragment : Fragment(), StackDelegate {
 
                         val gson = GsonBuilder().create()
 
-                        val savedStatus = invoice!!.invoiceStatus
+                        /*
+                        var savedStatus = ""
+                        if (invoice != null) {
+                            savedStatus = invoice!!.invoiceStatus
+                        }
+
+                         */
+
+
+
                         invoice = gson.fromJson(parentObject.toString(), Invoice::class.java)
-                        invoice!!.invoiceStatus = savedStatus
 
 
-                        val itemJSON: JSONArray = parentObject.getJSONArray("items")
+                        /*
+                        if (invoice != null) {
+                            invoice!!.invoiceStatus = savedStatus
+                        }
+
+                         */
+
+
+                        /*
+                        val itemJSON: JSONArray = parentObject.getJSONArray("invoice")
+
                         val itemList =
                             gson.fromJson(itemJSON.toString(), Array<InvoiceItem>::class.java)
                                 .toMutableList()
                         println("TASKJSON $itemJSON")
                         //println("Number of items: ${itemList.size}")
+                        */
 
 
                         binding.invoiceTitleValTv.text = invoice!!.title
@@ -192,6 +217,9 @@ class InvoiceFragment : Fragment(), StackDelegate {
 
                         }
 
+                        println("fuck ${invoice!!.subTotal!!}")
+                        println("fuck ${invoice!!.subTotal!!.toDouble()}")
+
                         binding.invoiceSalesRepValTv.text = invoice!!.salesRepName
                         binding.invoiceSubtotalTv.text = getString(
                             R.string.invoice_subtotal,
@@ -211,7 +239,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
                             layoutManager = LinearLayoutManager(activity)
                             adapter = activity?.let {
                                 InvoiceItemsAdapter(
-                                    itemList,
+                                    invoice!!.items!!.toMutableList(),
                                     context
                                 )
                             }
@@ -253,7 +281,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["invoiceID"] = invoice!!.ID
+                params["invoiceID"] = invoiceID!!
                 println("params = $params")
                 return params
             }
