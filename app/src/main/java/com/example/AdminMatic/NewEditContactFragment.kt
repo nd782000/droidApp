@@ -26,15 +26,11 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.time.LocalDate
 import java.time.ZoneOffset
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.concurrent.schedule
 
 
 class NewEditContactFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private var editsMade = false
-    private var editsMadeDelayPassed = false
 
     private var contact: Contact? = null
     private var customer: Customer? = null
@@ -78,7 +74,7 @@ class NewEditContactFragment : Fragment(), AdapterView.OnItemSelectedListener {
             override fun handleOnBackPressed() {
                 // Handle the back button event
                 println("handleOnBackPressed")
-                if(editsMade && editsMadeDelayPassed){
+                if(editsMade){
                     println("edits made")
                     val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
                     builder.setTitle(getString(R.string.dialogue_edits_made_title))
@@ -116,11 +112,6 @@ class NewEditContactFragment : Fragment(), AdapterView.OnItemSelectedListener {
             contact = Contact("0", "1")
         }
 
-        // Flag edits made false after all the views have time to set their states
-        Timer("ContactEditsMade", false).schedule(500) {
-            editsMade = false
-            editsMadeDelayPassed = true
-        }
 
         // Type Spinner
         val contactTypesList = mutableListOf<String>()

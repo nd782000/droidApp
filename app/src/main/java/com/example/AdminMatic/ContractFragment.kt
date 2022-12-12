@@ -91,7 +91,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         val id = item.itemId
 
         if (id == R.id.edit_contract_item) {
-            if (GlobalVars.permissions!!.contractsEdit == "1") {
+            if (GlobalVars.permissions!!.leadsEdit == "1") {
                 val directions = ContractFragmentDirections.navigateContractToNewEditContract(contract)
                 myView.findNavController().navigate(directions)
             }
@@ -171,13 +171,13 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
                     params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                     params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                     params["contractID"] = contract!!.ID
-                    params["createdBy"] = contract!!.createdBy
-                    params["customer"] = contract!!.customer!!
-                    params["salesRep"] = contract!!.salesRep!!
+                    //params["createdBy"] = contract!!.createdBy
+                    //params["customer"] = contract!!.customer!!
+                    //params["salesRep"] = contract!!.salesRep!!
                     params["chargeType"] = contract!!.chargeType!!
                     params["paymentTerms"] = contract!!.paymentTermsID!!
                     params["status"] = contract!!.status
-                    params["total"] = contract!!.total!!
+                    //params["total"] = contract!!.total!!
                     params["notes"] = contract!!.notes!!
                     params["repName"] = contract!!.repName!!
                     params["customerName"] = contract!!.custName!!
@@ -288,8 +288,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
                     globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val gson = GsonBuilder().create()
-                    val contractObject = parentObject.getJSONObject("contract")
-                    val contractNew = gson.fromJson(contractObject.toString() , Contract::class.java)
+                    val contractNew = gson.fromJson(parentObject.toString() , Contract::class.java)
 
                     contract = contractNew
 
@@ -425,30 +424,20 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         val blankContractItem = ContractItem("0", "", "2", "0", contract!!.ID, "0")
         val directions = ContractFragmentDirections.navigateContractToContractItem(blankContractItem, true)
 
-
-
-        if (GlobalVars.permissions!!.contractsEdit == "1") {
-            if (contract!!.status == "1" || contract!!.status == "2" || contract!!.status == "3" || contract!!.status == "4") {
-                val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
-                builder.setTitle(getString(R.string.dialogue_add_contract_item_title))
-                builder.setMessage(getString(R.string.dialogue_add_contract_item_body))
-                builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-                    myView.findNavController().navigate(directions)
-                }
-                builder.setNegativeButton(getString(R.string.no)) { _, _ ->
-                }
-                builder.show()
-            }
-            else {
+        if (contract!!.status == "1" || contract!!.status == "2" || contract!!.status == "3" || contract!!.status == "4") {
+            val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
+            builder.setTitle(getString(R.string.dialogue_add_contract_item_title))
+            builder.setMessage(getString(R.string.dialogue_add_contract_item_body))
+            builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
                 myView.findNavController().navigate(directions)
             }
+            builder.setNegativeButton(getString(R.string.no)) { _, _ ->
+            }
+            builder.show()
         }
         else {
-            globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts_edit))
+            myView.findNavController().navigate(directions)
         }
-
-
-
 
 
 

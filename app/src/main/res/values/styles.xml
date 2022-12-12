@@ -2,11 +2,7 @@
 <resources>
     <style name="splashScreenTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
-    </style>\=
-    <style name="switchLightTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorAccent">@color/colorAccent</item>
     </style>
-
 </resources>
 
     <!--

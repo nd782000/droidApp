@@ -480,10 +480,6 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
                     editsMade = false
 
-                    if (!editMode!!) {
-                        myView.findNavController().navigateUp()
-                    }
-
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()

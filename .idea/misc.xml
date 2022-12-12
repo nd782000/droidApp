@@ -76,7 +76,6 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_payroll.xml" value="0.27445652173913043" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_payroll_summary.xml" value="0.22" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_pdf.xml" value="0.28351449275362317" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_planned_dates.xml" value="0.33" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_service.xml" value="0.2612359550561798" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_service_inspection.xml" value="0.2418478260869565" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/fragment_shifts.xml" value="0.24818840579710144" />
@@ -103,8 +102,6 @@
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/map_pin_layout.xml" value="0.75" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/payroll_list_item.xml" value="0.24048913043478262" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/payroll_summary_list_item.xml" value="0.25" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/planned_date_header.xml" value="0.28351449275362317" />
-        <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/planned_date_list_item.xml" value="0.28351449275362317" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/search_list_item.xml" value="0.22" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/service_history_list_item.xml" value="0.25" />
         <entry key="..\:/Users/Zach/StudioProjects/droidApp/app/src/main/res/layout/service_inspection_list_item.xml" value="0.2418478260869565" />

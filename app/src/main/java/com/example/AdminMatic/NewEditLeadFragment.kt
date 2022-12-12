@@ -26,15 +26,11 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.concurrent.schedule
 
 
 class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, CustomerCellClickListener, EmployeeCellClickListener {
 
     private var editsMade = false
-    private var editsMadeDelayPassed = false
 
     private var lead: Lead? = null
 
@@ -83,7 +79,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             override fun handleOnBackPressed() {
                 // Handle the back button event
                 println("handleOnBackPressed")
-                if(editsMade && editsMadeDelayPassed){
+                if(editsMade){
                     println("edits made")
                     val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
                     builder.setTitle(getString(R.string.dialogue_edits_made_title))
@@ -116,12 +112,6 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Flag edits made false after all the views have time to set their states
-        Timer("LeadEditsMade", false).schedule(500) {
-            editsMade = false
-            editsMadeDelayPassed = true
-        }
 
         if (!editMode) {
             lead = Lead("0", "1")
