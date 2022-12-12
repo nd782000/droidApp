@@ -33,6 +33,8 @@
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDBwzD9L0buOe7m63ka0_it5HB-94Cy9QU"/>
 
 
+
+
         <activity android:name="com.example.AdminMatic.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"

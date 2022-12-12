@@ -20,11 +20,15 @@ import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.concurrent.schedule
 
 
 class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener, CustomerCellClickListener, EmployeeCellClickListener {
 
     private var editsMade = false
+    private var editsMadeDelayPassed = false
 
     private var workOrder: WorkOrder? = null
 
@@ -69,7 +73,7 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
             override fun handleOnBackPressed() {
                 // Handle the back button event
                 println("handleOnBackPressed")
-                if(editsMade){
+                if(editsMade && editsMadeDelayPassed){
                     println("edits made")
                     val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
                     builder.setTitle(getString(R.string.dialogue_edits_made_title))
@@ -106,6 +110,12 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
 
         if (!editMode) {
             workOrder = WorkOrder("0")
+        }
+
+        // Flag edits made false after all the views have time to set their states
+        Timer("WorkOrderEditsMade", false).schedule(500) {
+            editsMade = false
+            editsMadeDelayPassed = true
         }
 
         // Customer search

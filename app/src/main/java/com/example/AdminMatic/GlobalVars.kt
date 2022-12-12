@@ -169,7 +169,7 @@ class GlobalVars: Application() {
 
         var deviceID:String? = null
 
-        var phpVersion:String = "1-1"
+        var phpVersion:String = "1-2"
 
         var customerList: MutableList<Customer>? = null
 
@@ -179,9 +179,12 @@ class GlobalVars: Application() {
         val dateFormatterMonthDay: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd") //format to display
         val dateFormatterShortDashes: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd-yy") //format to display
         val dateFormatterYYYYMMDD: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd") //format to display
+        val dateFormatterWeekday: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE MM/dd/yy") //format to display
+
 
         val dateFormatterHHMM: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         val dateFormatterHMMA: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+        val dateFormatterHHMMSS: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
         val moneyFormatter: NumberFormat = DecimalFormat("#,###,##0.00")
     }

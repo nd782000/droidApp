@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.provider.Settings
+import android.text.InputType
 import android.text.method.PasswordTransformationMethod
 import android.util.TypedValue
 import android.view.*
@@ -148,6 +149,7 @@ class LogInFragment : Fragment() {
 
         // Inflate the layout for this fragment
         _binding = FragmentLogInBinding.inflate(inflater, container, false)
+        println("Made binding")
         myView = binding.root
 
         //set app bar
@@ -172,6 +174,8 @@ class LogInFragment : Fragment() {
         companyUnique = preferences.getString("companyUnique","")
         println("stored companyUnique = $companyUnique")
 
+        pgsBar = binding.progressBar
+        pgsBar.visibility = View.GONE
 
         loginOrGetSessionUser()
 
@@ -205,8 +209,7 @@ class LogInFragment : Fragment() {
     private fun createLogInView(){
         println("createLogInView")
 
-        pgsBar = binding.progressBar
-        pgsBar.visibility = View.GONE
+
 
 
         companyEditText = EditText(myView.context)
@@ -240,6 +243,7 @@ class LogInFragment : Fragment() {
         passEditText.setBackgroundResource(R.drawable.text_view_layout)
         passEditText.id = generateViewId()
         passEditText.transformationMethod = PasswordTransformationMethod()
+        passEditText.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
         binding.loginLayout.addView(passEditText)
 
         rememberSwitch = SwitchCompat(myView.context)
@@ -436,6 +440,11 @@ class LogInFragment : Fragment() {
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
+                    listener!!.logOut(myView)
+                    pgsBar.isVisible = false
+                    createLogInView()
+
+
                 }
 
 
