@@ -400,6 +400,19 @@
         <action
             android:id="@+id/navigateToNewEditWorkOrder"
             app:destination="@id/newEditWorkOrderFragment" />
+        <action
+            android:id="@+id/navigateToPlannedDates"
+            app:destination="@id/plannedDatesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/plannedDatesFragment"
+        android:name="com.example.AdminMatic.PlannedDatesFragment"
+        android:label="fragment_planned_dates"
+        tools:layout="@layout/fragment_planned_dates" >
+        <argument
+            android:name="workOrder"
+            app:argType="com.example.AdminMatic.WorkOrder"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/customerFragment"

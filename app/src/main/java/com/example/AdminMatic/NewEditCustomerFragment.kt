@@ -24,12 +24,17 @@ import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.HashMap
 import kotlin.collections.set
+import kotlin.concurrent.schedule
 
 
 class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, CustomerCellClickListener {
 
     private var editsMade = false
+    private var editsMadeDelayPassed = false
+
     private var alreadyHadParent = false
 
     private var customerID: String? = null
@@ -80,7 +85,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             override fun handleOnBackPressed() {
                 // Handle the back button event
                 println("handleOnBackPressed")
-                if(editsMade){
+                if(editsMade && editsMadeDelayPassed){
                     println("edits made")
                     val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
                     builder.setTitle(getString(R.string.dialogue_edits_made_title))
@@ -112,6 +117,12 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Flag edits made false after all the views have time to set their states
+        Timer("CustomerEditsMade", false).schedule(500) {
+            editsMade = false
+            editsMadeDelayPassed = true
+        }
 
         customer = Customer("0", "")
 
@@ -716,9 +727,9 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
 
                         val gson = GsonBuilder().create()
-                        val customerArray =
-                            gson.fromJson(parentObject.toString(), CustomerArray::class.java)
-                        customer = customerArray.customers[0]
+                        val newCustID: String = gson.fromJson(parentObject["custID"].toString(), String::class.java)
+
+
                         globalVars.playSaveSound(myView.context)
                         editsMade = false
 
@@ -728,7 +739,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
                         } else {
                             val directions =
-                                NewEditCustomerFragmentDirections.navigateToCustomer(customer.ID)
+                                NewEditCustomerFragmentDirections.navigateToCustomer(newCustID)
                             myView.findNavController().navigate(directions)
                         }
                     }
@@ -798,6 +809,8 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                     else {
                         params["jobSiteChange"] = "0"
                     }
+                } else {
+                    params["jobSiteChange"] = "0"
                 }
 
                 if (binding.newCustomerBillingSameSwitch.isChecked) {

@@ -100,6 +100,16 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             }
             return true
         }
+        else if (id == R.id.planned_dates_item) {
+            if (GlobalVars.permissions!!.scheduleEdit == "1") {
+                val directions = WorkOrderFragmentDirections.navigateToPlannedDates(workOrder)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_schedule_edit))
+            }
+            return true
+        }
         else if (id == R.id.invoice_work_order_item) {
             if (GlobalVars.permissions!!.scheduleEdit == "1" && GlobalVars.permissions!!.invoices == "1") {
                 createInvoice()

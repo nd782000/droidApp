@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_gravity="center_horizontal">
+
+
+    <Spinner
+        android:id="@+id/crew_spinner"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:singleLine="true"
+        android:background="@drawable/text_view_layout"
+        android:layout_margin="5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/time_start_et"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:imeOptions="actionDone"
+        android:inputType="date"
+        android:singleLine="true"
+        android:focusable="false"
+        android:textSize="16sp"
+        android:focusableInTouchMode="true"
+        android:hint="@string/planned_dates_start_hint"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/crew_spinner"
+        tools:ignore="RtlHardcoded" />
+
+    <EditText
+        android:id="@+id/time_stop_et"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:imeOptions="actionDone"
+        android:inputType="date"
+        android:singleLine="true"
+        android:focusable="false"
+        android:textSize="16sp"
+        android:focusableInTouchMode="true"
+        android:hint="@string/planned_dates_stop_hint"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/time_start_et"
+        tools:ignore="RtlHardcoded" />
+
+    <TextView
+        android:id="@+id/delete_btn_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginRight="15dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="RtlHardcoded"
+        />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+
+
+
