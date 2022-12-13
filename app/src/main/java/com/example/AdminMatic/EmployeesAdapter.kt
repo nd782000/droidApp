@@ -122,11 +122,18 @@ class EmployeesAdapter(private val list: MutableList<Employee>, val showMenu:Boo
 
                     when (item!!.itemId) {
                         R.id.call -> {
-                            //Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
-                            println("phone btn clicked ${employee.phone}")
 
-                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.phone))
-                            myView.context.startActivity(intent)
+                            if (employee.phone != "No Number Saved" && employee.phone != "No Phone Number") {
+
+                                //Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
+                                println("phone btn clicked ${employee.phone}")
+
+                                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.phone))
+                                myView.context.startActivity(intent)
+                            }
+                            else {
+                                globalVars.simpleAlert(myView.context,myView.context.getString(R.string.dialogue_error),myView.context.getString(R.string.no_phone_found))
+                            }
                         }
                         R.id.text -> {
 
@@ -136,13 +143,17 @@ class EmployeesAdapter(private val list: MutableList<Employee>, val showMenu:Boo
                             // myView.context.startActivity(intent)
                             // val number =
                             // "12346556" // The number on which you want to send SMS
-
-                            myView.context.startActivity(
-                                Intent(
-                                    Intent.ACTION_VIEW,
-                                    Uri.fromParts("sms", data.phone, null)
+                            if (employee.phone != "No Number Saved" && employee.phone != "No Phone Number") {
+                                myView.context.startActivity(
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.fromParts("sms", data.phone, null)
+                                    )
                                 )
-                            )
+                            }
+                            else {
+                                globalVars.simpleAlert(myView.context,myView.context.getString(R.string.dialogue_error),myView.context.getString(R.string.no_phone_found))
+                            }
                             //startActivity(Intent.createChooser(intent, "Send Email Using: "));
 
                             // Toast.makeText(myView.context, data.ID, Toast.LENGTH_SHORT).show()

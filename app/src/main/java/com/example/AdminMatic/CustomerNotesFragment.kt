@@ -2,6 +2,8 @@ package com.example.AdminMatic
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,14 +18,17 @@ import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentCustomerNotesBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.concurrent.schedule
 
 
 class CustomerNotesFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private var editsMade = false
+    private var editsMadeDelayPassed = false
 
     private var customer: Customer? = null
 
@@ -62,7 +67,7 @@ class CustomerNotesFragment : Fragment(), AdapterView.OnItemSelectedListener {
             override fun handleOnBackPressed() {
                 // Handle the back button event
                 println("handleOnBackPressed")
-                if(editsMade){
+                if(editsMade && editsMadeDelayPassed){
                     println("edits made")
                     val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
                     builder.setTitle(getString(R.string.dialogue_edits_made_title))
@@ -92,6 +97,12 @@ class CustomerNotesFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Flag edits made false after all the views have time to set their states
+        Timer("CustomerNotesEditsMade", false).schedule(500) {
+            editsMade = false
+            editsMadeDelayPassed = true
+        }
 
         val zonesList = mutableListOf<String>()
         GlobalVars.zones!!.forEach {
@@ -147,6 +158,49 @@ class CustomerNotesFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.drivewaySizeEditText.setText(customer!!.drivewaySize)
         binding.floorSizeEditText.setText(customer!!.floorSize)
 
+        binding.notesEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                editsMade = true
+            }
+        })
+        binding.propertySizeEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                editsMade = true
+            }
+        })
+        binding.lawnSizeEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                editsMade = true
+            }
+        })
+        binding.gardenSizeEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                editsMade = true
+            }
+        })
+        binding.drivewaySizeEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                editsMade = true
+            }
+        })
+        binding.floorSizeEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                editsMade = true
+            }
+        })
+
         if (!customer!!.zone.isNullOrBlank()) {
 
             for (i in 0 until GlobalVars.zones!!.size) {
@@ -167,9 +221,6 @@ class CustomerNotesFragment : Fragment(), AdapterView.OnItemSelectedListener {
             binding.activeSwitch.isChecked = true
             binding.activeSwitch.jumpDrawablesToCurrentState()
         }
-
-
-        editsMade = false
 
     }
 

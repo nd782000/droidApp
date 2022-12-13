@@ -34,6 +34,8 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.util.*
 import kotlin.collections.set
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 
 interface  LogOut{
@@ -651,6 +653,22 @@ data class Payroll(var ID: String?,
     }
 }
 
+@Parcelize
+data class PlannedDate(var workOrderID: String?,
+                       var crewID: String?,
+                       var plannedDate: String?,
+                       var firm: String?,
+                       var startTime: String?,
+                       var endTime: String?,
+                       var daySort: String?,
+                       var additional: String?
+
+): Parcelable{
+    override fun toString(): String {
+        return plannedDate ?: "NULL"
+    }
+}
+
 
 @Parcelize
 data class PayrollArray(var combinedTotal: String?,
@@ -1092,7 +1110,6 @@ fun View.hideKeyboard() {
     imm.hideSoftInputFromWindow(windowToken, 0)
 }
 
-
 class VolleyRequestQueue constructor(context: Context) {
     companion object {
         @Volatile
@@ -1319,6 +1336,7 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
                         GlobalVars.employeeList = null
 
                         hideProgressView()
+                        println("FUCK FUCK FUCK")
                         navController.popBackStack(R.id.logInFragment, false)
 
 
@@ -1346,7 +1364,6 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
             }
             queue.add(postRequest1)
         }else{
-
             val navController = Navigation.findNavController(view)
             navController.popBackStack(R.id.logInFragment, false)
         }

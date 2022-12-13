@@ -376,6 +376,17 @@
     <string name="title_hint">Title…</string>
     <string name="notes_hint">Notes…</string>
 
+    <!--Planned Dates Stuff-->
+    <string name="planned_dates_menu">Planned Dates</string>
+    <string name="xs_planned_dates">WO #%1$s\'s Planned Dates</string>
+    <string name="planned_dates_lock">Lock:</string>
+    <string name="planned_dates_add_crew">Add Crew</string>
+    <string name="planned_dates_start_hint">Start…</string>
+    <string name="planned_dates_stop_hint">Stop…</string>
+    <string name="planned_dates_add">Add New Date</string>
+    <string name="planned_dates_x_old">%1$d Old Date(s)</string>
+    <string name="planned_dates_none">No Dates Scheduled</string>
+
     <!--New Contract stuff-->
     <string name="edit_contract_menu">Edit Contract</string>
     <string name="edit_contract_bar">Edit Contract #%1$s</string>
@@ -670,6 +681,12 @@
     <string name="dialogue_incomplete_contact">Incomplete Contact</string>
     <string name="dialogue_incomplete_contact_enter_name">Provide a name.</string>
     <string name="dialogue_incomplete_contact_enter_value">Provide a value.</string>
+    <string name="dialogue_start_time_after_stop">Start time cannot be after stop time.</string>
+    <string name="dialogue_stop_time_before_start">Stop time cannot be before start time.</string>
+    <string name="dialogue_crew_already_has_time">That crew already has time set.</string>
+    <string name="dialogue_delete_planned_date_row_title">Delete Crew?</string>
+    <string name="dialogue_delete_planned_date_row_body">Are you sure you want to delete this crew\'s planned time?</string>
+    <string name="dialogue_planned_date_no_crew">Please select a crew for all planned dates.</string>
 
 
 
@@ -688,6 +705,8 @@
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
 
     <string name="pick_single">Please select your image</string>
+    <string name="logout">Log Out</string>
+
 
     <plurals name="pick_multi">
         <item quantity="one">One image selected</item>
