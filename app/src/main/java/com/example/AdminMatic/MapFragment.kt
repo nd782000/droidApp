@@ -30,7 +30,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var googleMapGlobal:GoogleMap
     private var mapFragment : SupportMapFragment? = null
 
-
+    private var dataLoaded = false
 
     //Todo: change to an enum maybe, currently 0 = work orders and 1 = leads
     var mode:Int = 0
@@ -55,14 +55,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         myView = binding.root
 
-        if (mode == 0){ // Work orders
-            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
-        }
-        else { // Leads
-            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_map)
-        }
+        if (!dataLoaded) {
+            if (mode == 0) { // Work orders
+                ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text =
+                    getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+            } else { // Leads
+                ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text =
+                    getString(R.string.lead_map)
+            }
 
-        mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
+            mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
+        }
 
         // Inflate the layout for this fragment
         return myView
@@ -75,7 +78,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         (activity as MainActivity?)!!.setMap(this)
 
         //binding.mapFrg.getMapAsync(this)
-        mapFragment!!.getMapAsync(this)
+        if (!dataLoaded) {
+            mapFragment!!.getMapAsync(this)
+        }
 
         hideProgressView()
     }
@@ -126,7 +131,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
 
                 if (!it.daySort.isNullOrBlank()) {
-                    markerNumber.text = it.daySort
+                    if (it.daySort == "0") {
+                        markerNumber.text = "-"
+                    }
+                    else {
+                        markerNumber.text = it.daySort
+                        markerImage.setImageResource(R.drawable.ic_map_pin_numbered)
+                    }
+
                 }
                 else {
                     markerNumber.text = "-"
@@ -170,7 +182,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
 
             binding.mapRefreshBtn.setOnClickListener {
-                (activity as MainActivity?)!!.refreshWorkOrders()
+                //todo: implement
+                //(activity as MainActivity?)!!.refreshWorkOrders()
             }
         }
         else { // Leads
@@ -256,6 +269,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         googleMapGlobal.moveCamera(cu)
 
         println("Marker list size: ${markerList.size}")
+
+        dataLoaded = true
+
+
 
     }
 

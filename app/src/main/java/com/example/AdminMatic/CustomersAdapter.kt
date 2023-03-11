@@ -38,7 +38,7 @@ class CustomersAdapter(private val list: MutableList<Customer>, private val cell
 
         val customer: Customer = filterList[position]
         holder.bind(customer)
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
         //text highlighting for first string
 
         val listSysname = holder.itemView.findViewById<TextView>(R.id.list_sysname)

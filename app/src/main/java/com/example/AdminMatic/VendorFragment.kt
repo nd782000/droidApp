@@ -4,12 +4,11 @@ package com.example.AdminMatic
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentVendorBinding
 import com.android.volley.Response
@@ -40,6 +39,9 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
             vendor = it.getParcelable("vendor")
             vendorID = it.getString("vendorString")
         }
+        if (vendor != null) {
+            vendorID = vendor!!.ID
+        }
     }
 
     private var _binding: FragmentVendorBinding? = null
@@ -55,17 +57,18 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.vendor)
         mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
+        setHasOptionsMenu(true)
         return myView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        showProgressView()
 
         //binding.mapFrg.getMapAsync(this)
         mapFragment!!.getMapAsync(this)
 
-        hideProgressView()
+        //hideProgressView()
 
         //getVendor()
 
@@ -75,6 +78,30 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
         super.onStop()
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("vendor")
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.vendor_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.edit_vendor_item) {
+            if (GlobalVars.permissions!!.vendorsEdit == "1") {
+                val directions = VendorFragmentDirections.navigateToNewEditVendor(vendor)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_vendors_edit))
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         println("map ready")
@@ -89,14 +116,12 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
         googleMapGlobal.clear()
 
         println(vendor!!.mainAddr)
-        println(" , ")
 
-        if (vendor!!.mainAddr == "" || vendor!!.mainAddr == ", ") {
+        if (vendor!!.lat == "0" || vendor!!.lng == "0") {
+            hideProgressView()
             return
         }
 
-        println(vendor!!.lat)
-        println(vendor!!.lng)
 
 
         val newMarker: Marker? = googleMapGlobal.addMarker(
@@ -118,6 +143,8 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun populateVendorView() {
+        println("Vendor name: ${vendor!!.name}")
+        println("Vendor balance: ${vendor!!.balance}")
         binding.vendorNameTxt.text = vendor!!.name
         if (vendor!!.balance == null) {
             vendor!!.balance = "0"
@@ -162,7 +189,7 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
         }
 
         binding.vendorAddressBtnCl.setOnClickListener {
-            println("map btn clicked ${vendor!!.mainAddr}")
+            println("map btn clicked ${vendor!!.addr1}")
 
             var lng = "0"
             var lat = "-"
@@ -182,145 +209,99 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
 
         }
 
-        binding.vendorAddressBtnTv.text = getString(R.string.no_address_found)
+        //binding.vendorAddressBtnTv.text = getString(R.string.no_address_found)
 
-        println("Main Address: ${vendor!!.mainAddr}")
+        println("Main Address: ${vendor!!.addr1}")
 
-        if (vendor!!.mainAddr != "" && vendor!!.mainAddr != ", "){
-            binding.vendorAddressBtnTv.text = vendor!!.mainAddr!!
+        if (!vendor!!.addr1.isNullOrBlank()) {
+
+
+            if (vendor!!.city.isNullOrBlank()) {
+                binding.vendorAddressBtnTv.text = vendor!!.addr1!!
+            }
+            else {
+                binding.vendorAddressBtnTv.text = getString(R.string.comma, vendor!!.addr1!!, vendor!!.city!!)
+            }
+
+
         }
 
         updateMap()
 
-
-
-        /*
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.map_frg) as SupportMapFragment?  //use SuppoprtMapFragment for using in fragment instead of activity  MapFragment = activity   SupportMapFragment = fragment
-        mapFragment!!.getMapAsync { mMap ->
-            mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-
-            mMap.clear() //clear old markers
-
-            if(vendor!!.lat != null && vendor!!.lng != null && vendor!!.lat != "0" && vendor!!.lng != "0"){
-
-                // println("vendor lat = ${vendor!!.lat!!.toDouble()}")
-                // println("vendor lng = ${vendor!!.lng!!.toDouble()}")
-
-                println("vendor lat = ${vendor!!.lat!!.toDouble()}")
-                println("vendor lng = ${vendor!!.lng!!.toDouble()}")
-                val googlePlex = CameraPosition.builder()
-                    .target(LatLng(vendor!!.lat!!.toDouble(), vendor!!.lng!!.toDouble()))
-                    .zoom(10f)
-                    .bearing(0f)
-                    .tilt(45f)
-                    .build()
-
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 100, null)
-
-
-/*
-            mMap.addMarker(
-                MarkerOptions()
-                    .position(LatLng(37.4219999, -122.0862462))
-                    .title("Spider Man")
-                    .icon(bitmapDescriptorFromVector(activity, R.drawable.ic_done))
-            )
-*/
-
-
-                mMap.addMarker(
-                    MarkerOptions()
-                        .position(LatLng(vendor!!.lat!!.toDouble(), vendor!!.lng!!.toDouble()))
-                        .title(vendor!!.name)
-                    // .snippet("His Talent : Plenty of money")
-                )
-            }
-        }
-        */
     }
 
     private fun getVendor(){
         // println("getCustomer = ${customer!!.ID}")
-        showProgressView()
 
 
-        if (vendor == null) {
-            var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/vendor.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/vendor.php"
 
-            val currentTimestamp = System.currentTimeMillis()
-            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-            println(vendorID)
-            urlString = "$urlString?cb=$currentTimestamp"
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        println(vendorID)
+        urlString = "$urlString?cb=$currentTimestamp"
 
 
-            val postRequest1: StringRequest = object : StringRequest(
-                Method.POST, urlString,
-                Response.Listener { response -> // response
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
 
-                    println("Response $response")
+                println("Response $response")
 
-                    hideProgressView()
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
-                    try {
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        val gson = GsonBuilder().create()
+                        val vendorObject = parentObject.getJSONObject("vendor")
+                        vendor = gson.fromJson(vendorObject.toString(), Vendor::class.java)
 
-                            val gson = GsonBuilder().create()
-
-                            val vendorArray = gson.fromJson(parentObject.toString(), VendorArray::class.java)
-
-                            vendor = vendorArray.vendors[0]
-                            if (vendor!!.lat == null) {
-                                vendor!!.lat = "0"
-                            }
-                            if (vendor!!.lng == null) {
-                                vendor!!.lng = "0"
-                            }
-
-                            populateVendorView()
+                        if (vendor!!.lat == null) {
+                            vendor!!.lat = "0"
+                        }
+                        if (vendor!!.lng == null) {
+                            vendor!!.lng = "0"
                         }
 
-
-                    } catch (e: JSONException) {
-                        println("JSONException")
-                        e.printStackTrace()
+                        populateVendorView()
                     }
 
-                },
-                Response.ErrorListener { // error
-                    println("ERROR")
-                }
-            ) {
-                override fun getParams(): Map<String, String> {
-                    val params: MutableMap<String, String> = HashMap()
-                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                    params["id"] = vendorID.toString()
 
-                    println("params = $params")
-                    return params
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
                 }
+
+            },
+            Response.ErrorListener { // error
+                println("ERROR")
             }
-            postRequest1.tag = "vendor"
-            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["vendorID"] = vendorID.toString()
 
+                println("params = $params")
+                return params
+            }
         }
-        else {
-            hideProgressView()
-            populateVendorView()
-        }
+        postRequest1.tag = "vendor"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+
     }
+
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE
-        binding.vendorBodyCl.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         binding.progressBar.visibility = View.INVISIBLE
-        binding.vendorBodyCl.visibility = View.VISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
     /*

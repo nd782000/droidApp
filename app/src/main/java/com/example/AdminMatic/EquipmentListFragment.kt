@@ -52,9 +52,14 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
         val emptyList:MutableList<Equipment> = mutableListOf()
 
-        adapter = EquipmentAdapter(emptyList,myView.context, this)
+        adapter = EquipmentAdapter(emptyList,myView.context, requireActivity().application,this, false)
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment_list)
+
+        binding.equipmentListEditFieldsBtn.setOnClickListener {
+            val directions = EquipmentListFragmentDirections.navigateToEquipmentFields()
+            myView.findNavController().navigate(directions)
+        }
 
 
         // Inflate the layout for this fragment
@@ -123,7 +128,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
                             adapter = activity?.let {
                                 EquipmentAdapter(
                                     equipmentList,
-                                    it, this@EquipmentListFragment
+                                    it, requireActivity().application, this@EquipmentListFragment, false
                                 )
                             }
 
@@ -167,6 +172,7 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
 
                                 override fun onQueryTextSubmit(query: String?): Boolean {
+                                    myView.hideKeyboard()
                                     return false
                                 }
 

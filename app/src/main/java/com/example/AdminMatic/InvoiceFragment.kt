@@ -217,9 +217,6 @@ class InvoiceFragment : Fragment(), StackDelegate {
 
                         }
 
-                        println("fuck ${invoice!!.subTotal!!}")
-                        println("fuck ${invoice!!.subTotal!!.toDouble()}")
-
                         binding.invoiceSalesRepValTv.text = invoice!!.salesRepName
                         binding.invoiceSubtotalTv.text = getString(
                             R.string.invoice_subtotal,

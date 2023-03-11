@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,10 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +34,8 @@ interface ContractCellClickListener {
 
 class ContractListFragment : Fragment(), ContractCellClickListener {
 
+    private lateinit var status:String
+    private lateinit var salesRep:String
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
@@ -37,27 +43,65 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
     lateinit var adapter:ContractsAdapter
 
+    private var dataLoaded = false
+
 
     private var _binding: FragmentContractListBinding? = null
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setFragmentResultListener("contractListSettings") { _, bundle ->
+            println("fragnmentResultListener")
+            val newStatus = bundle.getString("status")
+            val newSalesRep = bundle.getString("salesRep")
+
+            if (newStatus != status || newSalesRep != salesRep ) {
+                status = newStatus!!
+                salesRep = newSalesRep!!
+
+                if (status != "" || salesRep != "") {
+                    println("setting button color yellow")
+                    ImageViewCompat.setImageTintList(binding.settingsIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, R.color.settingsActive)))
+                }
+                else {
+                    println("setting button color default")
+                    ImageViewCompat.setImageTintList(binding.settingsIv, null)
+                }
+
+                getContracts()
+            }
+
+            println("Status: $status")
+            println("SalesRep: $salesRep")
+
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
+        if (!dataLoaded) {
 
-        println("onCreateView")
-        globalVars = GlobalVars()
-        _binding = FragmentContractListBinding.inflate(inflater, container, false)
-        myView = binding.root
+            status = ""
+            salesRep = ""
 
-        //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
-        // progBar.alpha = 0.2f
+            println("onCreateView")
+            globalVars = GlobalVars()
+            _binding = FragmentContractListBinding.inflate(inflater, container, false)
+            myView = binding.root
 
-        val emptyList:MutableList<Contract> = mutableListOf()
+            //var progBar: ProgressBar = myView.findViewById(R.id.progressBar)
+            // progBar.alpha = 0.2f
 
-        adapter = ContractsAdapter(emptyList, this.myView.context, this)
+            val emptyList: MutableList<Contract> = mutableListOf()
+
+            adapter = ContractsAdapter(emptyList, this.myView.context, this)
+
+
+        }
 
 
 
@@ -77,17 +121,27 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         //need to wait for this function to initialize views
         println("onViewCreated")
 
-        binding.newContractBtn.setOnClickListener{
-            if (GlobalVars.permissions!!.contractsEdit == "1") {
-                val directions = ContractListFragmentDirections.navigateToNewEditContract(null)
+        if (!dataLoaded) {
+            binding.newContractBtn.setOnClickListener {
+                if (GlobalVars.permissions!!.contractsEdit == "1") {
+                    val directions = ContractListFragmentDirections.navigateToNewEditContract(null)
+                    myView.findNavController().navigate(directions)
+                } else {
+                    com.example.AdminMatic.globalVars.simpleAlert(
+                        myView.context,
+                        getString(R.string.access_denied),
+                        getString(R.string.no_permission_contracts_edit)
+                    )
+                }
+            }
+            binding.settingsBtn.setOnClickListener {
+                val directions = ContractListFragmentDirections.navigateToContractListSettings(status, salesRep)
                 myView.findNavController().navigate(directions)
             }
-            else {
-                com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts_edit))
-            }
-        }
 
-        getContracts()
+            dataLoaded = true
+            getContracts()
+        }
 
     }
 
@@ -205,6 +259,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
 
 
                                 override fun onQueryTextSubmit(query: String?): Boolean {
+                                    myView.hideKeyboard()
                                     return false
                                 }
 
@@ -240,6 +295,12 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
         ) {
             override fun getParams(): Map<String, String> {
                 val params: MutableMap<String, String> = HashMap()
+                if (status.isNotBlank()) {
+                    params["status"] = status
+                }
+                if (salesRep.isNotBlank()) {
+                    params["salesRep"] = salesRep
+                }
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
                 println("params = $params")

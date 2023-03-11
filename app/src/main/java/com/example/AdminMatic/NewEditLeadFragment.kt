@@ -2,7 +2,6 @@ package com.example.AdminMatic
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
@@ -23,11 +22,9 @@ import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.concurrent.schedule
 
 
@@ -99,7 +96,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
 
         globalVars = GlobalVars()
         if (editMode) {
@@ -139,9 +136,6 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
 
         // Customer search
 
-
-        //binding.newEditLeadCustomerSearchRv.recycledViewPool.clear()
-
         println("Customer list size: ${GlobalVars.customerList!!.size}")
 
         binding.newEditLeadCustomerSearchRv.apply {
@@ -163,7 +157,8 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    //customerRecyclerView.visibility = View.INVISIBLE
+                    binding.newEditLeadCustomerSearchRv.visibility = View.INVISIBLE
+                    myView.hideKeyboard()
                     return false
                 }
 
@@ -185,6 +180,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             closeButton?.setOnClickListener {
                 binding.newEditLeadCustomerSearch.setQuery("", false)
                 lead!!.customer = "0"
+                lead!!.custName = ""
                 myView.hideKeyboard()
                 binding.newEditLeadCustomerSearch.clearFocus()
                 binding.newEditLeadCustomerSearchRv.visibility = View.INVISIBLE
@@ -197,6 +193,15 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 }
             }
         }
+
+        /*
+        val closeButton: View = binding.newEditLeadCustomerSearch.findViewById(androidx.appcompat.R.id.search_close_btn)
+        closeButton.setOnClickListener {
+            println("fdsfd")
+        }
+
+         */
+
 
         // Schedule Spinner
         val scheduleTypeArray = arrayOf(getString(R.string.new_lead_schedule_type_asap), getString(R.string.new_lead_schedule_type_firm))
@@ -288,7 +293,8 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    //customerRecyclerView.visibility = View.INVISIBLE
+                    binding.newEditLeadSalesRepSearchRv.visibility = View.INVISIBLE
+                    myView.hideKeyboard()
                     return false
                 }
 
@@ -309,6 +315,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             closeButton?.setOnClickListener {
                 binding.newEditLeadSalesRepSearch.setQuery("", false)
                 lead!!.salesRep = ""
+                lead!!.repName = ""
                 myView.hideKeyboard()
                 binding.newEditLeadSalesRepSearch.clearFocus()
                 binding.newEditLeadSalesRepSearchRv.visibility = View.INVISIBLE

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 
 
-class EquipmentCrewAdapter(list: MutableList<EquipmentCrew>, private val context: Context, cellClickListener: EquipmentCellClickListener)
+class EquipmentCrewAdapter(list: MutableList<EquipmentCrew>, private val context: Context, private val appContext: Context, cellClickListener: EquipmentCellClickListener)
 
     : RecyclerView.Adapter<EquipmentCrewViewHolder>() {
 
@@ -45,7 +45,7 @@ class EquipmentCrewAdapter(list: MutableList<EquipmentCrew>, private val context
         holder.bind(equipmentCrew)
         println("queryText = $queryText")
 
-        val adapter = EquipmentAdapter(equipmentCrew.equips, context, cCL)
+        val adapter = EquipmentAdapter(equipmentCrew.equips, appContext, context, cCL, true)
 
         //holder.mRecycler!!.setHasFixedSize(true)
         holder.mRecycler!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

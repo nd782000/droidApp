@@ -180,6 +180,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
 
                                 override fun onQueryTextSubmit(query: String?): Boolean {
+                                    hideKeyboard()
                                     return false
                                 }
 

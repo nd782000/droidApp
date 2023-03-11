@@ -42,7 +42,7 @@ class EmployeeUsageAdapter(list: MutableList<Usage>, private val context: Contex
 
         val usage: Usage = filterList[position]
         holder.bind(usage)
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
 
 
         val mIconView:ImageView = holder.itemView.findViewById(R.id.list_usage_status_icon_iv)

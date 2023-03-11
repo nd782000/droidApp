@@ -88,7 +88,7 @@ class NewEditContractFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
 
         globalVars = GlobalVars()
         if (editMode) {
@@ -144,7 +144,8 @@ class NewEditContractFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    //customerRecyclerView.visibility = View.INVISIBLE
+                    binding.customerSearchRv.visibility = View.INVISIBLE
+                    myView.hideKeyboard()
                     return false
                 }
 
@@ -165,6 +166,7 @@ class NewEditContractFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             closeButton?.setOnClickListener {
                 binding.customerSearch.setQuery("", false)
                 contract!!.customer = "0"
+                contract!!.custName = ""
                 myView.hideKeyboard()
                 binding.customerSearch.clearFocus()
                 binding.customerSearchRv.visibility = View.INVISIBLE
@@ -234,7 +236,8 @@ class NewEditContractFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    //customerRecyclerView.visibility = View.INVISIBLE
+                    binding.salesRepSearchRv.visibility = View.INVISIBLE
+                    myView.hideKeyboard()
                     return false
                 }
 
@@ -255,6 +258,7 @@ class NewEditContractFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             closeButton?.setOnClickListener {
                 binding.salesRepSearch.setQuery("", false)
                 contract!!.salesRep = ""
+                contract!!.repName = ""
                 myView.hideKeyboard()
                 binding.salesRepSearch.clearFocus()
                 binding.salesRepSearchRv.visibility = View.INVISIBLE

@@ -150,7 +150,6 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
 
-                    //val parentObject = JSONObject(fuck)
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
                     if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
@@ -539,7 +538,6 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
             val directions = WorkOrderFragmentDirections.navigateToWoItem(it, workOrder!!)
             directions.listIndex = listIndex
-            println("fuck")
             myView.findNavController().navigate(directions)
 
 

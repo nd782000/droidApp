@@ -202,14 +202,12 @@ class CustomerNotesFragment : Fragment(), AdapterView.OnItemSelectedListener {
         })
 
         if (!customer!!.zone.isNullOrBlank()) {
-
             for (i in 0 until GlobalVars.zones!!.size) {
                 if (customer!!.zone == GlobalVars.zones!![i].ID) {
                     binding.zoneSpinner.setSelection(i)
                     break
                 }
             }
-
         }
 
         if (customer!!.allowImages == "1") {

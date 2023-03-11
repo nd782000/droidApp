@@ -14,6 +14,7 @@
     <color name="backgroundPure">#FFFFFF</color>
     <color name="backgroundHighlight">#FFFF00</color>
     <color name="button">#225CB3</color>
+    <color name="settingsActive">#FFFF00</color>
 
     <color name="colorGreen">#009000</color>
     <!--<color name="colorPrimaryDark">#005100</color>-->

@@ -47,7 +47,7 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
         val listLeadDescription = holder.itemView.findViewById<TextView>(R.id.list_lead_description_tv)
         val listLeadDate = holder.itemView.findViewById<TextView>(R.id.list_lead_date_tv)
 
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
         //text highlighting for first string
 
         val leadStatusImageView: ImageView = holder.itemView.findViewById(R.id.list_lead_status_icon_iv)
@@ -58,6 +58,15 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
                 .into(leadStatusImageView)
             "2"-> Picasso.with(context)
                 .load(R.drawable.ic_in_progress)
+                .into(leadStatusImageView)
+            "3"-> Picasso.with(context)
+                .load(R.drawable.ic_done)
+                .into(leadStatusImageView)
+            "4"-> Picasso.with(context)
+                .load(R.drawable.ic_canceled)
+                .into(leadStatusImageView)
+            "5"-> Picasso.with(context)
+                .load(R.drawable.ic_waiting)
                 .into(leadStatusImageView)
         }
 
@@ -149,7 +158,7 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
                 val filterResults = FilterResults()
                 filterResults.values = resultList
 
-               println("filterResults = ${filterResults.values}")
+               //println("filterResults = ${filterResults.values}")
                 return filterResults
             }
 

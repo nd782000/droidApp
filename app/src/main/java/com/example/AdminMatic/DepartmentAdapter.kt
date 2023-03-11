@@ -2,6 +2,7 @@ package com.example.AdminMatic
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color.parseColor
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
@@ -14,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 
 
-class DepartmentAdapter(list: MutableList<Department>, private val context: Context, cellClickListener: EmployeeCellClickListener)
+class DepartmentAdapter(list: MutableList<Department>, private val context: Context, cellClickListener: DepartmentCellClickListener)
 
     : RecyclerView.Adapter<DepartmentViewHolder>() {
 
@@ -44,17 +45,10 @@ class DepartmentAdapter(list: MutableList<Department>, private val context: Cont
 
         val department: Department = filterList[position]
         holder.bind(department)
-        println("queryText = $queryText")
 
-        val empList = department.emps!!.toMutableList()
-        val adapter = EmployeesAdapter(empList, true, context, cCL)
-
-        //holder.mRecycler!!.setHasFixedSize(true)
-        holder.mRecycler!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        holder.mRecycler!!.adapter = adapter
-        val itemDecoration: RecyclerView.ItemDecoration =
-            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-        holder.mRecycler!!.addItemDecoration(itemDecoration)
+        holder.itemView.setOnClickListener {
+            cCL.onDepartmentCellClickListener(department)
+        }
 
     }
 
@@ -65,23 +59,21 @@ class DepartmentAdapter(list: MutableList<Department>, private val context: Cont
 
 
 class DepartmentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-    RecyclerView.ViewHolder(inflater.inflate(R.layout.department_header, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.department_list_item, parent, false)) {
     private var mNameView: TextView? = null
     private var mColorView: View? = null
-    var mRecycler: RecyclerView? = null
 
 
     init {
-        mNameView = itemView.findViewById(R.id.list_name)
-        mColorView = itemView.findViewById(R.id.section_header_color_view)
-        mRecycler = itemView.findViewById(R.id.department_recycler_view)
+        mNameView = itemView.findViewById(R.id.department_name)
+        mColorView = itemView.findViewById(R.id.department_color_view)
     }
 
     @SuppressLint("Range")
     fun bind(department: Department) {
 
         mNameView!!.text = department.name
-        mColorView!!.background = ColorDrawable(parseColor(department.color))
+        mColorView!!.backgroundTintList = ColorStateList.valueOf(parseColor(department.color))
 
     }
 }

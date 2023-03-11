@@ -75,7 +75,7 @@ class ItemVendorViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         }
 
 
-        if (vendor.prefered == "1") {
+        if (vendor.preferred == "1") {
             mCl!!.background = context.getColor(R.color.backgroundHighlight).toDrawable()
         }
 

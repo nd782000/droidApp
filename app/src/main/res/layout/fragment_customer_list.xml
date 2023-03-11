@@ -20,12 +20,13 @@
             android:background="@color/background">
 
 
-            <androidx.appcompat.widget.SearchView
+            <com.example.AdminMatic.EmptySubmitSearchViewCompat
                 android:id="@+id/customers_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/text_view_layout"
                 android:textCursorDrawable="@null"
+                android:imeOptions="actionDone"
                 app:iconifiedByDefault="false"
                 android:layout_margin="5dp"
                 app:layout_constraintEnd_toEndOf="parent"

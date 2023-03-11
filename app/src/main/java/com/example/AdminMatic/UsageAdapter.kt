@@ -201,7 +201,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     vendorSelectText.text = context.getString(R.string.select_vendor)
 
                     woItem.vendors.forEach {
-                        if (it.prefered == "1") {
+                        if (it.preferred == "1") {
                             vendorSelectText.text = it.name
                             usageEditListener.editCost(position,it.cost!!,EditorInfo.IME_ACTION_DONE, false)
                             usageEditListener.editVendor(position, it.ID)

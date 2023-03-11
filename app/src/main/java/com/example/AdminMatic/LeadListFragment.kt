@@ -1,12 +1,16 @@
 package com.example.AdminMatic
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,28 +35,67 @@ interface LeadCellClickListener {
 
 class LeadListFragment : Fragment(), LeadCellClickListener {
 
+    private lateinit var status:String
+    private lateinit var salesRep:String
+    private lateinit var zone:String
 
     private lateinit var globalVars:GlobalVars
     private lateinit var myView:View
 
     lateinit var adapter:LeadsAdapter
 
+    private var dataLoaded = false
+
     private var _binding: FragmentLeadListBinding? = null
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setFragmentResultListener("leadListSettings") { _, bundle ->
+            println("fragnmentResultListener")
+            val newStatus = bundle.getString("status")
+            val newSalesRep = bundle.getString("salesRep")
+            val newZone = bundle.getString("zone")
+
+            if (newStatus != status || newSalesRep != salesRep || newZone != zone) {
+                status = newStatus!!
+                salesRep = newSalesRep!!
+                zone = newZone!!
+
+                if (status != "" || salesRep != "" || zone != "") {
+                    println("setting button color yellow")
+                    ImageViewCompat.setImageTintList(binding.settingsIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, R.color.settingsActive)))
+                }
+                else {
+                    println("setting button color default")
+                    ImageViewCompat.setImageTintList(binding.settingsIv, null)
+                }
+
+                getLeads()
+            }
+
+            println("Status: $status")
+            println("SalesRep: $salesRep")
+            println("Zone: $zone")
+
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        if (!dataLoaded) {
+            println("onCreateView")
+            globalVars = GlobalVars()
+            _binding = FragmentLeadListBinding.inflate(inflater, container, false)
+            myView = binding.root
+        }
 
-        println("onCreateView")
-        globalVars = GlobalVars()
-        _binding = FragmentLeadListBinding.inflate(inflater, container, false)
-        myView = binding.root
 
-        val emptyList:MutableList<Lead> = mutableListOf()
 
-        adapter = LeadsAdapter(emptyList, this.myView.context, this)
+
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_list)
 
         // Inflate the layout for this fragment
@@ -65,32 +108,50 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         //need to wait for this function to initialize views
         println("onViewCreated")
 
-        (activity as MainActivity?)!!.setLeadList(this)
+        if (!dataLoaded) {
+            status = ""
+            salesRep = ""
+            zone = ""
 
 
-        binding.mapBtn.setOnClickListener{
-            println("Map button clicked!")
-            val directions = LeadListFragmentDirections.navigateToMap(1)
-            myView.findNavController().navigate(directions)
-        }
-
-        binding.newLeadBtn.setOnClickListener{
-            if (GlobalVars.permissions!!.leadsEdit == "1") {
-                val directions = LeadListFragmentDirections.navigateToNewEditLead(null)
+            binding.mapBtn.setOnClickListener {
+                println("Map button clicked!")
+                val directions = LeadListFragmentDirections.navigateToMap(1)
                 myView.findNavController().navigate(directions)
             }
-            else {
-                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads_edit))
+
+            binding.newLeadBtn.setOnClickListener {
+                if (GlobalVars.permissions!!.leadsEdit == "1") {
+                    val directions = LeadListFragmentDirections.navigateToNewEditLead(null)
+                    myView.findNavController().navigate(directions)
+                } else {
+                    globalVars.simpleAlert(myView.context, getString(R.string.access_denied), getString(R.string.no_permission_leads_edit))
+                }
             }
+
+            binding.settingsBtn.setOnClickListener {
+                val directions = LeadListFragmentDirections.navigateToLeadListSettingsFragment(status, salesRep, zone)
+                myView.findNavController().navigate(directions)
+            }
+
+
+
+
+            dataLoaded = true
+            val emptyList: MutableList<Lead> = mutableListOf()
+            adapter = LeadsAdapter(emptyList, this.myView.context, this)
+
+            (activity as MainActivity?)!!.setLeadList(this)
+
+            getLeads()
         }
-        getLeads()
+
     }
 
     override fun onStop() {
         super.onStop()
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("leadList")
     }
-
 
     fun getLeads(){
         println("getLeads")
@@ -199,6 +260,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
 
 
                                 override fun onQueryTextSubmit(query: String?): Boolean {
+                                    myView.hideKeyboard()
                                     return false
                                 }
 
@@ -233,12 +295,25 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
+                if (status.isNotBlank()) {
+                    params["status"] = status
+                }
+                if (salesRep.isNotBlank()) {
+                    params["salesRep"] = salesRep
+                }
+                if (zone.isNotBlank()) {
+                    params["zone"] = zone
+                }
                 println("params = $params")
                 return params
             }
         }
         postRequest1.tag = "leadList"
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
+
+    private fun applyRecycler() {
+
     }
 
     override fun onLeadCellClickListener(data:Lead) {

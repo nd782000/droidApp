@@ -88,6 +88,7 @@ class CustomerLookupFragment : Fragment(), CustomerCellClickListener {
                     androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                     override fun onQueryTextSubmit(query: String?): Boolean {
+                        myView.hideKeyboard()
                         return false
                     }
 

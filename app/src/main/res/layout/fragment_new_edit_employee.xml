@@ -1,0 +1,854 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_new_edit_employee">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:layout_marginHorizontal="5dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/new_employee_scroll_view_cl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+
+                <TextView
+                    android:id="@+id/new_employee_name_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/new_employee_name"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+
+                <!-- Name Linear Layout -->
+                <LinearLayout
+                    android:id="@+id/new_employee_name_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/new_employee_name_title_tv"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+                    <!-- Prefix -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_name_prefix_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_name_prefix_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+
+
+                        <TextView
+                            android:id="@+id/new_employee_name_prefix_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_prefix"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_name_prefix_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- First Name -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_name_first_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_name_first_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_name_first_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_first"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_name_first_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Middle Name -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_name_middle_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_name_middle_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_name_middle_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_middle"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_name_middle_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Last Name -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_name_last_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_name_last_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_name_last_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_last"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_name_last_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+                    <!-- System Name -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_name_system_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_name_system_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_name_system_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_system"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_name_system_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout> <!-- End of employee Name LL -->
+
+
+
+
+
+
+
+
+                <TextView
+                    android:id="@+id/new_employee_contact_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/new_customer_contact_info"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toBottomOf="@id/new_employee_name_ll"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <!-- Contact Linear Layout -->
+                <LinearLayout
+                    android:id="@+id/new_employee_contact_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/new_employee_contact_title_tv"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+                    <!-- Primary Phone -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_contact_phone_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_contact_phone_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="phone"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_contact_phone_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_primary_phone"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_contact_phone_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Primary Email -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_contact_email_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_contact_email_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="textEmailAddress"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_contact_email_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_primary_email"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_contact_email_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </LinearLayout> <!-- End of contact LL -->
+
+
+
+                <TextView
+                    android:id="@+id/new_employee_account_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/new_employee_account_info"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toBottomOf="@id/new_employee_contact_ll"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <!-- Account Linear Layout -->
+                <LinearLayout
+                    android:id="@+id/new_employee_account_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/new_employee_account_title_tv"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+                    <!-- Username -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_contact_username_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_username_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_username_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_employee_username"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_username_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Password -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_password_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_password_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="textPassword"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_password_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_employee_password"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_password_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Department -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_department_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <Spinner
+                            android:id="@+id/new_employee_department_spinner"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/text_view_layout"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_department_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_wo_department"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_department_spinner"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout> <!-- End of account info LL -->
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/new_employee_active_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:checked="true"
+                    app:layout_constraintTop_toBottomOf="@+id/new_employee_account_ll"
+                    app:layout_constraintRight_toLeftOf="@+id/new_employee_active_switch_tv"
+                    />
+
+                <TextView
+                    android:id="@+id/new_employee_active_switch_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/new_employee_is_active"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toTopOf="@+id/new_employee_active_switch"
+                    app:layout_constraintBottom_toBottomOf="@+id/new_employee_active_switch"
+                    app:layout_constraintRight_toRightOf="parent"
+                    />
+
+
+
+                <TextView
+                    android:id="@+id/new_employee_address_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/new_employee_address"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toBottomOf="@id/new_employee_active_switch"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <!-- Financial Info Linear Layout -->
+                <LinearLayout
+                    android:id="@+id/new_employee_financial_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/new_employee_financial_title_tv"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+                    <!-- Date of Birth -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_financial_dob_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_financial_dob_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="date"
+                            android:singleLine="true"
+                            android:focusable="false"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_financial_dob_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_employee_dob"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_financial_dob_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Pay Type -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_financial_pay_type_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <Spinner
+                            android:id="@+id/new_employee_financial_pay_type_spinner"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/text_view_layout"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_financial_pay_type_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_employee_pay_type"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_financial_pay_type_spinner"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Pay Rate -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_financial_pay_rate_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_financial_pay_rate_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberDecimal"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_financial_pay_rate_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_employee_pay_rate"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_financial_pay_rate_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Tax Status -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_financial_tax_status_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <Spinner
+                            android:id="@+id/new_employee_financial_tax_status_spinner"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/text_view_layout"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_financial_tax_status_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_employee_tax_status"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_financial_tax_status_spinner"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Dependents -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_financial_dependents_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_financial_dependents_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberDecimal"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_financial_dependents_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_employee_dependents"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_financial_dependents_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout> <!-- End of Address LL -->
+
+                <TextView
+                    android:id="@+id/new_employee_financial_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/new_employee_financial_info"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toBottomOf="@id/new_employee_address_ll"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <!-- Address Linear Layout -->
+                <LinearLayout
+                    android:id="@+id/new_employee_address_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/new_employee_address_title_tv"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+                    <!-- Street 1 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_address_street1_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_address_street1_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_address_street1_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street1"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_address_street1_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Street 2 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_address_street2_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_address_street2_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_address_street2_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street2"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_address_street2_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Street 3 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_address_street3_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_address_street3_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_address_street3_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street3"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_address_street3_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Street 4 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_address_street4_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_address_street4_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_address_street4_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street4"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_address_street4_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- City -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_address_city_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_address_city_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_address_city_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_city"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_address_city_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- State -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_address_state_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <Spinner
+                            android:id="@+id/new_employee_address_state_spinner"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/text_view_layout"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_address_state_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_state"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_address_state_spinner"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Zip -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_employee_address_zip_cl"
+                        android:layout_margin="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/new_employee_address_zip_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            />
+                        <TextView
+                            android:id="@+id/new_employee_address_zip_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_zip"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_employee_address_zip_et"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout> <!-- End of Address LL -->
+
+
+
+                <Button
+                    android:id="@+id/new_employee_submit_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:text="@string/submit"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/new_employee_financial_ll"
+                    />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:visibility="invisible"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/button"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

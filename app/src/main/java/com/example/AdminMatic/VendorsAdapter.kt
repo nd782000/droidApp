@@ -222,7 +222,9 @@ class VendorViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     fun bind(vendor: Vendor) {
         mNameView?.text = vendor.name
-        mItemString?.text = vendor.itemString!!
+        //if (vendor.itemString != null) {
+            mItemString?.text = vendor.itemString
+        //}
     }
 
 

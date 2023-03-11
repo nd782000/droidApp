@@ -16,6 +16,7 @@ import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
+import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONException
 import org.json.JSONObject
@@ -207,7 +208,10 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
                                 // getPayroll()
 
-                                cellClickListener.getWoItem(true)
+                                val gson = GsonBuilder().create()
+                                val newWoStatus: String = gson.fromJson(parentObject["newWoStatus"].toString(), String::class.java)
+
+                                cellClickListener.getWoItem(newWoStatus)
                                 globalVars.playSaveSound(myView.context)
                             }
 

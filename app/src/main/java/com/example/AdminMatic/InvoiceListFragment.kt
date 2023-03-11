@@ -173,6 +173,7 @@ class InvoiceListFragment : Fragment(), InvoiceCellClickListener {
 
 
                                 override fun onQueryTextSubmit(query: String?): Boolean {
+                                    myView.hideKeyboard()
                                     return false
                                 }
 

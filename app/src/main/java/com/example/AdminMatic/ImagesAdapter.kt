@@ -235,7 +235,6 @@ class ImageViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
             mNameView?.text = image.customerName
         }
         else {
-            println("FUCK ${image.name}")
             mNameView?.text = image.name
         }
 

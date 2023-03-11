@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -10,22 +11,26 @@ import android.text.Spanned
 import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
 import java.util.*
 import com.squareup.picasso.Picasso
+import org.json.JSONObject
 
 
-
-class EquipmentAdapter(private val list: MutableList<Equipment>, private val context: Context, private val cellClickListener: EquipmentCellClickListener)
+class EquipmentAdapter(private val list: MutableList<Equipment>, private val context: Context, private val appContext: Context, private val cellClickListener: EquipmentCellClickListener, private val depMode:Boolean)
 
     : RecyclerView.Adapter<EquipmentViewHolder>(), Filterable {
 
 
     var filterList:MutableList<Equipment> = emptyList<Equipment>().toMutableList()
 
+    lateinit var globalVars:GlobalVars
 
     var queryText = ""
 
@@ -40,6 +45,8 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
     }
 
     override fun onBindViewHolder(holder: EquipmentViewHolder, position: Int) {
+
+        globalVars = GlobalVars()
 
         val equipment: Equipment = filterList[position]
 
@@ -150,33 +157,104 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
 
 
         //options btn click
-        holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
-            println("menu click")
 
-            val popUp = PopupMenu(myView.context,holder.itemView.findViewById<TextView>(R.id.textViewOptions))
-            popUp.inflate(R.menu.equipment_list_menu)
-            popUp.setOnMenuItemClickListener { item: MenuItem? ->
+        if (!depMode) {
 
-                when (item!!.itemId) {
-                    R.id.deactivate -> {
-                        Toast.makeText(myView.context, context.getString(R.string.deactivate), Toast.LENGTH_SHORT).show()
+            holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
+                println("menu click")
+
+                val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.textViewOptions))
+                popUp.inflate(R.menu.equipment_list_menu)
+                popUp.setOnMenuItemClickListener { item: MenuItem? ->
+
+                    when (item!!.itemId) {
+                        R.id.deactivate -> {
+
+                            if (GlobalVars.permissions!!.equipmentEdit == "0") {
+                                globalVars.simpleAlert(
+                                    myView.context,
+                                    myView.context.getString(R.string.access_denied),
+                                    myView.context.getString(R.string.no_permission_equipment_edit)
+                                )
+                            } else {
+
+                                val builder = AlertDialog.Builder(myView.context)
+                                builder.setTitle(myView.context.getString(R.string.dialogue_deactivate_equipment_title))
+                                builder.setMessage(myView.context.getString(R.string.dialogue_deactivate_equipment_body))
+                                builder.setPositiveButton(myView.context.getString(R.string.yes)) { _, _ ->
+
+                                    var urlString =
+                                        "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/equipmentActive.php"
+
+                                    val currentTimestamp = System.currentTimeMillis()
+                                    println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+                                    urlString = "$urlString?cb=$currentTimestamp"
+
+                                    val postRequest1: StringRequest = object : StringRequest(
+                                        Method.POST, urlString,
+                                        Response.Listener { response -> // response
+                                            //Log.d("Response", response)
+
+                                            println("Response $response")
+
+                                            val parentObject = JSONObject(response)
+
+                                            if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                                                globalVars.playSaveSound(myView.context)
+                                                filterList.removeAt(position)
+                                                notifyDataSetChanged()
+                                            }
+
+
+                                        },
+                                        Response.ErrorListener { // error
+
+
+                                            // Log.e("VOLLEY", error.toString())
+                                            // Log.d("Error.Response", error())
+                                        }
+                                    ) {
+                                        override fun getParams(): Map<String, String> {
+                                            val params: MutableMap<String, String> = HashMap()
+                                            params["companyUnique"] =
+                                                GlobalVars.loggedInEmployee!!.companyUnique
+                                            params["sessionKey"] =
+                                                GlobalVars.loggedInEmployee!!.sessionKey
+                                            params["equipmentID"] = equipment.ID
+                                            println("params = $params")
+                                            return params
+                                        }
+                                    }
+                                    postRequest1.tag = "woItem"
+                                    VolleyRequestQueue.getInstance(appContext).addToRequestQueue(postRequest1)
+                                }
+                                builder.setNegativeButton(myView.context.getString(R.string.no)) { _, _ ->
+
+                                }
+                                builder.show()
+                            }
+                        }
                     }
+
+                    true
                 }
 
-                true
-            }
 
 
+                popUp.show()
 
-            popUp.show()
-
-            /*
+                /*
             fun onClick(view: View?) {
                 println("menu click")
                 //will show popup menu here
             }*/
 
 
+            }
+        }
+        else { //depmode
+            holder.itemView.findViewById<TextView>(R.id.textViewOptions).visibility = View.GONE
+            holder.itemView.findViewById<TextView>(R.id.list_crew).visibility = View.INVISIBLE
         }
 
 

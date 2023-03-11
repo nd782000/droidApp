@@ -4,15 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
@@ -95,9 +92,31 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         adapter = ImagesAdapter(imageList,myView.context, false, this)
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.employee)
-
+        setHasOptionsMenu(true)
 
         return myView
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.employee_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.edit_employee_item) {
+            if (GlobalVars.permissions!!.employeesEdit == "1") {
+                val directions = EmployeeFragmentDirections.navigateToNewEditEmployee(employee!!)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_employees_edit))
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -174,7 +193,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         binding.deptsBtn.setOnClickListener{
             println("shifts btn clicked")
-            val directions = EmployeeFragmentDirections.navigateEmployeeToDepartments(employee)
+            val directions = EmployeeFragmentDirections.navigateEmployeeToDepartments()
             myView.findNavController().navigate(directions)
         }
 
@@ -191,13 +210,6 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
         }
 
 
-
-
-
-        val itemDecoration: RecyclerView.ItemDecoration =
-            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-        binding.listRecyclerView.addItemDecoration(itemDecoration)
-
         binding.listRecyclerView.onScrollToEnd {
             getImages()
         }
@@ -210,12 +222,10 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         // }
 
-        binding.listRecyclerView.layoutManager = GridLayoutManager(myView.context, 2)
+        binding.listRecyclerView.layoutManager = GridLayoutManager(myView.context, 3)
 
 
         binding.listRecyclerView.apply {
-
-
 
             // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
             // Setup refresh listener which triggers new data loading
@@ -244,12 +254,81 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         }
 
-        getImages()
+        getEmployee()
 
     }
 
 
+    private fun getEmployee(){
+        println("getEmployee")
 
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/employees.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                //Log.d("Response", response)
+
+                println("Response $response")
+
+                hideProgressView()
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+                        val employees: JSONArray = parentObject.getJSONArray("employees")
+                        // println("employees = ${employees.toString()}")
+                        // println("employees count = ${employees.length()}")
+
+
+                        val gson = GsonBuilder().create()
+                        val employeesList =
+                            gson.fromJson(employees.toString(), Array<Employee>::class.java)
+                                .toMutableList()
+
+                        employee = employeesList[0]
+                        getImages()
+                    }
+
+                    //adapter.notifyDataSetChanged();
+
+
+
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["empID"] = employee!!.ID
+
+
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "employee"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
 
 
 

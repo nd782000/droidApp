@@ -16,11 +16,12 @@
             app:layout_constraintTop_toTopOf="parent"
             android:background="@color/background">
 
-            <androidx.appcompat.widget.SearchView
+            <com.example.AdminMatic.EmptySubmitSearchViewCompat
                 android:id="@+id/invoices_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/text_view_layout"
+                android:imeOptions="actionDone"
                 android:textCursorDrawable="@null"
                 android:layout_margin="5dp"
                 app:iconifiedByDefault="false"

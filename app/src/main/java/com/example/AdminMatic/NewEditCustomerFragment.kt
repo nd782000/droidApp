@@ -101,7 +101,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
 
         globalVars = GlobalVars()
         if (customerID == null) {
@@ -669,7 +669,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
         if (billingAddressStateIndex != -1) {
             binding.newCustomerBillingAddressStateSpinner.setSelection(billingAddressStateIndex)
         }
-        binding.newCustomerBillingAddressZipEt.setText(customer.jobZip)
+        binding.newCustomerBillingAddressZipEt.setText(customer.billZip)
 
 
         // In edit mode, disable the same as job site address switch

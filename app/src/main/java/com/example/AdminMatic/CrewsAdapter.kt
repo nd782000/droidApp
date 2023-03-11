@@ -14,14 +14,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 
 
-class CrewAdapter(list: MutableList<Crew>, private val context: Context, cellClickListener: EmployeeCellClickListener)
+class CrewsAdapter(list: MutableList<CrewSection>, private val context: Context, crewCellClickListener: CrewCellClickListener, crewEntryCellClickListener: CrewEntryCellClickListener)
 
     : RecyclerView.Adapter<CrewViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
-    private val cCL = cellClickListener
+    private val crewCCL = crewCellClickListener
+    private val crewEntryCCL = crewEntryCellClickListener
 
-    var filterList:MutableList<Crew> = emptyList<Crew>().toMutableList()
+    var filterList:MutableList<CrewSection> = emptyList<CrewSection>().toMutableList()
 
     var queryText = ""
 
@@ -42,12 +43,11 @@ class CrewAdapter(list: MutableList<Crew>, private val context: Context, cellCli
 
     override fun onBindViewHolder(holder: CrewViewHolder, position: Int) {
 
-        val crew: Crew = filterList[position]
-        holder.bind(crew)
-        println("queryText = $queryText")
+        val crewSection: CrewSection = filterList[position]
+        holder.bind(crewSection)
+        //println("queryText = $queryText")
 
-        val empList = crew.emps!!.toMutableList()
-        val adapter = EmployeesAdapter(empList, true, context, cCL)
+        val adapter = CrewEntriesAdapter(crewSection.entries, crewEntryCCL)
 
         //holder.mRecycler!!.setHasFixedSize(true)
         holder.mRecycler!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -55,6 +55,10 @@ class CrewAdapter(list: MutableList<Crew>, private val context: Context, cellCli
         val itemDecoration: RecyclerView.ItemDecoration =
             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
         holder.mRecycler!!.addItemDecoration(itemDecoration)
+
+        holder.itemView.setOnClickListener {
+            crewCCL.onCrewCellClickListener(crewSection)
+        }
 
     }
 
@@ -78,10 +82,10 @@ class CrewViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
     @SuppressLint("Range")
-    fun bind(crew: Crew) {
+    fun bind(crewSection: CrewSection) {
 
-        mNameView!!.text = crew.name
-        mColorView!!.background = ColorDrawable(parseColor(crew.color))
+        mNameView!!.text = crewSection.name
+        mColorView!!.background = ColorDrawable(parseColor(crewSection.color))
 
     }
 }

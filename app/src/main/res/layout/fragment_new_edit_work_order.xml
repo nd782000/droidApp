@@ -19,12 +19,13 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.SearchView
+            <com.example.AdminMatic.EmptySubmitSearchViewCompat
                 android:id="@+id/customer_search"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:accessibilityHeading="false"
                 android:background="@drawable/text_view_layout"
+                android:imeOptions="actionDone"
                 app:queryHint="@string/customer_hint"
                 app:actionViewClass="android.widget.SearchView"
                 app:defaultQueryHint='Select Customer'
@@ -81,12 +82,13 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/title_edit_text">
 
-            <androidx.appcompat.widget.SearchView
+            <com.example.AdminMatic.EmptySubmitSearchViewCompat
                 android:id="@+id/sales_rep_search"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:accessibilityHeading="false"
                 android:background="@drawable/text_view_layout"
+                android:imeOptions="actionDone"
                 app:queryHint="@string/new_lead_sales_rep_hint"
                 app:actionViewClass="android.widget.SearchView"
                 app:defaultQueryHint='Select Customer'

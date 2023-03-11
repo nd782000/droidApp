@@ -159,7 +159,9 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
                     val numberList = mutableListOf<String>()
                     for (i in employeeCheckList.indices) {
                         if (employeeCheckList[i]) {
-                            numberList.add(employeeList[i].phone)
+                            if (employeeList[i].phone != null) {
+                                numberList.add(employeeList[i].phone!!)
+                            }
                         }
                     }
 
@@ -194,7 +196,6 @@ class GroupTextFragment : Fragment(), EmployeeCheckClickListener {
                         val batchStart = (batchNumber-1) * batchSize
                         var batchEnd = batchStart + batchSize -1
                         if (batchNumber == totalBatches) {
-                            println("FUCK")
                             batchEnd = numberList.size - 1
                         }
 

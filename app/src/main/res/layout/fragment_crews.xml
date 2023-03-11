@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.AdminMatic.EmployeeFragment">
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_section"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintGuide_percent="0.5"/>
+
+            <EditText
+                android:id="@+id/date_et"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:imeOptions="actionDone"
+                android:inputType="date"
+                android:singleLine="true"
+                android:focusable="false"
+                android:textSize="16sp"
+                android:focusableInTouchMode="true"
+                android:background="@drawable/text_view_layout"
+                android:hint="@string/new_lead_date_hint"
+                android:layout_margin="5dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/guideline"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <Spinner
+                android:id="@+id/department_spinner"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:focusableInTouchMode="true"
+                android:background="@drawable/text_view_layout"
+                android:hint="@string/new_lead_date_hint"
+                android:layout_margin="5dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/guideline"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Container -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/recycler_container_cl"
+            android:layout_width="match_parent"
+
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/emp_footer_cl"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top_section"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/recyclerContainer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Footer -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/emp_footer_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+
+
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/department_footer_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/new_department_btn"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:paddingTop="4dp"
+                android:paddingLeft="10dp"
+                android:text=""
+
+                />
+
+            <Button
+                android:id="@+id/new_department_btn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+
+                android:text="@string/add_new_crew"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/button"
+        android:indeterminateTintMode="src_atop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/employee_or_equipment_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:layout_gravity="center_horizontal">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/employee_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <ImageView
+            android:id="@+id/employee_iv"
+            android:layout_width="59dp"
+            android:layout_height="59dp"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_images"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/employee_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:text="@string/employee"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/employee_iv"
+            />
+
+
+        <TextView
+            android:id="@+id/employee_options_tv"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:text="&#8942;"
+            android:textAlignment="center"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout> <!-- emp CL -->
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/equipment_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/equipment_iv"
+            android:layout_width="59dp"
+            android:layout_height="59dp"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_images"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/equipment_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="16dp"
+            android:text="@string/equipment"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/equipment_iv"
+            />
+
+
+        <TextView
+            android:id="@+id/equipment_options_tv"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:text="&#8942;"
+            android:textAlignment="center"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout> <!-- equip CL -->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+
+
+

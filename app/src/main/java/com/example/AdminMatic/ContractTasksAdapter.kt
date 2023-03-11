@@ -36,7 +36,7 @@ class ContractTasksAdapter(list: MutableList<ContractTask>, private val context:
 
         val contractTask: ContractTask = filterList[position]
         holder.bind(contractTask, context)
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
         //text highlighting for first string
 
         val data = filterList[position]

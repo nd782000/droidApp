@@ -5,6 +5,14 @@
         android:title="@string/menu_reload_company_data"
         android:enabled="true"/>
     <item
+        android:id="@+id/departments_item"
+        android:title="@string/menu_departments"
+        android:enabled="true"/>
+    <item
+        android:id="@+id/change_password_item"
+        android:title="@string/change_password"
+        android:enabled="true"/>
+    <item
         android:id="@+id/privacy_policy_item"
         android:title="@string/menu_privacy_policy"
         android:enabled="true"/>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.SearchView
+    <com.example.AdminMatic.EmptySubmitSearchViewCompat
         android:id="@+id/customer_lookup_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,6 +12,7 @@
         android:textCursorDrawable="@null"
         app:iconifiedByDefault="false"
         android:layout_margin="5dp"
+        android:imeOptions="actionDone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

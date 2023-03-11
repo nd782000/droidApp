@@ -90,7 +90,7 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
 
         globalVars = GlobalVars()
         if (editMode) {
@@ -134,13 +134,14 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
 
             val itemDecoration: RecyclerView.ItemDecoration =
                 DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-            binding.salesRepSearchRv.addItemDecoration(itemDecoration)
+            binding.customerSearchRv.addItemDecoration(itemDecoration)
 
             binding.customerSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    //customerRecyclerView.visibility = View.INVISIBLE
+                    binding.customerSearchRv.visibility = View.INVISIBLE
+                    myView.hideKeyboard()
                     return false
                 }
 
@@ -162,6 +163,7 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
             closeButton?.setOnClickListener {
                 binding.customerSearch.setQuery("", false)
                 workOrder!!.customer = "0"
+                workOrder!!.custName = ""
                 myView.hideKeyboard()
                 binding.customerSearch.clearFocus()
                 binding.customerSearchRv.visibility = View.INVISIBLE
@@ -225,7 +227,8 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    //customerRecyclerView.visibility = View.INVISIBLE
+                    binding.salesRepSearchRv.visibility = View.INVISIBLE
+                    myView.hideKeyboard()
                     return false
                 }
 
@@ -246,6 +249,7 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
             closeButton?.setOnClickListener {
                 binding.salesRepSearch.setQuery("", false)
                 workOrder!!.salesRep = ""
+                workOrder!!.salesRepName = ""
                 myView.hideKeyboard()
                 binding.salesRepSearch.clearFocus()
                 binding.salesRepSearchRv.visibility = View.INVISIBLE

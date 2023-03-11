@@ -45,7 +45,7 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
         val contract: Contract = filterList[position]
         holder.bind(contract)
 
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
         //text highlighting for first string
 
         val contractStatusImageView: ImageView = holder.itemView.findViewById(R.id.list_contract_status_icon_iv)
@@ -56,6 +56,21 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
                 .into(contractStatusImageView)
             "1"-> Picasso.with(context)
                 .load(R.drawable.ic_in_progress)
+                .into(contractStatusImageView)
+            "2"-> Picasso.with(context)
+                .load(R.drawable.ic_awarded)
+                .into(contractStatusImageView)
+            "3"-> Picasso.with(context)
+                .load(R.drawable.ic_done)
+                .into(contractStatusImageView)
+            "4"-> Picasso.with(context)
+                .load(R.drawable.ic_canceled)
+                .into(contractStatusImageView)
+            "5"-> Picasso.with(context)
+                .load(R.drawable.ic_waiting)
+                .into(contractStatusImageView)
+            "6"-> Picasso.with(context)
+                .load(R.drawable.ic_canceled)
                 .into(contractStatusImageView)
         }
 

@@ -60,6 +60,17 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         println("onViewCreated")
+
+        binding.newVendorBtn.setOnClickListener{
+            if (GlobalVars.permissions!!.vendorsEdit == "1") {
+                val directions = VendorListFragmentDirections.navigateToNewEditVendor(null)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_vendors_edit))
+            }
+        }
+
         getVendors()
     }
 
@@ -113,6 +124,9 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
                         val gson = GsonBuilder().create()
                         val vendorsList = gson.fromJson(vendors.toString(), Array<Vendor>::class.java).toMutableList()
 
+                        vendorsList.forEach {
+                            it.itemString = ""
+                        }
 
                         binding.listRecyclerView.apply {
                             layoutManager = LinearLayoutManager(activity)
@@ -172,6 +186,7 @@ class VendorListFragment : Fragment(), VendorCellClickListener {
 
 
                                 override fun onQueryTextSubmit(query: String?): Boolean {
+                                    myView.hideKeyboard()
                                     return false
                                 }
 

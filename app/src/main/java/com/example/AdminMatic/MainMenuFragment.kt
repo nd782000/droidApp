@@ -54,6 +54,9 @@ class MainMenuFragment : Fragment() {
         // Handle action bar item clicks here.
 
         when (item.itemId) {
+            R.id.departments_item -> {
+                myView.findNavController().navigate(R.id.navigateToDepartments)
+            }
             R.id.privacy_policy_item -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.adminmatic.com/app/privacy"))
                 startActivity(intent)
@@ -64,6 +67,9 @@ class MainMenuFragment : Fragment() {
             }
             R.id.reload_company_data_item -> {
                 getFields()
+            }
+            R.id.change_password_item -> {
+                myView.findNavController().navigate(R.id.navigateToChangePassword)
             }
         }
 

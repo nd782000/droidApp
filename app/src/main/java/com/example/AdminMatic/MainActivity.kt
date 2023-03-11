@@ -184,8 +184,11 @@ data class Crew(var ID:String,
                 var name: String,
                 var status: String? = "",
                 var color: String? = "",
+                var subcolor: String? = "",
                 var crewHead: String? = "",
-                var emps: Array<Employee>? = null
+                var emps: Array<Employee>? = null,
+                var equipment: Array<Equipment>? = null,
+
 ): Parcelable{
     override fun toString(): String {
         return  name
@@ -312,7 +315,8 @@ data class Department(var ID:String,
                       var color: String? = "",
                       var depHead: String? = "",
                       var crews: Array<Crew>? = null,
-                      var emps: Array<Employee>? = null
+                      var emps: Array<Employee>? = null,
+                      var active: String = "1"
 
 ): Parcelable{
     override fun toString(): String {
@@ -345,7 +349,7 @@ data class Equipment(val ID: String,
                      val model:String?,
                      val serial:String?,
                      val crew:String?,
-                     val crewName:String?,
+                     var crewName:String?,
                      val typeName:String?,
                      val fuelType:String?,
                      val fuelTypeName:String?,
@@ -358,7 +362,7 @@ data class Equipment(val ID: String,
                      val purchaseDate:String?,
                      val description:String?,
                      val pic:String?,
-                     val crewColor:String?,
+                     var crewColor:String?,
                      val plannerShow:String?,
                      val image:Image?
 ): Parcelable{
@@ -375,22 +379,41 @@ data class Equipment(val ID: String,
 
 data class Employee(val ID: String,
                     val name: String,
+                    val salutation: String?,
                     @field:SerializedName(value="fName", alternate= ["fname"])
-                    val fname: String,
+                    val fname: String?,
                     @field:SerializedName("lName", alternate= ["lname"])
-                    val lname:String,
-                    val pic:String,
+                    val lname:String?,
+                    val middleName:String?,
+                    val dob:String?,
+                    val pic:String?,
                     val username: String,
-                    val level: String,
-                    val levelName: String,
-                    val hasSignature: String,
-                    val payRate: String,
-                    val phone: String,
-                    val mobile: String,
-                    val email: String,
-                    val appScore: String,
-                    val dep: String,
-                    val salesRep: String,
+                    val level: String?,
+                    val levelName: String?,
+                    val hasSignature: String?,
+                    val payRate: String?,
+                    val phone: String?,
+                    val mobile: String?,
+                    val email: String?,
+                    val appScore: String?,
+                    val address: String?,
+                    val address2: String?,
+                    val address3: String?,
+                    val address4: String?,
+                    var crewName: String?,
+                    var crewColor: String?,
+                    val city: String?,
+                    val state: String?,
+                    val zip: String?,
+                    @field:SerializedName("dep", alternate= ["depID"])
+                    val dep: String?,
+                    val lang: String?,
+                    val active: String,
+                    val salesRep: String?,
+                    val payType: String?,
+                    val taxStatus: String?,
+                    @field:SerializedName("dependents", alternate= ["dependants"])
+                    val dependents: String?,
                     var sessionKey: String,
                     var companyUnique:String,
                     var licenses:Array<License>? = null
@@ -476,6 +499,18 @@ data class InspectionQuestion(
     }
 }
 
+@Parcelize
+data class EquipmentField(
+    @field:SerializedName("name", alternate= ["questionText"])
+    var name:String,
+    var ID:String,
+    var sort:String = "0"
+): Parcelable{
+    override fun toString(): String {
+        return  name
+    }
+}
+
 
 @Parcelize
 data class Image(val ID: String,
@@ -506,6 +541,15 @@ data class Image(val ID: String,
 ): Parcelable{
     override fun toString(): String {
         return customerName ?: ID
+    }
+}
+
+@Parcelize
+data class Tag(
+    val name: String,
+): Parcelable{
+    override fun toString(): String {
+        return name
     }
 }
 
@@ -835,24 +879,123 @@ data class Usage(var ID:String,
 
 
 @Parcelize
-data class Vendor(val ID: String,
-                  val name: String,
-                  val mainAddr:String?,
-                  var lng:String?,
-                  var lat:String?,
-                  val website:String?,
-                  val mainPhone:String?,
-                  var balance:String?,
-                  val cost:String?,
-                  val price:String?,
-                  val prefered:String?,
-                  val itemString:String?
+data class Vendor(
+    /*                
+    val ID: String,
+                  val name: String = "",
+                  val mainAddr:String? = "",
+                  var lng:String? = "",
+                  var lat:String? = "",
+                  val website:String? = "",
+                  val mainPhone:String? = "",
+                  var balance:String? = "",
+                  val cost:String? = "",
+                  val price:String? = "",
+                  val prefered:String? = "",
+                  var itemString:String? = "",
+                  var active:String? = "",
+                  var fname: String? = "",
+                  var mname: String? = "",
+                  var lname: String? = "",
+                  var companyName: String? = "",
+                  var salutation: String? = "",
+
+                  var phone: String? = "",
+                  var email: String? = "",
+
+                  var street1: String? = "",
+                  var street2: String? = "",
+                  var street3: String? = "",
+                  var street4: String? = "",
+                  var city: String? = "",
+                  var zip: String? = "",
+                  var state: String? = "",
+
+                  var billStreet1: String? = "",
+                  var billStreet2: String? = "",
+                  var billStreet3: String? = "",
+                  var billStreet4: String? = "",
+                  var billCity: String? = "",
+                  var billZip: String? = "",
+                  var billState: String? = "",
+
+                  var documentType: String? = "",
+                  var paymentTermsID: String? = "",
+                  var category: String? = "",
+                  
+     */
+
+
+
+            var ID: String,
+            var name: String,
+
+            var active: String = "1",
+
+            var itemString: String? = "",
+
+            var fname: String? = "",
+            var mname: String? = "",
+            var lname: String? = "",
+            var companyName: String? = "",
+            var salutation: String? = "",
+
+            var mainAddr: String? = "",
+            var lng: String? = "",
+            var lat: String? = "",
+            var mainPhone: String? = "",
+            var mainEmail: String? = "",
+            var website: String? = "",
+
+            var balance: String? = "",
+
+            var cost: String? = "",
+            var price: String? = "",
+            @field:SerializedName(value="preferred", alternate= ["prefered"])
+            var preferred: String? = "",
+
+            var addr1: String? = "",
+            var addr2: String? = "",
+            var addr3: String? = "",
+            var addr4: String? = "",
+            var city: String? = "",
+            var zip: String? = "",
+            var state: String? = "",
+
+            var baddr1: String? = "",
+            var baddr2: String? = "",
+            var baddr3: String? = "",
+            var baddr4: String? = "",
+            var bcity: String? = "",
+            var bzip: String? = "",
+            var bstate: String? = "",
+
+            @field:SerializedName(value="category", alternate= ["type"])
+            var category: String? = "",
+            @field:SerializedName(value="ppreferredDocumentType", alternate= ["pref"])
+            var preferredDocumentType: String? = "",
+            var paymentTermsID: String? = "",
+                  
+                  
 ): Parcelable{
     override fun toString(): String {
         return name
     }
 }
 
+
+@Parcelize
+data class VendorCategory(var ID: String,
+                          var name: String,
+                          var fullname: String,
+                          var parentID: String,
+                          var active: String
+
+): Parcelable {
+    override fun toString(): String {
+        return name
+    }
+}
 
 
 
@@ -1336,7 +1479,6 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
                         GlobalVars.employeeList = null
 
                         hideProgressView()
-                        println("FUCK FUCK FUCK")
                         navController.popBackStack(R.id.logInFragment, false)
 
 

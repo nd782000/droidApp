@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_contract_list_settings"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp">
+
+        <TextView
+            android:id="@+id/status_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/lead_list_settings_status"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <Spinner
+            android:id="@+id/status_spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:singleLine="true"
+            android:background="@drawable/text_view_layout"
+            app:layout_constraintTop_toBottomOf="@id/status_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/sales_rep_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/new_lead_sales_rep"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/status_spinner"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <com.example.AdminMatic.EmptySubmitSearchViewCompat
+            android:id="@+id/sales_rep_search"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:accessibilityHeading="false"
+            android:background="@drawable/text_view_layout"
+            app:queryHint="@string/new_lead_sales_rep_hint"
+            app:actionViewClass="android.widget.SearchView"
+            app:defaultQueryHint='Select Customer'
+            app:iconifiedByDefault="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sales_rep_title"
+            app:queryBackground="@null" />
+
+
+
+        <Button
+            android:id="@+id/clear_all_filters_btn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:text="@string/clear_all_filters"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="14sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sales_rep_search"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/sales_rep_search_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/sales_rep_search"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:elevation="10dp"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

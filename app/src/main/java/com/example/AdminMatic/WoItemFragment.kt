@@ -25,9 +25,9 @@ interface TaskCellClickListener {
     fun onTaskCellClickListener(data:Task)
     fun showProgressView()
     fun hideProgressView()
-    fun getWoItem(taskUpdated:Boolean)
+    fun getWoItem(_newWoStatus:String?)
     fun uploadImage(_task:Task)
-    fun checkForWoStatus()
+    //fun checkForWoStatus()
 
 }
 
@@ -104,7 +104,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             hideProgressView()
         }
         else{
-            getWoItem(false)
+            getWoItem(null)
         }
 
 
@@ -150,7 +150,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         binding.profitBar.progress = 100 - profitPercent
     }
 
-    override fun getWoItem(taskUpdated: Boolean){
+    override fun getWoItem(newWoStatus: String?){
         println("get woItem")
 
 
@@ -212,8 +212,10 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                         fillProfitCl()
                         setUpViews()
                         hideProgressView()
-                        if (taskUpdated) {
-                            checkForWoStatus()
+                        if (newWoStatus != null) {
+                            if (newWoStatus != workOrder.status) {
+                                updateWorkOrderStatus(newWoStatus)
+                            }
                         }
                     }
 
@@ -243,6 +245,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
     }
 
+    /*
     override fun checkForWoStatus() {
 
         //Plug the new woitem status into the workOrder object
@@ -281,6 +284,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             }
         }
     }
+
+     */
 
     override fun uploadImage(_task:Task){
 
@@ -351,10 +356,16 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
                         try {
                             val parentObject = JSONObject(response)
-                            println("parentObject = $parentObject")
+                            println("parentObject update work order item = $parentObject")
                             if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
                                 globalVars.playSaveSound(myView.context)
-                                checkForWoStatus()
+
+                                val gson = GsonBuilder().create()
+                                val newWoStatus: String = gson.fromJson(parentObject["newWoStatus"].toString(), String::class.java)
+
+                                if (newWoStatus != workOrder.status) {
+                                    updateWorkOrderStatus(newWoStatus)
+                                }
                             }
 
                             hideProgressView()

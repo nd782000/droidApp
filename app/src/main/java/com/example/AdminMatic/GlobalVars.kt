@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
@@ -15,6 +16,8 @@ import android.text.TextUtils
 import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import com.AdminMatic.R
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
@@ -43,6 +46,7 @@ class GlobalVars: Application() {
         var departments:Array<Department>? = null
         var crews:Array<Crew>? = null
         var zones:Array<Zone>? = null
+        var vendorCategories:Array<VendorCategory>? = null
         var paymentTerms:Array<PaymentTerms>? = null
         var contactTypes:Array<ContactType>? = null
 
@@ -103,7 +107,7 @@ class GlobalVars: Application() {
             "WV - West Virginia",
             "WY - Wyoming")
 
-        var statesShort:Array<String> = arrayOf("Select a State",
+        var statesShort:Array<String> = arrayOf("",
             "AK",
             "AL",
             "AR",
@@ -169,7 +173,7 @@ class GlobalVars: Application() {
 
         var deviceID:String? = null
 
-        var phpVersion:String = "1-2"
+        var phpVersion:String = "1-3"
 
         var customerList: MutableList<Customer>? = null
 
@@ -246,6 +250,17 @@ class GlobalVars: Application() {
         GlobalVars.zones = zonesMutableList.toTypedArray()
 
         println("zones size: ${GlobalVars.zones!!.size}")
+
+        val vendorCategories:JSONArray = parentObject.getJSONArray("vendorCategories")
+        GlobalVars.vendorCategories = gson.fromJson(vendorCategories.toString() , Array<VendorCategory>::class.java)
+        // Add "no category" field
+        val noVendorCategory = VendorCategory("0", context.getString(R.string.no_category), context.getString(R.string.no_category), "0", "1")
+        var vendorCatgoriesMutableList: MutableList<VendorCategory>
+        GlobalVars.vendorCategories.let {
+            vendorCatgoriesMutableList = it!!.toMutableList()
+        }
+        vendorCatgoriesMutableList.add(0, noVendorCategory)
+        GlobalVars.vendorCategories = vendorCatgoriesMutableList.toTypedArray()
 
         val paymentTerms:JSONArray = parentObject.getJSONArray("terms")
         GlobalVars.paymentTerms = gson.fromJson(paymentTerms.toString() , Array<PaymentTerms>::class.java)
@@ -326,6 +341,20 @@ class GlobalVars: Application() {
     ): CharSequence {
         r.setBounds(0, 0, r.intrinsicWidth, r.intrinsicHeight)
         val sb = SpannableString("    $title")
+        val imageSpan = ImageSpan(r, ImageSpan.ALIGN_CENTER)
+        sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return sb
+    }
+
+    fun menuColor(
+        colorHex: String
+    ): CharSequence {
+        //val r:Drawable = AppCompatResources.getDrawable(myView.context, R.drawable.ic_color_swatch)!!
+        val r:Drawable = resize(AppCompatResources.getDrawable(myView.context, R.drawable.ic_color_swatch)!!, myView.context)
+
+        r.setBounds(0, 0, r.intrinsicWidth, r.intrinsicHeight)
+        r.setTint(Color.parseColor(colorHex))
+        val sb = SpannableString("    ")
         val imageSpan = ImageSpan(r, ImageSpan.ALIGN_CENTER)
         sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return sb

@@ -1,0 +1,963 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_new_edit_vendor">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="5dp"
+            android:fillViewport="true"
+            tools:layout_editor_absoluteX="-7dp"
+            tools:layout_editor_absoluteY="-261dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/new_vendor_scroll_view_cl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/new_vendor_name_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/vendor_name"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/new_vendor_business_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/new_vendor_name_title_tv" />
+
+                <TextView
+                    android:id="@+id/new_vendor_business_switch_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/vendor_is_business"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/new_vendor_business_switch"
+                    app:layout_constraintLeft_toRightOf="@+id/new_vendor_business_switch"
+                    app:layout_constraintTop_toTopOf="@+id/new_vendor_business_switch" />
+
+                <!-- Name Linear Layout -->
+                <LinearLayout
+                    android:id="@+id/new_vendor_name_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_business_switch">
+
+                    <!-- Prefix -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_name_prefix_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <Spinner
+                            android:id="@+id/new_vendor_name_prefix_spinner"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/text_view_layout"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                        <TextView
+                            android:id="@+id/new_vendor_name_prefix_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_prefix"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_name_prefix_spinner"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- First Name -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_name_first_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_name_first_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_name_first_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_first"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_name_first_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Middle Name -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_name_middle_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_name_middle_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_name_middle_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_middle"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_name_middle_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Last Name -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_name_last_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_name_last_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_name_last_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_last"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_name_last_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Business Name -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_name_business_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/new_vendor_name_business_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_name_business_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_business"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_name_business_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- System Name -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_name_system_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_name_system_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_name_system_title_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_name_system"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_name_system_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout> <!-- End of Customer Name LL -->
+
+
+                <TextView
+                    android:id="@+id/new_vendor_contact_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/new_customer_contact_info"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_name_ll" />
+
+                <!-- Name Linear Layout -->
+                <LinearLayout
+                    android:id="@+id/new_vendor_contact_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_contact_title_tv">
+
+                    <!-- Primary Phone -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_contact_phone_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_contact_phone_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="phone"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_contact_phone_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_primary_phone"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_contact_phone_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Primary Email -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_contact_email_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_contact_email_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="textEmailAddress"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_contact_email_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_primary_email"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_contact_email_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </LinearLayout> <!-- End of Customer Name LL -->
+
+
+                <TextView
+                    android:id="@+id/new_vendor_address_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/address"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_contact_ll" />
+
+                <!-- Job Site Address Linear Layout -->
+                <LinearLayout
+                    android:id="@+id/new_vendor_address_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_address_title_tv">
+
+                    <!-- Street 1 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_address_street1_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_address_street1_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_address_street1_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street1"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_address_street1_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Street 2 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_address_street2_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_address_street2_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_address_street2_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street2"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_address_street2_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Street 3 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_address_street3_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_address_street3_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_address_street3_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street3"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_address_street3_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Street 4 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_address_street4_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_address_street4_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_address_street4_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street4"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_address_street4_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- City -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_address_city_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_address_city_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_address_city_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_city"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_address_city_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- State -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_address_state_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <Spinner
+                            android:id="@+id/new_vendor_address_state_spinner"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/text_view_layout"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_address_state_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_state"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_address_state_spinner"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Zip -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_address_zip_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_address_zip_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_address_zip_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_zip"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_address_zip_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout> <!-- End of Address LL -->
+
+                <TextView
+                    android:id="@+id/new_vendor_billing_address_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/new_customer_billing_address"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_address_ll" />
+
+                <!--
+                <Button
+                    android:id="@+id/new_vendor_copy_address_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:text="@string/new_customer_copy_address"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_billing_address_title_tv"
+                    />
+                -->
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/new_vendor_billing_same_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:checked="true"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/new_vendor_billing_address_title_tv" />
+
+                <TextView
+                    android:id="@+id/new_vendor_copy_billing_switch_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/new_customer_same_as_job_site_address"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/new_vendor_billing_same_switch"
+                    app:layout_constraintLeft_toRightOf="@+id/new_vendor_billing_same_switch"
+                    app:layout_constraintTop_toTopOf="@+id/new_vendor_billing_same_switch" />
+
+                <!-- Billing Address Linear Layout -->
+                <LinearLayout
+                    android:id="@+id/new_vendor_billing_address_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_billing_same_switch">
+
+                    <!-- Billing Street 1 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_billing_address_street1_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_billing_address_street1_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_billing_address_street1_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street1"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_billing_address_street1_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Billing Street 2 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_billing_address_street2_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_billing_address_street2_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_billing_address_street2_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street2"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_billing_address_street2_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Billing Street 3 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_billing_address_street3_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_billing_address_street3_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_billing_address_street3_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street3"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_billing_address_street3_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Billing Street 4 -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_billing_address_street4_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_billing_address_street4_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_billing_address_street4_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_street4"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_billing_address_street4_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Billing City -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_billing_address_city_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_billing_address_city_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_billing_address_city_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_city"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_billing_address_city_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Billing State -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_billing_address_state_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <Spinner
+                            android:id="@+id/new_vendor_billing_address_state_spinner"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/text_view_layout"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_billing_address_state_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_state"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_billing_address_state_spinner"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Billing Zip -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/new_vendor_billing_address_zip_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/new_vendor_billing_address_zip_et"
+                            android:layout_width="200dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/new_vendor_billing_address_zip_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/new_customer_address_zip"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/new_vendor_billing_address_zip_et"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout> <!-- End of Billing Address LL -->
+
+                <TextView
+                    android:id="@+id/new_vendor_additional_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/vendor_additional_details"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_billing_address_ll" />
+
+
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/new_vendor_active_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:checked="true"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/new_vendor_additional_title_tv" />
+
+                <TextView
+                    android:id="@+id/new_vendor_active_switch_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/new_customer_is_active"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/new_vendor_active_switch"
+                    app:layout_constraintLeft_toRightOf="@+id/new_vendor_active_switch"
+                    app:layout_constraintTop_toTopOf="@+id/new_vendor_active_switch" />
+
+
+
+                <!-- Referral Spinner CL -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/new_vendor_doc_type_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_active_switch_tv">
+
+                    <Spinner
+                        android:id="@+id/new_vendor_doc_type_spinner"
+                        android:layout_width="200dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/text_view_layout"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/new_vendor_doc_type_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="@string/vendor_doc_type"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/new_vendor_doc_type_spinner"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!-- Payment Terms Spinner CL -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/new_vendor_terms_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_doc_type_cl">
+
+                    <Spinner
+                        android:id="@+id/new_vendor_terms_spinner"
+                        android:layout_width="200dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/text_view_layout"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/new_vendor_terms_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="@string/new_contract_payment_terms"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/new_vendor_terms_spinner"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Category Spinner CL -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/new_vendor_category_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_terms_cl">
+
+                    <Spinner
+                        android:id="@+id/new_vendor_category_spinner"
+                        android:layout_width="200dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/text_view_layout"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/new_vendor_category_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="@string/vendor_category"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/new_vendor_category_spinner"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <Button
+                    android:id="@+id/new_vendor_submit_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/submit"
+                    app:layout_constraintTop_toBottomOf="@id/new_vendor_category_cl" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:visibility="invisible"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/button"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

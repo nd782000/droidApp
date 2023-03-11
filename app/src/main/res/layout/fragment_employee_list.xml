@@ -20,13 +20,14 @@
 
 
 
-            <androidx.appcompat.widget.SearchView
+            <com.example.AdminMatic.EmptySubmitSearchViewCompat
                 android:id="@+id/employees_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/text_view_layout"
                 android:textCursorDrawable="@null"
                 android:layout_margin="5dp"
+                android:imeOptions="actionDone"
                 app:iconifiedByDefault="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,13 +76,13 @@
         <LinearLayout
             android:id="@+id/buttons_layout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:orientation="horizontal"
             android:weightSum="2"
             android:background="@color/background"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/new_button_cl"
             android:baselineAligned="false">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -94,17 +95,15 @@
                     android:id="@+id/group_text_btn"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
-
-
                     android:text="@string/group_text_message"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="2.5dp"
                     android:autoSizeTextType="uniform"
                     android:autoSizeMinTextSize="8sp"
                     android:autoSizeMaxTextSize="14sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -120,21 +119,76 @@
 
 
                     android:text="@string/depts_crews_equip"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="2.5dp"
                     android:layout_marginRight="5dp"
                     android:autoSizeTextType="uniform"
                     android:autoSizeMinTextSize="8sp"
                     android:autoSizeMaxTextSize="14sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
         </LinearLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/new_button_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <Button
+                android:id="@+id/new_employee_btn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+
+
+                android:text="@string/new_employee"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="14sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/settings_btn"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+
+
+            <Button
+                android:id="@+id/settings_btn"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="5dp"
+                android:text=""
+                android:layout_marginLeft="5dp"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/settings_iv"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:padding="4dp"
+                android:src="@drawable/ic_settings"
+                android:scaleType="fitCenter"
+                app:layout_constraintTop_toTopOf="@+id/settings_btn"
+                app:layout_constraintLeft_toLeftOf="@+id/settings_btn"
+                android:elevation="10dp"
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
     <ProgressBar
