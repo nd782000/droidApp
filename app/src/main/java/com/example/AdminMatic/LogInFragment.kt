@@ -34,14 +34,14 @@ import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.deviceID
 import com.example.AdminMatic.GlobalVars.Companion.employeeList
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
-import com.example.AdminMatic.GlobalVars.Companion.mediumBase
-import com.example.AdminMatic.GlobalVars.Companion.rawBase
-import com.example.AdminMatic.GlobalVars.Companion.thumbBase
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class LogInFragment : Fragment() {
@@ -54,11 +54,12 @@ class LogInFragment : Fragment() {
 
     private lateinit var constraintLayout:ConstraintLayout
     private lateinit var companyEditText: EditText
-    private lateinit  var userEditText: EditText
-    private lateinit  var passEditText: EditText
-    private lateinit  var rememberSwitch: SwitchCompat
-    private lateinit  var submitBtn: Button
-    private lateinit  var versionText: TextView
+    private lateinit var userEditText: EditText
+    private lateinit var passEditText: EditText
+    private lateinit var rememberSwitch: SwitchCompat
+    private lateinit var submitBtn: Button
+    private lateinit var versionText: TextView
+    private lateinit var demoLoginText: TextView
     //private lateinit  var tvDynamic: TextView
 
     var rememberMe:String = "0"
@@ -177,9 +178,12 @@ class LogInFragment : Fragment() {
         pgsBar = binding.progressBar
         pgsBar.visibility = View.GONE
 
-        loginOrGetSessionUser()
-
         return myView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loginOrGetSessionUser()
     }
 
     override fun onDestroyView() {
@@ -295,6 +299,23 @@ class LogInFragment : Fragment() {
         versionText.id = generateViewId()
         binding.loginLayout.addView(versionText)
 
+        demoLoginText = TextView(myView.context)
+        demoLoginText.text = getString(R.string.enter_demo_instance)
+        demoLoginText.setTextColor(resources.getColor(R.color.colorPrimary))
+        demoLoginText.gravity = Gravity.CENTER_HORIZONTAL
+        demoLoginText.id = generateViewId()
+
+        demoLoginText.setOnClickListener {
+            companyEditText.setText("demo")
+            userEditText.setText("demo")
+            passEditText.setText("adminmatic")
+            attemptLogIn()
+        }
+
+        binding.loginLayout.addView(demoLoginText)
+
+
+
 
 
         submitBtn.setOnClickListener {
@@ -319,14 +340,17 @@ class LogInFragment : Fragment() {
         listOfViews.add(userEditText)
         listOfViews.add(passEditText)
         listOfViews.add(rememberSwitch)
+        listOfViews.add(demoLoginText)
 
 
 
-        val listOfInts = IntArray(4)
+
+        val listOfInts = IntArray(5)
         listOfInts[0] = companyEditText.id
         listOfInts[1] = userEditText.id
         listOfInts[2] = passEditText.id
         listOfInts[3] = rememberSwitch.id
+        listOfInts[4] = demoLoginText.id
 
 
 
@@ -399,6 +423,21 @@ class LogInFragment : Fragment() {
         constraintSet.constrainMinWidth(versionText.id,900)
         constraintSet.centerHorizontally(versionText.id,ConstraintSet.PARENT_ID)
 
+        /*
+        constraintSet.constrainWidth(demoLoginText.id,ConstraintSet.WRAP_CONTENT)
+        constraintSet.constrainMinWidth(demoLoginText.id,900)
+        constraintSet.centerHorizontally(demoLoginText.id,ConstraintSet.PARENT_ID)
+
+
+         */
+        constraintSet.connect(
+            demoLoginText.id,
+            ConstraintSet.TOP,
+            versionText.id,
+            ConstraintSet.BOTTOM,
+            50
+        )
+
         constraintSet.applyTo(constraintLayout)
 
     }
@@ -429,6 +468,20 @@ class LogInFragment : Fragment() {
                     val employee:Employee = Gson().fromJson(parentObject.getJSONObject("employee").toString(), Employee::class.java)
 
                     loggedInEmployee = employee
+
+                    if (loggedInEmployee!!.lang == "EN") {
+                        val locale = Locale("es-*","mexico")
+                        Locale.setDefault(locale)
+
+                        val resources = myView.context.resources
+
+                        val configuration = resources.configuration
+                        configuration.locale = locale
+                        configuration.setLayoutDirection(locale)
+
+                        resources.updateConfiguration(configuration, resources.displayMetrics)
+                    }
+
                     println("loggedInEmployee.fname = ${loggedInEmployee!!.fname}")
 
                     deviceID = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
@@ -450,10 +503,15 @@ class LogInFragment : Fragment() {
 
 
             },
-            Response.ErrorListener { // error
-
+            Response.ErrorListener { error ->
+                println("GET SESSION USER ERROR: $error")
+                globalVars.simpleAlert(myView.context,"Get Session User Error:", error.toString())
+                listener!!.logOut(myView)
+                pgsBar.isVisible = false
+                createLogInView()
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
+
             }
         ) {
             override fun getParams(): Map<String, String> {
@@ -744,9 +802,11 @@ class LogInFragment : Fragment() {
 
                // myView.findNavController().navigate(R.id.navigateToMainMenu)
             },
-            Response.ErrorListener { // error
-
-
+            Response.ErrorListener { error ->
+                println("LOGIN USER ERROR: $error")
+                globalVars.simpleAlert(myView.context,"Login Error:", error.toString())
+                listener!!.logOut(myView)
+                pgsBar.isVisible = false
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
             }

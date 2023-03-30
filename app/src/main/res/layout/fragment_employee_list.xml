@@ -118,7 +118,7 @@
                     android:layout_height="50dp"
 
 
-                    android:text="@string/depts_crews_equip"
+                    android:text="@string/crews"
                     android:layout_marginLeft="2.5dp"
                     android:layout_marginRight="5dp"
                     android:autoSizeTextType="uniform"

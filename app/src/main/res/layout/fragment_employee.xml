@@ -155,7 +155,7 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="3dp"
-                android:text="Depts/Crews/Equip"
+                android:text="@string/crews"
                 android:autoSizeTextType="uniform"
                 android:autoSizeMinTextSize="8sp"
                 android:autoSizeMaxTextSize="14sp"

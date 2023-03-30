@@ -45,32 +45,6 @@ class NewEditDepartmentFragment : Fragment(), AdapterView.OnItemSelectedListener
 
     private var editMode = false
 
-    private var colorArray = arrayOf(
-            "#C62D42",
-            "#FE4C40",
-            "#FF681F",
-            "#FFAE42",
-            "#B5B35C",
-            "#ACBF60",
-            "#5E8C31",
-            "#3AA655",
-            "#29AB87",
-            "#008080",
-            "#009DC4",
-            "#00468C",
-            "#0066FF",
-            "#4F69C6",
-            "#6B3FA0",
-            "#C154C1",
-            "#8E3179",
-            "#DA3287",
-            "#A55353",
-            "#AF593E",
-            "#664228",
-            "#837050",
-            "#353839",
-            "#1B1B1B"
-    )
 
     //private lateinit var colorAdapter: ColorAdapter
 
@@ -142,12 +116,12 @@ class NewEditDepartmentFragment : Fragment(), AdapterView.OnItemSelectedListener
 
         if (!editMode) {
             department = Department("0", "")
-            department!!.color = colorArray[0]
+            department!!.color = GlobalVars.colorArray[0]
 
         }
 
         // Flag edits made false after all the views have time to set their states
-        Timer("ContractEditsMade", false).schedule(500) {
+        Timer("DepartmentEditsMade", false).schedule(500) {
             editsMade = false
             editsMadeDelayPassed = true
         }
@@ -308,16 +282,16 @@ class NewEditDepartmentFragment : Fragment(), AdapterView.OnItemSelectedListener
         val popUp = PopupMenu(myView.context, binding.colorView)
         popUp.inflate(R.menu.task_status_menu)
 
-        for (i in 0..colorArray.size-1) {
+        for (i in 0 until GlobalVars.colorArray.size) {
             val colorIcon: Drawable = AppCompatResources.getDrawable(myView.context, R.drawable.ic_online)!!
             colorIcon.setTint(Color.parseColor(department!!.color))
 
 
 
-            popUp.menu.add(0, i, 1,globalVars.menuColor(colorArray[i]))
+            popUp.menu.add(0, i, 1,globalVars.menuColor(GlobalVars.colorArray[i]))
             popUp.setOnMenuItemClickListener { item: MenuItem? ->
-                binding.colorView.backgroundTintList = ColorStateList.valueOf(Color.parseColor(colorArray[item!!.itemId]))
-                department!!.color = colorArray[item.itemId]
+                binding.colorView.backgroundTintList = ColorStateList.valueOf(Color.parseColor(GlobalVars.colorArray[item!!.itemId]))
+                department!!.color = GlobalVars.colorArray[item.itemId]
 
                 editsMade = true
 

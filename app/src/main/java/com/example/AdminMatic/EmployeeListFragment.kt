@@ -114,7 +114,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
 
             //crewsBtn = view.findViewById(R.id.crews_btn)
             binding.crewsBtn.setOnClickListener {
-                val directions = EmployeeListFragmentDirections.navigateToDepartments()
+                val directions = EmployeeListFragmentDirections.navigateToCrews()
                 myView.findNavController().navigate(directions)
             }
 

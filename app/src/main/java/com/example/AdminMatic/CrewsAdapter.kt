@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 
 
-class CrewsAdapter(list: MutableList<CrewSection>, private val context: Context, crewCellClickListener: CrewCellClickListener, crewEntryCellClickListener: CrewEntryCellClickListener)
+class CrewsAdapter(list: MutableList<CrewSection>, private val crewEntryDelegate: CrewEntryDelegate, crewCellClickListener: CrewCellClickListener, crewEntryCellClickListener: CrewEntryCellClickListener)
 
     : RecyclerView.Adapter<CrewViewHolder>() {
 
@@ -25,6 +25,8 @@ class CrewsAdapter(list: MutableList<CrewSection>, private val context: Context,
     var filterList:MutableList<CrewSection> = emptyList<CrewSection>().toMutableList()
 
     var queryText = ""
+
+
 
     init {
         filterList = list
@@ -47,10 +49,10 @@ class CrewsAdapter(list: MutableList<CrewSection>, private val context: Context,
         holder.bind(crewSection)
         //println("queryText = $queryText")
 
-        val adapter = CrewEntriesAdapter(crewSection.entries, crewEntryCCL)
+        val adapter = CrewEntriesAdapter(crewSection.entries, position, crewSection.ID, crewEntryDelegate, crewEntryCCL)
 
         //holder.mRecycler!!.setHasFixedSize(true)
-        holder.mRecycler!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        holder.mRecycler!!.layoutManager = LinearLayoutManager(myView.context, LinearLayoutManager.VERTICAL, false)
         holder.mRecycler!!.adapter = adapter
         val itemDecoration: RecyclerView.ItemDecoration =
             DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
@@ -69,16 +71,16 @@ class CrewsAdapter(list: MutableList<CrewSection>, private val context: Context,
 
 
 class CrewViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-    RecyclerView.ViewHolder(inflater.inflate(R.layout.department_header, parent, false)) {
+    RecyclerView.ViewHolder(inflater.inflate(R.layout.crew_header, parent, false)) {
     private var mNameView: TextView? = null
     private var mColorView: View? = null
     var mRecycler: RecyclerView? = null
 
 
     init {
-        mNameView = itemView.findViewById(R.id.list_name)
-        mColorView = itemView.findViewById(R.id.section_header_color_view)
-        mRecycler = itemView.findViewById(R.id.department_recycler_view)
+        mNameView = itemView.findViewById(R.id.name_tv)
+        mColorView = itemView.findViewById(R.id.header_cl)
+        mRecycler = itemView.findViewById(R.id.rv)
     }
 
     @SuppressLint("Range")

@@ -113,7 +113,7 @@
                 android:id="@+id/department_footer_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/new_department_btn"
+                app:layout_constraintBottom_toTopOf="@id/new_crew_btn"
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:paddingTop="4dp"
                 android:paddingLeft="10dp"
@@ -122,7 +122,7 @@
                 />
 
             <Button
-                android:id="@+id/new_department_btn"
+                android:id="@+id/new_crew_btn"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
 

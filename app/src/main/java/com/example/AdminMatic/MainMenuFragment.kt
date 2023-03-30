@@ -57,6 +57,9 @@ class MainMenuFragment : Fragment() {
             R.id.departments_item -> {
                 myView.findNavController().navigate(R.id.navigateToDepartments)
             }
+            R.id.crews_item -> {
+                myView.findNavController().navigate(R.id.navigateToCrews)
+            }
             R.id.privacy_policy_item -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.adminmatic.com/app/privacy"))
                 startActivity(intent)

@@ -193,7 +193,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         binding.deptsBtn.setOnClickListener{
             println("shifts btn clicked")
-            val directions = EmployeeFragmentDirections.navigateEmployeeToDepartments()
+            val directions = EmployeeFragmentDirections.navigateEmployeeToCrews()
             myView.findNavController().navigate(directions)
         }
 

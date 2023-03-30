@@ -1,28 +1,28 @@
 package com.example.AdminMatic
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TextAppearanceSpan
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.squareup.picasso.Picasso
 import java.util.*
 
 
-class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, private val cellClickListener: CrewEntryCellClickListener): RecyclerView.Adapter<CrewEntryViewHolder>() {
+class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, private val crewIndex:Int, private val crewID:String, private val crewEntryDelegate: CrewEntryDelegate, private val cellClickListener: CrewEntryCellClickListener): RecyclerView.Adapter<CrewEntryViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
     var filterList:MutableList<EmployeeOrEquipment> = emptyList<EmployeeOrEquipment>().toMutableList()
-
 
     var queryText = ""
 
@@ -42,6 +42,73 @@ class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, pri
         //println("queryText = $queryText")
         //text highlighting for first string
 
+        if (data.isEquipment) {
+            val equipmentImageView:ImageView = holder.itemView.findViewById(R.id.equipment_iv)
+
+            println("picURL: ${data.equipment!!.picURL}")
+            println("pic: ${data.equipment!!.pic}")
+            if (data.equipment!!.image != null) {
+                println("image.fileName: ${data.equipment!!.image!!.fileName}")
+            }
+            else {
+                println("image is null")
+            }
+
+            if (data.equipment!!.image == null) {
+                print("trying to use image")
+                Picasso.with(myView.context)
+                    .load("https://www.adminmatic.com${data.equipment!!.picURL}")
+                    .placeholder(R.drawable.ic_equipment) //optional
+                    .into(equipmentImageView)
+            }
+            else if (data.equipment!!.image!!.fileName.isNotBlank()) {
+                print("trying to use image.filename")
+                Picasso.with(myView.context)
+                    .load(GlobalVars.thumbBase + data.equipment!!.image!!.fileName)
+                    .placeholder(R.drawable.ic_equipment) //optional
+                    .into(equipmentImageView)
+            }
+
+            /*
+            if (data.equipment!!.picURL.isNullOrBlank()) {
+                print("trying to use pic")
+                Picasso.with(myView.context)
+                    .load(GlobalVars.thumbBase + data.equipment!!.pic)
+                    .placeholder(R.drawable.ic_equipment) //optional
+                    .into(equipmentImageView)
+            }
+            else if (data.equipment!!.picURL != null) {
+                print("trying to use picURL")
+                Picasso.with(myView.context)
+                    .load("https://www.adminmatic.com/${data.equipment!!.picURL}")
+                    .placeholder(R.drawable.ic_equipment) //optional
+                    .into(equipmentImageView)
+            }
+            else if (data.equipment!!.image != null) {
+                print("trying to use image object")
+                val filePath = GlobalVars.thumbBase + data.equipment!!.image!!.fileName
+                Picasso.with(myView.context)
+                    .load(filePath)
+                    .placeholder(R.drawable.ic_equipment) //optional
+                    .into(equipmentImageView)
+            }
+            else {
+                print("falling back on default pic")
+                Picasso.with(myView.context)
+                    .load(R.drawable.ic_equipment)
+                    .into(equipmentImageView)
+            }
+
+             */
+        }
+        else {
+            val employeeImageView:ImageView = holder.itemView.findViewById(R.id.employee_iv)
+            Picasso.with(myView.context)
+                .load(GlobalVars.thumbBase + data.employee!!.pic)
+                .placeholder(R.drawable.user_placeholder) //optional
+                .into(employeeImageView)
+        }
+
 
         holder.itemView.setOnClickListener {
             cellClickListener.onCrewEntryCellClickListener(data)
@@ -49,9 +116,68 @@ class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, pri
 
 
 
+        if (data.isEquipment) {
+            holder.itemView.findViewById<TextView>(R.id.equipment_options_tv).setOnClickListener {
+                println("menu click")
+
+                val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.equipment_options_tv))
+                popUp.inflate(R.menu.crew_entry_menu)
+                if (crewIndex == -1) {
+                    popUp.menu.removeItem(R.id.move_to)
+                }
+                popUp.gravity = Gravity.CENTER
+                popUp.setOnMenuItemClickListener { item: MenuItem? ->
+
+                    when (item!!.itemId) {
+                        R.id.move_to -> {
+                            // These can be !!'d because any time the delegate isn't provided this code is unreachable anyways
+                            crewEntryDelegate.onMoveCrewEntry(data, crewIndex, holder.itemView.findViewById<TextView>(R.id.equipment_options_tv))
+                        }
+                        R.id.unassign -> {
+                            crewEntryDelegate.onUnassignCrewEntry(data, crewIndex)
+                        }
+
+                    }
+
+                    true
+                }
+                popUp.show()
+            }
+        } else {
+            holder.itemView.findViewById<TextView>(R.id.employee_options_tv).setOnClickListener {
+                println("menu click")
+
+                val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.employee_options_tv))
+                popUp.inflate(R.menu.crew_entry_menu)
+                if (crewIndex == -1) {
+                    popUp.menu.removeItem(R.id.move_to)
+                }
+                if (crewID == "0") {
+                    popUp.menu.removeItem(R.id.unassign)
+                }
+
+                popUp.gravity = Gravity.CENTER
+                popUp.setOnMenuItemClickListener { item: MenuItem? ->
+
+                    when (item!!.itemId) {
+                        R.id.move_to -> {
+                            crewEntryDelegate.onMoveCrewEntry(data, crewIndex, holder.itemView.findViewById<TextView>(R.id.employee_options_tv))
+                        }
+                        R.id.unassign -> {
+                            crewEntryDelegate.onUnassignCrewEntry(data, crewIndex)
+                        }
+
+                    }
+
+                    true
+                }
+                popUp.show()
+            }
+        }
+
     }
 
-    override fun getItemCount(): Int{
+    override fun getItemCount(): Int {
 
         //print("getItemCount = ${filterList.size}")
         return filterList.size

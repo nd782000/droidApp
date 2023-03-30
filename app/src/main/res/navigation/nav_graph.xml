@@ -102,6 +102,9 @@
         <action
             android:id="@+id/navigateToDepartments"
             app:destination="@id/departmentsFragment" />
+        <action
+            android:id="@+id/navigateToCrews"
+            app:destination="@id/crewsFragment" />
     </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"
@@ -118,8 +121,8 @@
             android:id="@+id/navigateToEmployee"
             app:destination="@id/employeeFragment" />
         <action
-            android:id="@+id/navigateToDepartments"
-            app:destination="@id/departmentsFragment" />
+            android:id="@+id/navigateToCrews"
+            app:destination="@id/crewsFragment" />
         <action
             android:id="@+id/navigateToGroupText"
             app:destination="@id/groupTextFragment" />
@@ -298,8 +301,8 @@
             android:id="@+id/navigateToMap"
             app:destination="@id/mapFragment" />
         <action
-            android:id="@+id/navigateToDepartments"
-            app:destination="@id/departmentsFragment" />
+            android:id="@+id/navigateToCrews"
+            app:destination="@id/crewsFragment" />
         <action
             android:id="@+id/navigateToNewEditWorkOrder"
             app:destination="@id/newEditWorkOrderFragment" />
@@ -349,7 +352,41 @@
             app:argType="com.example.AdminMatic.Department"
             app:nullable="true" />
     </fragment>
-
+    <fragment
+        android:id="@+id/crewsFragment"
+        android:name="com.example.AdminMatic.CrewsFragment"
+        android:label="fragment_crews"
+        tools:layout="@layout/fragment_crews" >
+        <action
+            android:id="@+id/navigateToEmployee"
+            app:destination="@id/employeeFragment" />
+        <action
+            android:id="@+id/navigateToEquipment"
+            app:destination="@id/equipmentFragment" />
+        <action
+            android:id="@+id/navigateToNewEditCrew"
+            app:destination="@id/newEditCrewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newEditCrewFragment"
+        android:name="com.example.AdminMatic.NewEditCrewFragment"
+        android:label="fragment_new_edit_crew"
+        tools:layout="@layout/fragment_new_edit_crew" >
+        <argument
+            android:name="crewID"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="crewList"
+            app:argType="com.example.AdminMatic.Crew[]"
+            app:nullable="false" />
+        <action
+            android:id="@+id/navigateToEmployee"
+            app:destination="@id/employeeFragment" />
+        <action
+            android:id="@+id/navigateToEquipment"
+            app:destination="@id/equipmentFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.AdminMatic.MapFragment"
@@ -455,8 +492,8 @@
             android:id="@+id/navigateEmployeeToLicenses"
             app:destination="@id/licensesFragment"/>
         <action
-            android:id="@+id/navigateEmployeeToDepartments"
-            app:destination="@id/departmentsFragment"/>
+            android:id="@+id/navigateEmployeeToCrews"
+            app:destination="@id/crewsFragment"/>
         <action
             android:id="@+id/navigateToNewEditEmployee"
             app:destination="@id/newEditEmployeeFragment"/>

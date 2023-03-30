@@ -9,6 +9,10 @@
         android:title="@string/menu_departments"
         android:enabled="true"/>
     <item
+        android:id="@+id/crews_item"
+        android:title="@string/crews"
+        android:enabled="true"/>
+    <item
         android:id="@+id/change_password_item"
         android:title="@string/change_password"
         android:enabled="true"/>

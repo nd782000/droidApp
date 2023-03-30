@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
 import android.text.Spannable
@@ -49,6 +50,33 @@ class GlobalVars: Application() {
         var vendorCategories:Array<VendorCategory>? = null
         var paymentTerms:Array<PaymentTerms>? = null
         var contactTypes:Array<ContactType>? = null
+
+        var colorArray:Array<String> = arrayOf(
+            "#C62D42",
+            "#FE4C40",
+            "#FF681F",
+            "#FFAE42",
+            "#B5B35C",
+            "#ACBF60",
+            "#5E8C31",
+            "#3AA655",
+            "#29AB87",
+            "#008080",
+            "#009DC4",
+            "#00468C",
+            "#0066FF",
+            "#4F69C6",
+            "#6B3FA0",
+            "#C154C1",
+            "#8E3179",
+            "#DA3287",
+            "#A55353",
+            "#AF593E",
+            "#664228",
+            "#837050",
+            "#353839",
+            "#1B1B1B"
+        )
 
         var states:Array<String> = arrayOf("Select a State",
             "AK - Alaska",
@@ -173,7 +201,7 @@ class GlobalVars: Application() {
 
         var deviceID:String? = null
 
-        var phpVersion:String = "1-3"
+        var phpVersion:String = "1-4"
 
         var customerList: MutableList<Customer>? = null
 
@@ -202,11 +230,23 @@ class GlobalVars: Application() {
     /* helper functions */
     fun playSaveSound(context: Context) {
         val mediaPlayer = MediaPlayer.create(context, R.raw.save)
+        mediaPlayer.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
+        )
         mediaPlayer.start()
     }
 
     fun playErrorSound(context: Context) {
         val mediaPlayer = MediaPlayer.create(context, R.raw.error)
+        mediaPlayer.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
+        )
         mediaPlayer.start()
     }
 

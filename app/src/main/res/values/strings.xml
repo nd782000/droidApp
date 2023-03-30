@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AdminMatic</string>
+    <string name="app_name" translatable="false">AdminMatic</string>
     <string name="version">Version %1$s (PHP %2$s)</string>
 
     <string name="Welcome">Welcome, User!</string>
@@ -7,7 +7,6 @@
     <string name="employeeList">Employees List</string>
     <string name="group_text_message">Group Text Message</string>
     <string name="new_employee">New Employee</string>
-    <string name="depts_crews_equip">Depts/Crews/Equip</string>
     <string name="x_active_employees">%1$d Active Employees</string>
     <string name="x_inactive_employees">%1$d Inactive Employees</string>
     <string name="x_active_contracts">%1$d Active Contracts</string>
@@ -24,7 +23,7 @@
     <string name="customer">Customer</string>
     <string name="customer_num">Customer #%1$s</string>
     <string name="customers">Customers</string>
-    <string name="customer_button">%1$s %2$s</string>
+    <string name="customer_button" translatable="false">%1$s %2$s</string>
     <string name="vendor">Vendor</string>
     <string name="vendor_balance">Balance = $%1$s</string>
     <string name="vendor_list">Vendor List</string>
@@ -46,14 +45,14 @@
     <string name="images">Images</string>
     <string name="image">Image</string>
     <string name="employee_name">Employee Name</string>
-    <string name="employee_ph_number">(401)863.2121</string>
-    <string name="employee_email">john@atlantic...den.com</string>
+    <string name="employee_ph_number" translatable="false">(401)863.2121</string>
+    <string name="employee_email" translatable="false">john@atlantic...den.com</string>
 
-    <string name="equipment_name">Equipment Name</string>
-    <string name="equipment_type">Equipment Type</string>
-    <string name="equipment_crew">Equipment Crew</string>
-    <string name="equipment_detail">Equipment Detail</string>
-    <string name="equipment_details">Equipment Details</string>
+    <string name="equipment_name" translatable="false">Equipment Name</string>
+    <string name="equipment_type" translatable="false">Equipment Type</string>
+    <string name="equipment_crew" translatable="false">Equipment Crew</string>
+    <string name="equipment_detail" translatable="false">Equipment Detail</string>
+    <string name="equipment_details" translatable="false">Equipment Details</string>
     <string name="current_service_check">Current Service Check:</string>
     <string name="add_service">Add Service</string>
 
@@ -63,9 +62,9 @@
     <string name="menu_support">Support</string>
 
     <string name="customer_name">Customer Name</string>
-    <string name="customer_ph_number">(401)863.2121</string>
-    <string name="customer_email">john@atlantic...den.com</string>
-    <string name="customer_address">123 Any Street</string>
+    <string name="customer_ph_number" translatable="false">(401)863.2121</string>
+    <string name="customer_email" translatable="false">john@atlantic...den.com</string>
+    <string name="customer_address" translatable="false">123 Any Street</string>
     <string name="customer_contacts">All Contacts</string>
     <string name="customer_documents">Documents</string>
     <string name="customer_notes">Notes &amp; Settings</string>
@@ -87,31 +86,31 @@
     <string name="schedules_search">Search Schedules</string>
     <string name="items_search">Search Items</string>
     <string name="vendors_search">Search Vendors</string>
-    <string name="title_activity_customers_list_tab">customers_list_tab</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="tab_text_3">Tab 3</string>
+    <string name="title_activity_customers_list_tab" translatable="false">customers_list_tab</string>
+    <string name="tab_text_1" translatable="false">Tab 1</string>
+    <string name="tab_text_2" translatable="false">Tab 2</string>
+    <string name="tab_text_3" translatable="false">Tab 3</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_vendor__main">Map</string>
     <string name="title_activity_maps">Map</string>
     <string name="work_order_list"># Work Order(s) List</string>
-    <string name="item_name">Pine Bark Mulch</string>
-    <string name="item_cost">$45.00/Yard</string>
-    <string name="title_activity_item_disp">ItemDisp</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="item_name" translatable="false">Pine Bark Mulch</string>
+    <string name="item_cost" translatable="false">$45.00/Yard</string>
+    <string name="title_activity_item_disp" translatable="false">ItemDisp</string>
+    <string name="section_format" translatable="false">Hello World from section: %1$d</string>
     <string name="locate">Locate</string>
     <string name="work_order">Work Order</string>
     <string name="work_order_item">Work Order Item</string>
-    <string name="work_order_title">#%1$s - %2$s</string>
+    <string name="work_order_title" translatable="false">#%1$s - %2$s</string>
     <string name="work_order_number">Work Order #%1$s</string>
-    <string name="view_employee_schedule">View ______s Schedule</string>
+    <string name="view_employee_schedule" translatable="false">View ______s Schedule</string>
     <string name="schedule_settings">Schedule Settings</string>
     <string name="yourUsageFrom">Your usage from:</string>
     <string name="qty">Qty</string>
     <string name="date">Date</string>
     <string name="to">to:</string>
-    <string name="txt_date">3/13</string>
-    <string name="number_qty">0.45</string>
+    <string name="txt_date" translatable="false">3/13</string>
+    <string name="number_qty" translatable="false">0.45</string>
     <string name="searchImageTags">Search Image Tags</string>
     <string name="imagetitle">Image Title</string>
     <string name="add_images">Add Images</string>
@@ -120,13 +119,14 @@
     <string name="crew">Crew</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="cancel">Cancel</string>
     <string name="select_none">Select None</string>
     <string name="select_all">Select All</string>
-    <string name="num">#%1$s</string>
+    <string name="num" translatable="false">#%1$s</string>
 
     <string name="type">Type</string>
     <string name="status">Status</string>
-    <string name="comma">%1$s, %2$s</string>
+    <string name="comma" translatable="false">%1$s, %2$s</string>
 
     
     <string name="leads_amount">Leads(%1$d)</string>
@@ -134,18 +134,18 @@
     <string name="work_orders_amount">Work Orders(%1$d)</string>
     <string name="invoices_amount">Invoices(%1$d)</string>
     <string name="usage_hours">%1$s Hours</string>
-    <string name="plus_x">+%1$d</string>
+    <string name="plus_x" translatable="false">+%1$d</string>
 
     <!--Payroll stuff-->
     <string name="enter_payroll">Enter Payroll</string>
     <string name="no_time">No Time</string>
-    <string name="zero_hours">0.00</string>
+    <string name="zero_hours" translatable="false">0.00</string>
 
     <string name="enter_usage">Enter Usage</string>
 
     <!--Contracts stuff-->
     <string name="contract_number">Contract #%1$s</string>
-    <string name="contract_list_name">%1$s #%2$s</string>
+    <string name="contract_list_name" translatable="false">%1$s #%2$s</string>
     <string name="contract_title">Title:</string>
     <string name="contract_charge">Charge:</string>
     <string name="contract_payment">Payment:</string>
@@ -154,9 +154,9 @@
     <string name="contract_items">Items:</string>
     <string name="contract_sign">Sign</string>
     <string name="contract_includes_any_tax">Includes any Tax</string>
-    <string name="contract_customer_button_text">%1$s %2$s</string>
+    <string name="contract_customer_button_text" translatable="false">%1$s %2$s</string>
     <string name="contract_charge_nc">NC - No Charge</string>
-    <string name="contract_charge_fl">FL - Fixed</string>
+    <string name="contract_charge_fl">FP - Fixed</string>
     <string name="contract_charge_tm">T&amp;M - Time &amp; Material</string>
     <string name="contract_payment_none">No Payment Terms</string>
     <string name="contract_payment_2percent10net30">2% 10 Net 30</string>
@@ -165,7 +165,7 @@
     <string name="contract_payment_net_30">Net 30</string>
     <string name="contract_payment_net_60">Net 60</string>
     <string name="contract_payment_prepay">PRE-PAY</string>
-    <string name="contract_item_total_price">%1$s x $%2$s = $%3$s</string>
+    <string name="contract_item_total_price" translatable="false">%1$s x $%2$s = $%3$s</string>
     <string name="contract_item_image_count">(%1$s images)</string>
 
     <!--Contract Item stuff-->
@@ -257,12 +257,12 @@
     <!--Documents stuff-->
     <string name="xs_documents">%1$s\'s Documents</string>>
     <string name="documents_none">No Documents on File</string>
-    <string name="documents_file_type">.%1$s (%2$s)</string>
+    <string name="documents_file_type" translatable="false">.%1$s (%2$s)</string>
     <string name="documents_added_by">By %1$s on %2$s</string>
     <string name="share">Share</string>
 
     <!--Items stuff-->
-    <string name="item_price_each">$%1$s/%2$s</string>
+    <string name="item_price_each" translatable="false">$%1$s/%2$s</string>
     <string name="item_tab_locate">Locate</string>
     <string name="item_tab_vendors">Vendors</string>
     <string name="item_tab_work_orders">Work Orders</string>
@@ -272,7 +272,7 @@
     <string name="item_x_vendors">%1$s Vendors Found with %2$s</string>
     <string name="item_x_work_orders">%1$s Work Orders Found with %2$s %3$s(s) remaining</string>
     <string name="item_remaining_qty">Remaining Qty: %1$s %2$s(s)</string>
-    <string name="item_wo_title">%1$s %2$s</string>
+    <string name="item_wo_title" translatable="false">%1$s %2$s</string>
     <string name="item_labor_type">Labor</string>
     <string name="item_material_type">Material</string>
     <string name="item_other_type">Other Type</string>
@@ -281,29 +281,26 @@
     <string name="group_text">Group Text</string>
     <string name="group_text_send">Send Message</string>
     <string name="group_text_send_batch">Send Batch Message (Part %1$d of %2$d)</string>
-    <string name="group_text_body">%1$s ~ AdminMatic Group Message by %2$s</string>
+    <string name="group_text_body" translatable="false">%1$s ~ AdminMatic Group Message by %2$s</string>
 
     <!--New Customer stuff-->
     <string name="edit_customer_menu">Edit Customer</string>
     <string name="add_new_customer">Add New Customer</string>
     <string name="new_customer_duplicate_message">Enter street address to search existing customers. We want to avoid duplicate customer entries.</string>
-    <string name="new_customer_parent">Parent Customer:</string>
-    <string name="new_customer_parent_hint">Select a Parent Customer…</string>
-    <string name="new_customer_parent_switch_label">New Job Site for Existing Customer?</string>
     <string name="new_customer_name">Customer Name</string>
     <string name="new_customer_is_business">Is this customer a business?</string>
     <string name="new_customer_name_prefix">Prefix:</string>
     <string name="new_customer_name_prefix_none_selected">Select a Prefix</string>
-    <string name="new_customer_name_prefix_mr">Mr.</string>
-    <string name="new_customer_name_prefix_mrs">Mrs.</string>
-    <string name="new_customer_name_prefix_ms">Ms.</string>
-    <string name="new_customer_name_prefix_miss">Miss.</string>
-    <string name="new_customer_name_prefix_dr">Dr.</string>
-    <string name="new_customer_name_prefix_mr_short">Mr</string>
-    <string name="new_customer_name_prefix_mrs_short">Mrs</string>
-    <string name="new_customer_name_prefix_ms_short">Ms</string>
-    <string name="new_customer_name_prefix_miss_short">Miss</string>
-    <string name="new_customer_name_prefix_dr_short">Dr</string>
+    <string name="new_customer_name_prefix_mr" translatable="false">Mr.</string>
+    <string name="new_customer_name_prefix_mrs" translatable="false">Mrs.</string>
+    <string name="new_customer_name_prefix_ms" translatable="false">Ms.</string>
+    <string name="new_customer_name_prefix_miss" translatable="false">Miss.</string>
+    <string name="new_customer_name_prefix_dr" translatable="false">Dr.</string>
+    <string name="new_customer_name_prefix_mr_short" translatable="false">Mr</string>
+    <string name="new_customer_name_prefix_mrs_short" translatable="false">Mrs</string>
+    <string name="new_customer_name_prefix_ms_short" translatable="false">Ms</string>
+    <string name="new_customer_name_prefix_miss_short" translatable="false">Miss</string>
+    <string name="new_customer_name_prefix_dr_short" translatable="false">Dr</string>
     <string name="new_customer_name_first">First:</string>
     <string name="new_customer_name_middle">Middle:</string>
     <string name="new_customer_name_last">Last:</string>
@@ -562,13 +559,26 @@
     <!--Crews stuff-->
     <string name="add_new_crew">Add New Crew</string>
     <string name="x_active_crews">%1$d Active Crews</string>
+    <string name="dialogue_date_in_past">You cannot open a date in the past.</string>
+    <string name="move_to">Move To…</string>
+    <string name="unassign">Unassign</string>
+    <string name="department_label">Department:</string>
+    <string name="new_crew_bar">New Crew</string>
+    <string name="edit_crew_bar">Edit Crew #%1$s</string>
+    <string name="entry_already_in_crew">%1$s is already in this crew.</string>
+    <string name="already_unassigned">%1$s is already not assigned to a crew.</string>
+    <string name="employee_already_in_crew_title">Employee In Crew</string>
+    <string name="employee_already_in_crew_body">Employee %1$s is already in crew(s) \'%2$s.\' Would you like to move or copy the employee?</string>
+    <string name="equipment_already_in_crew_title">Equipment In Crew</string>
+    <string name="equipment_already_in_crew_body">Equipment %1$s is already in crew \'%2$s.\' Would you like to move the equipment?</string>
+    <string name="move">Move</string>
+    <string name="copy">Copy</string>
 
 
 
 
 
-
-
+    <string name="enter_demo_instance">Enter Demo Instance</string>
 
     <string name="add_equipment">Add Equipment</string>
     <string name="add_item">Add Item</string>

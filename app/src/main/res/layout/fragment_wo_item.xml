@@ -399,7 +399,7 @@
             android:layout_height="50dp"
             android:layout_marginHorizontal="3dp"
             android:text="@string/add_usage"
-            android:backgroundTint="@color/usageBtn"
+            android:backgroundTint="@color/button"
             app:layout_constraintBottom_toTopOf="@+id/wo_item_profit_cl"
             />
 

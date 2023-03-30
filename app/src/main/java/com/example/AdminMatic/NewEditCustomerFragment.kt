@@ -30,12 +30,10 @@ import kotlin.collections.set
 import kotlin.concurrent.schedule
 
 
-class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, CustomerCellClickListener {
+class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private var editsMade = false
     private var editsMadeDelayPassed = false
-
-    private var alreadyHadParent = false
 
     private var customerID: String? = null
     private lateinit var customer: Customer
@@ -50,7 +48,6 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
     lateinit var myView:View
     
     private var editMode = false
-    private var parentName = ""
 
     private var referredBySpinnerPosition: Int = 0
 
@@ -141,84 +138,6 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
             getString(R.string.new_customer_name_prefix_dr_short))
 
 
-
-        // Parent
-        binding.newCustomerParentSwitch.setOnCheckedChangeListener { _, isChecked ->
-            editsMade = true
-            if (isChecked) {
-                binding.newCustomerParentSearch.visibility = View.VISIBLE
-            }
-            else {
-                binding.newCustomerParentSearch.visibility = View.GONE
-                println("clearing parent from switch")
-                customer.parentID = "0"
-                customer.parentName = ""
-            }
-        }
-
-        binding.newCustomerParentSearchRv.apply {
-            layoutManager = LinearLayoutManager(activity)
-
-
-            adapter = activity?.let {
-                CustomersAdapter(
-                    GlobalVars.customerList!!,
-                    this@NewEditCustomerFragment, false
-                )
-            }
-
-            val itemDecoration: RecyclerView.ItemDecoration =
-                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-            binding.newCustomerParentSearchRv.addItemDecoration(itemDecoration)
-
-
-
-
-            binding.newCustomerParentSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
-                androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    //customerRecyclerView.visibility = View.INVISIBLE
-                    return false
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    println("onQueryTextChange = $newText")
-                    (adapter as CustomersAdapter).filter.filter(newText)
-                    if(newText == ""){
-                        binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
-                    }else{
-                        binding.newCustomerParentSearchRv.visibility = View.VISIBLE
-                    }
-
-                    return false
-                }
-
-            })
-
-
-            val closeButton: View? = binding.newCustomerParentSearch.findViewById(androidx.appcompat.R.id.search_close_btn)
-            closeButton?.setOnClickListener {
-                binding.newCustomerParentSearch.setQuery("", false)
-                println("clearing parentID via X click")
-                customer.parentID = "0"
-                parentName = ""
-                myView.hideKeyboard()
-                binding.newCustomerParentSearch.clearFocus()
-                binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
-            }
-
-            binding.newCustomerParentSearch.setOnQueryTextFocusChangeListener { _, isFocused ->
-                if (!isFocused) {
-                    binding.newCustomerParentSearch.setQuery(parentName, false)
-                    binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
-                }
-            }
-
-        }
-
-
-
         // Name
         binding.newCustomerNamePrefixSpinner.setBackgroundResource(R.drawable.text_view_layout)
         prefixAdapter = ArrayAdapter<String>(
@@ -262,22 +181,6 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                 editsMade = true
             }
         })
-
-        binding.newCustomerNameSystemEt.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                if (!binding.newCustomerParentSwitch.isChecked) {
-                    if (binding.newCustomerNameSystemEt.text.isBlank() && binding.newCustomerNameFirstEt.text.isNotBlank() && binding.newCustomerNameLastEt.text.isNotBlank()) {
-                        binding.newCustomerNameSystemEt.setText(getString(R.string.new_customer_autofill_sysname, binding.newCustomerNameLastEt.text, binding.newCustomerNameFirstEt.text))
-                    }
-                }
-                /*
-                else {
-                    binding.newCustomerNameSystemEt.setText(customer.billStreet1)
-                }
-
-                 */
-            }
-        }
 
         binding.newCustomerBusinessSwitch.setOnCheckedChangeListener { _, isChecked ->
             editsMade = true
@@ -595,28 +498,6 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
 
         println("populateFields")
 
-        if (!fromSelected) {
-            alreadyHadParent = customer.parentID != "0"
-        }
-
-        if (!fromSelected) {
-            if (customer.parentID != "0") {
-                for (it in GlobalVars.customerList!!) {
-                    if (it.ID == customer.parentID) {
-
-                        binding.newCustomerParentSearch.setQuery(it.sysname, false)
-                        binding.newCustomerParentSearch.clearFocus()
-                        binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
-                        binding.newCustomerParentSwitch.isChecked = true
-                        binding.newCustomerParentSwitch.jumpDrawablesToCurrentState()
-                        println("setting parent name from selected customer")
-                        parentName = it.sysname
-                        break
-                    }
-                }
-            }
-        }
-
         if (!customer.companyName.isNullOrBlank()) {
             binding.newCustomerBusinessSwitch.isChecked = true
             binding.newCustomerBusinessSwitch.jumpDrawablesToCurrentState()
@@ -777,10 +658,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
                         params["nameChange"] = "1"
                     }
                 }
-                if (!alreadyHadParent && customer.parentID != "0") {
-                    println("had no parent before but do now, so 1nameChange = 1")
-                    params["nameChange"] = "1"
-                }
+
                 params["mainPhone"] = binding.newCustomerContactPhoneEt.text.toString()
                 params["mainEmail"] = binding.newCustomerContactEmailEt.text.toString()
                 params["jobStreet1"] = binding.newCustomerAddressStreet1Et.text.toString()
@@ -866,89 +744,6 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, 
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
-    override fun onCustomerCellClickListener(data: Customer) {
-        println("Cell clicked with customer: ${data.sysname}")
-        
-        
-        
-        showProgressView()
-        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/customer.php"
-
-        val currentTimestamp = System.currentTimeMillis()
-        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "$urlString?cb=$currentTimestamp"
-
-        val postRequest1: StringRequest = object : StringRequest(
-            Method.POST, urlString,
-            Response.Listener { response -> // response
-
-                println("Response $response")
-
-                try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
-
-                        val gson = GsonBuilder().create()
-                        val customerArray = gson.fromJson(parentObject.toString(), CustomerArray::class.java)
-                        val customerSelected = customerArray.customers[0]
-
-                        println("setting parentID to ${customerSelected.ID} from PHP call")
-                        customer.parentID = customerSelected.ID
-                        parentName = customerSelected.sysname
-                        binding.newCustomerParentSearch.setQuery(parentName, false)
-                        binding.newCustomerParentSearch.clearFocus()
-                        myView.hideKeyboard()
-                        binding.newCustomerParentSearchRv.visibility = View.INVISIBLE
-
-                        customer.salutation = customerSelected.salutation
-                        customer.fname = customerSelected.fname
-                        customer.mname = customerSelected.mname
-                        customer.lname = customerSelected.lname
-                        customer.companyName = customerSelected.companyName
-                        //customer.sysName = ???
-                        customer.phone = customerSelected.phone
-                        customer.email = customerSelected.email
-                        customer.billStreet1 = customerSelected.billStreet1
-                        customer.billStreet2 = customerSelected.billStreet2
-                        customer.billStreet3 = customerSelected.billStreet3
-                        customer.billStreet4 = customerSelected.billStreet4
-                        customer.billCity = customerSelected.billCity
-                        customer.billState = customerSelected.billState
-                        customer.billZip = customerSelected.billZip
-
-                        customer.hear = customerSelected.hear
-                        customer.active = customerSelected.active
-
-                        populateFields(true)
-                    }
-                    hideProgressView()
-                    
-                } catch (e: JSONException) {
-                    println("JSONException")
-                    e.printStackTrace()
-                }
-
-            },
-            Response.ErrorListener { // error
-
-            }
-        ) {
-            override fun getParams(): Map<String, String> {
-                val params: MutableMap<String, String> = HashMap()
-                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["ID"] = data.ID
-                println("params = $params")
-                return params
-            }
-        }
-        postRequest1.tag = "customerNewEdit"
-        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
-        
-        
-
-    }
 
     private fun validateFields(): Boolean {
         if (binding.newCustomerNameSystemEt.text.length > 41) {
