@@ -26,7 +26,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +34,6 @@ import com.AdminMatic.databinding.FragmentImageUploadBinding
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request.Method.POST
 import com.android.volley.Response
-import com.android.volley.RetryPolicy
 import com.android.volley.toolbox.StringRequest
 import com.bumptech.glide.Glide
 import com.google.gson.GsonBuilder
@@ -76,11 +74,14 @@ private var customerAllowImages: Boolean = true
 private var queriedCustomer: Customer? = null
 
 
+/*
 private val mRetryPolicy: RetryPolicy = DefaultRetryPolicy(
     0,
     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
 )
+
+ */
 
 
 //val REQUEST_CODE = 200

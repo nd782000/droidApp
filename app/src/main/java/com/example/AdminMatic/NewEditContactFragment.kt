@@ -9,25 +9,17 @@ import android.view.*
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentNewEditContactBinding
-import com.AdminMatic.databinding.FragmentNewEditLeadBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.time.LocalDate
-import java.time.ZoneOffset
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.concurrent.schedule
 
 
@@ -94,7 +86,7 @@ class NewEditContactFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
 
         globalVars = GlobalVars()
         if (editMode) {

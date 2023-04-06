@@ -15,8 +15,10 @@ import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentMapBinding
 import com.example.AdminMatic.GlobalVars.Companion.globalLeadList
 import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.MapFragment
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 
 

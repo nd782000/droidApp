@@ -29,7 +29,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginRight="16dp"
-        android:text="&#8942;"
+        android:text="@string/menu_dots"
         android:textAlignment="center"
         android:textSize="30sp"
         android:textStyle="bold"

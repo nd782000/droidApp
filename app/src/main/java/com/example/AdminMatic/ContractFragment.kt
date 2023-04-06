@@ -261,7 +261,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
 
     private fun getContract(){
-        println("getContract = ${contractID}")
+        println("getContract = $contractID")
         //showProgressView()
 
 

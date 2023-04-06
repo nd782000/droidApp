@@ -87,9 +87,9 @@ class ServiceFragment : Fragment() {
 
 
         binding.serviceNameTxt.text = service!!.name
-        binding.serviceTypeTxt.text = activity!!.getString(R.string.service_type, service!!.typeName)
+        binding.serviceTypeTxt.text = requireActivity().getString(R.string.service_type, service!!.typeName)
         if(service!!.addedBy != null){
-            binding.serviceAddedByTxt.text = activity!!.getString(R.string.service_by, service!!.addedBy, createDate.format(dateFormatterShort))
+            binding.serviceAddedByTxt.text = requireActivity().getString(R.string.service_by, service!!.addedBy, createDate.format(dateFormatterShort))
         }
         if(service!!.instruction != null){
             binding.serviceInstructionsTxt.text = service!!.instruction
@@ -107,9 +107,9 @@ class ServiceFragment : Fragment() {
                 binding.nextEditTxt.visibility = View.GONE
                 binding.currentEditTxt.inputType = InputType.TYPE_CLASS_NUMBER
                 binding.serviceCurrentTitleTxt.text = getString(R.string.new_service_current_miles_km)
-                binding.serviceDueTxt.text = activity!!.getString(R.string.service_due, activity!!.getString(R.string.now), "")
+                binding.serviceDueTxt.text = requireActivity().getString(R.string.service_due, requireActivity().getString(R.string.now), "")
                 binding.serviceDueTxt.setTextColor(ContextCompat.getColor(myView.context, R.color.red))
-                binding.serviceFrequencyTxt.text = activity!!.getString(R.string.service_frequency, getString(R.string.na), "")
+                binding.serviceFrequencyTxt.text = requireActivity().getString(R.string.service_frequency, getString(R.string.na), "")
                 binding.currentEditTxt.setText(service!!.currentValue)
 
 
@@ -117,9 +117,9 @@ class ServiceFragment : Fragment() {
             "1" -> { //date based
                 binding.serviceTypeTxt.text = getString(R.string.service_type, getString(R.string.service_type_date_based))
 
-                binding.serviceDueTxt.text = activity!!.getString(R.string.service_due, nextDate.format(dateFormatterShort), "")
+                binding.serviceDueTxt.text = requireActivity().getString(R.string.service_due, nextDate.format(dateFormatterShort), "")
                 if (service!!.frequency != null) {
-                    binding.serviceFrequencyTxt.text = activity!!.getString(R.string.service_frequency, service!!.frequency, activity!!.getString(R.string.days))
+                    binding.serviceFrequencyTxt.text = requireActivity().getString(R.string.service_frequency, service!!.frequency, requireActivity().getString(R.string.days))
                 }
                 if (currentDate > nextDate) {
                     binding.serviceDueTxt.setTextColor(ContextCompat.getColor(myView.context, R.color.red))
@@ -136,7 +136,7 @@ class ServiceFragment : Fragment() {
                         override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
                             //editsMade = true
                             val selectedDate = LocalDate.of(year, month+1, dayOfMonth)
-                            binding.nextEditTxt.setText(selectedDate.format(GlobalVars.dateFormatterShort))
+                            binding.nextEditTxt.setText(selectedDate.format(dateFormatterShort))
                             //aptDate = selectedDate.format(GlobalVars.dateFormatterYYYYMMDD)
                             //lead!!.date = aptDate
                         }
@@ -152,7 +152,7 @@ class ServiceFragment : Fragment() {
                 val nextValue = service!!.nextValue!!.toInt() + service!!.frequency!!.toInt()
                 binding.currentEditTxt.text = null
                 binding.nextEditTxt.setText(nextValue.toString())
-                binding.serviceDueTxt.text = activity!!.getString(R.string.service_due, nextValue.toString(), getString(R.string.mi_km))
+                binding.serviceDueTxt.text = requireActivity().getString(R.string.service_due, nextValue.toString(), getString(R.string.mi_km))
             }
             "3" -> { //engine hour based
                 binding.serviceTypeTxt.text = getString(R.string.service_type, getString(R.string.service_type_engine_hour_based))

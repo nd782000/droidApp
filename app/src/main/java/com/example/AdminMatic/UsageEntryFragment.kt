@@ -72,7 +72,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     private var editsMade: Boolean = false
 
     val gson = Gson()
-    val gsonPretty = GsonBuilder().setPrettyPrinting().create()
+    private val gsonPretty: Gson = GsonBuilder().setPrettyPrinting().create()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,7 +134,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
 
 
         // Inflate the layout for this fragment
@@ -253,7 +253,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }else{
             //material type
 
-            if (usageToLog.count() == 0){
+            if (usageToLog.isEmpty()){
 
 
                 val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
@@ -572,7 +572,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             cal = Calendar.getInstance()
 
-            cal.time = sdf.parse(usageToLog[row].start!!)
+            cal.time = sdf.parse(usageToLog[row].start!!) as Date
             h = cal.get(Calendar.HOUR_OF_DAY)
             m = cal.get(Calendar.MINUTE)
         }
@@ -594,10 +594,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 println("startString is  $startString")
 
 
-
-
-
-                if(usageToLog[row].stop != null){
+                if(usageToLog[row].stop != null && usageToLog[row].stop != "0000-00-00 00:00:00"){
                     if(globalVars.getTimeFromString(usageToLog[row].stop!!)!!  < globalVars.getTimeFromString(startString)!!){
                         println("start is after stop")
 
@@ -678,7 +675,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             cal = Calendar.getInstance()
 
-            cal.time = sdf.parse(usageToLog[row].stop!!)
+            cal.time = sdf.parse(usageToLog[row].stop!!) as Date
             h = cal.get(Calendar.HOUR_OF_DAY)
             m = cal.get(Calendar.MINUTE)
         }
@@ -1026,6 +1023,13 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         //loop thru usage array and build JSON array
         editsMade = false //resets edit checker
 
+        var foundStartTime = false
+        usageToLog.forEach {
+            if (it.start != null) {
+                foundStartTime = true
+            }
+        }
+
         for ((i, usage) in usageToLog.withIndex()) {
             var usageQty = 0.0
             println("usage.qty = ${usage.qty}")
@@ -1041,9 +1045,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             if(usage.locked == false){
                 if(usage.type == "1"){
                     //labor
-                    if(usage.start == null && usage.del != "1"){
+                    if(!foundStartTime && usage.del != "1"){
                         globalVars.playErrorSound(myView.context)
-                        globalVars.simpleAlert(myView.context, "Start Time Error","${usage.empName} has no start time.")
+                        globalVars.simpleAlert(myView.context, "Start Time Error","No employees have a start time.")
                         return
                     }else{
 
@@ -1073,12 +1077,18 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-            val jsonUsagePretty: String = gsonPretty.toJson(usageToLog[i])
-            println("jsonUsagePretty = $jsonUsagePretty")
+            if (usageToLog[i].start != null) {
+                val jsonUsagePretty: String = gsonPretty.toJson(usageToLog[i])
+                usageToLogJSONMutableList.add(jsonUsagePretty)
+                println("jsonUsagePretty = $jsonUsagePretty")
+            }
+            else {
+                println("start time was null")
+            }
 
 
 
-            usageToLogJSONMutableList.add(jsonUsagePretty)
+
 
 
         }

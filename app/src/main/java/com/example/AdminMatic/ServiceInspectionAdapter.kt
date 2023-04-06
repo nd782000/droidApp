@@ -73,9 +73,6 @@ class ServiceInspectionAdapter(list: MutableList<InspectionQuestion>, private va
 
 class ServiceInspectionViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.service_inspection_list_item, parent, false)) {
-    init {
-
-    }
 
     fun bind(question: InspectionQuestion) {
 

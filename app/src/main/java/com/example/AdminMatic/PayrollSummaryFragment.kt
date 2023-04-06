@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -12,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentPayrollSummaryBinding
-import com.AdminMatic.databinding.FragmentShiftsBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
@@ -45,9 +46,9 @@ class PayrollSummaryFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var dateToDB: String = ""
 
 
-    private var payrollList = mutableListOf<Payroll>()
+    //private var payrollList = mutableListOf<Payroll>()
     private lateinit var payrollArray:PayrollArray
-    private lateinit var payrollJSON: JSONObject
+    //private lateinit var payrollJSON: JSONObject
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,7 +135,7 @@ class PayrollSummaryFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
 
-                        val payroll: JSONArray = parentObject.getJSONArray("payroll")
+                        //val payroll: JSONArray = parentObject.getJSONArray("payroll")
 
 
                         val gson = GsonBuilder().create()

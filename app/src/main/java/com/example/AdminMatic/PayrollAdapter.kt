@@ -6,8 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 
 class PayrollAdapter(list: MutableList<Payroll>, private val context: Context) : RecyclerView.Adapter<PayrollViewHolder>() {

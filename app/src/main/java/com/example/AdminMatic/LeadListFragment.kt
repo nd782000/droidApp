@@ -312,10 +312,6 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
-    private fun applyRecycler() {
-
-    }
-
     override fun onLeadCellClickListener(data:Lead) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
         //Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()

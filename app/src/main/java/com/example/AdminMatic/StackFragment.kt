@@ -178,10 +178,13 @@ class StackFragment(_type: Int, _ID: String, _delegate: StackDelegate) : Fragmen
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("stack")
     }
 
+    /*
     fun getWorkOrderSpinner():Spinner{
         println("getWorkOrderSpinner")
         return binding.workOrderSpinner
     }
+
+     */
 
 
     @SuppressLint("ResourceType")

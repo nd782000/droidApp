@@ -61,7 +61,7 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 
 
         if (task.images != null){
-            if (task.images!!.count() > 0){
+            if (task.images!!.isNotEmpty()){
                 val taskImageView:ImageView = holder.itemView.findViewById(R.id.task_thumb_iv)
 
 

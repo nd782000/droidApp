@@ -471,7 +471,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
 
             cal = Calendar.getInstance()
 
-            cal.time = sdf.parse(currentPayroll.startTime!!)
+            cal.time = sdf.parse(currentPayroll.startTime!!) as Date
             h = cal.get(Calendar.HOUR_OF_DAY)
             m = cal.get(Calendar.MINUTE)
         }
@@ -538,7 +538,7 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                 val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
                 cal = Calendar.getInstance()
 
-                cal.time = sdf.parse(currentPayroll.stopTime!!)
+                cal.time = sdf.parse(currentPayroll.stopTime!!) as Date
                 h = cal.get(Calendar.HOUR_OF_DAY)
                 m = cal.get(Calendar.MINUTE)
             }

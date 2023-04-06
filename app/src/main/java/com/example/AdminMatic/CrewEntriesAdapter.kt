@@ -1,24 +1,16 @@
 package com.example.AdminMatic
 
-import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.Typeface
-import android.net.Uri
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.TextAppearanceSpan
 import android.view.*
-import android.widget.*
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import java.util.*
 
 
-class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, private val crewIndex:Int, private val crewID:String, private val crewEntryDelegate: CrewEntryDelegate, private val cellClickListener: CrewEntryCellClickListener): RecyclerView.Adapter<CrewEntryViewHolder>() {
+class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, private val crewIndex:Int, private val crewID:String, private val crewEntryDelegate: CrewEntryDelegate, private val cellClickListener: CrewEntryCellClickListener, _readOnly:Boolean): RecyclerView.Adapter<CrewEntryViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
@@ -29,6 +21,8 @@ class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, pri
     init {
         filterList = list
     }
+
+    private var readOnly = _readOnly
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrewEntryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -116,62 +110,72 @@ class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, pri
 
 
 
-        if (data.isEquipment) {
-            holder.itemView.findViewById<TextView>(R.id.equipment_options_tv).setOnClickListener {
-                println("menu click")
+        if (!readOnly) {
+            if (data.isEquipment) {
+                holder.itemView.findViewById<TextView>(R.id.equipment_options_tv).setOnClickListener {
+                    println("menu click")
 
-                val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.equipment_options_tv))
-                popUp.inflate(R.menu.crew_entry_menu)
-                if (crewIndex == -1) {
-                    popUp.menu.removeItem(R.id.move_to)
+                    val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.equipment_options_tv))
+                    popUp.inflate(R.menu.crew_entry_menu)
+                    if (crewIndex == -1) {
+                        popUp.menu.removeItem(R.id.move_to)
+                    }
+                    popUp.gravity = Gravity.CENTER
+                    popUp.setOnMenuItemClickListener { item: MenuItem? ->
+
+                        when (item!!.itemId) {
+                            R.id.move_to -> {
+                                // These can be !!'d because any time the delegate isn't provided this code is unreachable anyways
+                                crewEntryDelegate.onMoveCrewEntry(data, crewIndex, holder.itemView.findViewById<TextView>(R.id.equipment_options_tv))
+                            }
+                            R.id.unassign -> {
+                                crewEntryDelegate.onUnassignCrewEntry(data, crewIndex)
+                            }
+
+                        }
+
+                        true
+                    }
+                    popUp.show()
                 }
-                popUp.gravity = Gravity.CENTER
-                popUp.setOnMenuItemClickListener { item: MenuItem? ->
+            } else {
+                holder.itemView.findViewById<TextView>(R.id.employee_options_tv).setOnClickListener {
+                    println("menu click")
 
-                    when (item!!.itemId) {
-                        R.id.move_to -> {
-                            // These can be !!'d because any time the delegate isn't provided this code is unreachable anyways
-                            crewEntryDelegate.onMoveCrewEntry(data, crewIndex, holder.itemView.findViewById<TextView>(R.id.equipment_options_tv))
-                        }
-                        R.id.unassign -> {
-                            crewEntryDelegate.onUnassignCrewEntry(data, crewIndex)
-                        }
-
+                    val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.employee_options_tv))
+                    popUp.inflate(R.menu.crew_entry_menu)
+                    if (crewIndex == -1) {
+                        popUp.menu.removeItem(R.id.move_to)
+                    }
+                    if (crewID == "0") {
+                        popUp.menu.removeItem(R.id.unassign)
                     }
 
-                    true
+                    popUp.gravity = Gravity.CENTER
+                    popUp.setOnMenuItemClickListener { item: MenuItem? ->
+
+                        when (item!!.itemId) {
+                            R.id.move_to -> {
+                                crewEntryDelegate.onMoveCrewEntry(data, crewIndex, holder.itemView.findViewById<TextView>(R.id.employee_options_tv))
+                            }
+                            R.id.unassign -> {
+                                crewEntryDelegate.onUnassignCrewEntry(data, crewIndex)
+                            }
+
+                        }
+
+                        true
+                    }
+                    popUp.show()
                 }
-                popUp.show()
             }
-        } else {
-            holder.itemView.findViewById<TextView>(R.id.employee_options_tv).setOnClickListener {
-                println("menu click")
-
-                val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.employee_options_tv))
-                popUp.inflate(R.menu.crew_entry_menu)
-                if (crewIndex == -1) {
-                    popUp.menu.removeItem(R.id.move_to)
-                }
-                if (crewID == "0") {
-                    popUp.menu.removeItem(R.id.unassign)
-                }
-
-                popUp.gravity = Gravity.CENTER
-                popUp.setOnMenuItemClickListener { item: MenuItem? ->
-
-                    when (item!!.itemId) {
-                        R.id.move_to -> {
-                            crewEntryDelegate.onMoveCrewEntry(data, crewIndex, holder.itemView.findViewById<TextView>(R.id.employee_options_tv))
-                        }
-                        R.id.unassign -> {
-                            crewEntryDelegate.onUnassignCrewEntry(data, crewIndex)
-                        }
-
-                    }
-
-                    true
-                }
-                popUp.show()
+        }
+        else { //readOnly
+            if (data.isEquipment) {
+                holder.itemView.findViewById<TextView>(R.id.equipment_options_tv).visibility = View.GONE
+            }
+            else {
+                holder.itemView.findViewById<TextView>(R.id.employee_options_tv).visibility = View.GONE
             }
         }
 

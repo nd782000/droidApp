@@ -82,7 +82,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         println("Work Order Item Customer: ${workOrder.customer}")
         binding.woItemUsageBtn.setOnClickListener{
-            if (workOrder!!.invoiceID != "0") {
+            if (workOrder.invoiceID != "0") {
                 globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.invoiced_wo_cant_edit))
             }
             else {
@@ -150,7 +150,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         binding.profitBar.progress = 100 - profitPercent
     }
 
-    override fun getWoItem(newWoStatus: String?){
+    override fun getWoItem(_newWoStatus: String?){
         println("get woItem")
 
 
@@ -212,9 +212,9 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                         fillProfitCl()
                         setUpViews()
                         hideProgressView()
-                        if (newWoStatus != null) {
-                            if (newWoStatus != workOrder.status) {
-                                updateWorkOrderStatus(newWoStatus)
+                        if (_newWoStatus != null) {
+                            if (_newWoStatus != workOrder.status) {
+                                updateWorkOrderStatus(_newWoStatus)
                             }
                         }
                     }
@@ -326,7 +326,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_done)!!,myView.context), myView.context.getString(R.string.finished)))
         popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_canceled)!!,myView.context), myView.context.getString(R.string.canceled)))
 
-        if (workOrder!!.invoiceID != "0") {
+        if (workOrder.invoiceID != "0") {
             globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.invoiced_wo_cant_edit))
         }
         else {

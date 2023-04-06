@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,7 +15,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
-import com.squareup.picasso.Picasso
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject

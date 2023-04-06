@@ -48,7 +48,7 @@
                 android:textSize="24sp"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:text="Name"
+                android:text=""
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/item_price_tv"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -62,7 +62,7 @@
                 android:paddingBottom="16dp"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:text="Price"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -73,7 +73,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:paddingBottom="16dp"
                 android:textSize="14sp"
-                android:text="Description"
+                android:text=""
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/item_name_tv"/>
 
@@ -84,7 +84,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:paddingBottom="16dp"
                 android:textSize="14sp"
-                android:text="Type"
+                android:text=""
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/item_description_tv" />
 
@@ -95,7 +95,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:paddingBottom="16dp"
                 android:textSize="14sp"
-                android:text="Tax"
+                android:text=""
                 app:layout_constraintTop_toBottomOf="@id/item_description_tv"
                 app:layout_constraintEnd_toEndOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -269,13 +269,6 @@ class InvoiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     private var mNameView: TextView? = null
     private var mTitleView: TextView? = null
 
-
-
-    init {
-        //mNameView = itemView.findViewById(R.id.list_name)
-        //mTitleView = itemView.findViewById(R.id.list_title)
-    }
-
     fun bind(invoice: Invoice) {
         //mNameView?.text = invoice.custName
         //mTitleView?.text = invoice.title

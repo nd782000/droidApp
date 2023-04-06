@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso
 import java.util.*
 
 
-class EmployeesAdapter(private val list: MutableList<Employee>, val showMenu:Boolean, private val context: Context,private val cellClickListener: EmployeeCellClickListener)
+class EmployeesAdapter(private val list: MutableList<Employee>, private val showMenu:Boolean, private val context: Context, private val cellClickListener: EmployeeCellClickListener)
 
     : RecyclerView.Adapter<EmployeeViewHolder>(), Filterable {
 

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/work_order_list_item"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal">
 
     <ImageView
@@ -28,8 +28,7 @@
         android:text="@string/customer"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:singleLine="true"
-        android:ellipsize="end"
+        android:singleLine="false"
         app:layout_constraintBottom_toTopOf="@+id/list_title"
         app:layout_constraintLeft_toRightOf="@+id/list_wo_status_icon_image_view"
         app:layout_constraintRight_toRightOf="parent"
@@ -43,8 +42,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="28dp"
         android:text="@string/work_order"
-        android:singleLine="true"
-        android:ellipsize="end"
+        android:singleLine="false"
 
 
         app:layout_constraintLeft_toLeftOf="@+id/list_cust_name"

@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
@@ -11,7 +10,7 @@ import com.AdminMatic.R
 import java.util.*
 
 
-class SearchItemsAdapter(private val list: MutableList<SearchItem>, private val context: Context, private val cellClickListener: SearchItemCellClickListener)
+class SearchItemsAdapter(private val list: MutableList<SearchItem>, private val cellClickListener: SearchItemCellClickListener)
 
     : RecyclerView.Adapter<SearchItemViewHolder>(), Filterable {
 

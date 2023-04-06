@@ -117,6 +117,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:paddingTop="4dp"
                 android:paddingLeft="10dp"
+                android:paddingBottom="2dp"
                 android:text=""
 
                 />

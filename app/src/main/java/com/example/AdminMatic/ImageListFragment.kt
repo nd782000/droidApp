@@ -75,7 +75,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener, CustomerCellClickL
     //lateinit var mLayoutManager:RecyclerView.LayoutManager
 
     var refreshing = false
-    var searching = false
+    private var searching = false
 
     private var _binding: FragmentImageListBinding? = null
     private val binding get() = _binding!!

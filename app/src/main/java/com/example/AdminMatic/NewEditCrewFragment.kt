@@ -4,14 +4,12 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.*
 import android.view.*
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -28,7 +26,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.concurrent.schedule
 
 
@@ -44,7 +41,7 @@ class NewEditCrewFragment : Fragment(), AdapterView.OnItemSelectedListener, Crew
     private lateinit var departmentAdapter: ArrayAdapter<String>
 
     private var crewEntriesList: MutableList<EmployeeOrEquipment> = mutableListOf()
-    private lateinit var crewArrayList:ArrayList<Crew>
+    //private lateinit var crewArrayList:ArrayList<Crew>
     private lateinit var crewList:MutableList<Crew>
 
     private lateinit var crewID: String
@@ -57,6 +54,7 @@ class NewEditCrewFragment : Fragment(), AdapterView.OnItemSelectedListener, Crew
     private var refreshCrews = false
 
     private var editMode = false
+    private var readOnly = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +62,8 @@ class NewEditCrewFragment : Fragment(), AdapterView.OnItemSelectedListener, Crew
             crewID = it.getString("crewID")!!
             val crewArray = it.getParcelableArray("crewList") as Array<Crew>
             crewList = crewArray.toMutableList()
+            readOnly = it.getBoolean("readOnly")
+
         }
         if (crewID != "0") {
             editMode = true
@@ -118,7 +118,12 @@ class NewEditCrewFragment : Fragment(), AdapterView.OnItemSelectedListener, Crew
 
         globalVars = GlobalVars()
         if (editMode) {
-            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.edit_crew_bar, crewID)
+            if (readOnly) {
+                ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.crew_bar, crewID)
+            }
+            else {
+                ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.edit_crew_bar, crewID)
+            }
         }
         else {
             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.new_crew_bar)
@@ -397,144 +402,158 @@ class NewEditCrewFragment : Fragment(), AdapterView.OnItemSelectedListener, Crew
         }
 
 
-        // Add Employee Button
-        binding.addEmployeeBtn.setOnClickListener {
-            val popUp = PopupMenu(myView.context, binding.addEmployeeBtn)
-            popUp.inflate(R.menu.task_status_menu)
+        if (!readOnly) {
 
-            for (i in 0 until employeesList.size) {
-                popUp.menu.add(0, i, 1, employeesList[i].name)
-            }
+            // Add Employee Button
+            binding.addEmployeeBtn.setOnClickListener {
+                val popUp = PopupMenu(myView.context, binding.addEmployeeBtn)
+                popUp.inflate(R.menu.task_status_menu)
 
-            popUp.setOnMenuItemClickListener { item: MenuItem? ->
-
-                val empToAdd = employeesList[item!!.itemId]
-                println("${empToAdd.name} clicked")
-
-                crew!!.emps!!.forEach {
-                    if (it.ID == empToAdd.ID) {
-                        globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.entry_already_in_crew, empToAdd.name))
-                        return@setOnMenuItemClickListener true
-                    }
+                for (i in 0 until employeesList.size) {
+                    popUp.menu.add(0, i, 1, employeesList[i].name)
                 }
 
-                val existingCrewNames = mutableListOf<String>()
-                var existingCrewName = ""
+                popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
-                crewList.forEach {
-                    if (it.ID != "0") { // skip unassigned crew
-                        it.emps!!.forEach { emp ->
-                            if (emp.ID == empToAdd.ID) {
-                                existingCrewNames.add(it.name)
+                    val empToAdd = employeesList[item!!.itemId]
+                    println("${empToAdd.name} clicked")
+
+                    crew!!.emps!!.forEach {
+                        if (it.ID == empToAdd.ID) {
+                            globalVars.simpleAlert(
+                                myView.context,
+                                getString(R.string.dialogue_error),
+                                getString(R.string.entry_already_in_crew, empToAdd.name)
+                            )
+                            return@setOnMenuItemClickListener true
+                        }
+                    }
+
+                    val existingCrewNames = mutableListOf<String>()
+                    var existingCrewName = ""
+
+                    crewList.forEach {
+                        if (it.ID != "0") { // skip unassigned crew
+                            it.emps!!.forEach { emp ->
+                                if (emp.ID == empToAdd.ID) {
+                                    existingCrewNames.add(it.name)
+                                }
                             }
                         }
                     }
-                }
 
-                if (existingCrewNames.isNotEmpty()) {
-                    existingCrewNames.forEach {
-                        if (existingCrewName == "") {
-                            existingCrewName = it
+                    if (existingCrewNames.isNotEmpty()) {
+                        existingCrewNames.forEach {
+                            if (existingCrewName == "") {
+                                existingCrewName = it
+                            } else {
+                                existingCrewName += ", $it"
+                            }
                         }
-                        else {
-                            existingCrewName += ", $it"
+
+
+                        val builder = AlertDialog.Builder(myView.context)
+                        builder.setTitle(getString(R.string.employee_already_in_crew_title))
+                        builder.setMessage(getString(R.string.employee_already_in_crew_body, empToAdd.name, existingCrewName))
+                        builder.setPositiveButton(getString(R.string.move)) { _, _ ->
+                            crewMove("0", crew!!.ID, EmployeeOrEquipment(empToAdd), false)
                         }
-                    }
+                        builder.setNeutralButton(getString(R.string.cancel)) { _, _ ->
 
-
-                    val builder = AlertDialog.Builder(myView.context)
-                    builder.setTitle(getString(R.string.employee_already_in_crew_title))
-                    builder.setMessage(getString(R.string.employee_already_in_crew_body, empToAdd.name, existingCrewName))
-                    builder.setPositiveButton(getString(R.string.move)) { _, _ ->
+                        }
+                        builder.setNegativeButton(getString(R.string.copy)) { _, _ ->
+                            crewMove("0", crew!!.ID, EmployeeOrEquipment(empToAdd), true)
+                        }
+                        builder.show()
+                    } else { // not found in any other crews
                         crewMove("0", crew!!.ID, EmployeeOrEquipment(empToAdd), false)
                     }
-                    builder.setNeutralButton(getString(R.string.cancel)) { _, _ ->
 
-                    }
-                    builder.setNegativeButton(getString(R.string.copy)) { _, _ ->
-                        crewMove("0", crew!!.ID, EmployeeOrEquipment(empToAdd), true)
-                    }
-                    builder.show()
-                }
-                else { // not found in any other crews
-                    crewMove("0", crew!!.ID, EmployeeOrEquipment(empToAdd), false)
+
+
+
+
+                    true
                 }
 
-
-
-
-
-                true
+                popUp.show()
             }
 
-            popUp.show()
-        }
+            // Add Equipment Button
+            binding.addEquipmentBtn.setOnClickListener {
+                val popUp = PopupMenu(myView.context, binding.addEquipmentBtn)
+                popUp.inflate(R.menu.task_status_menu)
 
-        // Add Equipment Button
-        binding.addEquipmentBtn.setOnClickListener {
-            val popUp = PopupMenu(myView.context, binding.addEquipmentBtn)
-            popUp.inflate(R.menu.task_status_menu)
-
-            for (i in 0 until equipmentList.size) {
-                popUp.menu.add(0, i, 1, equipmentList[i].name)
-            }
-
-            popUp.setOnMenuItemClickListener { item: MenuItem? ->
-                val equipToAdd = equipmentList[item!!.itemId]
-                println("${equipmentList[item!!.itemId].name} clicked")
-
-                crew!!.equipment!!.forEach {
-                    if (it.ID == equipToAdd.ID) {
-                        globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.entry_already_in_crew, equipToAdd.name))
-                        return@setOnMenuItemClickListener true
-                    }
+                for (i in 0 until equipmentList.size) {
+                    popUp.menu.add(0, i, 1, equipmentList[i].name)
                 }
 
-                var existingCrewName = ""
+                popUp.setOnMenuItemClickListener { item: MenuItem? ->
+                    val equipToAdd = equipmentList[item!!.itemId]
+                    println("${equipmentList[item.itemId].name} clicked")
 
-                crewList.forEach {
-                    if (it.ID != "0") { //skip unassigned crew
-                        it.equipment!!.forEach { equip ->
-                            if (equip.ID == equipToAdd.ID) {
-                                existingCrewName = it.name
+                    crew!!.equipment!!.forEach {
+                        if (it.ID == equipToAdd.ID) {
+                            globalVars.simpleAlert(
+                                myView.context,
+                                getString(R.string.dialogue_error),
+                                getString(R.string.entry_already_in_crew, equipToAdd.name)
+                            )
+                            return@setOnMenuItemClickListener true
+                        }
+                    }
+
+                    var existingCrewName = ""
+
+                    crewList.forEach {
+                        if (it.ID != "0") { //skip unassigned crew
+                            it.equipment!!.forEach { equip ->
+                                if (equip.ID == equipToAdd.ID) {
+                                    existingCrewName = it.name
+                                }
                             }
                         }
                     }
-                }
 
-                if (existingCrewName.isNotEmpty()) {
+                    if (existingCrewName.isNotEmpty()) {
 
-                    val builder = AlertDialog.Builder(myView.context)
-                    builder.setTitle(getString(R.string.equipment_already_in_crew_title))
-                    builder.setMessage(getString(R.string.equipment_already_in_crew_body, equipToAdd.name, existingCrewName))
-                    builder.setPositiveButton(getString(R.string.move)) { _, _ ->
+                        val builder = AlertDialog.Builder(myView.context)
+                        builder.setTitle(getString(R.string.equipment_already_in_crew_title))
+                        builder.setMessage(getString(R.string.equipment_already_in_crew_body, equipToAdd.name, existingCrewName))
+                        builder.setPositiveButton(getString(R.string.move)) { _, _ ->
+                            crewMove("0", crew!!.ID, EmployeeOrEquipment(equipToAdd), false)
+                        }
+                        builder.setNegativeButton(getString(R.string.cancel)) { _, _ ->
+
+                        }
+                        builder.show()
+                    } else { // not found in any other crews
                         crewMove("0", crew!!.ID, EmployeeOrEquipment(equipToAdd), false)
                     }
-                    builder.setNegativeButton(getString(R.string.cancel)) { _, _ ->
 
-                    }
-                    builder.show()
-                }
-                else { // not found in any other crews
-                    crewMove("0", crew!!.ID, EmployeeOrEquipment(equipToAdd), false)
+                    true
                 }
 
-                true
+
+
+                popUp.show()
             }
 
 
-
-            popUp.show()
-        }
-
-
-        // Submit button
-        binding.submitBtn.setOnClickListener {
-            if (validateFields()) {
-                updateCrew()
+            // Submit button
+            binding.submitBtn.setOnClickListener {
+                if (validateFields()) {
+                    updateCrew()
+                }
             }
         }
-
+        else { // read only
+            binding.nameEt.isEnabled = false
+            binding.departmentSpinner.isEnabled = false
+            binding.colorView.isEnabled = false
+            binding.buttonsLayout.visibility = View.GONE
+            binding.submitBtn.visibility = View.GONE
+        }
 
 
         // ===== POPULATE FIELDS =====
@@ -580,22 +599,16 @@ class NewEditCrewFragment : Fragment(), AdapterView.OnItemSelectedListener, Crew
             crewEntriesList.add(EmployeeOrEquipment(it))
         }
 
-        if (dataLoaded) {
-            binding.recyclerView.adapter!!.notifyDataSetChanged()
-            //val adapter = CrewEntriesAdapter(crewEntriesList, -1, crew!!.ID, this, this)
-            //binding.recyclerView.layoutManager = LinearLayoutManager(com.example.AdminMatic.myView.context, LinearLayoutManager.VERTICAL, false)
-            //binding.recyclerView.adapter = adapter
-        }
-        else {
-            val adapter = CrewEntriesAdapter(crewEntriesList, -1, crew!!.ID, this, this)
 
-            //holder.mRecycler!!.setHasFixedSize(true)
-            binding.recyclerView.layoutManager = LinearLayoutManager(com.example.AdminMatic.myView.context, LinearLayoutManager.VERTICAL, false)
-            binding.recyclerView.adapter = adapter
-            val itemDecoration: RecyclerView.ItemDecoration =
-                DividerItemDecoration(com.example.AdminMatic.myView.context, DividerItemDecoration.VERTICAL)
-            binding.recyclerView.addItemDecoration(itemDecoration)
-        }
+        val adapter = CrewEntriesAdapter(crewEntriesList, -1, crew!!.ID, this, this, readOnly)
+
+        //holder.mRecycler!!.setHasFixedSize(true)
+        binding.recyclerView.layoutManager = LinearLayoutManager(com.example.AdminMatic.myView.context, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.adapter = adapter
+        val itemDecoration: RecyclerView.ItemDecoration =
+            DividerItemDecoration(com.example.AdminMatic.myView.context, DividerItemDecoration.VERTICAL)
+        binding.recyclerView.addItemDecoration(itemDecoration)
+
     }
 
     private fun validateFields(): Boolean {

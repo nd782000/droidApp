@@ -8,19 +8,19 @@
     android:layout_gravity="center_horizontal">
 
 
-
     <TextView
         android:id="@+id/list_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
         android:layout_margin="10dp"
+        android:ellipsize="end"
+        android:paddingLeft="5dp"
+        android:singleLine="true"
         android:text="@string/sysname"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:ellipsize="end"
-        android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.842"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/textViewOptions"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,7 +30,7 @@
         android:layout_width="30dp"
         android:layout_height="40dp"
         android:layout_marginRight="10dp"
-        android:text="&#8942;"
+        android:text="@string/menu_dots"
         android:textAlignment="center"
         android:textSize="28sp"
         android:textStyle="bold"

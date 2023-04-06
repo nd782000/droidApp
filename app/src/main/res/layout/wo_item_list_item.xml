@@ -75,7 +75,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_margin="8dp"
-        android:text="&#8942;"
+        android:text="@string/menu_dots"
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"

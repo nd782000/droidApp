@@ -43,7 +43,7 @@
         android:id="@+id/image_upload_image_item_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Uploaded"
+        android:text="@string/uploaded"
         android:textColor="@color/white"
         android:textSize="30sp"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -83,11 +83,10 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
         val iterator = woItem.tasks.iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()
-            if (item.task!!.startsWith('-')) {
-                descriptionString = descriptionString + item.task
-            }
-            else {
-                descriptionString = descriptionString + "-" + item.task
+            descriptionString = if (item.task!!.startsWith('-')) {
+                descriptionString + item.task
+            } else {
+                descriptionString + "-" + item.task
             }
             if (iterator.hasNext()) {
                 descriptionString += "\n"

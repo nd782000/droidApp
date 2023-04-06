@@ -1,6 +1,5 @@
 package com.example.AdminMatic
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -10,7 +9,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class ShiftsAdapter(list: MutableList<Shift>, private val context: Context) : RecyclerView.Adapter<ShiftViewHolder>() {
+class ShiftsAdapter(list: MutableList<Shift>) : RecyclerView.Adapter<ShiftViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 

@@ -357,6 +357,13 @@
         android:name="com.example.AdminMatic.CrewsFragment"
         android:label="fragment_crews"
         tools:layout="@layout/fragment_crews" >
+        <argument
+            android:name="employee"
+            app:argType="com.example.AdminMatic.Employee"
+            app:nullable="true" />
+        <argument
+            android:name="readOnly"
+            app:argType="boolean"/>
         <action
             android:id="@+id/navigateToEmployee"
             app:destination="@id/employeeFragment" />
@@ -380,6 +387,9 @@
             android:name="crewList"
             app:argType="com.example.AdminMatic.Crew[]"
             app:nullable="false" />
+        <argument
+            android:name="readOnly"
+            app:argType="boolean"/>
         <action
             android:id="@+id/navigateToEmployee"
             app:destination="@id/employeeFragment" />

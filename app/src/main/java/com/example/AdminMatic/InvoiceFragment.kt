@@ -15,7 +15,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 

@@ -43,7 +43,7 @@
             android:id="@+id/lead_customer_btn"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:text="Customer"
+            android:text="@string/customer"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/lead_status_btn"
@@ -78,7 +78,7 @@
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="10dp"
                 android:gravity="center_vertical"
-                android:text="Schedule:"
+                android:text="@string/lead_schedule_label"
                 android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -88,7 +88,7 @@
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="10dp"
                 android:gravity="center_vertical"
-                android:text="value"
+                android:text=""
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@+id/lead_schedule_lbl_tv"
@@ -111,7 +111,7 @@
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="10dp"
                 android:gravity="center_vertical"
-                android:text="Deadline:"
+                android:text="@string/new_lead_deadline"
                 android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -147,7 +147,7 @@
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="10dp"
                 android:gravity="center_vertical"
-                android:text="Sales Rep:"
+                android:text="@string/new_lead_sales_rep"
                 android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -183,7 +183,7 @@
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="10dp"
                 android:gravity="center_vertical"
-                android:text="Requested By Customer:"
+                android:text="@string/new_lead_requested_by_customer"
                 android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -216,7 +216,7 @@
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="10dp"
                 android:gravity="center_vertical"
-                android:text="Description:"
+                android:text="@string/description"
                 android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -226,7 +226,7 @@
                 android:layout_height="60dp"
                 android:layout_marginHorizontal="10dp"
 
-                android:text="value"
+                android:text=""
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -264,7 +264,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
 
-            android:text="Add Task"
+            android:text="@string/add_task"
             android:layout_marginHorizontal="5dp"
 
             app:layout_constraintLeft_toLeftOf="parent"

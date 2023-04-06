@@ -200,7 +200,7 @@ class ShiftsFragment : Fragment(), AdapterView.OnItemSelectedListener {
             layoutManager = LinearLayoutManager(activity)
 
             adapter = activity?.let {
-                ShiftsAdapter(shifts, it)
+                ShiftsAdapter(shifts)
             }
 
             val itemDecoration: RecyclerView.ItemDecoration =

@@ -342,7 +342,7 @@
             android:id="@+id/customer_add_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Add"
+            android:text="@string/add"
             android:layout_marginHorizontal="5dp"
 
             app:layout_constraintBottom_toBottomOf="parent"

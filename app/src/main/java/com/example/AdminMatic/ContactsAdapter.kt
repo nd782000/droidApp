@@ -1,12 +1,12 @@
 package com.example.AdminMatic
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +15,7 @@ import com.AdminMatic.R
 
 class ContactsAdapter(list: MutableList<Contact>, context_: Context, private val cellClickListener: ContactCellClickListener, private val editListener: ContactEditListener, private val deleteListener: ContactDeleteListener): RecyclerView.Adapter<ContactViewHolder>(){
 
-    public var filterList:MutableList<Contact> = emptyList<Contact>().toMutableList()
+    var filterList:MutableList<Contact> = emptyList<Contact>().toMutableList()
     val context = context_
 
     init {

@@ -445,11 +445,10 @@ class NewEditEmployeeFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
 
             R.id.new_employee_financial_pay_type_spinner -> {
-                if (position == 0) {
-                    payTypeValue = "0"
-                }
-                else {
-                    payTypeValue = "2"
+                payTypeValue = if (position == 0) {
+                    "0"
+                } else {
+                    "2"
                 }
             }
 
@@ -510,12 +509,7 @@ class NewEditEmployeeFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 }
             }
         }
-        if (employee!!.active == "1") {
-            binding.newEmployeeActiveSwitch.isChecked = true
-        }
-        else {
-            binding.newEmployeeActiveSwitch.isChecked = false
-        }
+        binding.newEmployeeActiveSwitch.isChecked = employee!!.active == "1"
         binding.newEmployeeActiveSwitch.jumpDrawablesToCurrentState()
 
         // Address
@@ -784,7 +778,7 @@ class NewEditEmployeeFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
 
 
-                        val gson = GsonBuilder().create()
+                        //val gson = GsonBuilder().create()
                         //val newEmpID: String = gson.fromJson(parentObject["empID"].toString(), String::class.java)
 
 

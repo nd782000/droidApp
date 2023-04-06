@@ -1,12 +1,10 @@
 package com.example.AdminMatic
 
 import android.app.AlertDialog
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import java.time.LocalTime
@@ -173,7 +171,7 @@ class PlannedDateRowViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         }
 
         mDeleteText!!.setOnClickListener {
-            val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
+            val builder = AlertDialog.Builder(myView.context)
             builder.setTitle(myView.context.getString(R.string.dialogue_delete_planned_date_row_title))
             builder.setMessage(R.string.dialogue_delete_planned_date_row_body)
             builder.setPositiveButton(myView.context.getString(R.string.yes)) { _, _ ->

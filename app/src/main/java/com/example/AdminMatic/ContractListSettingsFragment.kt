@@ -19,8 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentContractListSettingsBinding
-import com.AdminMatic.databinding.FragmentEmployeeListSettingsBinding
-import com.AdminMatic.databinding.FragmentLeadListSettingsBinding
 
 
 class ContractListSettingsFragment : Fragment(), AdapterView.OnItemSelectedListener, EmployeeCellClickListener {
@@ -186,11 +184,10 @@ class ContractListSettingsFragment : Fragment(), AdapterView.OnItemSelectedListe
         when (parent!!.id) {
             R.id.status_spinner -> {
 
-                if (position == 0) {
-                    status = ""
-                }
-                else {
-                    status = (position - 1).toString()
+                status = if (position == 0) {
+                    ""
+                } else {
+                    (position - 1).toString()
                 }
             }
         }

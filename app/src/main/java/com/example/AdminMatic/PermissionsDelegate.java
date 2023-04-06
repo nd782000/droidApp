@@ -40,25 +40,7 @@ class PermissionsDelegate {
             return false;
         }
 
-        if (grantResults.length < 1) {
-            return false;
-        }
-        if (!(permissions[0].equals(Manifest.permission.CAMERA))) {
-            return false;
-        }
 
-
-        /*
-        View noPermissionView = activity.findViewById(R.id.no_permission);
-
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            noPermissionView.setVisibility(View.GONE);
-            return true;
-        }
-
-        requestCameraPermission();
-        noPermissionView.setVisibility(View.VISIBLE);
-        */
 
 
         return false;

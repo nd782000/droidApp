@@ -1,7 +1,6 @@
 package com.example.AdminMatic
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color.parseColor
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
@@ -14,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 
 
-class CrewsAdapter(list: MutableList<CrewSection>, private val crewEntryDelegate: CrewEntryDelegate, crewCellClickListener: CrewCellClickListener, crewEntryCellClickListener: CrewEntryCellClickListener)
+class CrewsAdapter(list: MutableList<CrewSection>, private val crewEntryDelegate: CrewEntryDelegate, crewCellClickListener: CrewCellClickListener, crewEntryCellClickListener: CrewEntryCellClickListener, _readOnly:Boolean)
 
     : RecyclerView.Adapter<CrewViewHolder>() {
 
@@ -25,6 +24,8 @@ class CrewsAdapter(list: MutableList<CrewSection>, private val crewEntryDelegate
     var filterList:MutableList<CrewSection> = emptyList<CrewSection>().toMutableList()
 
     var queryText = ""
+
+    private var readOnly = _readOnly
 
 
 
@@ -49,7 +50,7 @@ class CrewsAdapter(list: MutableList<CrewSection>, private val crewEntryDelegate
         holder.bind(crewSection)
         //println("queryText = $queryText")
 
-        val adapter = CrewEntriesAdapter(crewSection.entries, position, crewSection.ID, crewEntryDelegate, crewEntryCCL)
+        val adapter = CrewEntriesAdapter(crewSection.entries, position, crewSection.ID, crewEntryDelegate, crewEntryCCL, readOnly)
 
         //holder.mRecycler!!.setHasFixedSize(true)
         holder.mRecycler!!.layoutManager = LinearLayoutManager(myView.context, LinearLayoutManager.VERTICAL, false)

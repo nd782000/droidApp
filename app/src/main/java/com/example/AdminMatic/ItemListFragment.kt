@@ -35,7 +35,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
     lateinit var adapter:ItemsAdapter
 
-    var dataLoaded:Boolean = false
+    private var dataLoaded:Boolean = false
 
     private var _binding: FragmentItemListBinding? = null
     private val binding get() = _binding!!

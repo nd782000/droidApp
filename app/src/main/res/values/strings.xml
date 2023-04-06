@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">AdminMatic</string>
     <string name="version">Version %1$s (PHP %2$s)</string>
+    <string name="menu_dots" translatable="false">&#8942;</string>
 
     <string name="Welcome">Welcome, User!</string>
     <string name="welcome_name">Welcome %1$s!</string>
@@ -34,6 +35,36 @@
     <string name="lead_map">Lead Map</string>
     <string name="no_zone">No Zone</string>
     <string name="no_payment_terms">No Payment Terms</string>
+    <string name="add">Add</string>
+    <string name="usage">Usage</string>
+    <string name="licenses">Licenses</string>
+    <string name="check">Check</string>
+    <string name="camera">Camera</string>
+    <string name="library">Library</string>
+    <string name="lead_schedule_label">Schedule:</string>
+    <string name="add_task">Add Task</string>
+    <string name="refresh">Refresh</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="start_label">Start:</string>
+    <string name="stop_label">Stop:</string>
+    <string name="reset">Reset</string>
+    <string name="uploaded">Uploaded</string>
+    <string name="vendor_label">Vendor:</string>
+    <string name="quantity_label">Quantity:</string>
+    <string name="units">Units</string>
+    <string name="usage_unit_cost">Unit Cost $</string>
+    <string name="usage_total_cost">Total Cost $</string>
+    <string name="receipt">Receipt</string>
+
+    <string name="todays_payroll">Today\'s Payroll:</string>
+    <string name="payroll_break_label">Break:</string>
+    <string name="payroll_current_total">Current Total:</string>
+    <string name="payroll_week_total">Week Total:</string>
+    <string name="payroll_pending_shift">Pending Shift:</string>
+    <string name="payroll_excludes_pending">Excludes Pending</string>
+
+
 
     <string name="lead_list">Lead List</string>
     <string name="schedule">Work Orders</string>
@@ -325,19 +356,19 @@
     <string name="new_customer_referral">How did this customer hear about us?</string>
     <string name="new_customer_referred_by">Referred By:</string>
     <string name="new_customer_is_active">Is this customer active?</string>
-    <string name="new_customer_referral_angies_list">Angie\'s List</string>
-    <string name="new_customer_referral_facebook">Facebook</string>
+    <string name="new_customer_referral_angies_list" translatable="false">Angie\'s List</string>
+    <string name="new_customer_referral_facebook" translatable="false">Facebook</string>
     <string name="new_customer_referral_from_website">From Website</string>
-    <string name="new_customer_referral_google">Google</string>
-    <string name="new_customer_referral_home_advisor">Home Advisor</string>
-    <string name="new_customer_referral_houzz">Houzz</string>
+    <string name="new_customer_referral_google" translatable="false">Google</string>
+    <string name="new_customer_referral_home_advisor" translatable="false">Home Advisor</string>
+    <string name="new_customer_referral_houzz" translatable="false">Houzz</string>
     <string name="new_customer_referral_newspaper_ad">Newspaper Ad</string>
     <string name="new_customer_referral_not_specified">Not Specified</string>
     <string name="new_customer_referral_other">Other</string>
     <string name="new_customer_referral_truck_advertisement">Truck Advertisement</string>
     <string name="new_customer_referral_word_of_mouth">Word of Mouth</string>
-    <string name="new_customer_referral_yelp">Yelp</string>
-    <string name="new_customer_autofill_sysname">%1$s, %2$s</string>
+    <string name="new_customer_referral_yelp" translatable="false">Yelp</string>
+    <string name="new_customer_autofill_sysname" translatable="false">%1$s, %2$s</string>
 
     <!--New Employee stuff-->
     <string name="new_employee_name">Employee Name</string>
@@ -495,7 +526,7 @@
     <string name="payroll_summary_menu">Payroll Summary</string>
     <string name="payroll_summary_bar">%1$s\'s Payroll</string>
     <string name="payroll_summary_for">%1$s\'s payroll for:</string>
-    <string name="payroll_summary_date">(%1$s) %2$s</string>
+    <string name="payroll_summary_date" translatable="false">(%1$s) %2$s</string>
     <string name="payroll_summary_verified">Verified</string>
     <string name="payroll_summary_unverified">Un-Verified</string>
     <string name="payroll_summary_pending">Pending</string>
@@ -558,13 +589,14 @@
 
     <!--Crews stuff-->
     <string name="add_new_crew">Add New Crew</string>
-    <string name="x_active_crews">%1$d Active Crews</string>
+    <string name="x_active_crews">%1$d Active Crew(s)</string>
     <string name="dialogue_date_in_past">You cannot open a date in the past.</string>
     <string name="move_to">Move To…</string>
     <string name="unassign">Unassign</string>
     <string name="department_label">Department:</string>
     <string name="new_crew_bar">New Crew</string>
     <string name="edit_crew_bar">Edit Crew #%1$s</string>
+    <string name="crew_bar">Crew #%1$s</string>
     <string name="entry_already_in_crew">%1$s is already in this crew.</string>
     <string name="already_unassigned">%1$s is already not assigned to a crew.</string>
     <string name="employee_already_in_crew_title">Employee In Crew</string>
@@ -588,7 +620,7 @@
     <string name="vendors">Vendors</string>
     <string name="contracts">Contracts</string>
     <string name="contract">Contract</string>
-    <string name="name_number">%1$s #%2$s</string>
+    <string name="name_number" translatable="false">%1$s #%2$s</string>
     <string name="add_new_contract">Add New Contract</string>
     <string name="txt_equipment_dummy">No Description Provided</string>
     <string name="view_service_lists">View Service Lists</string>
@@ -672,9 +704,9 @@
 
     <string name="wo_charge_nc">No Charge</string>
     <string name="wo_charge_fl">Fixed</string>
-    <string name="wo_charge_tm">T&amp;M</string>
+    <string name="wo_charge_tm" translatable="false">T&amp;M</string>
     <string name="wo_count">%1$s Scheduled Work Order(s)</string>
-    <string name="dollar_sign">$%1$s</string>
+    <string name="dollar_sign" translatable="false">$%1$s</string>
 
     <string name="wo_header_status">Sts.</string>
     <string name="wo_header_name">Name</string>
@@ -698,7 +730,7 @@
 
     <string name="na">N/A</string>
     <string name="now">NOW</string>
-    <string name="mi_km">Mi./Km.</string>
+    <string name="mi_km" translatable="false">Mi./Km.</string>
     <string name="days">Days</string>
 
     <string name="service">Service</string>
@@ -730,7 +762,7 @@
     <string name="inspection_name">Item Name</string>
     <string name="inspection_good">Good</string>
     <string name="inspection_bad">Bad</string>
-    <string name="inspection_na">N/A</string>
+    <string name="inspection_na" translatable="false">N/A</string>
     <string name="inspection_notes">Inspection Notes:</string>
     <string name="inspection_page_title">%1$s Inspection</string>
 
@@ -746,7 +778,7 @@
     <string name="equipment_status_broken">Broken</string>
     <string name="equipment_status_winterized">Winterized</string>
 
-    <string name="lead_customer_button_text">%1$s %2$s</string>
+    <string name="lead_customer_button_text" translatable="false">%1$s %2$s</string>
     <string name="lead_number">Lead #%1$s</string>
     <string name="add_new_lead">Add New Lead</string>
 

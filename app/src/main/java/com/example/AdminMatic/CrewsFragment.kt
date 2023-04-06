@@ -1,12 +1,9 @@
 package com.example.AdminMatic
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.findNavController
@@ -68,6 +65,9 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
     private lateinit var crewsAdapter:CrewsAdapter
     private lateinit var departmentAdapter: ArrayAdapter<String>
 
+    private var employee:Employee? = null
+    private var readOnly = false
+
     private var crewList:MutableList<Crew> = mutableListOf()
     private var crewSections:MutableList<CrewSection> = mutableListOf()
 
@@ -93,7 +93,12 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
 
         globalVars = GlobalVars()
 
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.crews)
+        if (employee == null) {
+            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.crews)
+        }
+        else {
+            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_crews, employee!!.fname)
+        }
 
         return myView
     }
@@ -106,7 +111,12 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
         println("Data loaded in onViewCreate: $dataLoaded")
 
         if (!dataLoaded) {
-            getCrews()
+            if (employee == null) {
+                getCrews()
+            }
+            else {
+                getEmployeeCrews()
+            }
         }
         else {
             layoutViews()
@@ -116,13 +126,23 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            readOnly = it.getBoolean("readOnly")
+            employee = it.getParcelable("employee")
+        }
         setFragmentResultListener("newEditCrew") { _, bundle ->
             println("FRAGMENTRESULTLISTENER")
             val refreshCrews = bundle.getBoolean("refreshCrews")
             println("Data loaded in onCreate FragmentResult Listener: $dataLoaded")
             if (refreshCrews) {
                 println("REFRESH CREWS")
-                getCrews()
+
+                if (employee == null) {
+                    getCrews()
+                }
+                else {
+                    getEmployeeCrews()
+                }
             }
         }
     }
@@ -232,6 +252,90 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
+    private fun getEmployeeCrews(){
+        println("getEmployeeCrews")
+
+        showProgressView()
+
+        crewList.clear()
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/employeeCrews.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                println("Response $response")
+                try {
+                    val gson = GsonBuilder().create()
+
+
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+
+                        val crews: JSONArray = parentObject.getJSONArray("crews")
+                        println("crews = $crews")
+                        println("crews count = ${crews.length()}")
+
+                        val crewArrayTemp = gson.fromJson(crews.toString(), Array<Crew>::class.java)
+                        println("crewArray count = ${crewArrayTemp.count()}")
+
+
+                        crewArrayTemp.forEach {
+                            if (it.subcolor == "" || it.subcolor == null) {
+                                it.subcolor = it.color
+                            }
+
+                            it.emps!!.forEach { emp ->
+                                emp.crewName = it.name
+                                emp.crewColor = it.color
+                            }
+
+                            it.equipment!!.forEach { equip ->
+                                equip.crewName = it.name
+                                equip.crewColor = it.color
+                            }
+
+                            crewList.add(it)
+                        }
+
+                        dataLoaded = true
+
+                        createSections()
+
+                        hideProgressView()
+                    }
+
+
+
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+                //Log.e("VOLLEY", error.toString())
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["empID"] = employee!!.ID
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "crews"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
+
     fun createSections() {
         crewSections.clear()
 
@@ -265,65 +369,80 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
 
     private fun layoutViews() {
 
-        // Date Picker
-        binding.dateEt.setOnClickListener {
-            val datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
-            datePicker.showDialog(dateValueDate.year, dateValueDate.monthValue-1, dateValueDate.dayOfMonth, object : DatePickerHelper.Callback {
-                override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
-                    val selectedDate = LocalDate.of(year, month+1, dayOfMonth)
+        if (!readOnly) {
 
-                    if (selectedDate < LocalDate.now(ZoneOffset.UTC)) {
-                        globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.dialogue_date_in_past))
-                        return
-                    }
+            // Date Picker
+            binding.dateEt.setOnClickListener {
+                val datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
+                datePicker.showDialog(dateValueDate.year, dateValueDate.monthValue-1, dateValueDate.dayOfMonth, object : DatePickerHelper.Callback {
+                    override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+                        val selectedDate = LocalDate.of(year, month+1, dayOfMonth)
 
-                    if (selectedDate != dateValueDate) {
-                        binding.dateEt.setText(selectedDate.format(GlobalVars.dateFormatterShort))
-                        dateValue = if (selectedDate == LocalDate.now(ZoneOffset.UTC)) {
-                            ""
-                        } else {
-                            selectedDate.format(GlobalVars.dateFormatterYYYYMMDD)
+                        if (selectedDate < LocalDate.now(ZoneOffset.UTC)) {
+                            globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.dialogue_date_in_past))
+                            return
                         }
 
-                        dateValueDate = selectedDate
-                        getCrews()
+                        if (selectedDate != dateValueDate) {
+                            binding.dateEt.setText(selectedDate.format(GlobalVars.dateFormatterShort))
+                            dateValue = if (selectedDate == LocalDate.now(ZoneOffset.UTC)) {
+                                ""
+                            } else {
+                                selectedDate.format(GlobalVars.dateFormatterYYYYMMDD)
+                            }
+
+                            dateValueDate = selectedDate
+                            getCrews()
+                        }
                     }
+                })
+            }
+
+            binding.dateEt.setText(dateValueDate.format(GlobalVars.dateFormatterShort))
+
+
+
+
+            // Department Picker
+            val departmentNameList = mutableListOf<String>()
+            GlobalVars.departments!!.forEach {
+                if (it.ID == "0") {
+                    departmentNameList.add(getString(R.string.all_departments))
                 }
-            })
-        }
-
-        binding.dateEt.setText(dateValueDate.format(GlobalVars.dateFormatterShort))
-
-
-
-
-        // Department Picker
-        val departmentNameList = mutableListOf<String>()
-        GlobalVars.departments!!.forEach {
-            if (it.ID == "0") {
-                departmentNameList.add(getString(R.string.all_departments))
+                else {
+                    departmentNameList.add(it.name)
+                }
             }
-            else {
-                departmentNameList.add(it.name)
+
+            departmentAdapter = ArrayAdapter<String>(
+                myView.context,
+                android.R.layout.simple_spinner_dropdown_item,
+                departmentNameList
+            )
+            binding.departmentSpinner.adapter = departmentAdapter
+            binding.departmentSpinner.onItemSelectedListener = this@CrewsFragment
+
+
+
+            binding.newCrewBtn.setOnClickListener {
+                val directions = CrewsFragmentDirections.navigateToNewEditCrew("0", crewList.toTypedArray(), readOnly)
+                myView.findNavController().navigate(directions)
             }
         }
+        else { //readOnly
+            binding.dateEt.visibility = View.GONE
+            binding.departmentSpinner.visibility = View.GONE
+            binding.newCrewBtn.visibility = View.GONE
 
-        departmentAdapter = ArrayAdapter<String>(
-            myView.context,
-            android.R.layout.simple_spinner_dropdown_item,
-            departmentNameList
-        )
-        binding.departmentSpinner.adapter = departmentAdapter
-        binding.departmentSpinner.onItemSelectedListener = this@CrewsFragment
+        }
 
         crewsAdapter = CrewsAdapter(
             crewSections,
             this@CrewsFragment,
             this@CrewsFragment,
-            this@CrewsFragment
+            this@CrewsFragment,
+            readOnly
         )
-
-
 
         val itemDecoration: RecyclerView.ItemDecoration =
             DividerItemDecoration(
@@ -340,12 +459,15 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
 
 
 
-        binding.departmentFooterTv.text = getString(R.string.x_active_crews, crewSections.count() - 1)
-
-        binding.newCrewBtn.setOnClickListener {
-            val directions = CrewsFragmentDirections.navigateToNewEditCrew("0", crewList.toTypedArray())
-            myView.findNavController().navigate(directions)
+        if (employee == null) {
+            binding.departmentFooterTv.text = getString(R.string.x_active_crews, crewSections.count() - 1)
         }
+        else {
+            binding.departmentFooterTv.text = getString(R.string.x_active_crews, crewSections.count())
+        }
+
+
+
 
         viewsLaidOut = true
 
@@ -374,7 +496,7 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
     override fun onCrewCellClickListener(data: CrewSection) {
         println("crew ${data.name} tapped")
 
-        val directions = CrewsFragmentDirections.navigateToNewEditCrew(data.ID, crewList.toTypedArray())
+        val directions = CrewsFragmentDirections.navigateToNewEditCrew(data.ID, crewList.toTypedArray(), readOnly)
         myView.findNavController().navigate(directions)
 
     }

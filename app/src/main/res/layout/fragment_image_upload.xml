@@ -70,7 +70,7 @@
                 android:layout_margin="10dp"
                 android:ems="10"
                 android:inputType="textMultiLine"
-                android:text="Description"
+                android:text=""
                 android:textAlignment="textStart"
                 android:lines="4"
                 android:layout_marginLeft="10dp"
@@ -189,7 +189,7 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="3dp"
-                android:text="Camera"
+                android:text="@string/camera"
 
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/guideline13"
@@ -211,7 +211,7 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="3dp"
-                android:text="Library"
+                android:text="@string/library"
                 app:layout_constraintLeft_toRightOf="@id/guideline13"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -222,7 +222,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="3dp"
-                android:text="Submit"
+                android:text="@string/submit"
 
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/camera_btn" />

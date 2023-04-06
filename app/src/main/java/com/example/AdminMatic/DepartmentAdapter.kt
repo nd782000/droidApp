@@ -4,18 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color.parseColor
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 
 
-class DepartmentAdapter(list: MutableList<Department>, private val context: Context, cellClickListener: DepartmentCellClickListener)
+class DepartmentAdapter(list: MutableList<Department>, cellClickListener: DepartmentCellClickListener)
 
     : RecyclerView.Adapter<DepartmentViewHolder>() {
 

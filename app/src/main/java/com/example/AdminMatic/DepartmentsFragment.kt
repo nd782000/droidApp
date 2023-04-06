@@ -105,7 +105,6 @@ class DepartmentsFragment : Fragment(), DepartmentCellClickListener {
 
                         departmentAdapter = DepartmentAdapter(
                             departmentsList,
-                            this.myView.context,
                             this@DepartmentsFragment
                         )
 

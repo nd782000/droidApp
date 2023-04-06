@@ -1,27 +1,16 @@
 package com.example.AdminMatic
 
-import android.content.Intent
-import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentPdfBinding
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
 import com.github.barteksc.pdfviewer.PDFView
-import com.google.gson.GsonBuilder
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -82,7 +71,7 @@ class PdfFragment : Fragment() {
             try {
                 // on below line we are creating an url
                 // for our url which we are passing as a string.
-                val url = URL(params.get(0))
+                val url = URL(params[0])
 
                 // on below line we are creating our http url connection.
                 val urlConnection: HttpURLConnection = url.openConnection() as HttpsURLConnection
@@ -101,10 +90,10 @@ class PdfFragment : Fragment() {
                 // on below line we are simply printing
                 // our exception and returning null
                 e.printStackTrace()
-                return null;
+                return null
             }
             // on below line we are returning input stream.
-            return inputStream;
+            return inputStream
         }
 
         // on below line we are calling on post execute

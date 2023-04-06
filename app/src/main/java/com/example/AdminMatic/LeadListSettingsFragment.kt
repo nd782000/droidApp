@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import com.AdminMatic.databinding.FragmentEmployeeListSettingsBinding
 import com.AdminMatic.databinding.FragmentLeadListSettingsBinding
 
 

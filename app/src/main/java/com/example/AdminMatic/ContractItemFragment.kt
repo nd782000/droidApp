@@ -22,7 +22,6 @@ import com.squareup.picasso.Picasso
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import kotlin.contracts.contract
 import kotlin.math.roundToInt
 
 interface ContractTaskCellClickListener {
@@ -99,7 +98,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
 
         setHasOptionsMenu(true)
         return myView
@@ -373,7 +372,6 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
                             adapter = activity?.let {
                                 SearchItemsAdapter(
                                     searchItemsList,
-                                    context,
                                     this@ContractItemFragment
                                 )
                             }

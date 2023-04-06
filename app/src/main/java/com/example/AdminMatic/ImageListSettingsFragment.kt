@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.SearchView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -14,14 +13,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import com.AdminMatic.databinding.FragmentContractListSettingsBinding
-import com.AdminMatic.databinding.FragmentEmployeeListSettingsBinding
 import com.AdminMatic.databinding.FragmentImageListSettingsBinding
-import com.AdminMatic.databinding.FragmentLeadListSettingsBinding
 
 
 class ImageListSettingsFragment : Fragment(), AdapterView.OnItemSelectedListener {

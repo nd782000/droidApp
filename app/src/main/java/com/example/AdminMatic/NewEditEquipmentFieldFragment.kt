@@ -1,30 +1,19 @@
 package com.example.AdminMatic
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.*
-import android.widget.*
-import androidx.activity.OnBackPressedCallback
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import com.AdminMatic.databinding.FragmentNewEditContractBinding
 import com.AdminMatic.databinding.FragmentNewEditEquipmentFieldBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.concurrent.schedule
 
 
 class NewEditEquipmentFieldFragment : Fragment() {

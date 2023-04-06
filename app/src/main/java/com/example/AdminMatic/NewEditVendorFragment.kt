@@ -2,32 +2,27 @@ package com.example.AdminMatic
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
-import com.AdminMatic.databinding.FragmentNewEditCustomerBinding
 import com.AdminMatic.databinding.FragmentNewEditVendorBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.collections.set
 import kotlin.concurrent.schedule
 
@@ -61,9 +56,9 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
     lateinit var myView:View
 
     private var editMode = false
-    private var parentName = ""
+    //private var parentName = ""
 
-    private var referredBySpinnerPosition: Int = 0
+    //private var referredBySpinnerPosition: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

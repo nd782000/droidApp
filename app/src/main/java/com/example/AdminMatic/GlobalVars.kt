@@ -18,7 +18,6 @@ import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import com.AdminMatic.R
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
@@ -255,9 +254,8 @@ class GlobalVars: Application() {
     fun enableSearchView(view: View, enabled: Boolean) {
         view.isEnabled = enabled
         if (view is ViewGroup) {
-            val viewGroup = view
-            for (i in 0 until viewGroup.childCount) {
-                val child = viewGroup.getChildAt(i)
+            for (i in 0 until view.childCount) {
+                val child = view.getChildAt(i)
                 enableSearchView(child, enabled)
             }
         }
@@ -451,7 +449,7 @@ class GlobalVars: Application() {
             builder.setMessage(message)
         }
 
-        builder.setPositiveButton(android.R.string.yes) { _, _ ->
+        builder.setPositiveButton(context.getString(R.string.yes)) { _, _ ->
             //Toast.makeText(context,
                // android.R.string.yes, Toast.LENGTH_SHORT).show()
         }

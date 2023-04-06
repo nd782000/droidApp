@@ -6,12 +6,10 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import java.time.LocalDate
-import java.time.LocalTime
 
 
 class PlannedDateSectionAdapter(list: MutableList<PlannedDateSection>, private val context: Context, private val plannedDateDelegate: PlannedDateDelegate) : RecyclerView.Adapter<PlannedDateSectionViewHolder>() {
@@ -72,7 +70,7 @@ class PlannedDateSectionViewHolder(inflater: LayoutInflater, parent: ViewGroup) 
     private var mAddCrewText: TextView? = null
     var mRecycler: RecyclerView? = null
 
-    var h = 0
+    //var h = 0
     var m = 0
 
 

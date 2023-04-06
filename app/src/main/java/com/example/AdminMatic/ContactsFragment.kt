@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -218,7 +216,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener, ContactEditListen
                 //Main Phone
                 "1" -> {
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + it.value))
-                    com.example.AdminMatic.myView.context.startActivity(intent)
+                    myView.context.startActivity(intent)
                 }
                 //Main Email
                 "2" -> {
@@ -229,7 +227,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener, ContactEditListen
                     intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
                     // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
                     // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
-                    com.example.AdminMatic.myView.context.startActivity(intent)
+                    myView.context.startActivity(intent)
 
 
                 }
@@ -261,7 +259,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener, ContactEditListen
                 //Alt Phone
                 "8" -> {
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + it.value))
-                    com.example.AdminMatic.myView.context.startActivity(intent)
+                    myView.context.startActivity(intent)
 
                 }
                 //Alt Email
@@ -272,24 +270,24 @@ class ContactsFragment : Fragment(), ContactCellClickListener, ContactEditListen
                     intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
                     // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
                     // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
-                    com.example.AdminMatic.myView.context.startActivity(intent)
+                    myView.context.startActivity(intent)
                 }
                 //Mobile
                 "10" -> {
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.value))
-                    com.example.AdminMatic.myView.context.startActivity(intent)
+                    myView.context.startActivity(intent)
 
                 }
                 //Alt Mobile
                 "11" -> {
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.value))
-                    com.example.AdminMatic.myView.context.startActivity(intent)
+                    myView.context.startActivity(intent)
 
                 }
                 //Home
                 "12" -> {
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + data.value))
-                    com.example.AdminMatic.myView.context.startActivity(intent)
+                    myView.context.startActivity(intent)
 
                 }
                 //Alt Email
@@ -300,7 +298,7 @@ class ContactsFragment : Fragment(), ContactCellClickListener, ContactEditListen
                     intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
                     // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
                     // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
-                    com.example.AdminMatic.myView.context.startActivity(intent)
+                    myView.context.startActivity(intent)
 
                 }
                 //Invoice Address

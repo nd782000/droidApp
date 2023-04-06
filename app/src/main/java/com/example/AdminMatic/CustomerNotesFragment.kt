@@ -83,7 +83,7 @@ class CustomerNotesFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
 
         globalVars = GlobalVars()
 

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -114,7 +113,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
 
             //crewsBtn = view.findViewById(R.id.crews_btn)
             binding.crewsBtn.setOnClickListener {
-                val directions = EmployeeListFragmentDirections.navigateToCrews()
+                val directions = EmployeeListFragmentDirections.navigateToCrews(null, true)
                 myView.findNavController().navigate(directions)
             }
 

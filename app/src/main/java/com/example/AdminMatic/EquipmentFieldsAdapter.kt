@@ -2,24 +2,17 @@ package com.example.AdminMatic
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.TextAppearanceSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import org.json.JSONObject
-import java.util.*
 
 
 class EquipmentFieldsAdapter(private val list: MutableList<EquipmentField>, private val appContext: Context, private val type:String, private val cellClickListener: EquipmentFieldCellClickListener): RecyclerView.Adapter<EquipmentFieldViewHolder>() {
