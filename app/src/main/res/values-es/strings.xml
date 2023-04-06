@@ -23,7 +23,7 @@
     <string name="item_list">Lista de artículos</string>
     <string name="vendor_list">Lista de proveedores</string>
     <string name="item">Artículo</string>
-    <string name="no_zone">Ninguna aona</string>
+    <string name="no_zone">Ninguna zona</string>
     <string name="no_payment_terms">Ninguna términos de pago</string>
     <string name="schedule">Orden de trabajo</string>
     <string name="invoice">Factura</string>
