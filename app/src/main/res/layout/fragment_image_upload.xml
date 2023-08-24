@@ -36,7 +36,7 @@
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/image_upload_prep_customer_search"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
@@ -50,12 +50,21 @@
                 app:layout_constraintLeft_toLeftOf="parent"
 
 
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/uncompressed_switch"
                 app:layout_constraintTop_toTopOf="parent"
                 app:queryBackground="@null" />
 
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/uncompressed_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/uncompressed"
 
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
 
             <!--
                         android:focusable="false"
@@ -119,24 +128,50 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image_upload_prep_header_cl" />
 
-
-        <io.fotoapparat.view.CameraView
-            android:id="@+id/cameraView"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/camera_cl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone"
+            android:background="@color/black"
+            android:visibility="gone">
 
-            >
-
-            <!--Optionally add tap to focus-->
-            <io.fotoapparat.view.FocusView
-                android:id="@+id/focusView"
+            <io.fotoapparat.view.CameraView
+                android:id="@+id/cameraView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
 
-        </io.fotoapparat.view.CameraView>
+                >
+
+                <!--Optionally add tap to focus-->
+                <io.fotoapparat.view.FocusView
+                    android:id="@+id/focusView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </io.fotoapparat.view.CameraView>
+
+
+
+            <Button
+                android:id="@+id/capture_btn"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:text="+"
+                android:textSize="40sp"
+                android:insetBottom="0dp"
+                android:insetTop="0dp"
+
+                app:cornerRadius="40dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="50dp"
+
+
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/no_permission"
@@ -151,27 +186,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
-
-        <Button
-            android:id="@+id/capture_btn"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:text="+"
-            android:textSize="40sp"
-            android:insetBottom="0dp"
-            android:insetTop="0dp"
-
-            app:cornerRadius="40dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="50dp"
-
-            android:visibility="gone"
-
-
-            />
-
 
         <!-- Footer -->
 

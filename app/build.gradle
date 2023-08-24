@@ -19,8 +19,8 @@ android {
         applicationId "com.adminmatic"
         minSdk 30
         targetSdkVersion 31
-        versionCode 29
-        versionName '1.3.3'
+        versionCode 39
+        versionName '1.3.10'
 
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -64,6 +64,8 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:31.0.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation "androidx.recyclerview:recyclerview:1.2.1"

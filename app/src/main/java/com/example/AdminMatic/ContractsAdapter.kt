@@ -76,13 +76,13 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
 
         val daysAged:String = when (filterList[position].daysAged) {
             "0" -> {
-                "Today"
+                context.getString(R.string.today)
             }
             "1" -> {
-                "Yesterday"
+                context.getString(R.string.yesterday)
             }
             else -> {
-                filterList[position].daysAged + " Days"
+                context.getString(R.string.x_days, filterList[position].daysAged)
             }
         }
 
@@ -109,6 +109,8 @@ class ContractsAdapter(private val list: MutableList<Contract>, private val cont
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 listContractNameTv.text = spannable
+                listContractDescriptionTv.text = filterList[position].title
+                listContractDateTv.text = daysAged
             } else {
                 if(!customerView){
                     listContractNameTv.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)

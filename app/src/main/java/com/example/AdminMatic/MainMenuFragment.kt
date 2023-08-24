@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.AdminMatic.BuildConfig
@@ -55,10 +56,20 @@ class MainMenuFragment : Fragment() {
 
         when (item.itemId) {
             R.id.departments_item -> {
-                myView.findNavController().navigate(R.id.navigateToDepartments)
+                if (GlobalVars.permissions!!.crewsEdit == "1") {
+                    myView.findNavController().navigate(R.id.navigateToDepartments)
+                }
+                else {
+                    globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_departments))
+                }
             }
             R.id.crews_item -> {
-                myView.findNavController().navigate(R.id.navigateToCrews)
+                if (GlobalVars.permissions!!.crewsEdit == "1") {
+                    myView.findNavController().navigate(R.id.navigateToCrews)
+                }
+                else {
+                    globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_crews))
+                }
             }
             R.id.privacy_policy_item -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.adminmatic.com/app/privacy"))
@@ -73,6 +84,10 @@ class MainMenuFragment : Fragment() {
             }
             R.id.change_password_item -> {
                 myView.findNavController().navigate(R.id.navigateToChangePassword)
+            }
+            R.id.report_a_bug_item -> {
+                val bundle = bundleOf("errorString" to null, "shouldLogOut" to false)
+                myView.findNavController().navigate(R.id.navigateToBugLog, bundle)
             }
         }
 

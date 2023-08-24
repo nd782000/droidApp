@@ -2,7 +2,8 @@
     <string name="app_name" translatable="false">AdminMatic</string>
     <string name="version">Version %1$s (PHP %2$s)</string>
     <string name="menu_dots" translatable="false">&#8942;</string>
-
+    <string name="ok">Ok</string>
+    <string name="update">Update</string>
     <string name="Welcome">Welcome, User!</string>
     <string name="welcome_name">Welcome %1$s!</string>
     <string name="employeeList">Employees List</string>
@@ -56,6 +57,11 @@
     <string name="usage_unit_cost">Unit Cost $</string>
     <string name="usage_total_cost">Total Cost $</string>
     <string name="receipt">Receipt</string>
+    <string name="home">Home</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="x_days">%1$s Days</string>
+
 
     <string name="todays_payroll">Today\'s Payroll:</string>
     <string name="payroll_break_label">Break:</string>
@@ -84,8 +90,15 @@
     <string name="equipment_crew" translatable="false">Equipment Crew</string>
     <string name="equipment_detail" translatable="false">Equipment Detail</string>
     <string name="equipment_details" translatable="false">Equipment Details</string>
-    <string name="current_service_check">Current Service Check:</string>
+    <string name="current_service_check">Update Mileage:</string>
     <string name="add_service">Add Service</string>
+    <string name="equipment_usage_miles">Total %1$s Miles</string>
+    <string name="equipment_usage_km">Total %1$s Km.</string>
+    <string name="equipment_usage_hours">Total %1$s Hours</string>
+    <string name="service_check_empty">Please input the equipment\'s usage (mileage/engine hours).</string>
+    <string name="service_check_less_than_usage_title">Value Less Than Usage</string>
+    <string name="service_check_less_than_usage_body">The entered usage value is less than %1$s\'s existing usage value. Are you sure you want to update it?</string>
+
 
     <string name="menu_reload_company_data">Reload Company Data</string>
     <string name="menu_departments">Departments</string>
@@ -105,12 +118,14 @@
 
     <string name="add_employee">Add Employee</string>
     <string name="employee_list">Employee List</string>
+    <string name="loading">Loading…</string>
 
     <string name="departments">Departments</string>
     <string name="crews">Crews</string>
     <string name="shifts">Shifts</string>
     <string name="payroll">Payroll</string>
     <string name="login">Log In</string>
+    <string name="force_logout">Force Log Out</string>
     <string name="login_to_adminmatic">Log In to Adminmatic</string>
     <string name="remember_me">Remember Me:</string>
     <string name="customers_search">Search Customers</string>
@@ -227,6 +242,9 @@
     <string name="no_permission_payroll">You don\'t have permission to add payroll.</string>
     <string name="no_permission_schedule_edit">You don\'t have permission to edit work orders.</string>
     <string name="no_permission_create_invoice">You don\'t have permission to create invoices.</string>
+    <string name="no_permission_crews">You don\'t have permission to access crews.</string>
+    <string name="no_permission_departments">You don\'t have permission to access departments.</string>
+    <string name="no_permission_crews_edit">You don\'t have permission to edit crews.</string>
     <string name="invoice_not_done">An invoice can only be made from a finished work order.</string>
     <string name="invoice_type_wrong">An invoice can\'t be made from a batch or no invoice work order.</string>
     <string name="invoice_no_total">An invoice can\'t be made from a work order with no price.</string>
@@ -369,6 +387,8 @@
     <string name="new_customer_referral_word_of_mouth">Word of Mouth</string>
     <string name="new_customer_referral_yelp" translatable="false">Yelp</string>
     <string name="new_customer_autofill_sysname" translatable="false">%1$s, %2$s</string>
+
+    <string name="dialog_yes">Yes</string>
 
     <!--New Employee stuff-->
     <string name="new_employee_name">Employee Name</string>
@@ -606,7 +626,16 @@
     <string name="move">Move</string>
     <string name="copy">Copy</string>
 
-
+    <!-- Work order list -->
+    <string name="schedule_all_dates">All Dates (%1$s)</string>
+    <string name="schedule_today">Today (%1$s)</string>
+    <string name="schedule_tomorrow">Tomorrow (%1$s)</string>
+    <string name="schedule_this_week">This Week (%1$s)</string>
+    <string name="schedule_next_week">Next Week (%1$s)</string>
+    <string name="schedule_next_14_days">Next 14 Days (%1$s)</string>
+    <string name="schedule_next_30_days">Next 30 Days (%1$s)</string>
+    <string name="schedule_this_year">This Year (%1$s)</string>
+    <string name="everyone">Everyone</string>
 
 
 
@@ -690,7 +719,10 @@
     <string name="completion_notes">Completion Notes:</string>
     <string name="submit">Submit</string>
     <string name="description">Description:</string>
-    <string name="mileage_hours">Mileage/Hours…</string>
+    <string name="miles_hint">Miles…</string>
+    <string name="km_hint">Kilometers…</string>
+    <string name="hours_hint">Hours…</string>
+    <string name="mileage_hours">Mileage/Hours</string>
 
 
     <string name="woScheduleLbl">Schedule:</string>
@@ -715,17 +747,21 @@
 
     <string name="service_type">Type: %1$s</string>
     <string name="service_due">Due: %1$s %2$s</string>
-    <string name="service_frequency">Frequency: %1$s %2$s</string>
-    <string name="service_by">By: %1$s on %2$s</string>
-    <string name="service_completed_by">By: %1$s</string>
-    <string name="service_completed_on">On: %1$s</string>
+    <string name="service_frequency">Frequency: %1$s</string>
+    <string name="service_by_on">By: %1$s on %2$s</string>
+    <string name="service_added_by">Added By: %1$s on %2$s</string>
+    <string name="service_completed_by">Completed By: %1$s on %2$s</string>
+
+    <string name="service_by_x">By: %1$s</string>
+    <string name="service_on_x">On: %1$s</string>
 
     <string name="service_due_now">Due: Now</string>
     <string name="service_due_x">Due: %1$s</string>
     <string name="service_due_before_use">Due: Before Use</string>
     <string name="service_one_time">One Time Service</string>
     <string name="service_every_x_days">Every %1$s Days</string>
-    <string name="service_every_x_mi_km">Every %1$s Mi./Km.</string>
+    <string name="service_every_x_miles">Every %1$s Miles</string>
+    <string name="service_every_x_km">Every %1$s Kilometers</string>
     <string name="service_every_x_engine_hours">Every %1$s Engine Hours</string>
 
     <string name="na">N/A</string>
@@ -755,9 +791,10 @@
 
     <string name="service_type_one_time">One Time</string>
     <string name="service_type_date_based">Date Based</string>
-    <string name="service_type_mile_km_based">Mile/Km. Based</string>
+    <string name="service_type_mile_based">Mile Based</string>
+    <string name="service_type_km_based">Kilometer Based</string>
     <string name="service_type_engine_hour_based">Engine Hour Based</string>
-    <string name="service_type_inspection">Inspection</string>
+    <string name="service_type_inspection">Detailed Inspection</string>
 
     <string name="inspection_name">Item Name</string>
     <string name="inspection_good">Good</string>
@@ -875,6 +912,132 @@
     <string name="dialogue_deactivate_equipment_title">Deactivate Equipment</string>
     <string name="dialogue_deactivate_equipment_body">Are you sure you want to deactivate this piece of equipment?</string>
 
+    <string name="uncompressed">Uncompressed</string>
+    <string name="uncompressed_label">Uncompressed:</string>
+    <string name="day_note_title">Day Note:</string>
+
+
+
+    <!-- Edit Image -->
+    <string name="edit_image_num">Edit Image #%1$s</string>
+    <string name="edit_image">Edit Image</string>
+    <string name="vendor_hint">Vendor…</string>
+    <string name="tags_label">Tags:</string>
+    <string name="tags_hint">Tags…</string>
+    <string name="tap_tag_to_delete">Tap a tag to delete</string>
+    <string name="tag_already_on_image">Tag \'%1$s\' is already on this image.</string>
+    <string name="tag_already_in_system">Tag \'%1$s\' is already in the system, and has been added to the image.</string>
+    <string name="edit_image_name_empty">An image\'s name cannot be blank.</string>
+
+    <!-- Bug Log -->
+    <string name="report_a_bug">Report a Bug</string>
+    <string name="bug_log_description">Please describe what occurred as well as what you did leading up to the error.</string>
+    <string name="please_enter_a_description">Please enter a description.</string>
+    <string name="bug_log_thank_you">Thank you for your submission!</string>
+    <string name="error_occurred">Adminmatic has encountered an error. Please let us know what happened so we can continue to improve our app experience. Thank you!</string>
+    <string name="adminmatic_warning">Adminmatic has encountered a server warning. Would you like to submit a bug report?</string>
+    <string name="not_now">Not Now</string>
+    <string name="dialogue_continue">Continue</string>
+
+    <!-- Equipment Service -->
+    <string name="incomplete_service">Incomplete Service</string>
+    <string name="new_service_no_name">Provide a name.</string>
+    <string name="new_service_no_frequency">Provide a frequency value.</string>
+    <string name="new_service_no_current">Provide a current value.</string>
+    <string name="new_service_no_next">Provide a next value.</string>
+    <string name="new_service_no_instructions_title">No Instructions</string>
+    <string name="new_service_no_instructions_body">Are you sure you want to submit this service with no instructions?</string>
+    <string name="completion_value_x">Completion Value (%1$s):</string>
+    <string name="completion_value_engine_hours">Completion Value (Engine Hours):</string>
+    <string name="completion_value_mileage_hours">Completion Value (Mileage/Hours):</string>
+    <string name="service_no_value_title">No Completion Value</string>
+    <string name="service_no_value_body">Please enter a completion value (%1$s).</string>
+    <string name="edit_service_x">Edit Service #%1$s</string>
+    <string name="edit_service">Edit Service</string>
+    <string name="current_x_label">Current %1$s:</string>
+    <string name="update_service">Update Service</string>
+    <string name="mark_completed">Mark Completed</string>
+    <string name="mark_in_progress">Mark In Progress</string>
+    <string name="cancel_service">Cancel Service</string>
+    <string name="skip_service">Skip Service</string>
+    <string name="cancel_service_title">Cancel Service?</string>
+    <string name="cancel_service_body">Cancel service \'%1$s?\' The next repeating service will not be created.</string>
+    <string name="skip_service_title">Skip Service?</string>
+    <string name="skip_service_body">Skip service \'%1$s?\' The next repeating service will still be created.</string>
+    <string name="provide_a_completion_value">Provide a completion value.</string>
+    <string name="new_service_added_title">New Service Added</string>
+    <string name="new_service_added_body_date">A new %1$s service has been added to be done on %2$s.</string>
+    <string name="new_service_added_body_usage">A new %1$s service has been added to be done at %2$s %3$s.</string>
+    <string name="leave_without_submitting_service">Leave without submitting?  Change Status to save any changes.</string>
+
+
+
+    <!-- Equipment -->
+    <string name="no_services_due">No services due now.</string>
+    <string name="no_services_due_title">No Services Due Now</string>
+    <string name="no_services_due_prompt_change">%1$s looks good, would you like to update its status to "Online"?</string>
+    <string name="one_service_due_title">1 Service Due Now</string>
+    <string name="x_services_due_title">%1$d Services Due Now</string>
+    <string name="services_due_body">%1$s needs service now, would you like to update its status to "Needs Service?"</string>
+    <string name="services_due_body_already_offline">%1$s has %2$d service(s) due now.</string>
+
+    <!-- New/Edit Equipment -->
+    <string name="type_label">Type:</string>
+    <string name="make_label">Make:</string>
+    <string name="model_label">Model:</string>
+    <string name="crew_label">Crew:</string>
+    <string name="serial_label">Serial #:</string>
+    <string name="fuel_label">Fuel:</string>
+    <string name="engine_label">Engine:</string>
+    <string name="dealer_label">Dealer:</string>
+    <string name="usage_type_label">Logging Type:</string>
+    <string name="purchase_date_label">Purchase Date:</string>
+    <string name="show_in_planners_label">Show in Planners</string>
+    <string name="new_equipment">New Equipment</string>
+    <string name="edit_equipment_num">Edit Equipment #%1$s</string>
+    <string name="edit_equipment">Edit Equipment</string>
+    <string name="no_crew">No Crew</string>
+    <string name="dealer_hint">Dealer…</string>
+    <string name="incomplete_equipment">Incomplete Equipment</string>
+    <string name="incomplete_equipment_name">Enter a name.</string>
+    <string name="incomplete_equipment_make">Enter a make.</string>
+    <string name="incomplete_equipment_model">Enter a model.</string>
+    <string name="incomplete_equipment_serial">Enter a serial number.</string>
+    <string name="incomplete_equipment_mileage">Enter a mileage/hours value.</string>
+    <string name="save_equipment_first_title">Save Equipment First</string>
+    <string name="save_equipment_first_body">You must save the new equipment before adding an image.</string>
+    <string name="equipment_one_image">Equipment can only have one image.</string>
+    <string name="engine_hours">Engine Hours</string>
+    <string name="engine_hours_label">Engine Hours:</string>
+    <string name="select_logging_type">Select Logging Type</string>
+    <string name="miles">Miles</string>
+    <string name="kilometers">Kilometers</string>
+    <string name="hours">Hours</string>
+    <string name="purchase_price_label">Purchase Price:</string>
+    <string name="weight_label">Weight:</string>
+    <string name="starting_at_label">Starting At:</string>
+    <string name="due_date_label">Due Date:</string>
+    <string name="repeating_every_label">Repeating Every:</string>
+
+
+    <!-- Equipment Details -->
+    <string name="equipment_details_description_x">Description: %1$s</string>
+    <string name="equipment_details_show_in_planners_no">Show in Planners: NO</string>
+    <string name="equipment_details_show_in_planners_yes">Show in Planners: YES</string>
+    <string name="equipment_details_vendor_x">Vendor: %1$s</string>
+    <string name="equipment_details_weight_x">Weight: %1$s</string>
+    <string name="equipment_details_purchase_price_x">Purchase Price: %1$s</string>
+    <string name="equipment_details_purchased_x">Purchased: %1$s</string>
+    <string name="equipment_details_engine_x">Engine: %1$s</string>
+    <string name="equipment_details_fuel_x">Fuel: %1$s</string>
+    <string name="equipment_details_serial_x">Serial/VIN: %1$s</string>
+    <string name="equipment_details_model_x">Model: %1$s</string>
+    <string name="equipment_details_make_x">Make: %1$s</string>
+    <string name="equipment_details_crew_x">Crew: %1$s</string>
+    <string name="equipment_details_type_x">Type: %1$s</string>
+    <string name="equipment_details_name_x">Name: %1$s</string>
+
+
 
 
     <!--
@@ -892,7 +1055,7 @@
 
     <string name="pick_single">Please select your image</string>
     <string name="logout">Log Out</string>
-
+    <string name="website_label">Website:</string>
 
     <plurals name="pick_multi">
         <item quantity="one">One image selected</item>

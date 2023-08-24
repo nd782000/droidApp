@@ -15,6 +15,7 @@ import com.AdminMatic.databinding.FragmentWorkOrderListBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.dateFormatterYYYYMMDD
+import com.example.AdminMatic.GlobalVars.Companion.globalDayNote
 import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
 import com.example.AdminMatic.GlobalVars.Companion.scheduleSpinnerPosition
@@ -38,7 +39,8 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     private lateinit var adapter:WorkOrdersAdapter
 
     //update eq
-    private var datesArray:Array<String> = arrayOf(
+    /*
+    private var datesArrayOld:Array<String> = arrayOf(
         "All Dates (${loggedInEmployee!!.fname})",
         "All Dates (Everyone)",
         "Today (${loggedInEmployee!!.fname})",
@@ -55,6 +57,14 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         "Next 30 Days (Everyone)",
         "This Year (${loggedInEmployee!!.fname})",
         "This Year (Everyone)")
+
+     */
+
+
+
+    private lateinit var datesArray:Array<String>
+
+
 
     var startDateDB:String = ""
     var endDateDB:String = ""
@@ -96,7 +106,25 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         //need to wait for this function to initialize views
         println("onViewCreated")
 
+        val everyone = getString(R.string.everyone)
 
+        datesArray = arrayOf(
+                getString(R.string.schedule_all_dates, loggedInEmployee!!.fname),
+                getString(R.string.schedule_all_dates, everyone),
+                getString(R.string.schedule_today, loggedInEmployee!!.fname),
+                getString(R.string.schedule_today, everyone),
+                getString(R.string.schedule_tomorrow, loggedInEmployee!!.fname),
+                getString(R.string.schedule_tomorrow, everyone),
+                getString(R.string.schedule_this_week, loggedInEmployee!!.fname),
+                getString(R.string.schedule_this_week, everyone),
+                getString(R.string.schedule_next_week, loggedInEmployee!!.fname),
+                getString(R.string.schedule_next_week, everyone),
+                getString(R.string.schedule_next_14_days, loggedInEmployee!!.fname),
+                getString(R.string.schedule_next_14_days, everyone),
+                getString(R.string.schedule_next_30_days, loggedInEmployee!!.fname),
+                getString(R.string.schedule_next_30_days, everyone),
+                getString(R.string.schedule_this_year, loggedInEmployee!!.fname),
+                getString(R.string.schedule_this_year, everyone))
 
 
         (activity as MainActivity?)!!.setWorkOrderList(this)
@@ -271,14 +299,14 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                             globalWorkOrdersList!!.clear()
                         }
 
-
                         val gson = GsonBuilder().create()
 
-                        globalWorkOrdersList =
-                            gson.fromJson(workOrders.toString(), Array<WorkOrder>::class.java)
-                                .toMutableList()
+                        val temp = gson.fromJson(parentObject.toString(), WorkOrderArray::class.java)
 
-                        //(activity as MainActivity?)!!.updateMap()
+                        globalWorkOrdersList = temp.workOrders!!.toMutableList()
+                        globalDayNote = temp.note
+
+
 
                         binding.workOrderCountTextview.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
 
@@ -355,7 +383,13 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 binding.listRecyclerView.addItemDecoration(itemDecoration)
             }
 
-
+            if (globalDayNote.isNullOrBlank()) {
+                binding.dayNoteCl.visibility = View.GONE
+            }
+            else {
+                binding.dayNoteCl.visibility = View.VISIBLE
+                binding.dayNoteEt.setText(globalDayNote)
+            }
 
 
             // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout

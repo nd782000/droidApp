@@ -170,7 +170,7 @@ class ImagesAdapter(private val list: MutableList<Image>, private val context: C
                                 resultList.add(row)
                             }
                         }else{
-                            if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.customerName.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
+                            if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.customerName!!.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
                                 resultList.add(row)
                             }
                         }

@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/new_service_type_menu_mile_km_based"
-        android:title="@string/service_type_mile_km_based" />
+        android:title="@string/service_type_mile_based" />
 
     <item
         android:id="@+id/new_service_type_menu_engine_hour_based"

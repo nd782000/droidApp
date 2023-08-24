@@ -72,13 +72,13 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
 
         val daysAged:String = when (filterList[position].daysAged) {
             "0" -> {
-                "Today"
+                context.getString(R.string.today)
             }
             "1" -> {
-                "Yesterday"
+                context.getString(R.string.yesterday)
             }
             else -> {
-                filterList[position].daysAged + " Days"
+                context.getString(R.string.x_days, filterList[position].daysAged)
             }
         }
 
@@ -101,13 +101,15 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 listLeadName.text = spannable
+                listLeadDescription.text = filterList[position].description!!
+                listLeadDate.text = daysAged
             } else {
                 if(!customerView){
                     listLeadName.text = context.getString(R.string.name_number, filterList[position].custName, filterList[position].ID)
                     listLeadDescription.text = filterList[position].description!!
                     listLeadDate.text = daysAged
                 }else{
-                    listLeadName.text = filterList[position].description!!
+                    //listLeadName.text = filterList[position].description!!
                 }
 
             }
@@ -117,7 +119,8 @@ class LeadsAdapter(private val list: MutableList<Lead>, private val context: Con
                 listLeadDescription.text = filterList[position].description!!
                 listLeadDate.text = daysAged
             }else{
-                listLeadName.text = filterList[position].description!!
+                //listLeadName.text = filterList[position].description!!
+
             }
         }
 

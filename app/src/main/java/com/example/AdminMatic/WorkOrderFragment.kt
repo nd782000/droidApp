@@ -161,7 +161,15 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
                         setStatusIcon(workOrder!!.status)
-                        binding.titleValTv.text = workOrder!!.title
+
+                        if (workOrder!!.titleTranslated == null) {
+                            binding.titleValTv.text = workOrder!!.title
+                        }
+                        else {
+                            binding.titleValTv.text = workOrder!!.titleTranslated
+                        }
+
+
                         if (workOrder!!.nextPlannedDate != null) {
                             binding.scheduleValTv.text = workOrder!!.nextPlannedDate
                         }

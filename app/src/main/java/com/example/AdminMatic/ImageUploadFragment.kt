@@ -24,7 +24,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,6 +49,7 @@ import io.fotoapparat.log.logcat
 import io.fotoapparat.result.transformer.scaled
 import io.fotoapparat.selector.*
 import io.fotoapparat.view.CameraView
+import kotlinx.coroutines.selects.select
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -57,18 +60,19 @@ import java.util.*
 
 private const val LOGGING_TAG = "AdminMatic"
 
-private  var mode: String = "GALLERY"
-private  var images: Array<Image> = arrayOf()
-private  var customerID: String = ""
-private  var customerName: String = ""
-private  var woID: String = ""
-private  var woItemID: String = ""
-private  var leadID: String = ""
-private  var taskID: String = ""
-private  var taskDescription: String = ""
-private  var employeeID: String = ""
-private  var equipmentID: String = ""
-private  var usageID: String = ""
+private var mode: String = "GALLERY"
+private var images: Array<Image> = arrayOf()
+private var customerID: String = ""
+private var customerName: String = ""
+private var woID: String = ""
+private var woItemID: String = ""
+private var leadID: String = ""
+private var taskID: String = ""
+private var taskDescription: String = ""
+private var employeeID: String = ""
+private var equipmentID: String = ""
+private var usageID: String = ""
+private var uncompressed = "0"
 
 private var customerAllowImages: Boolean = true
 private var queriedCustomer: Customer? = null
@@ -364,7 +368,12 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         binding.cameraBtn.setOnClickListener{
             println("camera btn clicked")
 
-            launchCamera()
+            if (mode == "EQUIPMENT" && images.isNotEmpty()) {
+                globalVars.simpleAlert(myView.context, getString(R.string.dialogue_error), getString(R.string.equipment_one_image))
+            }
+            else {
+                launchCamera()
+            }
         }
 
 
@@ -381,6 +390,13 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             launchGallery()
         }
 
+        binding.uncompressedSwitch.setOnCheckedChangeListener { _, isChecked ->
+            uncompressed = if (isChecked) {
+                "1"
+            } else {
+                "0"
+            }
+        }
 
         binding.submitImagesBtn.setOnClickListener{
             println("submit btn clicked")
@@ -427,6 +443,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
                 }
                 "EQUIPMENT" -> {
                     //titleText = "Upload to Equipment"
+                    uploadImage()
                 }
 
             }
@@ -463,7 +480,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
             //lensPosition = lensPosition,
             cameraConfiguration = configuration,
-            //cameraErrorCallback = { Log.e(LOGGING_TAG, "Camera error: ", it) }
+            cameraErrorCallback = { Log.e(LOGGING_TAG, "Camera error: ", it) }
         )
        // println(" fotoapparat.getCurrentParameters() = ${fotoapparat.getCurrentParameters()}")
 
@@ -477,6 +494,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
     override fun onStop() {
         super.onStop()
+        print("stopping camera")
         fotoapparat.stop()
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("imageUpload")
     }
@@ -488,8 +506,10 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         permissionsGranted = permissionsDelegate.hasCameraPermission()
 
         if (permissionsGranted) {
-             cameraView.visibility = View.VISIBLE
-            captureBtn.visibility = View.VISIBLE
+
+            binding.cameraCl.visibility = View.VISIBLE
+            //cameraView.visibility = View.VISIBLE
+            //captureBtn.visibility = View.VISIBLE
             binding.imageUploadPrepFooterCl.visibility = View.GONE
 
         } else {
@@ -505,8 +525,9 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         cl.id = selectedUris.count()
 
 
-        cameraView.visibility = View.GONE
-        captureBtn.visibility = View.GONE
+        //cameraView.visibility = View.GONE
+        //captureBtn.visibility = View.GONE
+        binding.cameraCl.visibility = View.GONE
         binding.imageUploadPrepFooterCl.visibility = View.VISIBLE
 
 
@@ -568,6 +589,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         val photoResult = fotoapparat
             .autoFocus()
             .takePicture()
+
 
         photoResult
             .saveToFile(File(
@@ -761,6 +783,9 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         println("launchGallery")
 
 
+        var maxSelect = 20
+        if (mode == "EQUIPMENT") {maxSelect = 1}
+
         BottomSheetImagePicker.Builder(getString(R.string.file_provider))
 
 
@@ -768,7 +793,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             .galleryButton(ButtonType.None)//style of the camera link (Button in header, Image tile, None)
 
             .columnSize(R.dimen.columnSize)
-            .multiSelect(1,20)//style of the gallery link
+            .multiSelect(1, maxSelect)//style of the gallery link
 
             .requestTag("multi")
             //tag can be used if multiple pickers are used
@@ -788,6 +813,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             println("add uri to selected uri = $uri")
 
             selectedUris.add(uri)
+
+            println("selectedUris.size: ${selectedUris.size}")
 
             val cl = LayoutInflater.from(this.context).inflate(R.layout.image_upload_image_list_item, binding.imageUploadPrepSelectedImagesLl, false) as ConstraintLayout
             cl.id = count
@@ -919,154 +946,155 @@ private  fun saveTask(){
         println("uploadImage selectedUris count = ${selectedUris.count()}")
         //imageData?: return
 
+        // If equipment, failsafe that there's only one image
+        if (mode == "EQUIPMENT") {
+            println("checking to remove more than 1 image...")
+            while (selectedUris.count() > 1) {
+
+                selectedUris.removeAt(selectedUris.count()-1)
+
+                //val selectedUrisNew = mutableListOf<Uri>()
+                //selectedUrisNew.add(selectedUris.first())
+                //selectedUris = selectedUrisNew
+            }
+        }
 
         showProgressView()
 
         uploadedImageCount = 0
 
 
-        //disable buttons
+        uploadUri(0)
 
-        var count = 0
-        selectedUris.forEach { uri ->
-            uri.path?.let { handleRotation(it) }
-            println("uri# $count")
-            println("views = ${binding.imageUploadPrepSelectedImagesLl.childCount}")
-            val cl = binding.imageUploadPrepSelectedImagesLl.findViewById<ConstraintLayout>(count)
-            val iv = cl.findViewById(R.id.image_upload_image_item_iv) as ImageView
-            val pb = cl.findViewById(R.id.image_upload_image_item_pb) as ProgressBar
-            val tv = cl.findViewById(R.id.image_upload_image_item_tv) as TextView
-            println("pb = $pb")
-            iv.alpha = 0.5F
-            pb.visibility = View.VISIBLE
+    }
+
+    private fun uploadUri(index:Int) {
+        val uri = selectedUris[index]
+
+        println("uploading an uri with index $index")
+        uri.path?.let { handleRotation(it) }
+        println("views = ${binding.imageUploadPrepSelectedImagesLl.childCount}")
+        val cl = binding.imageUploadPrepSelectedImagesLl.findViewById<ConstraintLayout>(index)
+        val iv = cl.findViewById(R.id.image_upload_image_item_iv) as ImageView
+        val pb = cl.findViewById(R.id.image_upload_image_item_pb) as ProgressBar
+        val tv = cl.findViewById(R.id.image_upload_image_item_tv) as TextView
+        println("pb = $pb")
+        iv.alpha = 0.5F
+        pb.visibility = View.VISIBLE
 
 
 
-            //create request
-            val request = object : VolleyFileUploadRequest(
-                POST,
-                postURL,
-                Response.Listener {
+        //create request
+        val request = object : VolleyFileUploadRequest(
+            POST,
+            postURL,
+            Response.Listener {
 
-                    println("response is: ${it.headers}")
-                    println("data is:${it.data}")
+                println("got image request back")
 
-                    pb.visibility = View.INVISIBLE
-                    tv.visibility = View.VISIBLE
+                println("response is: ${it.headers}")
+                println("data is:${it.data}")
 
-                    uploadedImageCount += 1
+                pb.visibility = View.INVISIBLE
+                tv.visibility = View.VISIBLE
 
-                    if (uploadedImageCount == selectedUris.count()){
-                        //upload complete
-                        globalVars.playSaveSound(myView.context)
-                        back()
-                    }
+                uploadedImageCount += 1
 
-                    //hideProgressView()
-                    //back()
-                },
-                Response.ErrorListener {
-                    //hideProgressView()
-                    println("error is: $it")
+                if (uploadedImageCount == selectedUris.count()){
+                    //upload complete
+                    globalVars.playSaveSound(myView.context)
+                    back()
+                }
+                else {
+                    uploadUri(index + 1)
                 }
 
-            ) {
-                override fun getByteData(): MutableMap<String, FileDataPart> {
-                    println("getByteData")
-                    val params = HashMap<String, FileDataPart>()
-                   // createImageData(uri)
-                    params["pic"] = FileDataPart("droid_file.jpeg",  createImageData(uri)!!, "image/jpeg")
-                    return params
-                }
-
-
-
-                override fun getParams(): Map<String, String> {
-                    println("getParams")
-
-                    /*
-                    parameters = [
-                    "companyUnique": self.appDelegate.defaults.string(forKey: loggedInKeys.companyUnique)!,
-                    "sessionKey": self.appDelegate.defaults.string(forKey: loggedInKeys.sessionKey)!,
-                    "name":imageData.name,
-                    "desc":imageData.description,
-                    "tags":"",
-                    "customer":imageData.customer,
-                    "createdBy":createdBy,
-                    "leadTask":imageData.leadTaskID,
-                    "contractTask":imageData.contractTaskID,
-                    "task":imageData.taskID,
-
-                    "woID":imageData.woID,
-                    "equipmentID":imageData.equipmentID,
-                    "albumID":imageData.albumID,
-                    "usageID":imageData.usageID,
-                    "vendorID":imageData.vendorID,
-                    "strikeID":imageData.strikeID
-                    ] as! [String : String]
-                     */
-                    val params: MutableMap<String, String> = HashMap()
-                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                    params["name"] = "$mode Image"
-                    params["desc"] = taskDescription
-                    params["tags"] = ""
-                    if(customerID != ""){
-                        params["customer"] = customerID
-                    }
-                    params["createdBy"] = GlobalVars.loggedInEmployee!!.ID
-
-                    when (mode) {
-                        "LEADTASK" -> {
-                            params["leadTask"] = taskID
-                            params["contractTask"] = ""
-                            params["task"] = ""
-                        }
-                        "CONTRACTTASK" -> {
-                            params["leadTask"] = ""
-                            params["contractTask"] = taskID
-                            params["task"] = ""
-                        }
-                        else -> {
-                            params["leadTask"] = ""
-                            params["contractTask"] = ""
-                            params["task"] = taskID
-                        }
-                    }
-
-
-                    params["woID"] = woID
-
-                    if (mode == "WOITEM") {
-                        params["usageID"] = usageID
-                        params["name"] = "Receipt Image"
-                    }
-
-
-                    params["equipmentID"] = equipmentID
-                    //params["albumID"] = albumID
-                    //params["usageID"] = usageID
-                    //params["vendorID"] = vendorID
-                    //params["strikeID"] = strikeID
-                    println("params is: $params")
-                    return params
-                }
-
+                //hideProgressView()
+                //back()
+            },
+            Response.ErrorListener {
+                //hideProgressView()
+                println("error is: $it")
             }
 
-            request.retryPolicy = DefaultRetryPolicy(
-                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
-                0,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            )
-            //send request
-            request.tag = "imageUpload"
-            VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cache.clear()
-            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(request)
+        ) {
+            override fun getByteData(): MutableMap<String, FileDataPart> {
+                println("getByteData")
+                val params = HashMap<String, FileDataPart>()
+                // createImageData(uri)
+                params["pic"] = FileDataPart("droid_file.jpeg",  createImageData(uri)!!, "image/jpeg")
+                return params
+            }
 
-            count += 1
+
+
+            override fun getParams(): Map<String, String> {
+                println("getParams")
+
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["name"] = "$mode Image"
+                params["desc"] = taskDescription
+                params["tags"] = ""
+                params["noCompress"] = uncompressed
+                if(customerID != ""){
+                    params["customer"] = customerID
+                }
+                params["createdBy"] = GlobalVars.loggedInEmployee!!.ID
+
+                when (mode) {
+                    "LEADTASK" -> {
+                        params["leadTask"] = taskID
+                        params["contractTask"] = ""
+                        params["task"] = ""
+                    }
+                    "CONTRACTTASK" -> {
+                        params["leadTask"] = ""
+                        params["contractTask"] = taskID
+                        params["task"] = ""
+                    }
+                    "EQUIPMENT" -> {
+                        params[equipmentID] = equipmentID
+                        params["leadTask"] = ""
+                        params["contractTask"] = ""
+                    }
+                    else -> {
+                        params["leadTask"] = ""
+                        params["contractTask"] = ""
+                        params["task"] = taskID
+                    }
+                }
+
+
+                params["woID"] = woID
+
+                if (mode == "WOITEM") {
+                    params["usageID"] = usageID
+                    params["name"] = "Receipt Image"
+                }
+
+
+                params["equipmentID"] = equipmentID
+                //params["albumID"] = albumID
+                //params["usageID"] = usageID
+                //params["vendorID"] = vendorID
+                //params["strikeID"] = strikeID
+                println("params is: $params")
+                return params
+            }
 
         }
+
+        request.retryPolicy = DefaultRetryPolicy(
+            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
+            0,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+        //send request
+        request.tag = "imageUpload"
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cache.clear()
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(request)
 
 
     }
@@ -1170,6 +1198,10 @@ private  fun saveTask(){
 
     fun back(){
         println("back")
+
+        // Flag to refresh new/edit equipment if mode is equipment
+        setFragmentResult("_refreshEquipment", bundleOf("_refreshEquipment" to (mode == "EQUIPMENT")))
+
 
         (activity as MainActivity?)!!.refreshImages()
         //requireActivity().supportFragmentManager.popBackStack()

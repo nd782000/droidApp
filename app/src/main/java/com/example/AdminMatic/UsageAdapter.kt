@@ -1,11 +1,14 @@
 package com.example.AdminMatic
 
+//import android.R
 import android.content.Context
 import android.content.res.Configuration
 import android.text.InputType
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -45,12 +48,8 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
     override fun onBindViewHolder(holder: UsageViewHolder, position: Int) {
 
-        println("BINDING")
-
         val usage: Usage = list[position]
         holder.bind(usage)
-
-
 
         val laborCl = holder.itemView.findViewById<ConstraintLayout>(R.id.usage_labor_cl)
         val materialCl = holder.itemView.findViewById<ConstraintLayout>(R.id.usage_material_cl)
@@ -307,6 +306,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
              */
 
             val quantityTxt:TextView = holder.itemView.findViewById(R.id.usage_quantity_et)
+            val unitCostTxt:EditText = holder.itemView.findViewById(R.id.usage_unit_cost_et)
             quantityTxt.text = usage.qty
 
             quantityTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
@@ -338,10 +338,19 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 quantityTxt.inputType = InputType.TYPE_NULL
             }
 
+            /*
+            quantityTxt.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    quantityTxt.onEditorAction(EditorInfo.IME_ACTION_DONE)
+                    //usageEditListener.editQty(position, quantityTxt.text.toString(), EditorInfo.IME_ACTION_DONE)
+                }
+            }
+
+             */
 
 
 
-            val unitCostTxt:EditText = holder.itemView.findViewById(R.id.usage_unit_cost_et)
+
             if(usage.unitCost != null){
                 unitCostTxt.setText(usage.unitCost!!)
             }
@@ -462,11 +471,8 @@ class UsageViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     fun bind(usage: Usage) {
         mNameView?.text = usage.empName
-
-
-
-
     }
+
 
 
 

@@ -5,8 +5,10 @@ package com.example.AdminMatic
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
@@ -122,15 +124,34 @@ class LogInFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
-        inflater.inflate(R.menu.main_menu_menu, menu)
+        inflater.inflate(R.menu.login_menu, menu)
         menu.findItem(R.id.version_item).title = getString(R.string.version, BuildConfig.VERSION_NAME, GlobalVars.phpVersion)
-        menu.removeItem(R.id.reload_company_data_item)
+        //menu.removeItem(R.id.reload_company_data_item)
+        //menu.removeItem(R.id.departments_item)
+        //menu.removeItem(R.id.crews_item)
+        //menu.removeItem(R.id.change_password_item)
         super.onCreateOptionsMenu(menu, inflater)
         ((activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         println("login onOptionsItemSelected")
+        when (item.itemId) {
+            R.id.force_logout_item -> {
+                listener!!.logOut(myView)
+                pgsBar.isVisible = false
+                createLogInView()
+            }
+
+            R.id.privacy_policy_item -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.adminmatic.com/app/privacy"))
+                startActivity(intent)
+            }
+            R.id.support_item -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.adminmatic.com/support"))
+                startActivity(intent)
+            }
+        }
         return super.onOptionsItemSelected(item)
     }
 
@@ -213,9 +234,6 @@ class LogInFragment : Fragment() {
     private fun createLogInView(){
         println("createLogInView")
 
-
-
-
         companyEditText = EditText(myView.context)
         companyEditText.hint = "Company Unique"
         //companyEditText.highlightColor = resources.getColor(R.color.colorTextSelected)
@@ -224,11 +242,8 @@ class LogInFragment : Fragment() {
         companyEditText.height = 100
         companyEditText.setBackgroundResource(R.drawable.text_view_layout)
 
-
-
         companyEditText.id = generateViewId() // Views must have IDs in order to add them to chain later.
         binding.loginLayout.addView(companyEditText)
-
 
         userEditText = EditText(myView.context)
         userEditText.hint = "User Name"
@@ -247,7 +262,7 @@ class LogInFragment : Fragment() {
         passEditText.setBackgroundResource(R.drawable.text_view_layout)
         passEditText.id = generateViewId()
         passEditText.transformationMethod = PasswordTransformationMethod()
-        passEditText.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+        passEditText.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
         binding.loginLayout.addView(passEditText)
 
         rememberSwitch = SwitchCompat(myView.context)
@@ -461,7 +476,11 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (!globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        listener!!.logOut(myView)
+                        pgsBar.isVisible = false
+                        createLogInView()
+                    }
 
                     println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
 
@@ -547,7 +566,11 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (!globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        listener!!.logOut(myView)
+                        pgsBar.isVisible = false
+                        createLogInView()
+                    }
 
                     val permissions: Permissions = Gson().fromJson(parentObject.toString(), Permissions::class.java)
 
@@ -568,13 +591,20 @@ class LogInFragment : Fragment() {
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
+                    globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
+                    listener!!.logOut(myView)
+                    pgsBar.isVisible = false
+                    createLogInView()
                 }
 
 
 
             },
             Response.ErrorListener { // error
-
+                globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
+                listener!!.logOut(myView)
+                pgsBar.isVisible = false
+                createLogInView()
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
             }
@@ -728,8 +758,6 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    //Todo: re-enable this once PHP is fixed
-                    //globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
 
                     val errorArray:JSONArray = parentObject.getJSONArray("errorArray")
                     if (errorArray.length() > 0){
@@ -796,6 +824,10 @@ class LogInFragment : Fragment() {
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
+                    globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
+                    listener!!.logOut(myView)
+                    pgsBar.isVisible = false
+                    createLogInView()
                 }
 
 
@@ -807,6 +839,7 @@ class LogInFragment : Fragment() {
                 globalVars.simpleAlert(myView.context,"Login Error:", error.toString())
                 listener!!.logOut(myView)
                 pgsBar.isVisible = false
+                createLogInView()
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
             }
@@ -867,6 +900,8 @@ class LogInFragment : Fragment() {
                         getEmployees()
                     }
                     else {
+                        listener!!.logOut(myView)
+                        pgsBar.isVisible = false
                         createLogInView()
                     }
 
@@ -875,6 +910,10 @@ class LogInFragment : Fragment() {
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
+                    globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
+                    listener!!.logOut(myView)
+                    pgsBar.isVisible = false
+                    createLogInView()
                 }
 
 
@@ -882,8 +921,9 @@ class LogInFragment : Fragment() {
                // myView.findNavController().navigate(R.id.navigateToMainMenu)
             },
             Response.ErrorListener { // error
-
-
+                listener!!.logOut(myView)
+                pgsBar.isVisible = false
+                createLogInView()
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
             }
@@ -921,7 +961,12 @@ class LogInFragment : Fragment() {
 
                 try {
                     val parentObject = JSONObject(response)
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (!globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
+                        listener!!.logOut(myView)
+                        pgsBar.isVisible = false
+                        createLogInView()
+                    }
                     //println("parentObject = ${parentObject.toString()}")
                     //var employees:JSONArray = parentObject.getJSONArray("employees")
                     // println("employees = ${employees.toString()}")
@@ -943,11 +988,18 @@ class LogInFragment : Fragment() {
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
+                    globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
+                    listener!!.logOut(myView)
+                    pgsBar.isVisible = false
+                    createLogInView()
                 }
 
             },
             Response.ErrorListener { // error
-
+                globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
+                listener!!.logOut(myView)
+                pgsBar.isVisible = false
+                createLogInView()
 
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
@@ -988,7 +1040,11 @@ class LogInFragment : Fragment() {
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
-                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+                    if (!globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)){
+                        listener!!.logOut(myView)
+                        pgsBar.isVisible = false
+                        createLogInView()
+                    }
 
                     //var customers: JSONObject = parentObject.getJSONObject("customers")
                     val customers: JSONArray = parentObject.getJSONArray("customers")
@@ -1007,10 +1063,17 @@ class LogInFragment : Fragment() {
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
+                    globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
+                    listener!!.logOut(myView)
+                    pgsBar.isVisible = false
+                    createLogInView()
                 }
             },
             Response.ErrorListener { // error
                 //Log.e("VOLLEY", error.toString())
+                listener!!.logOut(myView)
+                pgsBar.isVisible = false
+                createLogInView()
             }
         ) {
             override fun getParams(): Map<String, String> {
@@ -1024,17 +1087,6 @@ class LogInFragment : Fragment() {
         postRequest1.tag = "logIn"
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
-
-
-
-
-
-
-
-
-
-
-
 
     fun loading(){
         for (index in 0 until (binding.loginLayout as ViewGroup).childCount) {

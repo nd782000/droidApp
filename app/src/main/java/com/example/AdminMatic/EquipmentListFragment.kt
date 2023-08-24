@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,9 +58,25 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment_list)
 
+        binding.equipmentListAddEquipmentBtn.setOnClickListener {
+            if (GlobalVars.permissions!!.equipmentEdit == "1") {
+                setFragmentResult("_refreshEquipment", bundleOf("_refreshEquipment" to false))
+                val directions = EquipmentListFragmentDirections.navigateToNewEditEquipment(null)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_equipment_edit))
+            }
+        }
+
         binding.equipmentListEditFieldsBtn.setOnClickListener {
-            val directions = EquipmentListFragmentDirections.navigateToEquipmentFields()
-            myView.findNavController().navigate(directions)
+            if (GlobalVars.permissions!!.equipmentEdit == "1") {
+                val directions = EquipmentListFragmentDirections.navigateToEquipmentFields()
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_equipment_edit))
+            }
         }
 
 
@@ -222,9 +240,6 @@ class EquipmentListFragment : Fragment(), EquipmentCellClickListener {
     }
 
     override fun onEquipmentCellClickListener(data:Equipment) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.name} Clicked",Toast.LENGTH_SHORT).show()
-
         data.let {
             val directions = EquipmentListFragmentDirections.navigateToEquipment(it)
             myView.findNavController().navigate(directions)

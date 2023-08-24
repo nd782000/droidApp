@@ -56,7 +56,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
         //text highlighting for first string
 
 
-        holder.itemView.findViewById<TextView>(R.id.list_name).text = filterList[position].item
+        //holder.itemView.findViewById<TextView>(R.id.list_name).text = filterList[position].item
 
         val mIconView:ImageView = holder.itemView.findViewById(R.id.status_icon_iv)
         when (woItem.status) {
@@ -79,15 +79,29 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
 
         // Populate description string
+
+
         var descriptionString = ""
         val iterator = woItem.tasks.iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()
-            descriptionString = if (item.task!!.startsWith('-')) {
-                descriptionString + item.task
-            } else {
-                descriptionString + "-" + item.task
+
+            if (item.taskTranslated == null) {
+                descriptionString = if (item.task!!.startsWith('-')) {
+                    descriptionString + item.task
+                } else {
+                    descriptionString + "-" + item.task
+                }
             }
+            else {
+                descriptionString = if (item.taskTranslated!!.startsWith('-')) {
+                    descriptionString + item.taskTranslated
+                } else {
+                    descriptionString + "-" + item.taskTranslated
+                }
+            }
+
+
             if (iterator.hasNext()) {
                 descriptionString += "\n"
             }
@@ -269,7 +283,15 @@ class WoItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
     fun bind(woItem: WoItem) {
-        mNameView?.text = woItem.item
+
+        if (woItem.itemTranslated == null) {
+            mNameView?.text = woItem.item
+            println("using untranslated string")
+        }
+        else {
+            mNameView?.text = woItem.itemTranslated
+            println("using translated string")
+        }
         mEstView?.text = woItem.est
         mActView?.text = woItem.usageQty
         mDescriptionView?.text = woItem.empDesc

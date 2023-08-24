@@ -30,6 +30,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/usage_entry_rv"
             android:layout_width="match_parent"
+            android:focusableInTouchMode="true"
+            android:descendantFocusability="beforeDescendants"
             app:layout_constraintTop_toBottomOf="@id/usage_emp_spinner"
             app:layout_constraintBottom_toTopOf="@id/start_stop_cl"
             android:layout_height="0dp" />

@@ -91,7 +91,7 @@ class EquipmentDetailViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     fun bind(detail: String, position: Int) {
         mNameView?.text = detail
-        if (position == 9) { // vendor link
+        if (position == 11) { // vendor link
             mNameView!!.setTextColor(mNameView!!.context.getColor(R.color.link))
         }
     }

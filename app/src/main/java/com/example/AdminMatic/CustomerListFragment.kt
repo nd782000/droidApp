@@ -225,6 +225,7 @@ class CustomerListFragment : Fragment(), CustomerCellClickListener {
         data.let {
             // val directions = CustomerListFragmentDirections.navigateToCustomer(data)
             val directions = CustomerListFragmentDirections.navigateToCustomer(it.ID)
+
             myView.findNavController().navigate(directions)
         }
     }

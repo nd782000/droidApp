@@ -647,9 +647,9 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
                     globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
-                    val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
-                    println("payroll = $payrollJSON")
-                    println("payroll count = ${payrollJSON.length()}")
+                    //val payrollJSON: JSONArray = parentObject.getJSONArray("payroll")
+                    //println("payroll = $payrollJSON")
+                    //println("payroll count = ${payrollJSON.length()}")
 
 
                     getPayroll()

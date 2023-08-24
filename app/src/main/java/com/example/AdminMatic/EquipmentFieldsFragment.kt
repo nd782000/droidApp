@@ -159,13 +159,6 @@ class EquipmentFieldsFragment : Fragment(), EquipmentFieldCellClickListener {
                         engineAdapter = EquipmentFieldsAdapter(engineTypesList, requireActivity().application, "ENGINE", this@EquipmentFieldsFragment)
                         inspectionAdapter = EquipmentFieldsAdapter(questionsList, requireActivity().application, "inspection", this@EquipmentFieldsFragment)
 
-                        /*
-                        typeAdapter.notifyDataSetChanged()
-                        fuelAdapter.notifyDataSetChanged()
-                        engineAdapter.notifyDataSetChanged()
-                        inspectionAdapter.notifyDataSetChanged()
-
-                         */
 
                         binding.recyclerView.adapter = typeAdapter
                         binding.recyclerView.layoutManager = LinearLayoutManager(activity)

@@ -45,6 +45,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener {
     lateinit var myView:View
     
     private var editMode = false
+    private var originalSysname = ""
 
     private var referredBySpinnerPosition: Int = 0
 
@@ -178,6 +179,11 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 editsMade = true
             }
         })
+        binding.newCustomerNameSystemEt.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                checkUniqueSysname(binding.newCustomerNameSystemEt.text.toString(), false)
+            }
+        }
 
         binding.newCustomerBusinessSwitch.setOnCheckedChangeListener { _, isChecked ->
             editsMade = true
@@ -379,7 +385,7 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         binding.newCustomerSubmitBtn.setOnClickListener {
             if (validateFields()) {
-                updateCustomer()
+                checkUniqueSysname(binding.newCustomerNameSystemEt.text.toString(), true)
             }
         }
 
@@ -500,6 +506,9 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener {
             binding.newCustomerBusinessSwitch.jumpDrawablesToCurrentState()
         }
 
+        if (editMode) {
+            originalSysname = customer.sysname.trim()
+        }
 
         var indexOfPrefix = prefixArray.indexOf(customer.salutation)
         // Also check for older inputs with "Mr" instead of "Mr." etc
@@ -690,11 +699,19 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
                 if (binding.newCustomerBillingSameSwitch.isChecked) {
                     // If "same as job site address" is checked, use same values as regular address with name added
+
                     var nameString = ""
-                    nameString += customer.salutation
-                    nameString += binding.newCustomerNameFirstEt.text
-                    nameString += binding.newCustomerNameMiddleEt.text
-                    nameString += binding.newCustomerNameLastEt.text
+
+                    if (binding.newCustomerBusinessSwitch.isChecked) {
+                        nameString = binding.newCustomerNameBusinessEt.text.toString()
+                    }
+                    else {
+                        nameString += customer.salutation
+                        nameString += binding.newCustomerNameFirstEt.text
+                        nameString += binding.newCustomerNameMiddleEt.text
+                        nameString += binding.newCustomerNameLastEt.text
+                    }
+
                     params["billStreet1"] = nameString
                     params["billStreet2"] = binding.newCustomerAddressStreet1Et.text.toString()
                     params["billStreet3"] = binding.newCustomerAddressStreet2Et.text.toString()
@@ -759,8 +776,92 @@ class NewEditCustomerFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
 
         return true
+
     }
 
+    private fun checkUniqueSysname(_sysname:String, submitting:Boolean) {
+
+        println("checkUniqueSysname()")
+
+        if (submitting) {
+            showProgressView()
+        }
+
+        val sysnameTrimmed = _sysname.trim()
+
+        // Exit if the username is unchanged (for edit mode)
+        if (sysnameTrimmed == originalSysname.trim()) {
+            println("sys unchanged, returning")
+            if (submitting) {
+                updateCustomer()
+                return
+            }
+            else {
+                return
+            }
+        }
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/other/unique.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    //if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+
+                    val gson = GsonBuilder().create()
+                    val result: Boolean = gson.fromJson(parentObject["unique"].toString(), Boolean::class.java)
+
+                    println("Unique sysname check result: $result")
+
+                    if (result) {
+                        println("Unique true")
+                        binding.newCustomerNameSystemEt.setText(sysnameTrimmed)
+                        if (submitting) {
+                            updateCustomer()
+                        }
+
+                    }
+                    else {
+                        globalVars.simpleAlert(myView.context,getString(R.string.duplicate_sysname_title),getString(R.string.duplicate_sysname_body, sysnameTrimmed))
+                        println("Unique false")
+                        binding.newCustomerNameSystemEt.setText("")
+                    }
+
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["val"] = sysnameTrimmed
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "employeeNewEdit"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE

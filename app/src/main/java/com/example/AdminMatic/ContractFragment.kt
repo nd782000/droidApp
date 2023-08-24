@@ -175,7 +175,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
                     params["customer"] = contract!!.customer!!
                     params["salesRep"] = contract!!.salesRep!!
                     params["chargeType"] = contract!!.chargeType!!
-                    params["paymentTerms"] = contract!!.paymentTermsID!!
+                    params["paymentTermsID"] = contract!!.paymentTermsID!!
                     params["status"] = contract!!.status
                     params["total"] = contract!!.total!!
                     params["notes"] = contract!!.notes!!

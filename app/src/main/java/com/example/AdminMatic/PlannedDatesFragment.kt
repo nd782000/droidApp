@@ -381,6 +381,8 @@ class PlannedDatesFragment : Fragment(), PlannedDateDelegate {
             }
         }
 
+        println("")
+
         sectionAdapter!!.notifyDataSetChanged()
 
         if (plannedDateSectionsList.size > 0) {

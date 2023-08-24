@@ -91,10 +91,18 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
         binding.leadAddTaskBtn.setOnClickListener {
 
-                val directions = LeadFragmentDirections.navigateLeadToImageUpload("LEADTASK",
-                    arrayOf(),lead!!.customer,lead!!.custName,"","",lead!!.ID,"0","","","", "")
+            if (GlobalVars.permissions!!.leadsEdit == "1") {
+
+                val directions = LeadFragmentDirections.navigateLeadToImageUpload(
+                    "LEADTASK",
+                    arrayOf(), lead!!.customer, lead!!.custName, "", "", lead!!.ID, "0", "", "", "", ""
+                )
 
                 myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads_edit))
+            }
 
         }
 

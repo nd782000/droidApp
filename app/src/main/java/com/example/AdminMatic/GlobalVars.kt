@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
@@ -18,6 +19,9 @@ import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.os.bundleOf
+import androidx.navigation.NavDeepLinkBuilder
+import androidx.navigation.findNavController
 import com.AdminMatic.R
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
@@ -195,12 +199,13 @@ class GlobalVars: Application() {
 
 
         var globalWorkOrdersList:MutableList<WorkOrder>? = null
+        var globalDayNote:String? = null
         var globalLeadList:MutableList<Lead>? = null
         var scheduleSpinnerPosition:Int = 2
 
         var deviceID:String? = null
 
-        var phpVersion:String = "1-4"
+        var phpVersion:String = "1-7"
 
         var customerList: MutableList<Customer>? = null
 
@@ -449,7 +454,7 @@ class GlobalVars: Application() {
             builder.setMessage(message)
         }
 
-        builder.setPositiveButton(context.getString(R.string.yes)) { _, _ ->
+        builder.setPositiveButton(context.getString(R.string.ok)) { _, _ ->
             //Toast.makeText(context,
                // android.R.string.yes, Toast.LENGTH_SHORT).show()
         }
@@ -457,8 +462,21 @@ class GlobalVars: Application() {
 
         builder.show()
     }
-    
-    
+
+    fun logOut(context:Context, myView_: View) {
+        val listener = if (context is LogOut) {
+            context
+        } else {
+            throw ClassCastException(
+                "$context must implement LogOut"
+            )
+        }
+        println("Attempting to log out")
+        VolleyRequestQueue.getInstance(context.applicationContext).requestQueue.cancelAll { true }
+        listener.logOut(myView_)
+    }
+
+
     fun checkPHPWarningsAndErrors(jsonObject: JSONObject, context:Context, myView_: View): Boolean {
 
         val gson = GsonBuilder().create()
@@ -480,29 +498,35 @@ class GlobalVars: Application() {
                 errorString += it
                 errorString += "\n"
             }
-            simpleAlert(context, context.getString(R.string.dialogue_php_error), errorString)
-            //Logout
-            val listener = if (context is LogOut) {
-                context
-            } else {
-                throw ClassCastException(
-                    "$context must implement LogOut"
-                )
-            }
-            println("Attempting to log out")
-            VolleyRequestQueue.getInstance(context.applicationContext).requestQueue.cancelAll { true }
-            listener.logOut(myView_)
+            val bundle = bundleOf("errorString" to errorString, "shouldLogOut" to true)
+            myView_.findNavController().navigate(R.id.navigateToBugLog, bundle)
             return false
         }
         else if (warnings.isNotEmpty()) {
-            playErrorSound(context)
+            //playErrorSound(context)
             var warningString = ""
             warnings.forEach {
                 warningString += it
                 warningString += "\n"
             }
-            simpleAlert(context, context.getString(R.string.dialogue_php_warning), warningString)
-            return false
+            //simpleAlert(context, context.getString(R.string.dialogue_php_warning), warningString)
+
+
+            val builder = AlertDialog.Builder(myView_.context)
+            builder.setMessage(myView_.context.getString(R.string.adminmatic_warning))
+            builder.setPositiveButton(myView_.context.getString(R.string.yes)) { _, _ ->
+                val bundle = bundleOf("errorString" to warningString, "shouldLogOut" to false)
+                myView.findNavController().navigate(R.id.navigateToBugLog, bundle)
+
+
+            }
+            builder.setNegativeButton(myView_.context.getString(R.string.not_now)) { _, _ ->
+
+            }
+
+            builder.show()
+
+            return true
         }
 
         return true

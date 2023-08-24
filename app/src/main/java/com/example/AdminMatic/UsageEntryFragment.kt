@@ -81,6 +81,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             woItem = it.getParcelable("woItem")
             workOrder = it.getParcelable("workOrder")!!
         }
+
     }
 
     private var _binding: FragmentUsageEntryBinding? = null
@@ -461,7 +462,17 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             (adapter as UsageAdapter).notifyDataSetChanged()
         }
+
     }
+
+    /*
+    private fun refreshUsageTable(){
+        println("refreshUsageTable")
+        binding.usageEntryRv.adapter!!.notifyDataSetChanged()
+    }
+
+     */
+
 
 
 
@@ -1062,16 +1073,13 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
                 }else{
                     //material
+
                     if (usage.vendor == null || usage.vendor == "") {
                         //globalVars.simpleAlert(myView.context, "Error","No vendor selected.")
                         //return
                         usage.vendor = "0"
                     }
-
                 }
-
-
-
             }
 
 
@@ -1092,6 +1100,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
         }
+
+        println("Usage to log: ${usageToLogJSONMutableList.toString()}:")
 
         callDB(usageToLogJSONMutableList.toString())
 
@@ -1155,7 +1165,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["usageToLog"] = json
 
-                println("params = $params")
+                println("update usage params = $params")
                 return params
             }
         }

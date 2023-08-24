@@ -289,9 +289,8 @@
                 app:layout_constraintTop_toTopOf="parent" />
             <TextView
                 android:id="@+id/header_actual_tv"
-                android:layout_width="30dp"
+                android:layout_width="85dp"
                 android:layout_height="30dp"
-                android:layout_marginRight="48dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/design_default_color_on_primary"
                 android:text="@string/wo_header_actual"
@@ -300,9 +299,9 @@
                 app:layout_constraintTop_toTopOf="parent" />
             <TextView
                 android:id="@+id/header_estimated_tv"
-                android:layout_width="30dp"
+                android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_marginRight="22dp"
+                android:layout_marginRight="27dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/design_default_color_on_primary"
                 android:text="@string/wo_header_estimated"

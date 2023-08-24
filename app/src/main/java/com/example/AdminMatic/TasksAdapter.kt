@@ -56,7 +56,7 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
         //text highlighting for first string
 
 
-        holder.itemView.findViewById<TextView>(R.id.list_name).text = list[position].task
+        //holder.itemView.findViewById<TextView>(R.id.list_name).text = list[position].task
 
 
 
@@ -325,7 +325,15 @@ class TaskViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
     fun bind(task: Task) {
-        mNameView?.text = task.task
+
+        if (task.taskTranslated == null) {
+            mNameView?.text = task.task
+        }
+        else {
+            mNameView?.text = task.taskTranslated
+        }
+
+
 
         setStatus(task.status)
 

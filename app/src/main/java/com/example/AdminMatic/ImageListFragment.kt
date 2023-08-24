@@ -25,7 +25,6 @@ import org.json.JSONObject
 import java.time.*
 import java.time.temporal.WeekFields
 import java.util.*
-import kotlin.collections.HashMap
 
 
 /*
@@ -44,9 +43,9 @@ interface TagCellClickListener {
     fun onTagCellClickListener(data:Tag)
 }
 
-//interface ImageUploadInterface {
-    //fun onUploadComplete()
-//}
+
+
+
 
 
 class ImageListFragment : Fragment(), ImageCellClickListener, CustomerCellClickListener, TagCellClickListener {//, ImageUploadInterface {
@@ -89,6 +88,14 @@ class ImageListFragment : Fragment(), ImageCellClickListener, CustomerCellClickL
             val newDates = bundle.getInt("dates")
             val newSearchByTag = bundle.getBoolean("searchByTag")
             val clearSearch = bundle.getBoolean("clearSearch")
+            val shouldRefreshImages = bundle.getBoolean("shouldRefreshImages")
+
+            if (shouldRefreshImages) {
+                refreshImages()
+                return@setFragmentResultListener
+            }
+
+            print("Got past return@setFragmentResultListener")
 
             if (newFilterBy != filterBy || newOrderBy != orderBy || newDates != dates || newSearchByTag != searchByTag) {
 
@@ -660,15 +667,12 @@ class ImageListFragment : Fragment(), ImageCellClickListener, CustomerCellClickL
     }
 
     override fun onTagCellClickListener(data: Tag) {
-        print("FUCK")
         selectedTag = data.name
         binding.imagesSearch.setQuery(selectedTag, false)
         binding.imagesSearch.clearFocus()
         refreshImages()
         myView.hideKeyboard()
     }
-
-
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE

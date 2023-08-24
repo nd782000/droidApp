@@ -496,8 +496,10 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
     override fun onCrewCellClickListener(data: CrewSection) {
         println("crew ${data.name} tapped")
 
-        val directions = CrewsFragmentDirections.navigateToNewEditCrew(data.ID, crewList.toTypedArray(), readOnly)
-        myView.findNavController().navigate(directions)
+        if (data.ID != "0") {
+            val directions = CrewsFragmentDirections.navigateToNewEditCrew(data.ID, crewList.toTypedArray(), readOnly)
+            myView.findNavController().navigate(directions)
+        }
 
     }
 

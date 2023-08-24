@@ -288,7 +288,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
                                 resultList.add(row)
                             }
                         }else{
-                            if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.typeName.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
+                            if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT)) || row.typeName!!.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
                                 resultList.add(row)
                             }
                         }

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_edit_image">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <!-- Name -->
+        <EditText
+            android:id="@+id/name_et"
+            android:layout_width="270dp"
+            android:layout_height="40dp"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:singleLine="true"
+            android:layout_margin="5dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+        <TextView
+            android:id="@+id/name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/name_label"
+            android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="@id/name_et"
+            app:layout_constraintBottom_toBottomOf="@id/name_et"
+            app:layout_constraintRight_toLeftOf="@+id/name_et"
+            />
+
+        <!-- Customer -->
+        <com.example.AdminMatic.EmptySubmitSearchViewCompat
+            android:id="@+id/customer_search"
+            android:layout_width="270dp"
+            android:layout_height="40dp"
+            android:accessibilityHeading="false"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:layout_margin="5dp"
+            app:queryHint="@string/customer_hint"
+            app:actionViewClass="android.widget.SearchView"
+            app:defaultQueryHint='Select Customer'
+            app:iconifiedByDefault="false"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name_et"
+            app:queryBackground="@null" />
+
+        <TextView
+            android:id="@+id/customer_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/new_wo_customer"
+            android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="@id/customer_search"
+            app:layout_constraintBottom_toBottomOf="@id/customer_search"
+            app:layout_constraintRight_toLeftOf="@id/customer_search"
+            />
+
+        <!-- Vendor -->
+        <com.example.AdminMatic.EmptySubmitSearchViewCompat
+            android:id="@+id/vendor_search"
+            android:layout_width="270dp"
+            android:layout_height="40dp"
+            android:accessibilityHeading="false"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:layout_margin="5dp"
+            app:queryHint="@string/vendor_hint"
+            app:actionViewClass="android.widget.SearchView"
+            app:defaultQueryHint='Select Customer'
+            app:iconifiedByDefault="false"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/customer_search"
+            app:queryBackground="@null" />
+
+        <TextView
+            android:id="@+id/vendor_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/vendor_label"
+            android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="@id/vendor_search"
+            app:layout_constraintBottom_toBottomOf="@id/vendor_search"
+            app:layout_constraintRight_toLeftOf="@id/vendor_search"
+            />
+
+        <!-- Uncompress switch -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/uncompressed_switch_cl"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toBottomOf="@id/vendor_search">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/uncompressed_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:checked="false"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/uncompressed_switch_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/uncompressed_label"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/uncompressed_switch"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Tags -->
+        <TextView
+            android:id="@+id/tags_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/tags_label"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/uncompressed_switch_cl"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <com.example.AdminMatic.EmptySubmitSearchViewCompat
+            android:id="@+id/tags_search"
+            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:accessibilityHeading="false"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            android:layout_margin="5dp"
+            app:queryHint="@string/tags_hint"
+            app:actionViewClass="android.widget.SearchView"
+            app:defaultQueryHint='Select Customer'
+            app:iconifiedByDefault="false"
+            app:layout_constraintRight_toLeftOf="@id/new_tag_btn"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tags_tv"
+            app:queryBackground="@null" />
+
+        <Button
+            android:id="@+id/new_tag_btn"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+
+            android:text="@string/contract_status_new"
+            android:layout_marginHorizontal="5dp"
+
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tags_tv"
+            />
+
+        <TextView
+            android:id="@+id/tap_to_delete_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/tap_tag_to_delete"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/tags_search"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/tags_flexbox"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            app:layout_constraintTop_toBottomOf="@id/tap_to_delete_tv"
+            app:flexWrap="wrap"
+            android:paddingHorizontal="5dp" >
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+
+        <!--
+        <TextView
+            android:id="@+id/tags_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf=""/>
+            -->
+
+        <TextView
+            android:id="@+id/description_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginVertical="12dp"
+            android:text="@string/new_lead_general_description"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/tags_flexbox"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <EditText
+            android:id="@+id/description_et"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:gravity="start"
+            android:padding="5dp"
+            android:background="@drawable/text_view_layout"
+            app:layout_constraintTop_toBottomOf="@id/description_tv"
+            app:layout_constraintBottom_toTopOf="@id/submit_btn"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:imeOptions="actionDone"
+            android:inputType="textMultiLine"
+            />
+
+        <Button
+            android:id="@+id/submit_btn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+
+            android:text="@string/submit"
+            android:layout_marginHorizontal="5dp"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+
+
+        <!-- Search popup recyclers -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/customer_search_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/customer_search"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/vendor_search_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/vendor_search"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tags_search_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/tags_search"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:visibility="invisible"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/button"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

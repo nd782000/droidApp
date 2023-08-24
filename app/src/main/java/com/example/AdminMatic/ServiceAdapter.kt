@@ -5,13 +5,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 
-class ServiceAdapter(list: MutableList<EquipmentService>, private val context: Context, private val isHistoryMode:Boolean, private val cellClickListener: ServiceCellClickListener)
+class ServiceAdapter(list: MutableList<EquipmentService>, private val context: Context, private val isHistoryMode:Boolean, private val usageType:String, private val equipmentUsage:String, private val cellClickListener: ServiceCellClickListener)
 
     : RecyclerView.Adapter<ServiceViewHolder>() {
 
@@ -39,7 +40,7 @@ class ServiceAdapter(list: MutableList<EquipmentService>, private val context: C
     override fun onBindViewHolder(holder: ServiceViewHolder, position: Int) {
 
         val service: EquipmentService = filterList[position]
-        holder.bind(service, context, isHistoryMode)
+        holder.bind(service, context, isHistoryMode, usageType, equipmentUsage)
         println("queryText = $queryText")
         //text highlighting for first string
 
@@ -105,36 +106,54 @@ class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         mRightTxt = itemView.findViewById(R.id.list_service_right_txt)
     }
 
-    fun bind(service: EquipmentService, context:Context, isHistoryMode: Boolean) {
+    fun bind(service: EquipmentService, context:Context, isHistoryMode: Boolean, usageType:String, equipmentUsage: String) {
 
-        val createDate = LocalDateTime.parse(service.createDate, GlobalVars.dateFormatterPHP)
+        //val createDate = LocalDateTime.parse(service.createDate, GlobalVars.dateFormatterPHP)
         //val currentDate = LocalDateTime.now()
-        val nextDate = createDate.plusDays(service.frequency!!.toLong())
+        //val nextDate = createDate.plusDays(service.frequency!!.toLong())
 
         //Todo: Make due text red
         mNameView?.text = service.name
         if (isHistoryMode) {
-            mLeftTxt?.text = context.getString(R.string.service_completed_by, service.completedBy)
-            mRightTxt?.text = context.getString(R.string.service_completed_on, service.completionDate)
+            mLeftTxt?.text = context.getString(R.string.service_by_x, service.completedByName)
+            mRightTxt?.text = context.getString(R.string.service_on_x, service.completionDate)
         }
         else {
             when (service.type) {
                 "0" -> { //one time
                     mLeftTxt?.text = context.getString(R.string.service_due_now)
+                    mLeftTxt?.setTextColor(ContextCompat.getColor(myView.context, R.color.red))
                     mRightTxt?.text = context.getString(R.string.service_one_time)
                 }
                 "1" -> { //date based
+                    val nextDate = LocalDate.parse(service.nextDate, GlobalVars.dateFormatterShort)
                     mLeftTxt?.text = context.getString(R.string.service_due_x, nextDate.format(GlobalVars.dateFormatterShort))
-
+                    if (nextDate < LocalDate.now()) {
+                        mLeftTxt?.setTextColor(ContextCompat.getColor(myView.context, R.color.red))
+                    }
                     mRightTxt?.text = context.getString(R.string.service_every_x_days, service.frequency)
                 }
-                "2" -> { //mile/km based
-                    mLeftTxt?.text = context.getString(R.string.service_due_x, service.nextValue)
-                    mRightTxt?.text = context.getString(R.string.service_every_x_mi_km, service.frequency)
-                }
-                "3" -> { //engine hour based
-                    mLeftTxt?.text = context.getString(R.string.service_due_x, service.nextValue)
-                    mRightTxt?.text = context.getString(R.string.service_every_x_engine_hours, service.frequency)
+                "2" -> { //usage based
+
+                    when (usageType) {
+                        "hours" -> {
+                            mLeftTxt?.text = context.getString(R.string.service_due, service.nextValue, context.getString(R.string.hours))
+                            mRightTxt?.text = context.getString(R.string.service_every_x_engine_hours, service.frequency)
+                        }
+                        "km" -> {
+                            mLeftTxt?.text = context.getString(R.string.service_due, service.nextValue, context.getString(R.string.kilometers))
+                            mRightTxt?.text = context.getString(R.string.service_every_x_km, service.frequency)
+                        }
+                        else -> {
+                            mLeftTxt?.text = context.getString(R.string.service_due, service.nextValue, context.getString(R.string.miles))
+                            mRightTxt?.text = context.getString(R.string.service_every_x_miles, service.frequency)
+                        }
+                    }
+
+                    if (service.nextValue!!.toInt() < equipmentUsage.toInt()) {
+                        mLeftTxt?.setTextColor(ContextCompat.getColor(myView.context, R.color.red))
+                    }
+
                 }
                 "4" -> { //inspection
                     mLeftTxt?.text = context.getString(R.string.service_due_before_use)

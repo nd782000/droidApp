@@ -5,6 +5,9 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/logInFragment">
 
+    <action android:id="@+id/navigateToBugLog"
+        app:destination="@id/bugLogFragment"/>
+
     <fragment
         android:id="@+id/logInFragment"
         android:name="com.example.AdminMatic.LogInFragment"
@@ -13,6 +16,20 @@
         <action
             android:id="@+id/navigateToMainMenu"
             app:destination="@id/mainMenuFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/bugLogFragment"
+        android:name="com.example.AdminMatic.BugLogFragment"
+        android:label="fragment_bug_log"
+        tools:layout="@layout/fragment_bug_log" >
+        <argument
+            android:name="errorString"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="shouldLogOut"
+            app:argType="boolean"
+            app:nullable="false" />
     </fragment>
     <fragment
         android:id="@+id/customerListFragment"
@@ -105,6 +122,11 @@
         <action
             android:id="@+id/navigateToCrews"
             app:destination="@id/crewsFragment" />
+        <!--
+        <action
+            android:id="@+id/navigateToBugLog"
+            app:destination="@id/bugLogFragment" />
+            -->
     </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"
@@ -433,6 +455,9 @@
         <action
             android:id="@+id/navigateToEquipmentFields"
             app:destination="@id/equipmentFieldsFragment" />
+        <action
+            android:id="@+id/navigateToNewEditEquipment"
+            app:destination="@id/newEditEquipmentFragment" />
     </fragment>
     <fragment
         android:id="@+id/equipmentFieldsFragment"
@@ -475,6 +500,29 @@
             android:name="refresh"
             app:argType="boolean"
             android:defaultValue="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/editImageFragment"
+        android:name="com.example.AdminMatic.EditImageFragment"
+        android:label="fragment_edit_image"
+        tools:layout="@layout/fragment_edit_image" >
+        <action
+            android:id="@+id/navigateToImage"
+            app:destination="@id/imageFragment" />
+        <action
+            android:id="@+id/navigateToGalleryImageUpload"
+            app:destination="@id/imageUpload" />
+        <action
+            android:id="@+id/navigateToImageListSettings"
+            app:destination="@id/imageListSettingsFragment" />
+
+        <argument
+            android:name="imageList"
+            app:argType="com.example.AdminMatic.Image[]"
+            app:nullable="true" />
+        <argument
+            android:name="imageListIndex"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/employeeFragment"
@@ -846,6 +894,9 @@
         <action
             android:id="@+id/navigateImageToCustomer"
             app:destination="@id/customerFragment" />
+        <action
+            android:id="@+id/navigateToEditImage"
+            app:destination="@id/editImageFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageLikesFragment"
@@ -869,6 +920,10 @@
             android:name="equipment"
             app:argType="com.example.AdminMatic.Equipment"
             app:nullable="true" />
+        <argument
+            android:name="equipmentID"
+            app:argType="string"
+            android:defaultValue="0"/>
         <action
             android:id="@+id/navigateToEquipmentDetails"
             app:destination="@id/equipmentDetailsFragment" />
@@ -881,17 +936,44 @@
         <action
             android:id="@+id/navigateToNewService"
             app:destination="@id/newServiceFragment" />
-
-
+        <action
+            android:id="@+id/navigateToNewEditEquipment"
+            app:destination="@id/newEditEquipmentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newEditEquipmentFragment"
+        android:name="com.example.AdminMatic.NewEditEquipmentFragment"
+        android:label="fragment_new_editequipment"
+        tools:layout="@layout/fragment_new_edit_equipment" >
+        <argument
+            android:name="equipment"
+            app:argType="com.example.AdminMatic.Equipment"
+            app:nullable="true" />
+        <action
+            android:id="@+id/navigateToEquipment"
+            app:destination="@id/equipmentFragment"
+            app:popUpTo="@id/equipmentListFragment"
+            app:popUpToInclusive="false"
+            />
+        <action
+            android:id="@+id/navigateToImageUpload"
+            app:destination="@id/imageUpload"/>
     </fragment>
     <fragment
         android:id="@+id/serviceFragment"
         android:name="com.example.AdminMatic.ServiceFragment"
         android:label="fragment_service"
         tools:layout="@layout/fragment_service" >
+        <action
+            android:id="@+id/navigateToNewEditService"
+            app:destination="@id/newServiceFragment"/>
         <argument
             android:name="service"
             app:argType="com.example.AdminMatic.EquipmentService"
+            app:nullable="true" />
+        <argument
+            android:name="equipment"
+            app:argType="com.example.AdminMatic.Equipment"
             app:nullable="true" />
         <argument
             android:name="historyMode"
@@ -904,6 +986,9 @@
         android:name="com.example.AdminMatic.ServiceInspectionFragment"
         android:label="fragment_service"
         tools:layout="@layout/fragment_service_inspection" >
+        <action
+            android:id="@+id/navigateToNewEditService"
+            app:destination="@id/newServiceFragment"/>
         <argument
             android:name="service"
             app:argType="com.example.AdminMatic.EquipmentService"
@@ -926,6 +1011,10 @@
         <argument
             android:name="equipment"
             app:argType="com.example.AdminMatic.Equipment"
+            app:nullable="true" />
+        <argument
+            android:name="service"
+            app:argType="com.example.AdminMatic.EquipmentService"
             app:nullable="true" />
     </fragment>
 

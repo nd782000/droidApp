@@ -62,7 +62,7 @@ class EmployeeListFragment : Fragment(), EmployeeCellClickListener {
         super.onCreate(savedInstanceState)
 
         setFragmentResultListener("_showInactive") { _, bundle ->
-            println("Fragment result listener when off")
+            println("Fragment result listener went off")
             val result = bundle.getBoolean("_showInactive")
 
             if (result != showInactive) {

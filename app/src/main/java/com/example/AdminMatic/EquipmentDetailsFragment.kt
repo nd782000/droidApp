@@ -69,23 +69,25 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
         val detailList = mutableListOf<String>()
 
-        detailList.add(0, "Description: ${equipment!!.description}")
+        detailList.add(0, getString(R.string.equipment_details_description_x, equipment!!.description))
         if (equipment!!.plannerShow == "0") {
-            detailList.add(0, "Show in Planners: NO")
+            detailList.add(0, getString(R.string.equipment_details_show_in_planners_no))
         }
         else {
-            detailList.add(0, "Show in Planners: YES")
+            detailList.add(0, getString(R.string.equipment_details_show_in_planners_yes))
         }
-        detailList.add(0, "Vendor: ${equipment!!.dealerName}")
-        detailList.add(0, "Purchased: ${equipment!!.purchaseDate}")
-        detailList.add(0, "Engine: ${equipment!!.engineTypeName}")
-        detailList.add(0, "Fuel: ${equipment!!.fuelTypeName}")
-        detailList.add(0, "Serial/VIN: ${equipment!!.serial}")
-        detailList.add(0, "Model: ${equipment!!.model}")
-        detailList.add(0, "Make: ${equipment!!.make}")
-        detailList.add(0, "Crew: ${equipment!!.crewName}")
-        detailList.add(0, "Type: ${equipment!!.typeName}")
-        detailList.add(0, "Name: ${equipment!!.name}")
+        detailList.add(0, getString(R.string.equipment_details_vendor_x, equipment!!.dealerName))
+        detailList.add(0, getString(R.string.equipment_details_weight_x, equipment!!.weight))
+        detailList.add(0, getString(R.string.equipment_details_purchase_price_x, equipment!!.purchasePrice))
+        detailList.add(0, getString(R.string.equipment_details_purchased_x, equipment!!.purchaseDate))
+        detailList.add(0, getString(R.string.equipment_details_engine_x, equipment!!.engineTypeName))
+        detailList.add(0, getString(R.string.equipment_details_fuel_x, equipment!!.fuelTypeName))
+        detailList.add(0, getString(R.string.equipment_details_serial_x, equipment!!.serial))
+        detailList.add(0, getString(R.string.equipment_details_model_x, equipment!!.model))
+        detailList.add(0, getString(R.string.equipment_details_make_x, equipment!!.make))
+        detailList.add(0, getString(R.string.equipment_details_crew_x, equipment!!.crewName))
+        detailList.add(0, getString(R.string.equipment_details_type_x, equipment!!.typeName))
+        detailList.add(0, getString(R.string.equipment_details_name_x, equipment!!.name))
 
         binding.listRecyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
@@ -122,7 +124,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
     override fun onEquipmentDetailCellClickListener(data:Int) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        if (data == 9) { //vendor cell
+        if (data == 11) { //vendor cell
             val directions = VendorListFragmentDirections.navigateToVendor(null, equipment!!.dealer)
             myView.findNavController().navigate(directions)
         }

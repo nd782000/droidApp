@@ -56,6 +56,7 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
     lateinit var myView:View
 
     private var editMode = false
+    private var originalSysname = ""
     //private var parentName = ""
 
     //private var referredBySpinnerPosition: Int = 0
@@ -208,6 +209,9 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     binding.newVendorNameSystemEt.setText(getString(R.string.new_customer_autofill_sysname, binding.newVendorNameLastEt.text, binding.newVendorNameFirstEt.text))
                 }
             }
+            else {
+                checkUniqueSysname(binding.newVendorNameSystemEt.text.toString(), false)
+            }
         }
 
         binding.newVendorBusinessSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -239,6 +243,14 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
         })
         binding.newVendorContactEmailEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
         binding.newVendorContactEmailEt.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                editsMade = true
+            }
+        })
+        binding.newVendorContactWebsiteEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
+        binding.newVendorContactWebsiteEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -437,7 +449,7 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         binding.newVendorSubmitBtn.setOnClickListener {
             if (validateFields()) {
-                updateVendor()
+                checkUniqueSysname(binding.newVendorNameSystemEt.text.toString(), true)
             }
         }
 
@@ -514,6 +526,7 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.newVendorNameSystemEt.setText(vendor!!.name)
         binding.newVendorContactPhoneEt.setText(vendor!!.mainPhone)
         binding.newVendorContactEmailEt.setText(vendor!!.mainEmail)
+        binding.newVendorContactWebsiteEt.setText(vendor!!.website)
 
 
         binding.newVendorAddressStreet1Et.setText(vendor!!.addr1)
@@ -579,6 +592,10 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
             binding.newVendorBusinessSwitch.isChecked = false
             binding.newVendorBusinessSwitch.jumpDrawablesToCurrentState()
         }
+
+        if (editMode) {
+            originalSysname = binding.newVendorNameSystemEt.text.toString()
+        }
         editsMade = false
         hideProgressView()
     }
@@ -607,21 +624,20 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
 
                         val gson = GsonBuilder().create()
-                        val newCustID: String = gson.fromJson(parentObject["custID"].toString(), String::class.java)
+                        //val newCustID: String = gson.fromJson(parentObject["ID"].toString(), String::class.java)
 
 
                         globalVars.playSaveSound(myView.context)
                         editsMade = false
 
-                        if (editMode) {
-                            editsMade = false
+                        //if (editMode) {
                             myView.findNavController().navigateUp()
 
-                        } else {
-                            val directions =
-                                NewEditCustomerFragmentDirections.navigateToCustomer(newCustID)
-                            myView.findNavController().navigate(directions)
-                        }
+                       // } else {
+                        //    val directions =
+                        //        NewEditCustomerFragmentDirections.navigateToCustomer(newCustID)
+                        //    myView.findNavController().navigate(directions)
+                        //}
                     }
 
                     hideProgressView()
@@ -648,7 +664,7 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 params["firstName"] = binding.newVendorNameFirstEt.text.toString()
                 params["middleName"] = binding.newVendorNameMiddleEt.text.toString()
                 params["lastName"] = binding.newVendorNameLastEt.text.toString()
-                params["sysName"] = binding.newVendorNameSystemEt.text.toString()
+                params["name"] = binding.newVendorNameSystemEt.text.toString()
                 params["nameChange"] = "0"
                 if (editMode) {
                     if (binding.newVendorNameSystemEt.text.toString() != vendor!!.name) {
@@ -659,10 +675,11 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
                 params["mainPhone"] = binding.newVendorContactPhoneEt.text.toString()
                 params["mainEmail"] = binding.newVendorContactEmailEt.text.toString()
-                params["street1"] = binding.newVendorAddressStreet1Et.text.toString()
-                params["street2"] = binding.newVendorAddressStreet2Et.text.toString()
-                params["street3"] = binding.newVendorAddressStreet3Et.text.toString()
-                params["street4"] = binding.newVendorAddressStreet4Et.text.toString()
+                params["website"] = binding.newVendorContactWebsiteEt.text.toString()
+                params["addr1"] = binding.newVendorAddressStreet1Et.text.toString()
+                params["addr2"] = binding.newVendorAddressStreet2Et.text.toString()
+                params["addr3"] = binding.newVendorAddressStreet3Et.text.toString()
+                params["addr4"] = binding.newVendorAddressStreet4Et.text.toString()
                 params["city"] = binding.newVendorAddressCityEt.text.toString()
                 if (binding.newVendorAddressStateSpinner.selectedItemPosition > 0) {
                     params["state"] = GlobalVars.statesShort[binding.newVendorAddressStateSpinner.selectedItemPosition]
@@ -691,52 +708,60 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
                 if (binding.newVendorBillingSameSwitch.isChecked) {
                     // If "same as job site address" is checked, use same values as regular address with name added
+
                     var nameString = ""
-                    nameString += vendor!!.salutation
-                    nameString += binding.newVendorNameFirstEt.text
-                    nameString += binding.newVendorNameMiddleEt.text
-                    nameString += binding.newVendorNameLastEt.text
-                    params["billStreet1"] = nameString
-                    params["billStreet2"] = binding.newVendorAddressStreet1Et.text.toString()
-                    params["billStreet3"] = binding.newVendorAddressStreet2Et.text.toString()
-                    params["billStreet4"] = binding.newVendorAddressStreet3Et.text.toString()
-                    params["billCity"] = binding.newVendorAddressCityEt.text.toString()
-                    if (binding.newVendorAddressStateSpinner.selectedItemPosition > 0) {
-                        params["billState"] = GlobalVars.statesShort[binding.newVendorAddressStateSpinner.selectedItemPosition]
+
+                    if (binding.newVendorBusinessSwitch.isChecked) {
+                        nameString = binding.newVendorNameBusinessEt.text.toString()
                     }
                     else {
-                        params["billState"] = ""
+                        nameString += vendor!!.salutation
+                        nameString += binding.newVendorNameFirstEt.text
+                        nameString += binding.newVendorNameMiddleEt.text
+                        nameString += binding.newVendorNameLastEt.text
                     }
-                    params["billZip"] = binding.newVendorAddressZipEt.text.toString()
+
+                    params["baddr1"] = nameString
+                    params["baddr2"] = binding.newVendorAddressStreet1Et.text.toString()
+                    params["baddr3"] = binding.newVendorAddressStreet2Et.text.toString()
+                    params["baddr4"] = binding.newVendorAddressStreet3Et.text.toString()
+                    params["bcity"] = binding.newVendorAddressCityEt.text.toString()
+                    if (binding.newVendorAddressStateSpinner.selectedItemPosition > 0) {
+                        params["bstate"] = GlobalVars.statesShort[binding.newVendorAddressStateSpinner.selectedItemPosition]
+                    }
+                    else {
+                        params["bstate"] = ""
+                    }
+                    params["bzip"] = binding.newVendorAddressZipEt.text.toString()
                 }
                 else {
                     // If not, take the values put in the fields
-                    params["billStreet1"] = binding.newVendorBillingAddressStreet1Et.text.toString()
-                    params["billStreet2"] = binding.newVendorBillingAddressStreet2Et.text.toString()
-                    params["billStreet3"] = binding.newVendorBillingAddressStreet3Et.text.toString()
-                    params["billStreet4"] = binding.newVendorBillingAddressStreet4Et.text.toString()
-                    params["billCity"] = binding.newVendorBillingAddressCityEt.text.toString()
+                    params["baddr1"] = binding.newVendorBillingAddressStreet1Et.text.toString()
+                    params["baddr2"] = binding.newVendorBillingAddressStreet2Et.text.toString()
+                    params["baddr3"] = binding.newVendorBillingAddressStreet3Et.text.toString()
+                    params["baddr4"] = binding.newVendorBillingAddressStreet4Et.text.toString()
+                    params["bcity"] = binding.newVendorBillingAddressCityEt.text.toString()
                     if (binding.newVendorBillingAddressStateSpinner.selectedItemPosition > 0) {
-                        params["billState"] = GlobalVars.statesShort[binding.newVendorBillingAddressStateSpinner.selectedItemPosition]
+                        params["bstate"] = GlobalVars.statesShort[binding.newVendorBillingAddressStateSpinner.selectedItemPosition]
                     }
                     else {
-                        params["billState"] = ""
+                        params["bstate"] = ""
                     }
-                    params["billZip"] = binding.newVendorBillingAddressZipEt.text.toString()
+                    params["bzip"] = binding.newVendorBillingAddressZipEt.text.toString()
                 }
 
 
                 params["active"] = vendor!!.active
                 if (editMode) {
-                    params["customerID"] = vendor!!.ID
+                    params["ID"] = vendor!!.ID
                 }
                 else {
-                    params["customerID"] = "0"
+                    params["ID"] = "0"
                 }
 
-                params["documentType"] = vendor!!.preferredDocumentType.toString()
+                params["pref"] = vendor!!.preferredDocumentType.toString()
                 params["paymentTermsID"] = vendor!!.paymentTermsID.toString()
-                params["category"] = vendor!!.category.toString()
+                params["type"] = vendor!!.category.toString()
 
                 params["createdBy"] = GlobalVars.loggedInEmployee!!.ID
                 println("params = $params")
@@ -767,6 +792,93 @@ class NewEditVendorFragment : Fragment(), AdapterView.OnItemSelectedListener {
         return true
     }
 
+    private fun checkUniqueSysname(_sysname:String, submitting:Boolean) {
+
+        println("checkUniqueSysname()")
+
+        if (submitting) {
+            showProgressView()
+        }
+
+        val sysnameTrimmed = _sysname.trim()
+
+        // Exit if the username is unchanged (for edit mode)
+        if (sysnameTrimmed == originalSysname.trim()) {
+            println("sys unchanged, returning")
+            if (submitting) {
+                updateVendor()
+                return
+            }
+            else {
+                return
+            }
+        }
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/other/unique.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    //if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+
+                    val gson = GsonBuilder().create()
+                    val result: Boolean = gson.fromJson(parentObject["unique"].toString(), Boolean::class.java)
+
+                    println("Unique sysname check result: $result")
+
+                    if (result) {
+                        println("Unique true")
+                        binding.newVendorNameSystemEt.setText(sysnameTrimmed)
+                        if (submitting) {
+                            updateVendor()
+                        }
+
+                    }
+                    else {
+                        globalVars.simpleAlert(myView.context,getString(R.string.duplicate_sysname_title),getString(R.string.duplicate_sysname_body, sysnameTrimmed))
+                        println("Unique false")
+                        binding.newVendorNameSystemEt.setText("")
+                    }
+                    //}
+
+
+
+
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["val"] = sysnameTrimmed
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "employeeNewEdit"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE

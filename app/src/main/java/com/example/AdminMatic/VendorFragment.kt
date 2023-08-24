@@ -282,7 +282,7 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["vendorID"] = vendorID.toString()
+                params["ID"] = vendorID.toString()
 
                 println("params = $params")
                 return params

@@ -346,29 +346,35 @@ data class HearType(
 data class Equipment(val ID: String,
                      val name: String,
                      var status:String,
-                     val type:String,
+                     var type:String,
+                     var active:String,
 
-                     val make:String?,
-                     val model:String?,
-                     val serial:String?,
-                     val crew:String?,
-                     var crewName:String?,
-                     val typeName:String?,
-                     val fuelType:String?,
-                     val fuelTypeName:String?,
-                     val engineType:String?,
-                     val engineTypeName:String?,
-                     val mileage:String?,
+                     val make:String? = "",
+                     val model:String? = "",
+                     val serial:String? = "",
+                     var crew:String? = "",
+                     var crewName:String? = "",
+                     var typeName:String? = "",
+                     var fuelType:String? = "",
+                     var fuelTypeName:String? = "",
+                     var engineType:String? = "",
+                     var engineTypeName:String? = "",
+                     //val mileage:String? = "",
+                     var usage:String? = "0",
                      @field:SerializedName(value="dealer", alternate= ["vendorID"])
-                     val dealer:String?,
-                     val dealerName:String?,
-                     val purchaseDate:String?,
-                     val description:String?,
-                     val pic:String?,
-                     val picURL:String?,
-                     var crewColor:String?,
-                     val plannerShow:String?,
-                     val image:Image?
+                     var dealer:String? = "",
+                     var dealerName:String? = "",
+                     var purchaseDate:String? = "",
+                     var purchasePrice:String? = "",
+                     var weight:String? = "",
+                     val description:String? = "",
+                     val pic:String? = "",
+                     val picURL:String? = "",
+                     var crewColor:String? = "",
+                     var plannerShow:String? = "",
+                     var usageType: String? = "",
+                     //var usageTypeID: Int = 0,
+                     val image:Image? = null
 ): Parcelable{
     override fun toString(): String {
         return name
@@ -440,17 +446,22 @@ data class EquipmentService(
 
     var typeName: String? = "",
     var addedBy: String? = "",
+    var addedByName: String = "",
     var status: String? = "",
     var equipmentID: String? = "",
     var frequency: String? = "",
-    var instruction: String? = "",
+    var instructions: String? = "",
     var createDate: String? = "",
     var completionDate: String? = "",
     var completionMileage: String? = "",
     var completedBy: String? = "",
+    var completedByName: String? = "",
     var completionNotes: String? = "",
+    @field:SerializedName("currentValue", alternate= ["completeValue"])
     var currentValue: String? = "",
+    var targetDate: String? = "",
     var nextValue: String? = "",
+    var nextDate: String? = "",
     var serviceDue: Boolean? = false
 
 ): Parcelable{
@@ -523,20 +534,23 @@ data class Image(val ID: String,
                  val width:String,
                  val height:String,
 
-                 val description:String?,
-                 val customer:String?,
-                 val customerName:String?,
+                 var description:String?,
+                 var customer:String?,
+                 var customerName:String?,
                  val woID:String?,
                  val album:String?,
                  val leadTaskID:String?,
                  val contractTaskID:String?,
-                 val taskID:String?,
-                 val equipmentID:String?,
+                 var taskID:String?,
+                 var equipmentID:String?,
                  val usageID:String?,
-                 val vendorID:String?,
+                 @field:SerializedName("vendorID", alternate= ["vendor"])
+                 var vendorID:String?,
                  val strikeID:String?,
                  val dateAdded:String?,
+                 val createdBy:String?,
                  val createdByName:String?,
+                 var noCompress:String?,
                  val type:String?,
                  val tags:String?,
                  val index:String?,
@@ -801,6 +815,7 @@ data class Task(var ID:String,
                 var status: String,
 
                 var task: String? = "",
+                var taskTranslated: String?,
 
                 var images: Array<Image>? = null
 
@@ -1006,6 +1021,7 @@ data class VendorCategory(var ID: String,
 @Parcelize
 data class WoItem(var ID:String,
                   var item: String,
+                  var itemTranslated: String?,
                   var itemID: String,
 
                   var type: String = "",
@@ -1052,6 +1068,7 @@ data class WoItem(var ID:String,
 data class WorkOrder(var woID: String = "0",
                      var status: String = "",
                      var title:String = "Work Order",
+                     var titleTranslated:String? = null,
                      var progress:String = "",
                      var totalPrice:String = "",
                      var totalCost:String = "",
@@ -1117,6 +1134,13 @@ data class WorkOrder(var woID: String = "0",
         }
     }
 }
+
+@Parcelize
+data class WorkOrderArray (
+    var workOrders: Array<WorkOrder>?,
+    var note: String?
+    ) : Parcelable
+
 
 @Parcelize
 data class Permissions(

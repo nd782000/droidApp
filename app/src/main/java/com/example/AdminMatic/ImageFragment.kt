@@ -6,8 +6,11 @@ import android.view.*
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.findNavController
 import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentImageBinding
@@ -36,6 +39,28 @@ class ImageFragment : Fragment() {
     private var _binding: FragmentImageBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.image_detail_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.edit_image_item) {
+            if (GlobalVars.permissions!!.vendorsEdit == "1") {
+                val directions = ImageFragmentDirections.navigateToEditImage(imageList, imageListIndex)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_vendors_edit))
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -44,6 +69,13 @@ class ImageFragment : Fragment() {
             imageList = (it.getParcelableArray("imageList") as Array<Image>?)!!
             imageListIndex = it.getInt("imageListIndex")
 
+        }
+        setFragmentResultListener("imageEditListener") { _, bundle ->
+            val shouldRefreshImages = bundle.getBoolean("shouldRefreshImages")
+            if (shouldRefreshImages) {
+                println("got result listener")
+                setFragmentResult("imageListSettings", bundleOf("shouldRefreshImages" to true))
+            }
         }
     }
 
@@ -56,6 +88,7 @@ class ImageFragment : Fragment() {
 
         globalVars = GlobalVars()
         primaryColor = R.color.colorPrimary
+        setHasOptionsMenu(true)
 
         return myView
     }
