@@ -28,6 +28,7 @@ import com.android.volley.toolbox.Volley
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
 import org.json.JSONException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -1140,6 +1141,50 @@ data class WorkOrderArray (
     var workOrders: Array<WorkOrder>?,
     var note: String?
     ) : Parcelable
+
+
+enum class MyScheduleEntryType {
+    workOrder, lead, service
+}
+
+@Parcelize
+data class MyScheduleEntry(var refID: String = "0",
+                           var title: String = "0",
+                           var name: String? = "0",
+                           var status: String? = "0",
+                           var type: String? = "0",
+                           var lng: String? = "0",
+                           var lat: String? = "0",
+                           var daySort: String? = "0",
+                           var startTime: String? = "0",
+                           var endTime: String? = "0",
+                           var urgent: String? = "0",
+                           var usage: String? = "0",
+                           var usageType: String? = "0",
+                           var serviceType: String? = "0",
+                           var equipmentID: String? = "0"
+
+    ) : Parcelable {
+    @IgnoredOnParcel
+    var entryType:MyScheduleEntryType = MyScheduleEntryType.workOrder
+
+    override fun toString(): String {
+        return title
+    }
+}
+
+@Parcelize
+data class MyScheduleEntryArray(
+    @field:SerializedName(value="entries", alternate= ["schedule"])
+    var entries: Array<MyScheduleEntry>? = null,
+    var note:String? = ""
+
+) : Parcelable {
+    override fun toString(): String {
+        return "MyScheduleEntryArray"
+    }
+}
+
 
 
 @Parcelize

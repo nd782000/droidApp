@@ -197,6 +197,11 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
             myView.findNavController().navigate(directions)
         }
 
+        binding.scheduleBtn.setOnClickListener(({
+            val directions = MainMenuFragmentDirections.navigateToMySchedule(employee!!)
+            myView.findNavController().navigate(directions)
+        }))
+
         // Only show the logout button if this it's you
         if (employee!!.ID == GlobalVars.loggedInEmployee!!.ID) {
             logOutBtn = view.findViewById(R.id.log_out_btn)

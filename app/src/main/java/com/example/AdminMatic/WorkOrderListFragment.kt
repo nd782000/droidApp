@@ -15,10 +15,8 @@ import com.AdminMatic.databinding.FragmentWorkOrderListBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.dateFormatterYYYYMMDD
-import com.example.AdminMatic.GlobalVars.Companion.globalDayNote
 import com.example.AdminMatic.GlobalVars.Companion.globalWorkOrdersList
 import com.example.AdminMatic.GlobalVars.Companion.loggedInEmployee
-import com.example.AdminMatic.GlobalVars.Companion.scheduleSpinnerPosition
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONException
@@ -33,42 +31,10 @@ interface WorkOrderCellClickListener {
 }
 
 
-class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterView.OnItemSelectedListener {
+class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
 
     lateinit var myView:View
     private lateinit var adapter:WorkOrdersAdapter
-
-    //update eq
-    /*
-    private var datesArrayOld:Array<String> = arrayOf(
-        "All Dates (${loggedInEmployee!!.fname})",
-        "All Dates (Everyone)",
-        "Today (${loggedInEmployee!!.fname})",
-        "Today (Everyone)",
-        "Tomorrow (${loggedInEmployee!!.fname})",
-        "Tomorrow (Everyone)",
-        "This Week (${loggedInEmployee!!.fname})",
-        "This Week (Everyone)",
-        "Next Week (${loggedInEmployee!!.fname})",
-        "Next Week (Everyone)",
-        "Next 14 Days (${loggedInEmployee!!.fname})",
-        "Next 14 Days (Everyone)",
-        "Next 30 Days (${loggedInEmployee!!.fname})",
-        "Next 30 Days (Everyone)",
-        "This Year (${loggedInEmployee!!.fname})",
-        "This Year (Everyone)")
-
-     */
-
-
-
-    private lateinit var datesArray:Array<String>
-
-
-
-    var startDateDB:String = ""
-    var endDateDB:String = ""
-    var empID:String = ""
 
     private var _binding: FragmentWorkOrderListBinding? = null
     private val binding get() = _binding!!
@@ -106,62 +72,9 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         //need to wait for this function to initialize views
         println("onViewCreated")
 
-        val everyone = getString(R.string.everyone)
-
-        datesArray = arrayOf(
-                getString(R.string.schedule_all_dates, loggedInEmployee!!.fname),
-                getString(R.string.schedule_all_dates, everyone),
-                getString(R.string.schedule_today, loggedInEmployee!!.fname),
-                getString(R.string.schedule_today, everyone),
-                getString(R.string.schedule_tomorrow, loggedInEmployee!!.fname),
-                getString(R.string.schedule_tomorrow, everyone),
-                getString(R.string.schedule_this_week, loggedInEmployee!!.fname),
-                getString(R.string.schedule_this_week, everyone),
-                getString(R.string.schedule_next_week, loggedInEmployee!!.fname),
-                getString(R.string.schedule_next_week, everyone),
-                getString(R.string.schedule_next_14_days, loggedInEmployee!!.fname),
-                getString(R.string.schedule_next_14_days, everyone),
-                getString(R.string.schedule_next_30_days, loggedInEmployee!!.fname),
-                getString(R.string.schedule_next_30_days, everyone),
-                getString(R.string.schedule_this_year, loggedInEmployee!!.fname),
-                getString(R.string.schedule_this_year, everyone))
-
 
         (activity as MainActivity?)!!.setWorkOrderList(this)
 
-        /*
-        pgsBar = view.findViewById(R.id.progressBar)
-        recyclerView = view.findViewById(R.id.list_recycler_view)
-        searchView = view.findViewById(R.id.work_orders_search)
-        swipeRefresh = view.findViewById(R.id.customerSwipeContainer)
-        scheduleSpinner = view.findViewById(R.id.schedule_spinner)
-        crewBtn = view.findViewById(R.id.crew_btn)
-        mapBtn = view.findViewById(R.id.map_btn)
-        countTextView = view.findViewById(R.id.work_order_count_textview)
-        allCL = view.findViewById(R.id.all_cl)
-
-         */
-
-        binding.crewBtn.setOnClickListener {
-            println("Crew Click")
-
-
-
-            // Even spinner positions are the personal ones
-            if (scheduleSpinnerPosition % 2 == 0) {
-                val directions = WorkOrderListFragmentDirections.navigateToCrews(loggedInEmployee, true)
-                myView.findNavController().navigate(directions)
-            }
-            else {
-                val directions = WorkOrderListFragmentDirections.navigateToCrews(null, true)
-                myView.findNavController().navigate(directions)
-            }
-
-
-
-
-
-        }
 
         binding.addWorkOrderBtn.setOnClickListener{
             if (GlobalVars.permissions!!.scheduleEdit == "1") {
@@ -181,55 +94,9 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
 
         if (globalWorkOrdersList == null) {
 
-            println("globalWorkOrdersList = null")
-            scheduleSpinnerPosition = 2
-
-            binding.scheduleSpinner.setBackgroundResource(R.drawable.text_view_layout)
-
-
-            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-                myView.context,
-                android.R.layout.simple_spinner_dropdown_item, datesArray
-            )
-            adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-
-            binding.scheduleSpinner.adapter = adapter
-
-            //triggers first get workOrders
-            binding.scheduleSpinner.setTag(R.id.pos, scheduleSpinnerPosition)
-            binding.scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
-
-            binding.scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
-
-            println("today personal")
-            val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-            val ldtToday: LocalDateTime = today.atTime(0, 0)
-
-
-            startDateDB = ldtToday.format(dateFormatterYYYYMMDD)
-            endDateDB = startDateDB
-            empID = loggedInEmployee!!.ID
-
-
-
             getWorkOrders()
 
         }else{
-
-            println("globalWorkOrdersList != null")
-
-            binding.scheduleSpinner.setBackgroundResource(R.drawable.text_view_layout)
-
-            binding.scheduleSpinner.onItemSelectedListener = null
-
-            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-                myView.context,
-                android.R.layout.simple_spinner_dropdown_item, datesArray
-
-            )
-            adapter.setDropDownViewResource(R.layout.spinner_right_aligned)
-
-            binding.scheduleSpinner.adapter = adapter
 
 
 
@@ -239,16 +106,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 layoutViews()
             }
 
-            //if(activity != null){
-
-            //}
-            binding.scheduleSpinner.setTag(R.id.pos, scheduleSpinnerPosition)
-            binding.scheduleSpinner.setSelection(scheduleSpinnerPosition, false)
-
-            binding.scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
-
-            updateScheduleInfo(scheduleSpinnerPosition)
-            binding.workOrderCountTextview.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
 
         }
 
@@ -304,9 +161,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                         val temp = gson.fromJson(parentObject.toString(), WorkOrderArray::class.java)
 
                         globalWorkOrdersList = temp.workOrders!!.toMutableList()
-                        globalDayNote = temp.note
-
-
+                        //globalDayNote = temp.note
 
                         binding.workOrderCountTextview.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
 
@@ -314,7 +169,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                             layoutViews()
                         }
 
-                        updateScheduleInfo(scheduleSpinnerPosition)
                     }
                     else {
                         hideProgressView()
@@ -335,9 +189,9 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                params["employeeID"] = empID
-                params["startDate"] = startDateDB
-                params["endDate"] = endDateDB
+                params["employeeID"] = ""
+                params["startDate"] = ""
+                params["endDate"] = ""
                 params["active"] = "1"
                 params["custID"] = ""
 
@@ -383,15 +237,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 binding.listRecyclerView.addItemDecoration(itemDecoration)
             }
 
-            if (globalDayNote.isNullOrBlank()) {
-                binding.dayNoteCl.visibility = View.GONE
-            }
-            else {
-                binding.dayNoteCl.visibility = View.VISIBLE
-                binding.dayNoteEt.setText(globalDayNote)
-            }
-
-
             // var swipeContainer = myView.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
             // Setup refresh listener which triggers new data loading
             // Setup refresh listener which triggers new data loading
@@ -401,8 +246,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
                 //fetchTimelineAsync(0)
                 binding.workOrdersSearch.setQuery("", false)
                 binding.workOrdersSearch.clearFocus()
-                println("Start date: $startDateDB")
-                println("End date: $endDateDB")
                 getWorkOrders()
             }
             // Configure the refreshing colors
@@ -466,411 +309,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         }
     }
 
-    //spinner delegates
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        println("onNothingSelected")
-    }
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-        println("onItemSelected position = $position")
-        println("scheduleSpinner.getTag(R.id.pos) = ${binding.scheduleSpinner.getTag(R.id.pos)}")
-
-
-
-        if(binding.scheduleSpinner.getTag(R.id.pos) != null && binding.scheduleSpinner.getTag(R.id.pos) != position){
-
-            println("tag != pos")
-
-            updateScheduleInfo(position)
-
-            getWorkOrders()
-        }
-
-        scheduleSpinnerPosition = position
-        binding.scheduleSpinner.setTag(R.id.pos, position)
-
-
-
-        /*
-
-
-
-
-
-           case 4:
-
-            print("tomorrow personal")
-
-            let tomorrow = calendar.startOfDay(for: Date()).addNumberOfDaysToDate(_numberOfDays: 1)
-            print("tomorrow = \(tomorrow)")
-
-            startDateDB = dateFormatterDB.string(from: tomorrow)
-            endDateDB = dateFormatterDB.string(from: tomorrow)
-
-            self.employeeID = appDelegate.loggedInEmployee!.ID
-
-           break
-           case 5:
-
-            print("tomorrow everyone")
-
-                       let tomorrow = calendar.startOfDay(for: Date()).addNumberOfDaysToDate(_numberOfDays: 1)
-                       print("tomorrow = \(tomorrow)")
-
-                       startDateDB = dateFormatterDB.string(from: tomorrow)
-                       endDateDB = dateFormatterDB.string(from: tomorrow)
-
-
-
-
-
-                  self.employeeID = ""
-
-
-           break
-           case 6:
-            print("this week personal")
-                                                    let first = calendar.startOfDay(for: Date().startOfWeek)
-                                                    let last = calendar.startOfDay(for: Date().endOfWeek)
-                                                    startDateDB = dateFormatterDB.string(from: first)
-                                                    endDateDB = dateFormatterDB.string(from: last)
-
-            self.employeeID = appDelegate.loggedInEmployee!.ID
-
-
-           break
-           case 7:
-
-            print("this week everyone")
-            let first = calendar.startOfDay(for: Date().startOfWeek)
-            let last = calendar.startOfDay(for: Date().endOfWeek)
-            startDateDB = dateFormatterDB.string(from: first)
-            endDateDB = dateFormatterDB.string(from: last)
-
-              self.employeeID = ""
-
-           break
-            case 8:
-
-                print("next week personal")
-                                         let first = calendar.startOfDay(for: Date().startOfNextWeek)
-                                         let last = calendar.startOfDay(for: Date().endOfNextWeek)
-                                         startDateDB = dateFormatterDB.string(from: first)
-                                         endDateDB = dateFormatterDB.string(from: last)
-
-
-                self.employeeID = appDelegate.loggedInEmployee!.ID
-
-            break
-            case 9:
-
-                print("next week everyone")
-                              let first = calendar.startOfDay(for: Date().startOfNextWeek)
-                              let last = calendar.startOfDay(for: Date().endOfNextWeek)
-                              startDateDB = dateFormatterDB.string(from: first)
-                              endDateDB = dateFormatterDB.string(from: last)
-
-
-                self.employeeID = ""
-
-
-            break
-            case 10:
-
-               print("next 14 days personal")
-                              let today = calendar.startOfDay(for: Date())
-                              print("today = \(today)")
-                              let last = calendar.startOfDay(for: Date()).addNumberOfDaysToDate(_numberOfDays: 14)
-                              print("last = \(last)")
-                              startDateDB = dateFormatterDB.string(from: today)
-                              endDateDB = dateFormatterDB.string(from: last)
-
-
-               self.employeeID = appDelegate.loggedInEmployee!.ID
-
-
-
-            break
-            case 11:
-                 print("next 14 days everyone")
-                               let today = calendar.startOfDay(for: Date())
-                               print("today = \(today)")
-                               let last = calendar.startOfDay(for: Date()).addNumberOfDaysToDate(_numberOfDays: 14)
-                               print("last = \(last)")
-                               startDateDB = dateFormatterDB.string(from: today)
-                               endDateDB = dateFormatterDB.string(from: last)
-
-
-                  self.employeeID = ""
-
-            break
-            case 12:
-
-                 print("next 30 days personal")
-                                                  let today = calendar.startOfDay(for: Date())
-                                                  print("today = \(today)")
-                                                  let last = calendar.startOfDay(for: Date()).addNumberOfDaysToDate(_numberOfDays: 30)
-                                                  print("last = \(last)")
-                                                  startDateDB = dateFormatterDB.string(from: today)
-                                                  endDateDB = dateFormatterDB.string(from: last)
-
-                 self.employeeID = appDelegate.loggedInEmployee!.ID
-
-            break
-            case 13:
-
-
-                print("next 30 days everyone")
-                                                 let today = calendar.startOfDay(for: Date())
-                                                 print("today = \(today)")
-                                                 let last = calendar.startOfDay(for: Date()).addNumberOfDaysToDate(_numberOfDays: 30)
-                                                 print("last = \(last)")
-                                                 startDateDB = dateFormatterDB.string(from: today)
-                                                 endDateDB = dateFormatterDB.string(from: last)
-
-                self.employeeID = ""
-
-
-            break
-            case 14:
-                 print("this year personal")
-
-
-                               let today = calendar.startOfDay(for: Date())
-                               print("today = \(today)")
-                               var last:Date
-
-                               // Get the current year
-                               let year = calendar.component(.year, from: Date())
-                               // Get the first day of next year
-                               if let firstOfNextYear = calendar.date(from: DateComponents(year: year + 1, month: 1, day: 1)) {
-                                   // Get the last day of the current year
-                                   last = calendar.date(byAdding: .day, value: -1, to: firstOfNextYear)!
-                                   print("last = \(last)")
-                                   endDateDB = dateFormatterDB.string(from: last)
-                               }
-
-
-                               startDateDB = dateFormatterDB.string(from: today)
-
-
-
-                 self.employeeID = appDelegate.loggedInEmployee!.ID
-
-            break
-            case 15:
-                print("this year everyone")
-
-
-                let today = calendar.startOfDay(for: Date())
-                print("today = \(today)")
-                var last:Date
-
-                // Get the current year
-                let year = calendar.component(.year, from: Date())
-                // Get the first day of next year
-                if let firstOfNextYear = calendar.date(from: DateComponents(year: year + 1, month: 1, day: 1)) {
-                    // Get the last day of the current year
-                    last = calendar.date(byAdding: .day, value: -1, to: firstOfNextYear)!
-                    print("last = \(last)")
-                    endDateDB = dateFormatterDB.string(from: last)
-                }
-
-
-                startDateDB = dateFormatterDB.string(from: today)
-
-                self.employeeID = ""
-
-            break
-           default:
-               print("all dates")
-               //all dates
-
-               startDateDB = ""
-               endDateDB = ""
-
-            self.employeeID = ""
-
-           }
-         */
-
-
-
-
-    }
-
-    private fun updateScheduleInfo(position:Int) {
-        when(position) {
-            0 -> {println("all dates personal")
-                startDateDB = ""
-                endDateDB = ""
-
-                empID = loggedInEmployee!!.ID
-                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
-            }
-            1 -> {println("all dates everyone")
-                startDateDB = ""
-                endDateDB = ""
-
-                empID = ""
-                binding.crewBtn.text = getString(R.string.crews_everyone)
-            }
-            2 -> {println("today personal")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.atStartOfDay()
-                val ldtStop: LocalDateTime = ldtStart
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = loggedInEmployee!!.ID
-                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
-            }
-            3 -> {println("today everyone")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.atStartOfDay()
-                val ldtStop: LocalDateTime = ldtStart
-
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = ""
-                binding.crewBtn.text = getString(R.string.crews_everyone)
-            }
-            4 -> {println("tomorrow personal")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.atStartOfDay().plusDays(1)
-                val ldtStop: LocalDateTime = ldtStart
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = loggedInEmployee!!.ID
-                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
-            }
-            5 -> {println("tomorrow everyone")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.atStartOfDay().plusDays(1)
-                val ldtStop: LocalDateTime = ldtStart
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID =""
-                binding.crewBtn.text = getString(R.string.crews_everyone)
-            }
-            6 -> {println("this week personal")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atStartOfDay()
-                val ldtStop: LocalDateTime = ldtStart.plusDays(6)
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = loggedInEmployee!!.ID
-                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
-            }
-            7 -> {println("this week everyone")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).atStartOfDay()
-                val ldtStop: LocalDateTime = ldtStart.plusDays(6)
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = ""
-                binding.crewBtn.text = getString(R.string.crews_everyone)
-            }
-            8 -> {println("next week personal")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).plusDays(7).atStartOfDay()
-                val ldtStop: LocalDateTime = ldtStart.plusDays(6)
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = loggedInEmployee!!.ID
-                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
-            }
-            9 -> {println("next week everyone")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.with(WeekFields.of(Locale.US).dayOfWeek(), 1L).plusDays(7).atStartOfDay()
-                val ldtStop: LocalDateTime = ldtStart.plusDays(6)
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = ""
-                binding.crewBtn.text = getString(R.string.crews_everyone)
-            }
-            10 -> {println("next 14 days personal")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.atStartOfDay()
-                val ldtStop: LocalDateTime = today.atStartOfDay().plusDays(14)
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = loggedInEmployee!!.ID
-                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
-            }
-            11 -> {println("next 14 days everyone")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.atStartOfDay()
-                val ldtStop: LocalDateTime = today.atStartOfDay().plusDays(14)
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = ""
-                binding.crewBtn.text = getString(R.string.crews_everyone)
-            }
-            12 -> {println("next 30 days personal")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.atStartOfDay()
-                val ldtStop: LocalDateTime = today.atStartOfDay().plusDays(30)
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = loggedInEmployee!!.ID
-                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
-            }
-            13 -> {println("next 30 days everyone")
-                val today: LocalDate = LocalDate.now(ZoneOffset.UTC)
-                val ldtStart: LocalDateTime = today.atStartOfDay()
-                val ldtStop: LocalDateTime = today.atStartOfDay().plusDays(30)
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = ""
-                binding.crewBtn.text = getString(R.string.crews_everyone)
-            }
-            14 -> {println("this year personal")
-                val ldtStart: LocalDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atStartOfDay()
-                val ldtStop: LocalDateTime = LocalDate.ofYearDay(LocalDate.now().year+1, 1).atStartOfDay()
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = loggedInEmployee!!.ID
-                binding.crewBtn.text = getString(R.string.crews_name, loggedInEmployee!!.fname)
-            }
-            15 -> {println("this year everyone")
-                val ldtStart: LocalDateTime = LocalDate.ofYearDay(LocalDate.now().year, 1).atStartOfDay()
-                val ldtStop: LocalDateTime = LocalDate.ofYearDay(LocalDate.now().year+1, 1).atStartOfDay()
-                print("ldtStart = $ldtStart")
-                print("ldtStop = $ldtStop")
-                startDateDB = ldtStart.format(dateFormatterYYYYMMDD)
-                endDateDB = ldtStop.format(dateFormatterYYYYMMDD)
-                empID = ""
-                binding.crewBtn.text = getString(R.string.crews_everyone)
-            }
-        }
-    }
 
 
     fun showProgressView() {
@@ -882,7 +320,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
         println("hideProgressView")
         binding.progressBar.visibility = View.INVISIBLE
         binding.allCl.visibility = View.VISIBLE
-
     }
 
 
@@ -897,7 +334,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener, AdapterVie
     override fun onDestroyView() {
         println("onDestroyView")
         binding.workOrdersSearch.setOnQueryTextListener(null)
-        binding.scheduleSpinner.onItemSelectedListener = null
 
         super.onDestroyView()
     }

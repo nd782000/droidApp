@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -46,6 +44,7 @@ class MainMenuFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu_menu, menu)
         menu.findItem(R.id.version_item).title = getString(R.string.version, BuildConfig.VERSION_NAME, GlobalVars.phpVersion)
+        menu.removeItem(R.id.home_item)
         super.onCreateOptionsMenu(menu, inflater)
         ((activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false))
     }
@@ -113,9 +112,9 @@ class MainMenuFragment : Fragment() {
         myView = binding.root
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.app_name)
-        val constraintLayout: ConstraintLayout = myView.findViewById(R.id.logged_in_employee_constraint_layout)
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(constraintLayout)
+        //val constraintLayout: ConstraintLayout = myView.findViewById(R.id.logged_in_employee_constraint_layout)
+        //val constraintSet = ConstraintSet()
+        //constraintSet.clone(constraintLayout)
 
         //val loggedInEmployeeImageView:ImageView = myView.findViewById(R.id.logged_in_employee_image_view)
 
@@ -126,12 +125,13 @@ class MainMenuFragment : Fragment() {
             //.centerCrop()                        //optional
             .into( binding.loggedInEmployeeImageView)                       //Your image view object.
 
-        binding.loggedInEmployee.text = getString(R.string.welcome_name, loggedInEmployee!!.fname)
+        binding.userBtn.text = "        ${loggedInEmployee!!.fname}"
+            //getString(R.string.welcome_name, loggedInEmployee!!.fname)
 
-        println("loggedInEmployeeTextView.id = ${binding.loggedInEmployee.id}")
-        println("loggedInEmployeeImageView.id = ${binding.loggedInEmployeeImageView.id}")
+        //println("loggedInEmployeeTextView.id = ${binding.loggedInEmployee.id}")
+        //println("loggedInEmployeeImageView.id = ${binding.loggedInEmployeeImageView.id}")
 
-        binding.loggedInEmployeeConstraintLayout.setOnClickListener(({
+        binding.userBtn.setOnClickListener(({
 
             println("Go To Logged in Employee")
             // Toast.makeText(activity,"Go To Logged in Employee",Toast.LENGTH_SHORT).show()
@@ -147,11 +147,15 @@ class MainMenuFragment : Fragment() {
             //startActivity(clickintent)
         }))
 
+        binding.myScheduleBtn.setOnClickListener(({
+            val directions = MainMenuFragmentDirections.navigateToMySchedule(loggedInEmployee!!)
+            myView.findNavController().navigate(directions)
+        }))
+
 
         binding.btnEmployees.setOnClickListener(({
 
             println("Go To Employees")
-            // Toast.makeText(activity,"Go To Employees",Toast.LENGTH_SHORT).show()
             if (GlobalVars.permissions!!.employees == "1") {
                 myView.findNavController().navigate(R.id.navigateToEmployeeList)//var clickintent = Intent(this@MainMenu, CustomersList::class.java)
             }

@@ -317,7 +317,7 @@ class LeadListFragment : Fragment(), LeadCellClickListener {
         //Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
-            val directions = LeadListFragmentDirections.navigateToLead(it)
+            val directions = LeadListFragmentDirections.navigateToLead(it.ID)
             myView.findNavController().navigate(directions)
         }
 

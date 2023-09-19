@@ -25,7 +25,7 @@
     <string name="item">Artículo</string>
     <string name="no_zone">Ninguna zona</string>
     <string name="no_payment_terms">Ninguna términos de pago</string>
-    <string name="schedule">Ordenes de trabajo</string>
+    <string name="work_orders">Ordenes de trabajo</string>
     <string name="invoice">Factura</string>
     <string name="invoice_list">Lista de facturas</string>
     <string name="invoices">Facturas</string>
@@ -663,7 +663,7 @@
     <string name="lead_list_settings">Configuración de la lista de pistas</string>
     <string name="edit_lead_menu">Editar pista</string>
     <string name="new_lead">Pista nueva</string>
-    <string name="edit_lead">Editar pista #%1$</string>
+    <string name="edit_lead">Editar pista #%1$s</string>
     <string name="assign_lead_tasks">Asignar tareas de pista</string>
     <string name="lead_number">Pista #%1$s</string>
     <string name="add_new_lead">Añadir nuevo pista</string>
@@ -851,5 +851,29 @@
     <string name="cancel_service_title">¿Cancelar el servicio?</string>
     <string name="new_service_added_body_date">Se agregó un nuevo servicio de %1$s que se realizará en %2$s.</string>
     <string name="new_service_added_body_usage">Se agregó un nuevo servicio de %1$s que se realizará en %2$s %3$s.</string>
+    <string name="my_schedule">Mi Programa</string>
+    <string name="xs_schedule">Programa de %1$s</string>
+    <string name="xs_schedule_for_label">Programa de %1$s el:</string>
+    <string name="add_payroll">Agregar nómina</string>
+    <string name="show_completed_work_label">Mostrar trabajo completado:</string>
+    <string name="tomorrow">Mañana</string>
+    <string name="this_week">Esta semana</string>
+    <string name="next_week">La próxima semana</string>
+    <string name="one_task_remaining">1 tarea restante</string>
+    <string name="x_tasks_remaining">%1$d tareas restantes</string>
+    <string name="schedule">Programa</string>
+    <string name="crews_x">Personales (%1$s)</string>
+    <string name="no_work_scheduled">No hay trabajo programado</string>
+    <string name="my_schedule_count">(%1$d) Ordenes de trabajo, (%2$d) Pistas, (%3$d) Servicios</string>
+    <string name="xs_schedule_map">Mapa de programa de %1$s</string>
+    <string name="unplottable_wos_title">Ordenes de trabajo imposibles de trazar</string>
+    <string name="unplottable_wos_body">Hubo %1$d ordenes de trabajo que no se pudieron trazar.</string>
+    <string name="unplottable_wos_body_one">Hubo una orden de trabajo que no se pudo trazar.</string>
+    <string name="unplottable_leads_title">Pistas imposibles de trazar</string>
+    <string name="unplottable_leads_body">Hubo %1$d pistas que no se pudieron trazar.</string>
+    <string name="unplottable_leads_body_one">Hubo una pista que no se pudo trazar.</string>
+    <string name="unplottable_my_schedule_title">Entradas imposibles de trazar</string>
+    <string name="unplottable_my_schedule_body">Hubo %1$d entradas en la programa de %2$s que no se pudieron trazar.</string>
+    <string name="unplottable_my_schedule_body_one">Hubo una entrada en la programa de %1$s que no se pudo trazar.</string>
 
 </resources>

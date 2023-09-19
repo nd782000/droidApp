@@ -73,7 +73,7 @@
 
 
     <string name="lead_list">Lead List</string>
-    <string name="schedule">Work Orders</string>
+    <string name="work_orders">Work Orders</string>
     <string name="invoice">Invoice</string>
     <string name="invoice_list">Invoice List</string>
     <string name="invoices">Invoices</string>
@@ -1037,8 +1037,32 @@
     <string name="equipment_details_type_x">Type: %1$s</string>
     <string name="equipment_details_name_x">Name: %1$s</string>
 
-
-
+    <!-- My Schedule -->
+    <string name="my_schedule">My Schedule</string>
+    <string name="xs_schedule">%1$s\'s Schedule</string>
+    <string name="xs_schedule_for_label">%1$s\'s Schedule For:</string>
+    <string name="add_payroll">Add Payroll</string>
+    <string name="show_completed_work_label">Show Completed Work:</string>
+    <string name="x_dash_y" translatable="false">%1$s - %2$s</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="this_week">This Week</string>
+    <string name="next_week">Next Week</string>
+    <string name="one_task_remaining">1 Task Remaining</string>
+    <string name="x_tasks_remaining">%1$d Tasks Remaining</string>
+    <string name="schedule">Schedule</string>
+    <string name="crews_x">Crews (%1$s)</string>
+    <string name="no_work_scheduled">No Work Scheduled</string>
+    <string name="my_schedule_count">(%1$d) Work Orders, (%2$d) Leads, (%3$d) Services</string>
+    <string name="xs_schedule_map">%1$s\'s Schedule Map</string>
+    <string name="unplottable_wos_title">Unplottable Work Orders</string>
+    <string name="unplottable_wos_body">There were %1$d work order(s) that were unable to be plotted.</string>
+    <string name="unplottable_wos_body_one">There was one work order that was unable to be plotted.</string>
+    <string name="unplottable_leads_title">Unplottable Leads</string>
+    <string name="unplottable_leads_body">There were %1$d lead(s) that were unable to be plotted.</string>
+    <string name="unplottable_leads_body_one">There was one lead that was unable to be plotted.</string>
+    <string name="unplottable_my_schedule_title">Unplottable Items</string>
+    <string name="unplottable_my_schedule_body">There were %1$d entries on %2$s\'s schedule that were unable to be plotted.</string>
+    <string name="unplottable_my_schedule_body_one">There was one entry on %1$s\'s schedule that was unable to be plotted.</string>
 
     <!--
     <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>

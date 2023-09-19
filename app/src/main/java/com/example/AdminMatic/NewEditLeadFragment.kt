@@ -468,7 +468,7 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                         if (editMode) {
                             myView.findNavController().navigateUp()
                         } else {
-                            val directions = NewEditLeadFragmentDirections.navigateToLead(lead)
+                            val directions = NewEditLeadFragmentDirections.navigateToLead(lead!!.ID)
                             myView.findNavController().navigate(directions)
                         }
                     }

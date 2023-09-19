@@ -16,6 +16,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.example.AdminMatic.GlobalVars.Companion.dateFormatterPHP
 import com.example.AdminMatic.GlobalVars.Companion.dateFormatterShort
+import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
 import java.time.LocalDate
@@ -24,8 +25,10 @@ import java.time.LocalDate
 class ServiceFragment : Fragment() {
 
     private var service: EquipmentService? = null
+    private var serviceID = ""
     private var historyMode = false
     private var equipmentUsage = 0
+    private var fromMySchedule = false
 
     private var equipment:Equipment? = null
 
@@ -40,6 +43,8 @@ class ServiceFragment : Fragment() {
             service = it.getParcelable("service")
             historyMode = it.getBoolean("historyMode")
             equipment = it.getParcelable("equipment")
+            fromMySchedule = it.getBoolean("fromMySchedule")
+            serviceID = it.getString("serviceID")!!
         }
     }
 
@@ -88,8 +93,79 @@ class ServiceFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (service == null) {
+            getService()
+        }
+        else {
+            layoutViews()
+        }
 
-        println("onViewCreated")
+    }
+
+    private fun getService(){
+        println("getService")
+
+        showProgressView()
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/equipmentService.php"
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                println("Response $response")
+                try {
+                    val parentObject = JSONObject(response)
+                    println("getLead parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+                        val gson = GsonBuilder().create()
+                        //var leadJSONObject:JSONObject
+                        //leadJSONObject = gson.fromJson(parentObject["leads"].toString() , JSONObject::class.java)
+
+                        service = gson.fromJson(parentObject["service"].toString(), EquipmentService::class.java)
+
+                        layoutViews()
+
+                    }
+                    layoutViews()
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["serviceID"] = serviceID
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "service"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+
+    }
+
+    private fun layoutViews() {
+
+        binding.equipmentBtn.text = equipment!!.name
+        binding.equipmentBtn.setOnClickListener {
+            if (fromMySchedule) {
+                val directions = ServiceFragmentDirections.navigateToEquipment(null)
+                directions.equipmentID = equipment!!.ID
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                myView.findNavController().navigateUp()
+            }
+        }
 
         binding.serviceInstructionsTxt.text = service!!.instructions
 
@@ -443,6 +519,8 @@ class ServiceFragment : Fragment() {
                     }
 
                     setStatus(newStatus)
+                    globalVars.updateGlobalMySchedule(service!!.ID, MyScheduleEntryType.service, newStatus)
+
 
                     hideProgressView()
 
@@ -512,10 +590,12 @@ class ServiceFragment : Fragment() {
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         binding.progressBar.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
     private fun setStatus(status: String) {
@@ -523,23 +603,23 @@ class ServiceFragment : Fragment() {
         when(status) {
             "0" -> {
                 println("0")
-                binding.serviceStatusIv.setBackgroundResource(R.drawable.ic_not_started)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_not_started)
             }
             "1" -> {
                 println("1")
-                binding.serviceStatusIv.setBackgroundResource(R.drawable.ic_in_progress)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_in_progress)
             }
             "2" -> {
                 println("2")
-                binding.serviceStatusIv.setBackgroundResource(R.drawable.ic_done)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_done)
             }
             "3" -> {
                 println("3")
-                binding.serviceStatusIv.setBackgroundResource(R.drawable.ic_canceled)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_canceled)
             }
             "4" -> {
                 println("4")
-                binding.serviceStatusIv.setBackgroundResource(R.drawable.ic_canceled)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_canceled)
             }
         }
     }

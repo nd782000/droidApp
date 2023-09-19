@@ -304,7 +304,7 @@ class InvoiceFragment : Fragment(), StackDelegate {
     override fun newLeadView(_lead: Lead) {
         println("newLeadView ${_lead.ID}")
 
-        val directions = InvoiceFragmentDirections.navigateInvoiceToLead(_lead)
+        val directions = InvoiceFragmentDirections.navigateInvoiceToLead(_lead.ID)
         myView.findNavController().navigate(directions)
 
     }

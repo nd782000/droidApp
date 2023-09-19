@@ -107,6 +107,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        println("On View Created")
 
         binding.equipmentStatusBtn.setOnClickListener{
             println("status btn clicked")
@@ -187,6 +188,9 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
 
         tableMode = "CURRENT"
+
+        println("before get service info")
+
 
         getServiceInfo(false)
 

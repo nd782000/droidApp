@@ -199,13 +199,14 @@ class GlobalVars: Application() {
 
 
         var globalWorkOrdersList:MutableList<WorkOrder>? = null
-        var globalDayNote:String? = null
+        //var globalDayNote:String? = null
         var globalLeadList:MutableList<Lead>? = null
-        var scheduleSpinnerPosition:Int = 2
+        //var globalMapScheduleEntryList:MutableList<MyScheduleEntry> = mutableListOf()
+        var globalMyScheduleSections = mutableListOf<MyScheduleSection>()
 
         var deviceID:String? = null
 
-        var phpVersion:String = "1-7"
+        var phpVersion:String = "1-8"
 
         var customerList: MutableList<Customer>? = null
 
@@ -229,6 +230,20 @@ class GlobalVars: Application() {
     //private var listener: LogOut? = null
 
 
+    fun updateGlobalMySchedule(id:String, entryType:MyScheduleEntryType, newStatus:String) {
+        for (sec in globalMyScheduleSections) {
+            for (entry in sec.entries) {
+                if (entry.refID == id && entry.entryType == entryType) {
+                    entry.status = newStatus
+                }
+            }
+            for (entry in sec.entriesFiltered) {
+                if (entry.refID == id && entry.entryType == entryType) {
+                    entry.status = newStatus
+                }
+            }
+        }
+    }
 
 
     /* helper functions */

@@ -122,6 +122,9 @@
         <action
             android:id="@+id/navigateToCrews"
             app:destination="@id/crewsFragment" />
+        <action
+            android:id="@+id/navigateToMySchedule"
+            app:destination="@id/myScheduleFragment" />
         <!--
         <action
             android:id="@+id/navigateToBugLog"
@@ -333,6 +336,37 @@
             app:destination="@id/newEditContractFragment" />
     </fragment>
     <fragment
+        android:id="@+id/myScheduleFragment"
+        android:name="com.example.AdminMatic.MyScheduleFragment"
+        android:label="fragment_my_schedule"
+        tools:layout="@layout/fragment_my_schedule" >
+        <argument
+            android:name="employee"
+            app:argType="com.example.AdminMatic.Employee"
+            app:nullable="false" />
+        <action
+            android:id="@+id/navigateToWorkOrder"
+            app:destination="@id/workOrderFragment" />
+        <action
+            android:id="@+id/navigateToLead"
+            app:destination="@id/leadFragment" />
+        <action
+            android:id="@+id/navigateToService"
+            app:destination="@id/serviceFragment" />
+        <action
+            android:id="@+id/navigateToServiceInspection"
+            app:destination="@id/serviceInspectionFragment" />
+        <action
+            android:id="@+id/navigateToCrews"
+            app:destination="@id/crewsFragment" />
+        <action
+            android:id="@+id/navigateToPayroll"
+            app:destination="@id/payrollFragment" />
+        <action
+            android:id="@+id/navigateToMap"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
         android:id="@+id/newEditWorkOrderFragment"
         android:name="com.example.AdminMatic.NewEditWorkOrderFragment"
         android:label="fragment_new_edit_work_order"
@@ -428,12 +462,26 @@
             android:name="mode"
             app:argType="integer"
             app:nullable="false" />
+        <argument
+            android:name="name"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="showCompleted"
+            app:argType="boolean"
+            android:defaultValue="false" />
         <action
             android:id="@+id/navigateToWorkOrder"
             app:destination="@id/workOrderFragment" />
         <action
             android:id="@+id/navigateToLead"
             app:destination="@id/leadFragment" />
+        <action
+            android:id="@+id/navigateToService"
+            app:destination="@id/serviceFragment" />
+        <action
+            android:id="@+id/navigateToServiceInspection"
+            app:destination="@id/serviceInspectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/invoiceListFragment"
@@ -555,6 +603,9 @@
         <action
             android:id="@+id/navigateToNewEditEmployee"
             app:destination="@id/newEditEmployeeFragment"/>
+        <action
+            android:id="@+id/navigateToMySchedule"
+            app:destination="@id/myScheduleFragment"/>
     </fragment>
     <fragment
         android:id="@+id/usageFragment"
@@ -770,9 +821,9 @@
         android:label="fragment_lead"
         tools:layout="@layout/fragment_lead" >
         <argument
-            android:name="lead"
-            app:argType="com.example.AdminMatic.Lead"
-            app:nullable="true" />
+            android:name="leadID"
+            app:argType="string"
+            app:nullable="false" />
         <action
             android:id="@+id/navigateLeadToContract"
             app:destination="@id/contractFragment" />
@@ -967,6 +1018,9 @@
         <action
             android:id="@+id/navigateToNewEditService"
             app:destination="@id/newServiceFragment"/>
+        <action
+            android:id="@+id/navigateToEquipment"
+            app:destination="@id/equipmentFragment"/>
         <argument
             android:name="service"
             app:argType="com.example.AdminMatic.EquipmentService"
@@ -979,6 +1033,14 @@
             android:name="historyMode"
             app:argType="boolean"
             app:nullable="false" />
+        <argument
+            android:name="fromMySchedule"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+        <argument
+            android:name="serviceID"
+            app:argType="string"
+            android:defaultValue=""/>
     </fragment>
 
     <fragment
@@ -989,6 +1051,9 @@
         <action
             android:id="@+id/navigateToNewEditService"
             app:destination="@id/newServiceFragment"/>
+        <action
+            android:id="@+id/navigateToEquipment"
+            app:destination="@id/equipmentFragment"/>
         <argument
             android:name="service"
             app:argType="com.example.AdminMatic.EquipmentService"
@@ -1001,6 +1066,14 @@
             android:name="historyMode"
             app:argType="boolean"
             app:nullable="false" />
+        <argument
+            android:name="fromMySchedule"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+        <argument
+            android:name="serviceID"
+            app:argType="string"
+            android:defaultValue=""/>
     </fragment>
 
     <fragment

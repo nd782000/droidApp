@@ -30,7 +30,7 @@ interface WoItemCellClickListener {
 
 class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     private var listIndex: Int = -1
-    private var workOrderID: String? = ""
+    private var workOrderID: String = ""
     private  var workOrder: WorkOrder? = null
 
     lateinit var globalVars:GlobalVars
@@ -45,7 +45,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         super.onCreate(savedInstanceState)
         arguments?.let {
             workOrder = it.getParcelable("workOrder")
-            workOrderID = it.getString("workOrderID")
+            workOrderID = it.getString("workOrderID")!!
             listIndex = it.getInt("listIndex")
 
         }
@@ -402,6 +402,10 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         globalVars.playSaveSound(com.example.AdminMatic.myView.context)
                     }
 
+                    //setFragmentResult("refresh", bundleOf("refresh" to true))
+
+                    globalVars.updateGlobalMySchedule(workOrder!!.woID, MyScheduleEntryType.workOrder, workOrder!!.status)
+
                     hideProgressView()
 
                     /* Here 'response' is a String containing the response you received from the website... */
@@ -508,7 +512,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     override fun newLeadView(_lead: Lead) {
         println("newLeadView ${_lead.ID}")
 
-        val directions = WorkOrderFragmentDirections.navigateWorkOrderToLead(_lead)
+        val directions = WorkOrderFragmentDirections.navigateWorkOrderToLead(_lead.ID)
         myView.findNavController().navigate(directions)
     }
 

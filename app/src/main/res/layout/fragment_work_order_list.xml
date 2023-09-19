@@ -10,6 +10,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.example.AdminMatic.EmptySubmitSearchViewCompat
+            android:id="@+id/work_orders_search"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/text_view_layout"
+            android:imeOptions="actionDone"
+            app:iconifiedByDefault="false"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:queryBackground="@null"
+            android:title="Search"
+            app:actionViewClass="android.widget.SearchView"/>
+
+        <!--
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/top_btns"
             android:layout_width="0dp"
@@ -19,20 +35,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.example.AdminMatic.EmptySubmitSearchViewCompat
-                android:id="@+id/work_orders_search"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/text_view_layout"
-                android:imeOptions="actionDone"
-                app:iconifiedByDefault="false"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:queryBackground="@null"
-                android:title="Search"
-                app:actionViewClass="android.widget.SearchView"/>
+
 
             <Spinner
                 android:id="@+id/schedule_spinner"
@@ -73,7 +76,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Day note -->
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/day_note_cl"
             android:background="@color/background"
@@ -106,6 +109,7 @@
                 android:inputType="textMultiLine"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
+        -->
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/customerSwipeContainer"
@@ -115,7 +119,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/day_note_cl"
+            app:layout_constraintTop_toBottomOf="@id/work_orders_search"
             app:layout_constraintVertical_bias="0.0">
 
             <androidx.recyclerview.widget.RecyclerView

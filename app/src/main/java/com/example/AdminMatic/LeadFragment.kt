@@ -30,7 +30,8 @@ interface LeadTaskCellClickListener {
 
 class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
-    private  var lead: Lead? = null
+    private var lead: Lead? = null
+    private var leadID = "0"
 
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
@@ -41,7 +42,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            lead = it.getParcelable("lead")
+            leadID = it.getString("leadID")!!
         }
     }
 
@@ -56,17 +57,19 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         myView = binding.root
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_number, lead!!.ID)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.lead_number, leadID)
         setHasOptionsMenu(true)
         return myView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getLead()
+    }
 
-        println("lead = ${lead!!.ID}")
+    fun layoutViews() {
 
-        stackFragment = StackFragment(0,lead!!.ID,this)
+        stackFragment = StackFragment(0,leadID,this)
 
         val ft = childFragmentManager.beginTransaction()
         ft.add(R.id.lead_cl, stackFragment, "stackFrag")
@@ -95,7 +98,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
                 val directions = LeadFragmentDirections.navigateLeadToImageUpload(
                     "LEADTASK",
-                    arrayOf(), lead!!.customer, lead!!.custName, "", "", lead!!.ID, "0", "", "", "", ""
+                    arrayOf(), lead!!.customer, lead!!.custName, "", "", leadID, "0", "", "", "", ""
                 )
 
                 myView.findNavController().navigate(directions)
@@ -106,7 +109,8 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
         }
 
-        getLead()
+        hideProgressView()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -227,7 +231,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                             //(adapter as LeadTasksAdapter).notifyDataSetChanged()
                         }
                     }
-                    hideProgressView()
+                    layoutViews()
 
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -241,7 +245,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["leadID"] = lead!!.ID
+                params["leadID"] = leadID
                 println("params = $params")
                 return params
             }
@@ -293,8 +297,6 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
             lead!!.statusID = item!!.itemId.toString()
 
             setStatus(lead!!.statusID)
-            Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT)
-                .show()
 
             showProgressView()
 
@@ -317,6 +319,8 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                         if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
                             globalVars.playSaveSound(myView.context)
                         }
+                        //setFragmentResult("refresh", bundleOf("refresh" to true))
+                        globalVars.updateGlobalMySchedule(lead!!.ID, MyScheduleEntryType.lead, lead!!.statusID)
 
                         hideProgressView()
 
@@ -335,7 +339,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                     params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                     params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                     params["status"] = lead!!.statusID
-                    params["leadID"] = lead!!.ID
+                    params["leadID"] = leadID
                     params["empID"] = GlobalVars.loggedInEmployee!!.ID
                     println("params = $params")
                     return params
@@ -359,7 +363,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         }
 
 
-        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,"","","","",lead!!.ID, _task.ID,"${_task.task}","","", "")
+        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,"","","","",leadID, _task.ID,"${_task.task}","","", "")
         myView.findNavController().navigate(directions)
     }
 

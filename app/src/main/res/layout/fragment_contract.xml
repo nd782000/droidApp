@@ -21,7 +21,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/contract_status_cust_cl"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/empty_cl"
         android:background="@color/background"
@@ -30,8 +30,8 @@
 
         <ImageButton
             android:id="@+id/contract_status_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
@@ -42,7 +42,8 @@
         <Button
             android:id="@+id/contract_customer_btn"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
+            android:textSize="12sp"
             android:text=""
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"

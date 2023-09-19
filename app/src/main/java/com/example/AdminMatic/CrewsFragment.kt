@@ -243,6 +243,7 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["department"] = departmentValue
+                params["date"] = "today"
                 params["active"] = "1"
                 println("params = $params")
                 return params

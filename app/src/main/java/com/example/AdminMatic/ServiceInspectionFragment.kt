@@ -25,8 +25,10 @@ import java.time.LocalDate
 class ServiceInspectionFragment : Fragment() {
 
     private var service: EquipmentService? = null
+    private var serviceID = ""
     private var equipment: Equipment? = null
     private var historyMode = false
+    private var fromMySchedule = false
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
@@ -43,6 +45,8 @@ class ServiceInspectionFragment : Fragment() {
             service = it.getParcelable("service")
             equipment = it.getParcelable("equipment")
             historyMode = it.getBoolean("historyMode")
+            fromMySchedule = it.getBoolean("fromMySchedule")
+            serviceID = it.getString("serviceID")!!
         }
     }
 
@@ -94,36 +98,16 @@ class ServiceInspectionFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        showProgressView()
 
-        binding.inspectionNotesEditTxt.setText(service!!.completionNotes)
-        binding.serviceInspectionSubmitBtn.setOnClickListener{
-            showUpdateMenu()
+        if (serviceID != "") {
+            getService()
+        }
+        else {
+            getInspectionItems()
         }
 
-        if (historyMode) {
-            binding.serviceInspectionSubmitBtn.visibility = View.GONE
-            binding.inspectionNotesEditTxt.isEnabled = false
-        }
 
-        when (equipment!!.usageType) {
-            "km" -> {
-                binding.serviceCurrentTitleTxt.text = getString(R.string.completion_value_x, getString(R.string.kilometers))
-            }
-            "hours" -> {
-                binding.serviceCurrentTitleTxt.text = getString(R.string.completion_value_x, getString(R.string.engine_hours))
-            }
-            else -> { // miles
-                binding.serviceCurrentTitleTxt.text = getString(R.string.completion_value_x, getString(R.string.miles))
-            }
-        }
-
-        if (historyMode) {
-            binding.currentEditTxt.visibility = View.GONE
-            binding.serviceCurrentTitleTxt.visibility = View.GONE
-            binding.inspectionNotesEditTxt.isFocusable = false
-        }
-
-        getInspectionItems()
 
     }
 
@@ -132,8 +116,57 @@ class ServiceInspectionFragment : Fragment() {
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("serviceInspection")
     }
 
-    private fun getInspectionItems() {
+    private fun getService(){
+        println("getService")
+
         showProgressView()
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/equipmentService.php"
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                println("Response $response")
+                try {
+                    val parentObject = JSONObject(response)
+                    println("getLead parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+                        val gson = GsonBuilder().create()
+                        //var leadJSONObject:JSONObject
+                        //leadJSONObject = gson.fromJson(parentObject["leads"].toString() , JSONObject::class.java)
+
+                        service = gson.fromJson(parentObject["service"].toString(), EquipmentService::class.java)
+
+                        getInspectionItems()
+
+                    }
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = loggedInEmployee!!.companyUnique
+                params["sessionKey"] = loggedInEmployee!!.sessionKey
+                params["serviceID"] = serviceID
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "serviceInspection"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+
+    }
+
+    private fun getInspectionItems() {
 
         var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/inspection.php"
 
@@ -179,6 +212,8 @@ class ServiceInspectionFragment : Fragment() {
 
                             setStatus(service!!.status!!)
 
+                            layoutViews()
+
                         }
                     }
 
@@ -212,6 +247,50 @@ class ServiceInspectionFragment : Fragment() {
         }
         postRequest1.tag = "serviceInspection"
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
+
+    private fun layoutViews() {
+        binding.equipmentBtn.text = equipment!!.name
+        binding.equipmentBtn.setOnClickListener {
+            if (fromMySchedule) {
+                val directions = ServiceFragmentDirections.navigateToEquipment(null)
+                directions.equipmentID = equipment!!.ID
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                myView.findNavController().navigateUp()
+            }
+        }
+
+        binding.inspectionNotesEditTxt.setText(service!!.completionNotes)
+        binding.serviceInspectionSubmitBtn.setOnClickListener{
+            showUpdateMenu()
+        }
+
+        if (historyMode) {
+            binding.serviceInspectionSubmitBtn.visibility = View.GONE
+            binding.inspectionNotesEditTxt.isEnabled = false
+        }
+
+        when (equipment!!.usageType) {
+            "km" -> {
+                binding.serviceCurrentTitleTxt.text = getString(R.string.completion_value_x, getString(R.string.kilometers))
+            }
+            "hours" -> {
+                binding.serviceCurrentTitleTxt.text = getString(R.string.completion_value_x, getString(R.string.engine_hours))
+            }
+            else -> { // miles
+                binding.serviceCurrentTitleTxt.text = getString(R.string.completion_value_x, getString(R.string.miles))
+            }
+        }
+
+        if (historyMode) {
+            binding.currentEditTxt.visibility = View.GONE
+            binding.serviceCurrentTitleTxt.visibility = View.GONE
+            binding.inspectionNotesEditTxt.isFocusable = false
+        }
+
+        hideProgressView()
     }
 
     private fun validateFields(newStatus:String):Boolean {
@@ -327,6 +406,9 @@ class ServiceInspectionFragment : Fragment() {
                     if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
                         globalVars.playSaveSound(myView.context)
                     }
+
+                    //setFragmentResult("refresh", bundleOf("refresh" to true))
+                    globalVars.updateGlobalMySchedule(service!!.ID, MyScheduleEntryType.service, newStatus)
 
                     hideProgressView()
 
@@ -580,23 +662,23 @@ class ServiceInspectionFragment : Fragment() {
         when(status) {
             "0" -> {
                 println("0")
-                binding.serviceStatusIv.setBackgroundResource(R.drawable.ic_not_started)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_not_started)
             }
             "1" -> {
                 println("1")
-                binding.serviceStatusIv.setBackgroundResource(R.drawable.ic_in_progress)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_in_progress)
             }
             "2" -> {
                 println("2")
-                binding.serviceStatusIv.setBackgroundResource(R.drawable.ic_done)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_done)
             }
             "3" -> {
                 println("3")
-                binding.serviceStatusIv.setBackgroundResource(R.drawable.ic_canceled)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_canceled)
             }
             "4" -> {
                 println("4")
-                binding.serviceStatusIv.setBackgroundResource(R.drawable.ic_canceled)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_canceled)
             }
         }
     }

@@ -464,7 +464,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         println("newLeadView ${_lead.ID}")
 
         if (GlobalVars.permissions!!.leads == "1") {
-            val directions = ContractFragmentDirections.navigateContractToLead(_lead)
+            val directions = ContractFragmentDirections.navigateContractToLead(_lead.ID)
             myView.findNavController().navigate(directions)
         }
         else {

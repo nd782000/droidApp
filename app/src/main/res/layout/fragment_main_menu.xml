@@ -15,41 +15,77 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/logged_in_employee_constraint_layout"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/buttons_layout"
+            android:layout_width="0dp"
             android:layout_height="50dp"
-            android:background="@color/colorPrimaryDark"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:background="@color/background"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:baselineAligned="false">
 
-            <ImageView
-                android:id="@+id/logged_in_employee_image_view"
-                android:layout_width="50dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/user_btn_cl"
+                app:layout_constraintRight_toLeftOf="@id/my_schedule_cl"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="5dp"
-                android:src="@drawable/user_placeholder"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_weight="1">
+                <Button
+                    android:id="@+id/user_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:text=""
+                    android:textAlignment="viewStart"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="2.5dp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/my_schedule_cl"
+                app:layout_constraintLeft_toRightOf="@id/user_btn_cl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <Button
+                    android:id="@+id/my_schedule_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
 
-            <TextView
-                android:id="@+id/logged_in_employee"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:gravity="start|center_vertical"
-                android:text="@string/Welcome"
-                android:textColor="@color/colorAccent"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/logged_in_employee_image_view"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    android:text="@string/my_schedule"
+                    android:layout_marginLeft="2.5dp"
+                    android:layout_marginRight="5dp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="8sp"
+                    android:autoSizeMaxTextSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/logged_in_employee_image_view"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:paddingLeft="9dp"
+            android:src="@drawable/user_placeholder"
+            app:layout_constraintLeft_toLeftOf="@id/buttons_layout"
+            app:layout_constraintBottom_toBottomOf="@id/buttons_layout"
+            app:layout_constraintTop_toTopOf="@id/buttons_layout" />
 
         <ScrollView
             android:id="@+id/scrollView"
@@ -60,7 +96,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/logged_in_employee_constraint_layout">
+            app:layout_constraintTop_toBottomOf="@+id/buttons_layout">
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -315,7 +351,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:layout_marginBottom="5dp"
-                            android:text="@string/schedule"
+                            android:text="@string/work_orders"
                             android:textAlignment="center"
                             android:textColor="@color/gray"
                             android:autoSizeTextType="uniform"
