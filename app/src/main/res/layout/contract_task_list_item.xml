@@ -19,6 +19,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/image_count_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textColor="@color/white_fixed"
+        app:layout_constraintLeft_toLeftOf="@id/contract_task_item_image_view"
+        app:layout_constraintRight_toRightOf="@id/contract_task_item_image_view"
+        app:layout_constraintTop_toTopOf="@id/contract_task_item_image_view"
+        app:layout_constraintBottom_toBottomOf="@id/contract_task_item_image_view"
+        />
 
     <TextView
         android:id="@+id/contract_task_item_name"

@@ -57,6 +57,21 @@
 
         />
 
+    <TextView
+        android:id="@+id/image_count_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textColor="@color/white_fixed"
+        app:layout_constraintLeft_toLeftOf="@id/task_thumb_iv"
+        app:layout_constraintRight_toRightOf="@id/task_thumb_iv"
+        app:layout_constraintTop_toTopOf="@id/task_thumb_iv"
+        app:layout_constraintBottom_toBottomOf="@id/task_thumb_iv"
+        />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

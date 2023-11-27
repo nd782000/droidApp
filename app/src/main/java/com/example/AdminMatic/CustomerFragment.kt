@@ -840,7 +840,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 "IMAGES" -> {
                     customer.let { customer ->
                         val directions = CustomerFragmentDirections.navigateCustomerToImageUpload("CUSTOMER",
-                            arrayOf(),customerID,customer.sysname,"","","","","","","", "")
+                            arrayOf(),customerID,customer.sysname,"","","", "","","","", "","", "")
                         myView.findNavController().navigate(directions)
                     }
                 }

@@ -54,6 +54,9 @@ class GlobalVars: Application() {
         var paymentTerms:Array<PaymentTerms>? = null
         var contactTypes:Array<ContactType>? = null
 
+        // Flagged when you get a server error and are kicked to the bug log view
+        var shouldLogOut:Boolean = false
+
         var colorArray:Array<String> = arrayOf(
             "#C62D42",
             "#FE4C40",
@@ -206,7 +209,7 @@ class GlobalVars: Application() {
 
         var deviceID:String? = null
 
-        var phpVersion:String = "1-8"
+        var phpVersion:String = "1-10"
 
         var customerList: MutableList<Customer>? = null
 
@@ -224,6 +227,9 @@ class GlobalVars: Application() {
         val dateFormatterHHMMSS: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
         val moneyFormatter: NumberFormat = DecimalFormat("#,###,##0.00")
+
+        var contractSingle: EmailTemplate? = null
+        var invoiceSingle: EmailTemplate? = null
     }
 
 
@@ -231,18 +237,40 @@ class GlobalVars: Application() {
 
 
     fun updateGlobalMySchedule(id:String, entryType:MyScheduleEntryType, newStatus:String) {
+
         for (sec in globalMyScheduleSections) {
             for (entry in sec.entries) {
                 if (entry.refID == id && entry.entryType == entryType) {
                     entry.status = newStatus
                 }
             }
+            /*
             for (entry in sec.entriesFiltered) {
                 if (entry.refID == id && entry.entryType == entryType) {
                     entry.status = newStatus
+
+                    /*
+                    // If it just got set to complete, remove it from the filtered list
+                    if (entry.entryType == MyScheduleEntryType.service) {
+                        if (entry.status == "2" || entry.status == "3" || entry.status == "4") {
+                            sec.entries.remove(entry)
+                        }
+                    }
+                    else {
+                        if (entry.status == "3" || entry.status == "4") {
+                            sec.entries.remove(entry)
+                        }
+                    }
+                     */
+
                 }
             }
+
+             */
         }
+
+
+
     }
 
 
@@ -349,6 +377,14 @@ class GlobalVars: Application() {
 
         GlobalVars.contactTypes = contactTypesFiltered.toTypedArray()
 
+        val contractSingleArray:JSONObject = parentObject.getJSONObject("contract-single")
+        contractSingle = gson.fromJson(contractSingleArray.toString() , EmailTemplate::class.java)
+
+        val invoiceSingleArray:JSONObject = parentObject.getJSONObject("invoice-single")
+        invoiceSingle = gson.fromJson(invoiceSingleArray.toString() , EmailTemplate::class.java)
+
+        println("INVOICE SINGLE: ${invoiceSingle!!.title}")
+        println("CONTRACT SINGLE: ${contractSingle!!.title}")
 
         println("thumbBase= $thumbBase")
     }
@@ -506,8 +542,11 @@ class GlobalVars: Application() {
         println("warning size: ${warnings.size}")
         println("error size: ${errors.size}")
 
+
         if (errors.isNotEmpty()) {
             playErrorSound(context)
+            shouldLogOut = true
+
             var errorString = ""
             errors.forEach {
                 errorString += it
@@ -524,9 +563,9 @@ class GlobalVars: Application() {
                 warningString += it
                 warningString += "\n"
             }
-            //simpleAlert(context, context.getString(R.string.dialogue_php_warning), warningString)
+            simpleAlert(context, context.getString(R.string.dialogue_php_warning), warningString)
 
-
+            /*
             val builder = AlertDialog.Builder(myView_.context)
             builder.setMessage(myView_.context.getString(R.string.adminmatic_warning))
             builder.setPositiveButton(myView_.context.getString(R.string.yes)) { _, _ ->
@@ -540,6 +579,8 @@ class GlobalVars: Application() {
             }
 
             builder.show()
+
+             */
 
             return true
         }

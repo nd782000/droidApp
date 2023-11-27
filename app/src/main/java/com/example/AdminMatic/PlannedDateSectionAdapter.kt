@@ -128,7 +128,18 @@ class PlannedDateSectionViewHolder(inflater: LayoutInflater, parent: ViewGroup) 
         }
 
         mAddCrewText!!.setOnClickListener {
-            val newRow = PlannedDate(plannedDateSection.workOrderID, "0", plannedDateSection.plannedDate, plannedDateSection.firm, "", "", "0", "0")
+            val newRow = when (plannedDateSection.type) {
+                PlannedDateType.WorkOrder -> {
+                    PlannedDate(plannedDateSection.workOrderID, "0", "0", "0", plannedDateSection.plannedDate, plannedDateSection.firm, "", "", "0", "0")
+                }
+                PlannedDateType.Lead -> {
+                    PlannedDate(plannedDateSection.workOrderID, "0", "0", "0", plannedDateSection.plannedDate, plannedDateSection.firm, "", "", "0", "0")
+                }
+                PlannedDateType.Service -> {
+                    PlannedDate(plannedDateSection.workOrderID, "0", "0", "0", plannedDateSection.plannedDate, plannedDateSection.firm, "", "", "0", "0")
+                }
+            }
+
             plannedDateSection.rows.add(newRow)
             plannedDateDelegate.reloadRecycler()
         }

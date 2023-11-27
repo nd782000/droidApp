@@ -89,7 +89,7 @@ class ContractItemAdapter(list: MutableList<ContractItem>, private val context: 
      */
 
     override fun getItemCount(): Int{
-        println("getItemCount = ${filterList.size}")
+        //println("getItemCount = ${filterList.size}")
         return filterList.size + 1
     }
 

@@ -97,7 +97,12 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
             ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.crews)
         }
         else {
-            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_crews, employee!!.fname)
+            if (dateValue == "tomorrow") {
+                ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_crews_for_tomorrow, employee!!.fname)
+            }
+            else {
+                ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_crews_for_today, employee!!.fname)
+            }
         }
 
         return myView
@@ -107,6 +112,8 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        readOnly = GlobalVars.permissions!!.crewsEdit != "1"
 
         println("Data loaded in onViewCreate: $dataLoaded")
 
@@ -127,8 +134,10 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            readOnly = it.getBoolean("readOnly")
+            //readOnly = it.getBoolean("readOnly")
             employee = it.getParcelable("employee")
+            print("DATE VALUE STRING: ${it.getString("dateValue")!!}")
+            dateValue = it.getString("dateValue")!!
         }
         setFragmentResultListener("newEditCrew") { _, bundle ->
             println("FRAGMENTRESULTLISTENER")
@@ -158,6 +167,10 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
         showProgressView()
 
         crewList.clear()
+
+        if (dateValue == "tomorrow") {
+            dateValue = LocalDate.now(ZoneOffset.UTC).plusDays(1).format(GlobalVars.dateFormatterYYYYMMDD)
+        }
 
         var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/crews.php"
 
@@ -243,7 +256,7 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["department"] = departmentValue
-                params["date"] = "today"
+                params["date"] = dateValue
                 params["active"] = "1"
                 println("params = $params")
                 return params
@@ -257,6 +270,10 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
         println("getEmployeeCrews")
 
         showProgressView()
+
+        if (dateValue == "tomorrow") {
+            dateValue = LocalDate.now(ZoneOffset.UTC).plusDays(1).format(GlobalVars.dateFormatterYYYYMMDD)
+        }
 
         crewList.clear()
 
@@ -328,6 +345,7 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["date"] = dateValue
                 params["empID"] = employee!!.ID
                 println("params = $params")
                 return params
@@ -370,7 +388,7 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
 
     private fun layoutViews() {
 
-        if (!readOnly) {
+        if (!readOnly && employee == null) {
 
             // Date Picker
             binding.dateEt.setOnClickListener {
@@ -386,6 +404,7 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
 
                         if (selectedDate != dateValueDate) {
                             binding.dateEt.setText(selectedDate.format(GlobalVars.dateFormatterShort))
+
                             dateValue = if (selectedDate == LocalDate.now(ZoneOffset.UTC)) {
                                 ""
                             } else {
@@ -636,7 +655,7 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
                     else {
                         params["employeeID"] = entry.employee!!.ID
                     }
-                    if (dateValue != "") {
+                    if (dateValue != "" && dateValue != "today") {
                         params["day"] = dateValue
                     }
                     params["oldCrew"] = existingID
@@ -684,9 +703,11 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
                                 val checkedElement = crewList[crewIndex].equipment!![i]
                                 if (entry.equipment!!.ID == checkedElement.ID) {
                                     // Add the equipment to the unassigned crew
-                                    val unassignedEquipMutable = crewList.last().equipment!!.toMutableList()
-                                    unassignedEquipMutable.add(checkedElement)
-                                    crewList.last().equipment = unassignedEquipMutable.toTypedArray()
+                                    if (employee == null) {
+                                        val unassignedEquipMutable = crewList.last().equipment!!.toMutableList()
+                                        unassignedEquipMutable.add(checkedElement)
+                                        crewList.last().equipment = unassignedEquipMutable.toTypedArray()
+                                    }
 
                                     // Remove the equipment from the current crew
                                     val equipMutable = crewList[crewIndex].equipment!!.toMutableList()
@@ -702,10 +723,12 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
                             for (i in 0 until crewList[crewIndex].emps!!.size) {
                                 val checkedElement = crewList[crewIndex].emps!![i]
                                 if (entry.employee!!.ID == checkedElement.ID) {
-                                    // Add the equipment to the unassigned crew
-                                    val unassignedEmpsMutable = crewList.last().emps!!.toMutableList()
-                                    unassignedEmpsMutable.add(checkedElement)
-                                    crewList.last().emps = unassignedEmpsMutable.toTypedArray()
+                                    if (employee == null) {
+                                        // Add the equipment to the unassigned crew
+                                        val unassignedEmpsMutable = crewList.last().emps!!.toMutableList()
+                                        unassignedEmpsMutable.add(checkedElement)
+                                        crewList.last().emps = unassignedEmpsMutable.toTypedArray()
+                                    }
 
                                     // Remove the equipment from the current crew
                                     val empMutable = crewList[crewIndex].emps!!.toMutableList()
@@ -743,12 +766,12 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
                 else {
                     params["employeeID"] = entry.employee!!.ID
                 }
-                if (dateValue != "") {
+                if (dateValue != "" && dateValue != "") {
                     params["day"] = dateValue
                 }
                 params["oldCrew"] = crewSections[crewIndex].ID
                 params["newCrew"] = "0"
-                println("params = $params")
+                println("crew unassign params = $params")
                 return params
             }
         }

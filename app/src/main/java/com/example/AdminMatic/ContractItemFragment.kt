@@ -8,7 +8,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +25,7 @@ import com.squareup.picasso.Picasso
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import kotlin.contracts.contract
 import kotlin.math.roundToInt
 
 interface ContractTaskCellClickListener {
@@ -36,12 +40,13 @@ interface SearchItemCellClickListener {
 class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchItemCellClickListener, AdapterView.OnItemSelectedListener {
     private var addMode: Boolean? = null
     private var editMode: Boolean? = false
-    private var editsMade: Boolean = false
+    private var editsMade = false
     private var itemsList: MutableList<Item> = mutableListOf()
     private var chargeTypeArray:Array<String> = arrayOf("No Charge", "Flat", "T & M")
 
-    private  var contractItem: ContractItem? = null
+    //private var reloadContractItem = false
 
+    private  var contractItem: ContractItem? = null
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
@@ -53,6 +58,13 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         arguments?.let {
             contractItem = it.getParcelable("contractItem")
             addMode = it.getBoolean("addMode")
+        }
+        setFragmentResultListener("contractTaskItemListener") { _, bundle ->
+            val shouldRefresh = bundle.getBoolean("shouldRefreshContractItem")
+            if (shouldRefresh) {
+                println("got result listener")
+                reloadContractItem()
+            }
         }
     }
 
@@ -109,6 +121,50 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
         super.onViewCreated(view, savedInstanceState)
         println("Contract Item View")
 
+
+        layoutViews()
+
+        /*
+        if (reloadContractItem) {
+            println("reloadContractItem = true")
+            reloadContractItem()
+        }
+        else {
+            println("reloadContractItem = false")
+            layoutViews()
+        }
+
+         */
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.contract_item_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.edit_contract_item_item) {
+            if (GlobalVars.permissions!!.contractsEdit == "1") {
+                enableEditMode(true)
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts_edit))
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("contractItem")
+    }
+
+    private fun layoutViews() {
         //Todo: Make search view recycler appear when search is focused
 
         //contractItemSearch.isSubmitButtonEnabled = false
@@ -290,35 +346,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
             }
         }
 
-
         getItems()
-
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.contract_item_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here.
-        val id = item.itemId
-
-        if (id == R.id.edit_contract_item_item) {
-            if (GlobalVars.permissions!!.contractsEdit == "1") {
-                enableEditMode(true)
-            }
-            else {
-                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts_edit))
-            }
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("contractItem")
     }
 
     private fun getItems(){
@@ -526,8 +554,23 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
 
     override fun onContractTaskCellClickListener(data:ContractTask) {
         println("Clicked on contract task #${data.ID}")
-        //val directions = ContractFragmentDirections.navigateContractToContractItem(data)
-        //myView.findNavController().navigate(directions)
+        val directions = ContractItemFragmentDirections.navigateToImageUpload(
+            "CONTRACTTASK",
+            data.images,
+            "",
+            "",
+            "",
+            "",
+            data.contractItemID,
+            "",
+            data.ID,
+            data.taskDescription,
+            "",
+            "",
+            "",
+            ""
+        )
+        myView.findNavController().navigate(directions)
     }
 
     override fun onSearchItemCellClickListener(data:SearchItem) {
@@ -545,6 +588,70 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
             setTotalText()
         }
 
+    }
+
+    private fun reloadContractItem(){
+        println("getContract = ${contractItem?.contractID}")
+        //showProgressView()
+
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/contract.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
+                    val gson = GsonBuilder().create()
+                    val contractObject = parentObject.getJSONObject("contract")
+                    val contractNew = gson.fromJson(contractObject.toString() , Contract::class.java)
+
+                    for (i in contractNew.items!!) {
+                        if (i.ID == contractItem!!.ID) {
+                            println("Found the contract item!")
+                            contractItem = i
+                            break
+                        }
+                    }
+
+                    layoutViews()
+
+                    hideProgressView()
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["contractID"] = contractItem!!.contractID
+
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "contractItem"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {

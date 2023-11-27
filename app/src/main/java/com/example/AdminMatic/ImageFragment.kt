@@ -3,6 +3,7 @@ package com.example.AdminMatic
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
+import android.view.GestureDetector.SimpleOnGestureListener
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -21,6 +22,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.time.LocalDate
 import kotlin.math.abs
+
 
 class ImageFragment : Fragment() {
 
@@ -100,7 +102,7 @@ class ImageFragment : Fragment() {
         Picasso.with(context).load(R.drawable.ic_liked).fetch()
         Picasso.with(context).load(R.drawable.ic_unliked).fetch()
 
-        val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
+        val gestureDetector = GestureDetector(activity, object : SimpleOnGestureListener() {
             override fun onDown(event: MotionEvent): Boolean { return true }
             override fun onFling(event1: MotionEvent, event2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
                 if (abs(velocityX) > abs(velocityY)) {
@@ -123,34 +125,18 @@ class ImageFragment : Fragment() {
                 }
                 return true
             }
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                toggleLike()
+                return true
+            }
         })
         binding.imageDetailsIv.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+
 
         ImageViewCompat.setImageTintList(binding.likeIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
 
         binding.likeIv.setOnClickListener {
-            var likeCount:Int? = image!!.likes?.toInt()
-            if (image!!.liked == "1") {
-                image!!.liked = "0"
-                if (likeCount != null) {
-                    likeCount--
-                }
-                Picasso.with(context).load(R.drawable.ic_unliked).into(binding.likeIv)
-                ImageViewCompat.setImageTintList(binding.likeIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
-                setLiked(false)
-            }
-            else {
-                image!!.liked = "1"
-                if (likeCount != null) {
-                    likeCount++
-                }
-                Picasso.with(context).load(R.drawable.ic_liked).into(binding.likeIv)
-                ImageViewCompat.setImageTintList(binding.likeIv, null)
-                binding.likeIv.colorFilter = null
-                setLiked(true)
-            }
-            image!!.likes = likeCount.toString()
-            setLikesViewText()
+            toggleLike()
         }
 
         binding.likesTv.setOnClickListener {
@@ -176,6 +162,31 @@ class ImageFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("image")
+    }
+
+    private fun toggleLike() {
+        var likeCount:Int? = image!!.likes?.toInt()
+        if (image!!.liked == "1") {
+            image!!.liked = "0"
+            if (likeCount != null) {
+                likeCount--
+            }
+            Picasso.with(context).load(R.drawable.ic_unliked).into(binding.likeIv)
+            ImageViewCompat.setImageTintList(binding.likeIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
+            setLiked(false)
+        }
+        else {
+            image!!.liked = "1"
+            if (likeCount != null) {
+                likeCount++
+            }
+            Picasso.with(context).load(R.drawable.ic_liked).into(binding.likeIv)
+            ImageViewCompat.setImageTintList(binding.likeIv, null)
+            binding.likeIv.colorFilter = null
+            setLiked(true)
+        }
+        image!!.likes = likeCount.toString()
+        setLikesViewText()
     }
 
     private fun setLikesViewText() {

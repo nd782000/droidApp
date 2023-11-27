@@ -30,18 +30,38 @@ interface PlannedDateDelegate {
     fun reloadRecycler()
 }
 
+enum class PlannedDateType {
+    WorkOrder,
+    Lead,
+    Service
+}
 
-class PlannedDateSection(_workOrderID:String?, _plannedDate: String?, _firm: String?) {
+class PlannedDateSection(_workOrderID:String?, _leadID:String?, _serviceID:String?, _plannedDate: String?, _firm: String?) {
     var workOrderID: String? = _workOrderID
+    var leadID: String? = _leadID
+    var serviceID: String? = _serviceID
     var plannedDate: String? = _plannedDate
     var firm: String? = _firm
     var rows: MutableList<PlannedDate> = mutableListOf()
+    var type: PlannedDateType = PlannedDateType.WorkOrder
+
+    init {
+        type = if (workOrderID != "0") {
+            PlannedDateType.WorkOrder
+        } else if (leadID != "0") {
+            PlannedDateType.Lead
+        } else {
+            PlannedDateType.Service
+        }
+    }
 }
 
 
 class PlannedDatesFragment : Fragment(), PlannedDateDelegate {
 
     private var workOrder: WorkOrder? = null
+    private var lead: Lead? = null
+    private var service: EquipmentService? = null
     private val plannedDateSectionsList = mutableListOf<PlannedDateSection>()
     private val plannedDatesListFiltered = mutableListOf<PlannedDate>()
     private val plannedDatesListOld = mutableListOf<PlannedDate>()
@@ -49,6 +69,7 @@ class PlannedDatesFragment : Fragment(), PlannedDateDelegate {
     private var editsMade = false
     private var sectionAdapter:PlannedDateSectionAdapter? = null
 
+    private var viewMode: PlannedDateType = PlannedDateType.WorkOrder
 
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
@@ -57,6 +78,16 @@ class PlannedDatesFragment : Fragment(), PlannedDateDelegate {
         super.onCreate(savedInstanceState)
         arguments?.let {
             workOrder = it.getParcelable("workOrder")
+            lead = it.getParcelable("lead")
+            service = it.getParcelable("service")
+
+            viewMode = if (workOrder != null) {
+                PlannedDateType.WorkOrder
+            } else if (lead != null) {
+                PlannedDateType.Lead
+            } else {
+                PlannedDateType.Service
+            }
         }
     }
 
@@ -94,7 +125,23 @@ class PlannedDatesFragment : Fragment(), PlannedDateDelegate {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.xs_planned_dates, workOrder!!.woID)
+
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.planned_dates_menu)
+
+        when (viewMode) {
+            PlannedDateType.WorkOrder -> {
+                binding.headerTv1.text = getString(R.string.planned_date_header_wo, workOrder!!.woID, workOrder!!.title)
+                binding.headerTv2.text = workOrder!!.custName
+            }
+            PlannedDateType.Lead -> {
+                binding.headerTv1.text = getString(R.string.planned_date_header_lead, lead!!.ID, lead!!.description)
+                binding.headerTv2.text = lead!!.custName
+            }
+            PlannedDateType.Service -> {
+                binding.headerTv1.text = getString(R.string.planned_date_header_service, service!!.ID, service!!.name)
+                binding.headerTv2.text = service!!.equipmentName
+            }
+        }
 
         return myView
     }
@@ -135,8 +182,22 @@ class PlannedDatesFragment : Fragment(), PlannedDateDelegate {
                 }
             }
 
-            val newSection = PlannedDateSection(workOrder!!.woID, newDateString, "0")
-            val newRow = PlannedDate(newSection.workOrderID, "0", newSection.plannedDate, newSection.firm, "", "", "0", "0")
+
+            val newSection = when (viewMode) {
+                PlannedDateType.WorkOrder -> {
+                    PlannedDateSection(workOrder!!.woID, "0", "0", newDateString, "0")
+                }
+                PlannedDateType.Lead -> {
+                    PlannedDateSection("0", lead!!.ID, "0", newDateString, "0")
+                }
+                PlannedDateType.Service -> {
+                    PlannedDateSection("0", "0", service!!.ID, newDateString, "0")
+                }
+            }
+
+
+
+            val newRow = PlannedDate(newSection.workOrderID, "0", "0", "0", newSection.plannedDate, newSection.firm, "", "", "0", "0")
             newSection.rows.add(newRow)
             plannedDateSectionsList.add(newSection)
             //binding.noPlannedDatesTv.visibility = View.INVISIBLE
@@ -215,9 +276,21 @@ class PlannedDatesFragment : Fragment(), PlannedDateDelegate {
                                 }
                             }
                             if (!foundDate) {
-                                val newPlannedDateSection = PlannedDateSection(pd.workOrderID, pd.plannedDate, pd.firm)
-                                newPlannedDateSection.rows.add(pd)
-                                plannedDateSectionsList.add(newPlannedDateSection)
+
+                                val newSection = when (viewMode) {
+                                    PlannedDateType.WorkOrder -> {
+                                        PlannedDateSection(workOrder!!.woID, "0", "0", pd.plannedDate, pd.firm)
+                                    }
+                                    PlannedDateType.Lead -> {
+                                        PlannedDateSection("0", lead!!.ID, "0", pd.plannedDate, pd.firm)
+                                    }
+                                    PlannedDateType.Service -> {
+                                        PlannedDateSection("0", "0", service!!.ID, pd.plannedDate, pd.firm)
+                                    }
+                                }
+
+                                newSection.rows.add(pd)
+                                plannedDateSectionsList.add(newSection)
                                 println("Didn't find the section, creating it and adding the row")
                             }
                         }
@@ -226,19 +299,7 @@ class PlannedDatesFragment : Fragment(), PlannedDateDelegate {
                         binding.recyclerView.apply {
                             layoutManager = LinearLayoutManager(activity)
                             adapter = sectionAdapter
-
-                            //(adapter as WoItemsAdapter).notifyDataSetChanged()
                         }
-
-
-                        /*
-                        if (plannedDateSectionsList.isEmpty()) {
-                            binding.noPlannedDatesTv.visibility = View.VISIBLE
-                        }
-
-                         */
-
-
 
                         binding.oldDatesTv.text = getString(R.string.planned_dates_x_old, plannedDatesListOld.count())
 
@@ -246,29 +307,32 @@ class PlannedDatesFragment : Fragment(), PlannedDateDelegate {
 
                     }
 
-
-
-
-                    /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()
                 }
 
-
-                // var intent:Intent = Intent(applicationContext,MainActivity2::class.java)
-                // startActivity(intent)
             },
             Response.ErrorListener { // error
-
-
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
             }
         ) {
             override fun getParams(): Map<String, String> {
                 val params: MutableMap<String, String> = HashMap()
-                params["woID"] = workOrder!!.woID
+
+                when (viewMode) {
+                    PlannedDateType.WorkOrder -> {
+                        params["woID"] = workOrder!!.woID
+                    }
+                    PlannedDateType.Lead -> {
+                        params["leadID"] = lead!!.ID
+                    }
+                    PlannedDateType.Service -> {
+                        params["serviceID"] = service!!.ID
+                    }
+                }
+
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 println("params = $params")
@@ -347,7 +411,17 @@ class PlannedDatesFragment : Fragment(), PlannedDateDelegate {
         ) {
             override fun getParams(): Map<String, String> {
                 val params: MutableMap<String, String> = HashMap()
-                params["woID"] = workOrder!!.woID
+                when (viewMode) {
+                    PlannedDateType.WorkOrder -> {
+                        params["woID"] = workOrder!!.woID
+                    }
+                    PlannedDateType.Lead -> {
+                        params["leadID"] = lead!!.ID
+                    }
+                    PlannedDateType.Service -> {
+                        params["serviceID"] = service!!.ID
+                    }
+                }
                 params["plannedDates"] = jsonUsagePretty
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey

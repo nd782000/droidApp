@@ -217,6 +217,11 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
                     //.resize(imgWidth, imgHeight)         //optional
                     //.centerCrop()                        //optional
                     .into(taskImageView)                       //Your image view object.
+
+                if (task.images!!.count() > 1) {
+                    val countTv:TextView = holder.itemView.findViewById(R.id.image_count_tv)
+                    countTv.text = "+${task.images!!.count()-1}"
+                }
             }
         }
 
@@ -246,6 +251,11 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
             "3" -> {
                 Picasso.with(context).load(R.drawable.ic_canceled).into(optionsBtn)
             }
+        }
+
+        val data = list[position]
+        holder.itemView.setOnClickListener {
+            cellClickListener.onLeadTaskCellClickListener(data)
         }
 
         //TODO: Complete functionality here

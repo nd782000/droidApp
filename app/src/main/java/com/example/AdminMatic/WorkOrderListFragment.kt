@@ -92,7 +92,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
             myView.findNavController().navigate(directions)
         }
 
-        if (globalWorkOrdersList == null) {
+        if (globalWorkOrdersList.isNullOrEmpty()) {
 
             getWorkOrders()
 

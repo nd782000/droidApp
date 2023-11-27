@@ -36,7 +36,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
 
-    private lateinit var  stackFragment: StackFragment
+    private lateinit var stackFragment: StackFragment
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +98,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
                 val directions = LeadFragmentDirections.navigateLeadToImageUpload(
                     "LEADTASK",
-                    arrayOf(), lead!!.customer, lead!!.custName, "", "", leadID, "0", "", "", "", ""
+                    arrayOf(), lead!!.customer, lead!!.custName, "", "","", leadID, "0", "", "", "", "", ""
                 )
 
                 myView.findNavController().navigate(directions)
@@ -122,15 +122,31 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         // Handle action bar item clicks here.
         val id = item.itemId
 
+
+        when (item.itemId) {
+            R.id.edit_lead_item -> {
+                if (GlobalVars.permissions!!.leadsEdit == "1") {
+                    val directions = LeadFragmentDirections.navigateLeadToNewEditLead(lead)
+                    myView.findNavController().navigate(directions)
+                }
+                else {
+                    globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads_edit))
+                }
+                return true
+            }
+            R.id.planned_dates_item -> {
+                if (GlobalVars.permissions!!.leadsEdit == "1") {
+                    val directions = LeadFragmentDirections.navigateToPlannedDates(null, lead, null)
+                    myView.findNavController().navigate(directions)
+                }
+                else {
+                    globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads_edit))
+                }
+            }
+        }
+
         if (id == R.id.edit_lead_item) {
-            if (GlobalVars.permissions!!.leadsEdit == "1") {
-                val directions = LeadFragmentDirections.navigateLeadToNewEditLead(lead)
-                myView.findNavController().navigate(directions)
-            }
-            else {
-                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_leads_edit))
-            }
-            return true
+
         }
         return super.onOptionsItemSelected(item)
     }
@@ -260,7 +276,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
 
         println("Cell clicked with leadTask: ${data.task}")
 
-        /*
+
 
         data?.let { data ->
             var images:Array<Image>
@@ -270,12 +286,12 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
                 images = data.images!!
             }
             val directions = LeadFragmentDirections.navigateLeadToImageUpload("LEADTASK",
-                images,"","","","",lead!!.ID,data.ID,"","")
+                images,"","","","","",lead!!.ID,data.ID,data.task,"", "", "","")
 
             myView.findNavController().navigate(directions)
 
         }
-*/
+
 
 
 
@@ -363,7 +379,7 @@ class LeadFragment : Fragment(), StackDelegate, LeadTaskCellClickListener {
         }
 
 
-        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,"","","","",leadID, _task.ID,"${_task.task}","","", "")
+        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,"","","","","",leadID, _task.ID,"${_task.task}","", "","", "")
         myView.findNavController().navigate(directions)
     }
 

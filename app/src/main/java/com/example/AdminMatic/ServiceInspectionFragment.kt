@@ -91,6 +91,15 @@ class ServiceInspectionFragment : Fragment() {
                     globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_equipment_edit))
                 }
             }
+            R.id.planned_dates_item -> {
+                if (GlobalVars.permissions!!.equipmentEdit == "1") {
+                    val directions = ServiceInspectionFragmentDirections.navigateToPlannedDates(null, null, service)
+                    myView.findNavController().navigate(directions)
+                }
+                else {
+                    globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_equipment_edit))
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -263,6 +272,11 @@ class ServiceInspectionFragment : Fragment() {
         }
 
         binding.inspectionNotesEditTxt.setText(service!!.completionNotes)
+
+        binding.statusIv.setOnClickListener{
+            showUpdateMenu()
+        }
+
         binding.serviceInspectionSubmitBtn.setOnClickListener{
             showUpdateMenu()
         }
@@ -279,8 +293,12 @@ class ServiceInspectionFragment : Fragment() {
             "hours" -> {
                 binding.serviceCurrentTitleTxt.text = getString(R.string.completion_value_x, getString(R.string.engine_hours))
             }
-            else -> { // miles
+            "miles" -> { // miles
                 binding.serviceCurrentTitleTxt.text = getString(R.string.completion_value_x, getString(R.string.miles))
+            }
+            else -> {
+                binding.serviceCurrentTitleTxt.visibility = View.GONE
+                binding.currentEditTxt.visibility = View.GONE
             }
         }
 
@@ -305,7 +323,7 @@ class ServiceInspectionFragment : Fragment() {
             }
         }
 
-        if (binding.currentEditTxt.text.isBlank()) {
+        if (binding.currentEditTxt.text.isBlank() && binding.currentEditTxt.visibility == View.VISIBLE) {
             globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.provide_a_completion_value))
             return false
         }
@@ -425,6 +443,7 @@ class ServiceInspectionFragment : Fragment() {
                     }
 
                     //myView.findNavController().navigateUp()
+                    setStatus(newStatus)
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -547,7 +566,7 @@ class ServiceInspectionFragment : Fragment() {
 
             when (item.itemId) {
                 0 -> { // mark completed
-                    if (equipment!!.usage!!.toInt() > currentValue) {
+                    if (equipment!!.usageType != "" && equipment!!.usage!!.toInt() > currentValue) {
                         val builder = androidx.appcompat.app.AlertDialog.Builder(myView.context)
                         builder.setTitle(getString(R.string.service_check_less_than_usage_title))
                         builder.setMessage(getString(R.string.service_check_less_than_usage_body, equipment!!.name))
@@ -567,7 +586,7 @@ class ServiceInspectionFragment : Fragment() {
                     }
                 }
                 1 -> { // mark in progress
-                    if (equipment!!.usage!!.toInt() > currentValue) {
+                    if (equipment!!.usageType != "" && equipment!!.usage!!.toInt() > currentValue) {
                         val builder = androidx.appcompat.app.AlertDialog.Builder(myView.context)
                         builder.setTitle(getString(R.string.service_check_less_than_usage_title))
                         builder.setMessage(getString(R.string.service_check_less_than_usage_body, equipment!!.name))
@@ -593,7 +612,7 @@ class ServiceInspectionFragment : Fragment() {
                     builder.setMessage(getString(R.string.cancel_service_body, service!!.name))
 
                     builder.setPositiveButton(android.R.string.ok) { _, _ ->
-                        if (equipment!!.usage!!.toInt() > currentValue) {
+                        if (equipment!!.usageType != "" && equipment!!.usage!!.toInt() > currentValue) {
                             builder.setTitle(getString(R.string.service_check_less_than_usage_title))
                             builder.setMessage(getString(R.string.service_check_less_than_usage_body, equipment!!.name))
 
@@ -625,7 +644,7 @@ class ServiceInspectionFragment : Fragment() {
                     builder.setMessage(getString(R.string.skip_service_body, service!!.name))
 
                     builder.setPositiveButton(android.R.string.ok) { _, _ ->
-                        if (equipment!!.usage!!.toInt() > currentValue) {
+                        if (equipment!!.usageType != "" && equipment!!.usage!!.toInt() > currentValue) {
                             builder.setTitle(getString(R.string.service_check_less_than_usage_title))
                             builder.setMessage(getString(R.string.service_check_less_than_usage_body, equipment!!.name))
 
@@ -678,19 +697,19 @@ class ServiceInspectionFragment : Fragment() {
             }
             "4" -> {
                 println("4")
-                binding.statusIv.setBackgroundResource(R.drawable.ic_canceled)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_skipped)
             }
         }
     }
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE
-        binding.serviceInspectionRecyclerView.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         binding.progressBar.visibility = View.INVISIBLE
-        binding.serviceInspectionRecyclerView.visibility = View.VISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 }

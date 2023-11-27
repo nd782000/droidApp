@@ -8,6 +8,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
     private var contract: Contract? = null
     private var contractID: String? = null
 
+    private var dataLoaded = false
 
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
@@ -75,7 +77,34 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
         stackFragment = StackFragment(1,contractID!!,this)
 
-        getContract()
+        if (!dataLoaded) {
+            setFragmentResultListener("sent") { _, bundle ->
+                if (bundle.getBoolean("sent")) {
+
+                    if (contract!!.status == "0") {
+                        val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
+                        builder.setTitle(getString(R.string.update_contract_status_title))
+                        builder.setMessage(R.string.contract_emails_sent_update)
+                        builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
+                            contract!!.status = "1"
+                            setStatus(contract!!.status)
+                            updateContract()
+                        }
+                        builder.setNegativeButton(R.string.no) { _, _ ->
+                        }
+                        builder.show()
+                    }
+                    else {
+                        globalVars.simpleAlert(myView.context, "", getString(R.string.contract_emails_sent))
+                    }
+                }
+            }
+
+            getContract()
+        }
+        else {
+            layoutViews()
+        }
 
 
 
@@ -88,18 +117,30 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
-        val id = item.itemId
 
-        if (id == R.id.edit_contract_item) {
-            if (GlobalVars.permissions!!.contractsEdit == "1") {
-                val directions = ContractFragmentDirections.navigateContractToNewEditContract(contract)
-                myView.findNavController().navigate(directions)
+        when (item.itemId) {
+            R.id.edit_contract_item -> {
+                if (GlobalVars.permissions!!.contractsEdit == "1") {
+                    val directions = ContractFragmentDirections.navigateContractToNewEditContract(contract)
+                    myView.findNavController().navigate(directions)
+                }
+                else {
+                    globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts_edit))
+                }
+                return true
             }
-            else {
-                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts_edit))
+            R.id.send_contract_item -> {
+                if (GlobalVars.permissions!!.contractsEdit == "1") {
+                    val directions = ContractFragmentDirections.navigateToSendEmail(contract!!.customer!!, contract!!.custName!!, SendEmailType.Contract.ordinal, contractID!!)
+                    myView.findNavController().navigate(directions)
+                }
+                else {
+                    globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_contracts_edit))
+                }
+                return true
             }
-            return true
         }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -127,92 +168,79 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
 
             setStatus(contract!!.status)
+            updateContract()
             //Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT).show()
 
 
-            showProgressView()
 
-            var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/contract.php"
-
-            val currentTimestamp = System.currentTimeMillis()
-            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-            urlString = "$urlString?cb=$currentTimestamp"
-
-            val postRequest1: StringRequest = object : StringRequest(
-                Method.POST, urlString,
-                Response.Listener { response -> // response
-
-                    println("Response $response")
-
-                    try {
-
-                        val parentObject = JSONObject(response)
-                        println("parentObject = $parentObject")
-
-                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
-                            globalVars.playSaveSound(myView.context)
-                        }
-
-
-                        hideProgressView()
-
-                        /* Here 'response' is a String containing the response you received from the website... */
-                    } catch (e: JSONException) {
-                        println("JSONException")
-                        e.printStackTrace()
-                    }
-                },
-                Response.ErrorListener { // error
-
-                }
-            ) {
-                override fun getParams(): Map<String, String> {
-                    val params: MutableMap<String, String> = HashMap()
-                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                    params["contractID"] = contract!!.ID
-                    params["createdBy"] = contract!!.createdBy
-                    params["customer"] = contract!!.customer!!
-                    params["salesRep"] = contract!!.salesRep!!
-                    params["chargeType"] = contract!!.chargeType!!
-                    params["paymentTermsID"] = contract!!.paymentTermsID!!
-                    params["status"] = contract!!.status
-                    params["total"] = contract!!.total!!
-                    params["notes"] = contract!!.notes!!
-                    params["repName"] = contract!!.repName!!
-                    params["customerName"] = contract!!.custName!!
-                    params["title"] = contract!!.title
-                    //params["companySigned"] = contract!!.repSignature!!
-                    //params["customerSigned"] = contract!!.customerSigned!!
-                    println("params = $params")
-                    return params
-
-
-                    /* params from iOS
-                    "contractID":self.contract.ID,
-                    "createdBy":self.contract.createdBy,
-                    "customer":self.contract.customerID!,
-                    "salesRep":self.contract.salesRep!,
-                    "chargeType":self.contract.chargeType!,
-                    "paymentTerms:":self.contract.paymentTerms!,
-                    "status":self.contract.status,
-                    "total":self.contract.total!,
-                    "notes":self.contract.notes!,
-                    "repName":self.contract.repName!,
-                    "customerName":self.contract.customerName!,
-                    "title":self.contract.title,
-                    "companySigned":self.contract.repSignature!,
-                    "customerSigned":self.contract.customerSignature!,
-                     */
-
-                }
-            }
-            postRequest1.tag = "contract"
-            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
             true
         }
         popUp.gravity = Gravity.START
         popUp.show()
+    }
+
+    private fun updateContract() {
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/contract.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        globalVars.playSaveSound(myView.context)
+                    }
+
+
+                    hideProgressView()
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["contractID"] = contract!!.ID
+                params["createdBy"] = contract!!.createdBy
+                params["customer"] = contract!!.customer!!
+                params["salesRep"] = contract!!.salesRep!!
+                params["chargeType"] = contract!!.chargeType!!
+                params["paymentTermsID"] = contract!!.paymentTermsID!!
+                params["status"] = contract!!.status
+                params["total"] = contract!!.total!!
+                params["notes"] = contract!!.notes!!
+                params["repName"] = contract!!.repName!!
+                params["customerName"] = contract!!.custName!!
+                params["title"] = contract!!.title
+                //params["companySigned"] = contract!!.repSignature!!
+                //params["customerSigned"] = contract!!.customerSigned!!
+                println("params = $params")
+                return params
+
+            }
+        }
+        postRequest1.tag = "contract"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
     private fun setStatus(status: String) {
@@ -293,101 +321,10 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
                     contract = contractNew
 
-                    binding.contractItemRv.apply {
-                        layoutManager = LinearLayoutManager(activity)
-                        adapter = activity?.let {
-                            ContractItemAdapter(
-                                contract!!.items!!.toMutableList(),
-                                context,
-                                this@ContractFragment,
-                                this@ContractFragment
-                            )
-                        }
 
-                        val itemDecoration: RecyclerView.ItemDecoration =
-                            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                        binding.contractItemRv.addItemDecoration(itemDecoration)
-                        (adapter as ContractItemAdapter).notifyDataSetChanged()
-                    }
+                    dataLoaded = true
 
-                    //TODO: Figure out how to hide and show the stack view here during progress bar
-                    val ft = childFragmentManager.beginTransaction()
-                    ft.add(R.id.contract_cl, stackFragment, "stackFrag")
-                    ft.commitAllowingStateLoss()
-
-                    binding.contractStatusBtn.setOnClickListener{
-                        println("status btn clicked")
-                        showStatusMenu()
-                    }
-
-                    binding.contractCustomerBtn.text = getString(R.string.contract_customer_button_text, contract!!.custName, contract!!.addr)
-                    binding.contractCustomerBtn.setOnClickListener{
-                        println("customer btn clicked")
-                        val customer = Customer(contract!!.customer!!)
-                        val directions = ContractFragmentDirections.navigateContractToCustomer(customer.ID)
-                        myView.findNavController().navigate(directions)
-
-                    }
-
-
-
-                    val chargeName:String = when (contract!!.chargeType) {
-                        "1" -> {
-                            getString(R.string.contract_charge_nc)
-                        }
-                        "2" -> {
-                            getString(R.string.contract_charge_fl)
-                        }
-                        "3" -> {
-                            getString(R.string.contract_charge_tm)
-                        }
-                        else -> {
-                            ""
-                        }
-                    }
-
-                    binding.contractTitleValTv.text = contract!!.title
-                    binding.contractChargeValTv.text = chargeName
-
-                    when (contract!!.paymentTermsID) {
-                        "0" -> {
-                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_none)
-                        }
-                        "3" -> {
-                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_2percent10net30)
-                        }
-                        "4" -> {
-                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_prepay)
-                        }
-                        "6" -> {
-                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_due_on_receipt)
-                        }
-                        "7" -> {
-                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_15)
-                        }
-                        "8" -> {
-                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_30)
-                        }
-                        "9" -> {
-                            binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_60)
-                        }
-                        else -> {
-                            binding.contractPaymentValTv.text = contract!!.paymentTermsID
-                        }
-                    }
-
-                    binding.contractSalesRepValTv.text =contract!!.repName
-                    binding.contractNotesValTv.text = contract!!.notes
-                    binding.contractNotesValTv.movementMethod = ScrollingMovementMethod()
-                    //Todo: maybe find a way to add the comma to money numbers without having to cast to a double
-                    // We also need to consider how this will be handled for other regions with other forms of currency
-
-                    //if (GlobalVars.permissions!!.mon)
-                    binding.contractPriceTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(contract!!.total!!.toDouble()))
-
-
-
-                    setStatus(contract!!.status)
+                    layoutViews()
 
                     hideProgressView()
 
@@ -413,6 +350,103 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         }
         postRequest1.tag = "contract"
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
+
+    private fun layoutViews() {
+
+        binding.contractItemRv.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = activity?.let {
+                ContractItemAdapter(
+                    contract!!.items!!.toMutableList(),
+                    context,
+                    this@ContractFragment,
+                    this@ContractFragment
+                )
+            }
+
+            val itemDecoration: RecyclerView.ItemDecoration =
+                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+            binding.contractItemRv.addItemDecoration(itemDecoration)
+            (adapter as ContractItemAdapter).notifyDataSetChanged()
+        }
+
+        //TODO: Figure out how to hide and show the stack view here during progress bar
+        val ft = childFragmentManager.beginTransaction()
+        ft.add(R.id.contract_cl, stackFragment, "stackFrag")
+        ft.commitAllowingStateLoss()
+
+        binding.contractStatusBtn.setOnClickListener{
+            println("status btn clicked")
+            showStatusMenu()
+        }
+
+        binding.contractCustomerBtn.text = getString(R.string.contract_customer_button_text, contract!!.custName, contract!!.addr)
+        binding.contractCustomerBtn.setOnClickListener{
+            println("customer btn clicked")
+            val customer = Customer(contract!!.customer!!)
+            val directions = ContractFragmentDirections.navigateContractToCustomer(customer.ID)
+            myView.findNavController().navigate(directions)
+
+        }
+
+
+
+        val chargeName:String = when (contract!!.chargeType) {
+            "1" -> {
+                getString(R.string.contract_charge_nc)
+            }
+            "2" -> {
+                getString(R.string.contract_charge_fl)
+            }
+            "3" -> {
+                getString(R.string.contract_charge_tm)
+            }
+            else -> {
+                ""
+            }
+        }
+
+        binding.contractTitleValTv.text = contract!!.title
+        binding.contractChargeValTv.text = chargeName
+
+        when (contract!!.paymentTermsID) {
+            "0" -> {
+                binding.contractPaymentValTv.text = getString(R.string.contract_payment_none)
+            }
+            "3" -> {
+                binding.contractPaymentValTv.text = getString(R.string.contract_payment_2percent10net30)
+            }
+            "4" -> {
+                binding.contractPaymentValTv.text = getString(R.string.contract_payment_prepay)
+            }
+            "6" -> {
+                binding.contractPaymentValTv.text = getString(R.string.contract_payment_due_on_receipt)
+            }
+            "7" -> {
+                binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_15)
+            }
+            "8" -> {
+                binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_30)
+            }
+            "9" -> {
+                binding.contractPaymentValTv.text = getString(R.string.contract_payment_net_60)
+            }
+            else -> {
+                binding.contractPaymentValTv.text = contract!!.paymentTermsID
+            }
+        }
+
+        binding.contractSalesRepValTv.text =contract!!.repName
+        binding.contractNotesValTv.text = contract!!.notes
+        binding.contractNotesValTv.movementMethod = ScrollingMovementMethod()
+        //Todo: maybe find a way to add the comma to money numbers without having to cast to a double
+        // We also need to consider how this will be handled for other regions with other forms of currency
+
+        //if (GlobalVars.permissions!!.mon)
+        binding.contractPriceTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(contract!!.total!!.toDouble()))
+
+        setStatus(contract!!.status)
     }
 
     override fun onContractItemCellClickListener(data:ContractItem) {

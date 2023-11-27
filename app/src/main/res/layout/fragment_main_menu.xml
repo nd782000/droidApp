@@ -121,7 +121,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
                             android:layout_height="150dp"
                             android:padding="25dp"
                             android:src="@drawable/ic_employees"
@@ -155,7 +156,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
                             android:layout_height="150dp"
                             android:padding="25dp"
                             android:src="@drawable/ic_customers"
@@ -194,7 +196,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
                             android:layout_height="150dp"
                             android:padding="25dp"
                             android:src="@drawable/ic_vendors"
@@ -228,7 +231,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
                             android:layout_height="150dp"
                             android:padding="25dp"
                             android:src="@drawable/ic_items"
@@ -267,7 +271,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
                             android:layout_height="150dp"
                             android:padding="25dp"
                             android:src="@drawable/ic_leads"
@@ -301,7 +306,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
                             android:layout_height="150dp"
                             android:padding="25dp"
                             android:src="@drawable/ic_contracts"
@@ -340,10 +346,11 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
                             android:layout_height="150dp"
                             android:padding="25dp"
-                            android:src="@drawable/ic_schedule"
+                            android:src="@drawable/ic_work_orders"
                             app:tint="@color/colorPrimaryDark"/>
 
                         <TextView
@@ -374,7 +381,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
                             android:layout_height="150dp"
                             android:padding="25dp"
                             android:src="@drawable/ic_invoices"
@@ -413,7 +421,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
                             android:layout_height="150dp"
                             android:padding="25dp"
                             android:src="@drawable/ic_images"
@@ -447,7 +456,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
                             android:layout_height="150dp"
                             android:padding="25dp"
                             android:src="@drawable/ic_equipment"

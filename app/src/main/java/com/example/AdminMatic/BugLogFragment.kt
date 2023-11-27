@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +28,6 @@ import org.json.JSONObject
 class BugLogFragment : Fragment() {
 
     private var errorString: String? = null
-    private var shouldLogOut:Boolean = false
 
     lateinit  var globalVars:GlobalVars
     lateinit var myView:View
@@ -36,9 +36,7 @@ class BugLogFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             errorString = it.getString("errorString")
-            shouldLogOut = it.getBoolean("shouldLogOut")
             println("errorString = $errorString")
-            println("shouldLogOut = $shouldLogOut")
         }
     }
 
@@ -67,7 +65,7 @@ class BugLogFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (shouldLogOut) {
+        if (GlobalVars.shouldLogOut) {
             globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.error_occurred))
         }
 
@@ -113,11 +111,12 @@ class BugLogFragment : Fragment() {
                         val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
                         builder.setMessage(com.example.AdminMatic.myView.context.getString(R.string.bug_log_thank_you))
                         builder.setPositiveButton(com.example.AdminMatic.myView.context.getString(R.string.dialogue_continue)) { _, _ ->
-                            if (shouldLogOut) {
-                                globalVars.logOut(myView.context, myView)
+                            if (GlobalVars.shouldLogOut) {
+                                GlobalVars.shouldLogOut = false
+                                globalVars.logOut(com.example.AdminMatic.myView.context, com.example.AdminMatic.myView)
                             }
                             else {
-                                myView.findNavController().navigateUp()
+                                findNavController().navigateUp()
                             }
                         }
 

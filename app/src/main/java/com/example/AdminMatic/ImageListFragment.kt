@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -81,6 +82,12 @@ class ImageListFragment : Fragment(), ImageCellClickListener, CustomerCellClickL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setFragmentResultListener("_refreshImages") { _, bundle ->
+            if (bundle.getBoolean("_refreshImages")) {
+                refreshImages()
+            }
+        }
 
         setFragmentResultListener("imageListSettings") { _, bundle ->
             val newFilterBy = bundle.getInt("filterBy")
@@ -191,7 +198,7 @@ class ImageListFragment : Fragment(), ImageCellClickListener, CustomerCellClickL
                 println("add images btn clicked")
 
                 val directions = ImageListFragmentDirections.navigateToGalleryImageUpload("GALLERY",
-                    arrayOf(),"","","","","","","","","", "")
+                    arrayOf(),"","","","","","","","","", "","", "")
                 myView.findNavController().navigate(directions)
             }
 

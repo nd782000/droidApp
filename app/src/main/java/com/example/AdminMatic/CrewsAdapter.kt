@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 
 
-class CrewsAdapter(list: MutableList<CrewSection>, private val crewEntryDelegate: CrewEntryDelegate, crewCellClickListener: CrewCellClickListener, crewEntryCellClickListener: CrewEntryCellClickListener, _readOnly:Boolean)
+class CrewsAdapter(list: MutableList<CrewSection>, private val crewEntryDelegate: CrewEntryDelegate?, crewCellClickListener: CrewCellClickListener, crewEntryCellClickListener: CrewEntryCellClickListener, _readOnly:Boolean)
 
     : RecyclerView.Adapter<CrewViewHolder>() {
 

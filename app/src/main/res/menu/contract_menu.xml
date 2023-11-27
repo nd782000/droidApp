@@ -3,4 +3,7 @@
     <item
         android:id="@+id/edit_contract_item"
         android:title="@string/edit_contract_menu"/>
+    <item
+        android:id="@+id/send_contract_item"
+        android:title="@string/send_contract"/>
 </menu>

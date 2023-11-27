@@ -51,6 +51,7 @@ class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var typeNameValue = ""
     private var frequencyValue = "0"
     private var nextValue = "0"
+    private var warningValue = "0"
 
     private var editMode = false
 
@@ -128,6 +129,7 @@ class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     nextDate = LocalDate.parse(service.nextDate, GlobalVars.dateFormatterShort)
                 }
             }
+            warningValue = service.warningOffset!!
         }
         else {
             //fill in default for new
@@ -140,6 +142,7 @@ class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 "",
                 "0", // 0 = not started
                 equipment!!.ID, //equipment ID
+                "",
                 "0",
                 "",
                 sdf.format(currentTime),
@@ -148,6 +151,7 @@ class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 null,
                 null,
                 "",
+                "0",
                 "0",
                 "0",
                 "0",
@@ -175,13 +179,21 @@ class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                //if (!editModeInitialDataFilled) {
-                //    return
-                //}
 
                 if (typeValue != "0") {
                     frequencyValue = s.toString().trim()
                 }
+
+            }
+        })
+
+        binding.warningEditTxt.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+
+                warningValue = s.toString().trim()
 
             }
         })
@@ -380,6 +392,7 @@ class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 params["instructions"] = binding.instructionsEditTxt.text.toString().trim()
                 params["equipmentID"] = service.equipmentID!!
                 params["status"] = service.status!!
+                params["warningOffset"] = warningValue
                 if (typeValue == "2") { // usage based
                     params["nextValue"] = nextValue
                 }
@@ -431,9 +444,11 @@ class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 binding.frequencyEditTxt.isFocusableInTouchMode = false
                 binding.frequencyEditTxt.isFocusableInTouchMode = false
 
+                binding.warningUnitTxt.setText(R.string.service_reminder_warning_days)
+
             }
             "1" -> {
-                println("selected item 1 (repeating)")
+                println("selected item 1 (date based)")
                 typeValue = "1"
                 typeNameValue = getString(R.string.service_type_date_based)
 
@@ -449,6 +464,8 @@ class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 binding.frequencyEditTxt.isFocusable = true
                 binding.frequencyEditTxt.isFocusableInTouchMode = true
 
+                binding.warningUnitTxt.setText(R.string.service_reminder_warning_days)
+
             }
             "2" -> {
                 println("selected item 2 (usage based)")
@@ -461,16 +478,19 @@ class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         typeNameValue = getString(R.string.service_type_km_based)
                         binding.startingUnitTxt.setText(R.string.kilometers)
                         binding.frequencyUnitTxt.setText(R.string.kilometers)
+                        binding.warningUnitTxt.setText(R.string.service_reminder_warning_km)
                     }
                     "hours" -> {
                         typeNameValue = getString(R.string.service_type_engine_hour_based)
                         binding.startingUnitTxt.setText(R.string.engine_hours)
                         binding.frequencyUnitTxt.setText(R.string.engine_hours)
+                        binding.warningUnitTxt.setText(R.string.service_reminder_warning_hours)
                     }
                     else -> {
                         typeNameValue = getString(R.string.service_type_mile_based)
                         binding.startingUnitTxt.setText(R.string.miles)
                         binding.frequencyUnitTxt.setText(R.string.miles)
+                        binding.warningUnitTxt.setText(R.string.service_reminder_warning_miles)
                     }
                 }
 
@@ -499,6 +519,8 @@ class NewServiceFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 binding.startingEditTxt.isFocusableInTouchMode = false
                 binding.frequencyEditTxt.isFocusable = true
                 binding.frequencyEditTxt.isFocusableInTouchMode = true
+
+                binding.warningUnitTxt.setText(R.string.service_reminder_warning_days)
 
             }
         }

@@ -28,7 +28,7 @@ import java.util.*
 import kotlin.concurrent.schedule
 
 
-class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, CustomerCellClickListener, EmployeeCellClickListener {
+class NewEditLeadFragment : Fragment(), CustomerCellClickListener, EmployeeCellClickListener {
 
     private var editsMade = false
     private var editsMadeDelayPassed = false
@@ -41,13 +41,6 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
     private var editMode = false
 
     private var dateToday: LocalDate = LocalDate.now(ZoneOffset.UTC)
-    private var h = 0
-    private var m = 0
-
-    private var aptDate = ""
-    private var aptTime = ""
-
-    private lateinit var scheduleTypeAdapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -202,53 +195,6 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
 
          */
 
-
-        // Schedule Spinner
-        val scheduleTypeArray = arrayOf(getString(R.string.new_lead_schedule_type_asap), getString(R.string.new_lead_schedule_type_firm))
-        scheduleTypeAdapter = ArrayAdapter<String>(
-            myView.context,
-            android.R.layout.simple_spinner_dropdown_item,
-            scheduleTypeArray
-        )
-        binding.newEditLeadScheduleTypeSpinner.adapter = scheduleTypeAdapter
-        binding.newEditLeadScheduleTypeSpinner.onItemSelectedListener = this@NewEditLeadFragment
-
-        // Appointment Date
-        binding.newEditLeadAppointmentDateEt.setOnClickListener {
-            val datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
-
-            datePicker.showDialog(dateToday.year, dateToday.monthValue-1, dateToday.dayOfMonth, object : DatePickerHelper.Callback {
-                override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
-                    editsMade = true
-                    val selectedDate = LocalDate.of(year, month+1, dayOfMonth)
-                    binding.newEditLeadAppointmentDateEt.setText(selectedDate.format(GlobalVars.dateFormatterShort))
-                    aptDate = selectedDate.format(GlobalVars.dateFormatterYYYYMMDD)
-                    lead!!.date = aptDate
-                }
-            })
-        }
-
-        binding.newEditLeadAppointmentTimeEt.setOnClickListener {
-            val timePicker = TimePickerHelper(myView.context, false, true)
-            timePicker.showDialog(h, m, object : TimePickerHelper.Callback {
-                override fun onTimeSelected(hourOfDay: Int, minute: Int) {
-                    editsMade = true
-                    h = hourOfDay
-                    m = minute
-
-                    val selectedTime = LocalTime.of(h, m)
-
-                    //Set DB time
-                    aptTime = selectedTime.format(GlobalVars.dateFormatterHHMM)
-                    lead!!.time = aptTime
-                    println(aptTime)
-
-                    // Display 12 hour time
-                    binding.newEditLeadAppointmentTimeEt.setText(selectedTime.format(GlobalVars.dateFormatterHMMA))
-                }
-            })
-        }
-
         // Deadline
         binding.newEditLeadDeadlineEt.setOnClickListener {
             val datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
@@ -366,29 +312,6 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             binding.newEditLeadCustomerSearch.setQuery(lead!!.custName, false)
             //binding.newEditLeadCustomerSearchRv.visibility = View.INVISIBLE
 
-            println("Time type: ${lead!!.timeType}")
-            println("apt date: ${lead!!.aptDate}")
-            if (lead!!.timeType == "0") {
-                binding.newEditLeadScheduleTypeSpinner.setSelection(0)
-            }
-            else {
-                println("setting type to firm")
-                binding.newEditLeadScheduleTypeSpinner.setSelection(1)
-
-                if (!lead!!.aptDate.isNullOrBlank()) {
-                    println("setting date")
-
-                    val displayDate = LocalDate.parse(lead!!.date, GlobalVars.dateFormatterYYYYMMDD)
-                    binding.newEditLeadAppointmentDateEt.setText(displayDate.format(GlobalVars.dateFormatterShort))
-
-                    val displayTime = LocalTime.parse(lead!!.time, GlobalVars.dateFormatterHHMM)
-                    binding.newEditLeadAppointmentTimeEt.setText(displayTime.format(GlobalVars.dateFormatterHMMA))
-                }
-            }
-
-
-
-
             if (!lead!!.deadlineNice.isNullOrBlank()) {
                 println("setting deadline")
                 binding.newEditLeadDeadlineEt.setText(lead!!.deadlineNice!!)
@@ -490,11 +413,9 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 params["createdBy"] = GlobalVars.loggedInEmployee!!.ID
                 params["urgent"] = lead!!.urgent.toString()
                 params["repID"] = lead!!.salesRep.toString()
+
                 params["requestedByCust"] = lead!!.requestedByCust.toString()
                 params["description"] = lead!!.description.toString()
-                params["timeType"] = lead!!.timeType
-                params["date"] = lead!!.date.toString()
-                params["time"] = lead!!.time.toString()
                 params["deadline"] = lead!!.deadline.toString()
                 params["status"] = lead!!.statusID
                 params["custID"] = lead!!.customer.toString()
@@ -538,28 +459,6 @@ class NewEditLeadFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             "4" -> binding.newEditLeadStatusBtn.setBackgroundResource(R.drawable.ic_canceled)
             "5" -> binding.newEditLeadStatusBtn.setBackgroundResource(R.drawable.ic_waiting)
         }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        println("onNothingSelected")
-    }
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        println("Spinner was set")
-        editsMade = true
-        if (position == 0) {
-            lead!!.timeType = "0"
-            binding.newEditLeadAppointmentDateEt.isEnabled = false
-            binding.newEditLeadAppointmentTimeEt.isEnabled = false
-            binding.newEditLeadAppointmentDateEt.setText("")
-            binding.newEditLeadAppointmentTimeEt.setText("")
-        }
-        else {
-            lead!!.timeType = "1"
-            binding.newEditLeadAppointmentDateEt.isEnabled = true
-            binding.newEditLeadAppointmentTimeEt.isEnabled = true
-        }
-
     }
 
     override fun onCustomerCellClickListener(data: Customer) {

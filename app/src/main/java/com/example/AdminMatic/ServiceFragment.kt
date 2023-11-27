@@ -86,6 +86,15 @@ class ServiceFragment : Fragment() {
                     globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_equipment_edit))
                 }
             }
+            R.id.planned_dates_item -> {
+                if (GlobalVars.permissions!!.equipmentEdit == "1") {
+                    val directions = ServiceFragmentDirections.navigateToPlannedDates(null, null, service)
+                    myView.findNavController().navigate(directions)
+                }
+                else {
+                    globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_equipment_edit))
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -180,6 +189,10 @@ class ServiceFragment : Fragment() {
                 service!!.completionNotes = s.toString()
             }
         })
+
+        binding.statusIv.setOnClickListener{
+            showUpdateMenu()
+        }
 
         binding.updateServiceBtn.setOnClickListener{
             showUpdateMenu()
@@ -278,8 +291,12 @@ class ServiceFragment : Fragment() {
             "hours" -> {
                 binding.serviceCurrentTitleTxt.text = getString(R.string.completion_value_x, getString(R.string.engine_hours))
             }
-            else -> { // miles
+            "miles" -> {
                 binding.serviceCurrentTitleTxt.text = getString(R.string.completion_value_x, getString(R.string.miles))
+            }
+            else -> {
+                binding.currentEditTxt.visibility = View.GONE
+                binding.serviceCurrentTitleTxt.visibility = View.GONE
             }
         }
 
@@ -340,7 +357,13 @@ class ServiceFragment : Fragment() {
 
             when (item.itemId) {
                 0 -> { // mark completed
-                    if (equipment!!.usage!!.toInt() > currentValue) {
+
+                    if (equipment!!.usageType != "" && binding.currentEditTxt.text.isBlank()) {
+                        globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.provide_a_completion_value))
+                        return@setOnMenuItemClickListener true
+                    }
+
+                    if (equipment!!.usageType != "" && equipment!!.usage!!.toInt() > currentValue) {
                         val builder = AlertDialog.Builder(myView.context)
                         builder.setTitle(getString(R.string.service_check_less_than_usage_title))
                         builder.setMessage(getString(R.string.service_check_less_than_usage_body, equipment!!.name))
@@ -360,7 +383,13 @@ class ServiceFragment : Fragment() {
                     }
                 }
                 1 -> { // mark in progress
-                    if (equipment!!.usage!!.toInt() > currentValue) {
+
+                    if (equipment!!.usageType != "" && binding.currentEditTxt.text.isBlank()) {
+                        globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.provide_a_completion_value))
+                        return@setOnMenuItemClickListener true
+                    }
+
+                    if (equipment!!.usageType != "" && equipment!!.usage!!.toInt() > currentValue) {
                         val builder = AlertDialog.Builder(myView.context)
                         builder.setTitle(getString(R.string.service_check_less_than_usage_title))
                         builder.setMessage(getString(R.string.service_check_less_than_usage_body, equipment!!.name))
@@ -381,12 +410,17 @@ class ServiceFragment : Fragment() {
                 }
                 2 -> { // cancel
 
+                    if (equipment!!.usageType != "" && binding.currentEditTxt.text.isBlank()) {
+                        globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.provide_a_completion_value))
+                        return@setOnMenuItemClickListener true
+                    }
+
                     val builder = AlertDialog.Builder(myView.context)
                     builder.setTitle(getString(R.string.cancel_service_title))
                     builder.setMessage(getString(R.string.cancel_service_body, service!!.name))
 
                     builder.setPositiveButton(android.R.string.ok) { _, _ ->
-                        if (equipment!!.usage!!.toInt() > currentValue) {
+                        if (equipment!!.usageType != "" && equipment!!.usage!!.toInt() > currentValue) {
                             builder.setTitle(getString(R.string.service_check_less_than_usage_title))
                             builder.setMessage(getString(R.string.service_check_less_than_usage_body, equipment!!.name))
 
@@ -413,12 +447,18 @@ class ServiceFragment : Fragment() {
 
                 }
                 3 -> { // skip
+
+                    if (equipment!!.usageType != "" && binding.currentEditTxt.text.isBlank()) {
+                        globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.provide_a_completion_value))
+                        return@setOnMenuItemClickListener true
+                    }
+
                     val builder = AlertDialog.Builder(myView.context)
                     builder.setTitle(getString(R.string.skip_service_title))
                     builder.setMessage(getString(R.string.skip_service_body, service!!.name))
 
                     builder.setPositiveButton(android.R.string.ok) { _, _ ->
-                        if (equipment!!.usage!!.toInt() > currentValue) {
+                        if (equipment!!.usageType != "" && equipment!!.usage!!.toInt() > currentValue) {
                             builder.setTitle(getString(R.string.service_check_less_than_usage_title))
                             builder.setMessage(getString(R.string.service_check_less_than_usage_body, equipment!!.name))
 
@@ -451,10 +491,6 @@ class ServiceFragment : Fragment() {
     }
 
     private fun validateFields():Boolean {
-        if (binding.currentEditTxt.text.isBlank()) {
-            globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.provide_a_completion_value))
-            return false
-        }
         return true
     }
 
@@ -619,7 +655,7 @@ class ServiceFragment : Fragment() {
             }
             "4" -> {
                 println("4")
-                binding.statusIv.setBackgroundResource(R.drawable.ic_canceled)
+                binding.statusIv.setBackgroundResource(R.drawable.ic_skipped)
             }
         }
     }

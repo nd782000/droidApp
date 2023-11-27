@@ -11,12 +11,20 @@ import java.time.LocalTime
 
 class MyScheduleRowAdapter(list: MutableList<MyScheduleEntry>, private val myScheduleSection: MyScheduleSection, private val myScheduleCellClickListener: MyScheduleCellClickListener) : RecyclerView.Adapter<MyScheduleRowViewHolder>() {
 
-    var filterList:MutableList<MyScheduleEntry> = emptyList<MyScheduleEntry>().toMutableList()
+    var entryList:MutableList<MyScheduleEntry> = emptyList<MyScheduleEntry>().toMutableList()
+    var entryListFiltered = mutableListOf<MyScheduleEntry>()
 
-    var queryText = ""
+    var showCompleted = false
 
     init {
-        filterList = list
+        entryList = list
+
+        for (entry in entryList) {
+            if (!entry.checkIfCompleted()) {
+                entryListFiltered.add(entry)
+            }
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyScheduleRowViewHolder {
@@ -32,9 +40,17 @@ class MyScheduleRowAdapter(list: MutableList<MyScheduleEntry>, private val mySch
 
     override fun onBindViewHolder(holder: MyScheduleRowViewHolder, position: Int) {
 
-        val myScheduleEntry: MyScheduleEntry = filterList[position]
+        //val myScheduleEntry: MyScheduleEntry = entryList[position]
+
+        val myScheduleEntry: MyScheduleEntry = if (showCompleted) {
+            entryList[position]
+        }
+        else {
+            entryListFiltered[position]
+        }
+
+
         holder.bind(myScheduleEntry)
-        println("queryText = $queryText")
 
         holder.itemView.setOnClickListener {
             myScheduleCellClickListener.onMyScheduleCellClickListener(myScheduleEntry, position)
@@ -42,8 +58,13 @@ class MyScheduleRowAdapter(list: MutableList<MyScheduleEntry>, private val mySch
 
     }
 
-    override fun getItemCount(): Int{
-        return filterList.size
+    override fun getItemCount(): Int {
+        if (showCompleted) {
+            return entryList.size
+        }
+        else {
+            return entryListFiltered.size
+        }
     }
 }
 
@@ -73,7 +94,7 @@ class MyScheduleRowViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         // Type icon
         when (myScheduleEntry.entryType) {
             MyScheduleEntryType.workOrder -> {
-                Picasso.with(myView.context).load(R.drawable.ic_schedule).into(mTypeIcon)
+                Picasso.with(myView.context).load(R.drawable.ic_work_orders).into(mTypeIcon)
             }
             MyScheduleEntryType.lead -> {
                 Picasso.with(myView.context).load(R.drawable.ic_leads).into(mTypeIcon)
@@ -113,7 +134,12 @@ class MyScheduleRowViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
                 }
             }
             "4" -> {
-                Picasso.with(myView.context).load(R.drawable.ic_canceled).into(mStatusIcon)
+                if (myScheduleEntry.entryType == MyScheduleEntryType.service) {
+                    Picasso.with(myView.context).load(R.drawable.ic_skipped).into(mStatusIcon)
+                }
+                else {
+                    Picasso.with(myView.context).load(R.drawable.ic_canceled).into(mStatusIcon)
+                }
             }
             "5" -> {
                 Picasso.with(myView.context).load(R.drawable.ic_waiting).into(mStatusIcon)

@@ -421,7 +421,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     }
                     else {
                         val directions = UsageEntryFragmentDirections.navigateUsageEntryToImageUpload("WOITEM",
-                            arrayOf(),workOrder.customer, workOrder.custName, woItem.woID, woItem.itemID,"","","","","", usage.ID)
+                            arrayOf(),workOrder.customer, workOrder.custName, woItem.woID, woItem.itemID, "","","","","", "","", usage.ID)
                         myView.findNavController().navigate(directions)
                     }
                 }

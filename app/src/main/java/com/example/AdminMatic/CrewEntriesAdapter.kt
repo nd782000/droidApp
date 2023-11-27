@@ -10,7 +10,7 @@ import com.AdminMatic.R
 import com.squareup.picasso.Picasso
 
 
-class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, private val crewIndex:Int, private val crewID:String, private val crewEntryDelegate: CrewEntryDelegate, private val cellClickListener: CrewEntryCellClickListener, _readOnly:Boolean): RecyclerView.Adapter<CrewEntryViewHolder>() {
+class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, private val crewIndex:Int, private val crewID:String, private val crewEntryDelegate: CrewEntryDelegate?, private val cellClickListener: CrewEntryCellClickListener, _readOnly:Boolean): RecyclerView.Adapter<CrewEntryViewHolder>() {
 
     //var onItemClick: ((Customer) -> Unit)? = null
 
@@ -39,24 +39,13 @@ class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, pri
         if (data.isEquipment) {
             val equipmentImageView:ImageView = holder.itemView.findViewById(R.id.equipment_iv)
 
-            println("picURL: ${data.equipment!!.picURL}")
-            println("pic: ${data.equipment!!.pic}")
-            if (data.equipment!!.image != null) {
-                println("image.fileName: ${data.equipment!!.image!!.fileName}")
-            }
-            else {
-                println("image is null")
-            }
-
             if (data.equipment!!.image == null) {
-                print("trying to use image")
                 Picasso.with(myView.context)
                     .load("https://www.adminmatic.com${data.equipment!!.picURL}")
                     .placeholder(R.drawable.ic_equipment) //optional
                     .into(equipmentImageView)
             }
             else if (data.equipment!!.image!!.fileName.isNotBlank()) {
-                print("trying to use image.filename")
                 Picasso.with(myView.context)
                     .load(GlobalVars.thumbBase + data.equipment!!.image!!.fileName)
                     .placeholder(R.drawable.ic_equipment) //optional
@@ -126,10 +115,10 @@ class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, pri
                         when (item!!.itemId) {
                             R.id.move_to -> {
                                 // These can be !!'d because any time the delegate isn't provided this code is unreachable anyways
-                                crewEntryDelegate.onMoveCrewEntry(data, crewIndex, holder.itemView.findViewById<TextView>(R.id.equipment_options_tv))
+                                crewEntryDelegate!!.onMoveCrewEntry(data, crewIndex, holder.itemView.findViewById<TextView>(R.id.equipment_options_tv))
                             }
                             R.id.unassign -> {
-                                crewEntryDelegate.onUnassignCrewEntry(data, crewIndex)
+                                crewEntryDelegate!!.onUnassignCrewEntry(data, crewIndex)
                             }
 
                         }
@@ -156,10 +145,10 @@ class CrewEntriesAdapter(private val list: MutableList<EmployeeOrEquipment>, pri
 
                         when (item!!.itemId) {
                             R.id.move_to -> {
-                                crewEntryDelegate.onMoveCrewEntry(data, crewIndex, holder.itemView.findViewById<TextView>(R.id.employee_options_tv))
+                                crewEntryDelegate!!.onMoveCrewEntry(data, crewIndex, holder.itemView.findViewById<TextView>(R.id.employee_options_tv))
                             }
                             R.id.unassign -> {
-                                crewEntryDelegate.onUnassignCrewEntry(data, crewIndex)
+                                crewEntryDelegate!!.onUnassignCrewEntry(data, crewIndex)
                             }
 
                         }

@@ -18,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.AdminMatic.R
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -450,6 +452,7 @@ data class EquipmentService(
     var addedByName: String = "",
     var status: String? = "",
     var equipmentID: String? = "",
+    var equipmentName: String? = "",
     var frequency: String? = "",
     var instructions: String? = "",
     var createDate: String? = "",
@@ -458,6 +461,7 @@ data class EquipmentService(
     var completedBy: String? = "",
     var completedByName: String? = "",
     var completionNotes: String? = "",
+    var warningOffset: String? = "",
     @field:SerializedName("currentValue", alternate= ["completeValue"])
     var currentValue: String? = "",
     var targetDate: String? = "",
@@ -718,6 +722,8 @@ data class Payroll(var ID: String?,
 
 @Parcelize
 data class PlannedDate(var workOrderID: String?,
+                       var leadID: String?,
+                       var serviceID: String?,
                        var crewID: String?,
                        var plannedDate: String?,
                        var firm: String?,
@@ -729,6 +735,19 @@ data class PlannedDate(var workOrderID: String?,
 ): Parcelable{
     override fun toString(): String {
         return plannedDate ?: "NULL"
+    }
+}
+
+@Parcelize
+data class EmailTemplate(
+    var title: String?,
+    var subject: String?,
+    var emailContent: String?,
+    var portal: String?,
+    var defaultVal: String?
+): Parcelable{
+    override fun toString(): String {
+        return title ?: "NULL"
     }
 }
 
@@ -1171,6 +1190,21 @@ data class MyScheduleEntry(var refID: String = "0",
     override fun toString(): String {
         return title
     }
+
+    fun checkIfCompleted(): Boolean {
+        if (entryType == MyScheduleEntryType.service) {
+            if (status == "2" || status == "3" || status == "4") {
+                return true
+            }
+        }
+        else {
+            if (status == "3" || status == "4") {
+                return true
+            }
+        }
+        return false
+    }
+
 }
 
 @Parcelize
@@ -1366,10 +1400,12 @@ class VolleyRequestQueue constructor(context: Context) {
 
 class MainActivity : AppCompatActivity(), LogOut, Callbacks {
 
-    lateinit var  pgsBar: ProgressBar
+    lateinit var pgsBar: ProgressBar
+    lateinit var globalVars:GlobalVars
     private var workOrderListFragment: WorkOrderListFragment? = null
     private var leadListFragment: LeadListFragment? = null
     private var mapFragment: MapFragment? = null
+
      private var imageListFragment: ImageListFragment? = null
     //lateinit var  hostFragment: Fragment
 
@@ -1392,6 +1428,8 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
             val token = it.result //this is the token retrieved
             println("Firebase Messaging Token: $token")
         }
+
+        globalVars = GlobalVars()
 
         /*
 
@@ -1431,33 +1469,68 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
         val id = item.itemId
 
         if (id == android.R.id.home) {
-            back()
-            return true
+            onBackPressed()
+            return super.onOptionsItemSelected(item)
         }
 
         if (id == R.id.home_item) {
             home()
-            return true
+            return super.onOptionsItemSelected(item)
         }
         if (id == R.id.logout_item) {
             logOut(myView)
-            return true
+            return super.onOptionsItemSelected(item)
         }
 
         return super.onOptionsItemSelected(item)
 
     }
 
-    fun back(){
+    /*
+    override fun onSupportNavigateUp(): Boolean {
+        println("on support navigate up")
+        if (GlobalVars.shouldLogOut) {
+            GlobalVars.shouldLogOut = false
+
+            globalVars.logOut(myView.context, myView)
+            return true
+        }
+        else {
+            return super.onSupportNavigateUp()
+        }
+    }
+     */
+
+    override fun onBackPressed() {
+        println("on back pressed")
+        if (GlobalVars.shouldLogOut) {
+            GlobalVars.shouldLogOut = false
+
+            globalVars.logOut(myView.context, myView)
+
+        }
+        else {
+            super.onBackPressed()
+        }
+    }
+
+    /*
+    fun back() {
         println("back")
         // This allows back button checks like "Are you sure you want to exit without submitting" to work on the menu bar back as well
         //println(getVisibleFragment()!!.lay)
 
-        super.onBackPressed()
-        //val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        //val navController = navHostFragment.navController
-        //navController.navigateUp()
+        if (GlobalVars.shouldLogOut) {
+            GlobalVars.shouldLogOut = false
+
+            globalVars.logOut(myView.context, myView)
+        }
+        else {
+            super.onBackPressed()
+        }
     }
+
+     */
 
     fun getVisibleFragment(): Fragment? {
         val fragmentManager: FragmentManager = this@MainActivity.supportFragmentManager
@@ -1756,17 +1829,9 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
     }
 
 
-    /*
-    override fun onBackPressed() {
 
-        println("onBackPressed")
-        val count = supportFragmentManager.backStackEntryCount
-        if (count == 0) {
-            super.onBackPressed()
-            //additional code
-        } else {
-            myView.findNavController().navigateUp()
-        }
-    }
-    */
+
+
+
+
 }

@@ -295,8 +295,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             _task.images!!
         }
 
-        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"",
-            _task.ID,"${_task.task}","","", "")
+        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"","",
+            _task.ID,"${_task.task}", _task.status,"","", "")
         myView.findNavController().navigate(directions)
     }
 
@@ -311,7 +311,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         }
 
         data.let {
-            val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"", it.ID,"${it.task}","","", "")
+            val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",images,workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"","", it.ID,"${it.task}", data.status,"","", "")
             myView.findNavController().navigate(directions)
         }
     }

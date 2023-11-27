@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
+import com.squareup.picasso.Picasso
 
 
 class ContractTasksAdapter(list: MutableList<ContractTask>, private val context: Context, private val cellClickListener: ContractTaskCellClickListener) : RecyclerView.Adapter<ContractTaskViewHolder>() {
@@ -42,6 +43,25 @@ class ContractTasksAdapter(list: MutableList<ContractTask>, private val context:
         val data = filterList[position]
         holder.itemView.setOnClickListener {
             cellClickListener.onContractTaskCellClickListener(data)
+        }
+
+        if (data.images != null){
+            if (data.images!!.isNotEmpty()){
+                val taskImageView:ImageView = holder.itemView.findViewById(R.id.contract_task_item_image_view)
+
+
+                Picasso.with(context)
+                    .load(GlobalVars.thumbBase + data.images!![0].fileName)
+                    .placeholder(R.drawable.ic_images) //optional
+                    //.resize(imgWidth, imgHeight)         //optional
+                    //.centerCrop()                        //optional
+                    .into(taskImageView)                       //Your image view object.
+
+                if (data.images!!.count() > 1) {
+                    val countTv:TextView = holder.itemView.findViewById(R.id.image_count_tv)
+                    countTv.text = "+${data.images!!.count()-1}"
+                }
+            }
         }
 
 

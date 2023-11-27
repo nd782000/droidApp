@@ -351,7 +351,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         entries.addAll(sec.entries)
                     }
                     else {
-                        entries.addAll(sec.entriesFiltered)
+                        for (entry in sec.entries) {
+                            if (!entry.checkIfCompleted()) {
+                                entries.add(entry)
+                            }
+                        }
                     }
                 }
 

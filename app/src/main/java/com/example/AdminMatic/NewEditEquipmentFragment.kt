@@ -172,7 +172,7 @@ class NewEditEquipmentFragment : Fragment(), AdapterView.OnItemSelectedListener,
                 //if (equipment.pic == "0") {
                     val directions = NewEditEquipmentFragmentDirections.navigateToImageUpload(
                         "EQUIPMENT",
-                        arrayOf(), "", "", "", "", "", "0", "", "", equipment.ID, ""
+                        arrayOf(), "", "", "", "", "", "", "0", "", "", "", equipment.ID, ""
                     )
                     myView.findNavController().navigate(directions)
                // }

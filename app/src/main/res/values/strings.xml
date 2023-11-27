@@ -229,6 +229,7 @@
     <string name="no_permission_contracts_edit">You don\'t have permission to edit contracts.</string>
     <string name="no_permission_schedule">You don\'t have permission to access work orders.</string>
     <string name="no_permission_invoices">You don\'t have permission to access invoices.</string>
+    <string name="no_permission_invoices_edit">You don\'t have permission to edit invoices.</string>
     <string name="no_permission_images">You don\'t have permission to access images.</string>
     <string name="no_permission_customers">You don\'t have permission to access customers.</string>
     <string name="no_permission_customers_edit">You don\'t have permission to edit customers.</string>
@@ -513,7 +514,6 @@
 
     <!--Planned Dates Stuff-->
     <string name="planned_dates_menu">Planned Dates</string>
-    <string name="xs_planned_dates">WO #%1$s\'s Planned Dates</string>
     <string name="planned_dates_lock">Lock:</string>
     <string name="planned_dates_add_crew">Add Crew</string>
     <string name="planned_dates_start_hint">Start…</string>
@@ -521,6 +521,13 @@
     <string name="planned_dates_add">Add New Date</string>
     <string name="planned_dates_x_old">%1$d Old Date(s)</string>
     <string name="planned_dates_none">No Dates Scheduled</string>
+    <string name="schedule_wo">Schedule Work Order</string>
+    <string name="schedule_lead">Schedule Lead</string>
+    <string name="schedule_service">Schedule Service</string>
+    <string name="planned_date_header_wo">WO #%1$s - %2$s</string>
+    <string name="planned_date_header_lead">Lead #%1$s - %2$s</string>
+    <string name="planned_date_header_service">Service #%1$s - %2$s</string>
+
 
     <!--New Contract stuff-->
     <string name="edit_contract_menu">Edit Contract</string>
@@ -625,6 +632,12 @@
     <string name="equipment_already_in_crew_body">Equipment %1$s is already in crew \'%2$s.\' Would you like to move the equipment?</string>
     <string name="move">Move</string>
     <string name="copy">Copy</string>
+    <string name="crews_for_today">Crews For Today</string>
+    <string name="crews_for_tomorrow">Crews For Tomorrow</string>
+    <string name="xs_crews_for_today">%1$s\'s Crews For Today</string>
+    <string name="xs_crews_for_tomorrow">%1$s\'s Crews For Tomorrow</string>
+    <string name="xs_crews_for_this_week">%1$s\'s Crews For This Week</string>
+    <string name="xs_crews_for_next_week">%1$s\'s Crews For Next Week</string>
 
     <!-- Work order list -->
     <string name="schedule_all_dates">All Dates (%1$s)</string>
@@ -969,7 +982,11 @@
     <string name="new_service_added_body_date">A new %1$s service has been added to be done on %2$s.</string>
     <string name="new_service_added_body_usage">A new %1$s service has been added to be done at %2$s %3$s.</string>
     <string name="leave_without_submitting_service">Leave without submitting?  Change Status to save any changes.</string>
-
+    <string name="service_reminder_warning">Service Reminder Warning</string>
+    <string name="service_reminder_warning_days">Days Before</string>
+    <string name="service_reminder_warning_miles">Miles Before</string>
+    <string name="service_reminder_warning_km">Km Before</string>
+    <string name="service_reminder_warning_hours">Hours Before</string>
 
 
     <!-- Equipment -->
@@ -1052,6 +1069,7 @@
     <string name="schedule">Schedule</string>
     <string name="crews_x">Crews (%1$s)</string>
     <string name="no_work_scheduled">No Work Scheduled</string>
+    <string name="all_work_completed">All Work Completed!</string>
     <string name="my_schedule_count">(%1$d) Work Orders, (%2$d) Leads, (%3$d) Services</string>
     <string name="xs_schedule_map">%1$s\'s Schedule Map</string>
     <string name="unplottable_wos_title">Unplottable Work Orders</string>
@@ -1063,6 +1081,37 @@
     <string name="unplottable_my_schedule_title">Unplottable Items</string>
     <string name="unplottable_my_schedule_body">There were %1$d entries on %2$s\'s schedule that were unable to be plotted.</string>
     <string name="unplottable_my_schedule_body_one">There was one entry on %1$s\'s schedule that was unable to be plotted.</string>
+
+    <!-- Send Email -->
+    <string name="email_x">Email %1$s</string>
+    <string name="send_to_the_following_label">Send to the Following:</string>
+    <string name="send">Send</string>
+    <string name="email_subject_label">Email Subject:</string>
+    <string name="email_message_label">Email Message:</string>
+    <string name="send_contract">Send Contract</string>
+    <string name="send_invoice">Send Invoice</string>
+    <string name="cant_send_invoice_title">Can\'t Send Invoice</string>
+    <string name="cant_send_invoice_syncing_body">Invoice needs to sync with QuickBooks before sending. Try back in a few minutes.</string>
+    <string name="cant_send_invoice_not_final_body">Invoice must be marked as final before sending.</string>
+    <string name="invoice_already_sent_title">Invoice Already Sent</string>
+    <string name="invoice_already_sent_body">This invoice has already been sent. Do you want to re-send?</string>
+    <string name="invoice_already_paid_title">Invoice Already Paid</string>
+    <string name="invoice_already_paid_body">This invoice has already been paid. Do you want to re-send?</string>
+    <string name="invoice_voided_title">Invoice Voided</string>
+    <string name="invoice_voided_body">This invoice has been voided. Do you want to send it anyway?</string>
+    <string name="add_at_least_one_email_body">Please select at least one email address.</string>
+    <string name="contract_emails_sent">Contract Emails Sent!</string>
+    <string name="invoice_emails_sent">Invoice Emails Sent!</string>
+    <string name="update_contract_status_title">Update Contract Status?</string>
+    <string name="contract_emails_sent_update">Contract Emails Sent! Would you like to update the contract\'s status to \"Sent?\"</string>
+    <string name="update_invoice_status_title">Update Invoice Status?</string>
+    <string name="invoice_emails_sent_update">Invoice Emails Sent! Would you like to update the invoice\'s status to \"Sent?\"</string>
+
+
+    <string name="delete_image_link_title">Delete Image Link?</string>
+    <string name="delete_image_link_body">Are you sure you want to delete the link to this image?</string>
+    <string name="caption_hint">Caption…</string>
+
 
     <!--
     <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>

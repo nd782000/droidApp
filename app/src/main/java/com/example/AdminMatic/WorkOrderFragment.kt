@@ -102,7 +102,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         }
         else if (id == R.id.planned_dates_item) {
             if (GlobalVars.permissions!!.scheduleEdit == "1") {
-                val directions = WorkOrderFragmentDirections.navigateToPlannedDates(workOrder)
+                val directions = WorkOrderFragmentDirections.navigateToPlannedDates(workOrder, null, null)
                 myView.findNavController().navigate(directions)
             }
             else {

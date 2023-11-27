@@ -64,6 +64,9 @@ class ServiceAdapter(list: MutableList<EquipmentService>, private val context: C
             "3"-> Picasso.with(context)
                 .load(R.drawable.ic_canceled)
                 .into(serviceStatusImageView)
+            "4"-> Picasso.with(context)
+                .load(R.drawable.ic_skipped)
+                .into(serviceStatusImageView)
         }
 
 
@@ -112,7 +115,6 @@ class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         //val currentDate = LocalDateTime.now()
         //val nextDate = createDate.plusDays(service.frequency!!.toLong())
 
-        //Todo: Make due text red
         mNameView?.text = service.name
         if (isHistoryMode) {
             mLeftTxt?.text = context.getString(R.string.service_by_x, service.completedByName)
@@ -126,10 +128,16 @@ class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
                     mRightTxt?.text = context.getString(R.string.service_one_time)
                 }
                 "1" -> { //date based
-                    val nextDate = LocalDate.parse(service.nextDate, GlobalVars.dateFormatterShort)
-                    mLeftTxt?.text = context.getString(R.string.service_due_x, nextDate.format(GlobalVars.dateFormatterShort))
-                    if (nextDate < LocalDate.now()) {
+                    val targetDate = LocalDate.parse(service.targetDate, GlobalVars.dateFormatterYYYYMMDD)
+                    mLeftTxt?.text = context.getString(R.string.service_due_x, targetDate.format(GlobalVars.dateFormatterShort))
+                    if (targetDate <= LocalDate.now()) {
                         mLeftTxt?.setTextColor(ContextCompat.getColor(myView.context, R.color.red))
+                    }
+                    else if (targetDate <= LocalDate.now().plusDays(service.warningOffset!!.toLong())) {
+                        mLeftTxt?.setTextColor(ContextCompat.getColor(myView.context, R.color.orange))
+                    }
+                    else {
+                        mLeftTxt?.setTextColor(mRightTxt!!.currentTextColor)
                     }
                     mRightTxt?.text = context.getString(R.string.service_every_x_days, service.frequency)
                 }
@@ -150,13 +158,29 @@ class ServiceViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
                         }
                     }
 
-                    if (service.nextValue!!.toInt() < equipmentUsage.toInt()) {
+                    if (service.nextValue!!.toInt() <= equipmentUsage.toInt()) {
                         mLeftTxt?.setTextColor(ContextCompat.getColor(myView.context, R.color.red))
+                    }
+                    else if (service.nextValue!!.toInt() - service.warningOffset!!.toInt() <= equipmentUsage.toInt()) {
+                        mLeftTxt?.setTextColor(ContextCompat.getColor(myView.context, R.color.orange))
+                    }
+                    else {
+                        mLeftTxt?.setTextColor(mRightTxt!!.currentTextColor)
                     }
 
                 }
                 "4" -> { //inspection
-                    mLeftTxt?.text = context.getString(R.string.service_due_before_use)
+                    val targetDate = LocalDate.parse(service.targetDate, GlobalVars.dateFormatterYYYYMMDD)
+                    mLeftTxt?.text = context.getString(R.string.service_due_x, targetDate.format(GlobalVars.dateFormatterShort))
+                    if (targetDate <= LocalDate.now()) {
+                        mLeftTxt?.setTextColor(ContextCompat.getColor(myView.context, R.color.red))
+                    }
+                    else if (targetDate <= LocalDate.now().plusDays(service.warningOffset!!.toLong())) {
+                        mLeftTxt?.setTextColor(ContextCompat.getColor(myView.context, R.color.orange))
+                    }
+                    else {
+                        mLeftTxt?.setTextColor(mRightTxt!!.currentTextColor)
+                    }
                     mRightTxt?.text = context.getString(R.string.service_type_inspection)
                 }
             }

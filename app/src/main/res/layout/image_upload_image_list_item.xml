@@ -21,10 +21,25 @@
         android:maxWidth="300dp"
         android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:src="@tools:sample/backgrounds/scenic" />
+
+    <EditText
+        android:id="@+id/description_et"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:singleLine="true"
+        android:layout_margin="8dp"
+        android:background="@drawable/text_view_layout"
+        android:hint="Caption..."
+        app:layout_constraintTop_toBottomOf="@id/image_upload_image_item_iv"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
     <ProgressBar
         android:id="@+id/image_upload_image_item_pb"
@@ -53,7 +68,7 @@
 
     <Button
         android:id="@+id/image_upload_image_item_delete_btn"
-        android:layout_width="50dp"
+        android:layout_width="40dp"
         android:layout_height="50dp"
         android:text="X"
         app:layout_constraintRight_toRightOf="parent"

@@ -27,6 +27,10 @@ class MyScheduleSectionAdapter(list: MutableList<MyScheduleSection>, private val
         filterList = list
     }
 
+    fun updateShowCompleted(newState: Boolean) {
+        showCompleted = newState
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyScheduleSectionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return MyScheduleSectionViewHolder(inflater, parent)
@@ -43,13 +47,20 @@ class MyScheduleSectionAdapter(list: MutableList<MyScheduleSection>, private val
         val myScheduleSection: MyScheduleSection = filterList[position]
         holder.bind(myScheduleSection)
 
+        var entriesList = myScheduleSection.entries
 
+
+        /*
         var entriesList = myScheduleSection.entriesFiltered
         if (showCompleted) {
             entriesList = myScheduleSection.entries
         }
 
+         */
+
         val adapter = MyScheduleRowAdapter(entriesList, myScheduleSection, myScheduleCellClickListener)
+        adapter.showCompleted = showCompleted
+
 
         holder.mRecycler!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         holder.mRecycler!!.adapter = adapter

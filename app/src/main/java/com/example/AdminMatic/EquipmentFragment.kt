@@ -237,6 +237,7 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                             }
                         }
 
+                        binding.serviceCheckEt.text.clear()
                         getServiceInfo(true)
 
                     }
@@ -278,10 +279,9 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
             Method.POST, urlString,
             Response.Listener { response -> // response
                 println("Response $response")
-                hideProgressView()
+
                 try {
                     val gson = GsonBuilder().create()
-
 
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
@@ -393,7 +393,11 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
                             checkDueServices()
                         }
 
+                        hideProgressView()
+
                     }
+
+
 
 
                 } catch (e: JSONException) {
@@ -488,11 +492,13 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
         }
 
         if (data.type == "4") { // Go to the special inspection fragment if the service type is inspection
+            data.equipmentName = equipment!!.name
             val directions = EquipmentFragmentDirections.navigateToServiceInspection(data, equipment, historyMode)
             myView.findNavController().navigate(directions)
         }
         else {
             if (equipment!!.usage.isNullOrBlank()) { equipment!!.usage = "0" }
+            data.equipmentName = equipment!!.name
             val directions = EquipmentFragmentDirections.navigateToService(data, equipment, historyMode)
             myView.findNavController().navigate(directions)
         }
@@ -611,12 +617,12 @@ class EquipmentFragment : Fragment(), ServiceCellClickListener {
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE
-        binding.serviceRecyclerView.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         binding.progressBar.visibility = View.INVISIBLE
-        binding.serviceRecyclerView.visibility = View.VISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 }

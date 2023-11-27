@@ -4,4 +4,7 @@
         android:id="@+id/edit_service_item"
         android:title="@string/edit_service"
         android:enabled="true"/>
+    <item
+        android:id="@+id/planned_dates_item"
+        android:title="@string/schedule_service"/>
 </menu>

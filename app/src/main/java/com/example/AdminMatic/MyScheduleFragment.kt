@@ -35,11 +35,10 @@ interface MyScheduleCellClickListener {
     fun onMyScheduleCellClickListener(data:MyScheduleEntry, listIndex:Int)
 }
 
-class MyScheduleSection(_date:String, _dayNote: String, _entries: MutableList<MyScheduleEntry>, _entriesFiltered: MutableList<MyScheduleEntry>) {
+class MyScheduleSection(_date:String, _dayNote: String, _entries: MutableList<MyScheduleEntry>) {
     var date:String = _date
     var dayNote:String = _dayNote
     var entries: MutableList<MyScheduleEntry> = _entries
-    var entriesFiltered: MutableList<MyScheduleEntry> = _entriesFiltered
 }
 
 class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.OnItemSelectedListener {
@@ -56,8 +55,6 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
     var selectedDateIndex = 0
 
     var currentIteratedDate:LocalDate? = null
-
-    //var sections = mutableListOf<MyScheduleSection>()
 
     var dataLoaded = false
     var isSelectionFromTouch = false
@@ -113,8 +110,32 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
             .into(binding.empPicIv)
 
         binding.crewsBtn.setOnClickListener {
-            val directions = MyScheduleFragmentDirections.navigateToCrews(GlobalVars.loggedInEmployee, true)
-            myView.findNavController().navigate(directions)
+
+            when (selectedDateIndex) {
+                0 -> {
+                    val directions = MyScheduleFragmentDirections.navigateToCrews(employee)
+                    directions.dateValue = "today"
+                    myView.findNavController().navigate(directions)
+                }
+                1 -> {
+                    val directions = MyScheduleFragmentDirections.navigateToCrews(employee)
+                    directions.dateValue = "tomorrow"
+                    myView.findNavController().navigate(directions)
+                }
+                2 -> {
+                    val directions = MyScheduleFragmentDirections.navigateToCrewsWeek(employee)
+                    directions.dateValue = "this week"
+                    myView.findNavController().navigate(directions)
+                }
+                3 -> {
+                    val directions = MyScheduleFragmentDirections.navigateToCrewsWeek(employee)
+                    directions.dateValue = "next week"
+                    myView.findNavController().navigate(directions)
+                }
+            }
+
+
+
         }
 
         binding.addPayrollBtn.setOnClickListener {
@@ -123,25 +144,10 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
         }
 
         binding.mapBtn.setOnClickListener {
-
-            /*
-            GlobalVars.globalMapScheduleEntryList.clear()
-
-            for (sec in sections) {
-                if (showCompleted) {
-                    GlobalVars.globalMapScheduleEntryList.addAll(sec.entries)
-                }
-                else {
-                    GlobalVars.globalMapScheduleEntryList.addAll(sec.entriesFiltered)
-                }
-            }
-             */
-
             val directions = MyScheduleFragmentDirections.navigateToMap(3)
             directions.name = employee.fname ?: ""
             directions.showCompleted = showCompleted
             myView.findNavController().navigate(directions)
-
         }
 
         datesArray = arrayOf(
@@ -183,7 +189,8 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
 
         binding.showCompletedSwitch.setOnCheckedChangeListener { _, isChecked ->
             showCompleted = isChecked
-            sectionAdapter.showCompleted = isChecked
+            //sectionAdapter.showCompleted = isChecked
+            sectionAdapter.updateShowCompleted(isChecked)
 
             updateTable()
         }
@@ -207,6 +214,7 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
             getMySchedule()
         }
         else {
+            sectionAdapter.notifyDataSetChanged()
             hideProgressView()
         }
 
@@ -326,7 +334,7 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
                         println("Current date: $currentDate")
                         println("myScheduleEntryArray.note: ${myScheduleEntryArray.note}")
 
-                        GlobalVars.globalMyScheduleSections.add(MyScheduleSection(currentDate!!.format(GlobalVars.dateFormatterWeekday), myScheduleEntryArray.note!!, newEntryArray.toMutableList(), newEntryArrayFiltered))
+                        GlobalVars.globalMyScheduleSections.add(MyScheduleSection(currentDate!!.format(GlobalVars.dateFormatterWeekday), myScheduleEntryArray.note!!, newEntryArray.toMutableList()))
 
 
                         // If this or next week mode:
@@ -409,6 +417,7 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
 
         // Hide or show the "no work found" label
         var foundWork = false
+        /*
         if (showCompleted) {
             for (sec in GlobalVars.globalMyScheduleSections) {
                 if (sec.entries.size > 0) {foundWork = true}
@@ -419,21 +428,79 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
                 if (sec.entriesFiltered.size > 0) {foundWork = true}
             }
         }
+         */
 
-        if (foundWork) {
-            binding.swipeContainer.visibility = View.VISIBLE
-            binding.noWorkScheduledTv.visibility = View.INVISIBLE
-        }
-        else {
-            binding.swipeContainer.visibility = View.INVISIBLE
-            binding.noWorkScheduledTv.visibility = View.VISIBLE
-        }
-
-        // Update count label
         var wosFound = 0
         var leadsFound = 0
         var servicesFound = 0
 
+        var scheduleIsEmpty = true
+
+
+        for (sec in GlobalVars.globalMyScheduleSections) {
+            for (entry in sec.entries) {
+
+                scheduleIsEmpty = false
+
+                if (showCompleted) {
+                    foundWork = true
+                    when (entry.entryType) {
+                        MyScheduleEntryType.workOrder -> {
+                            wosFound += 1
+                        }
+                        MyScheduleEntryType.lead -> {
+                            leadsFound += 1
+                        }
+                        MyScheduleEntryType.service -> {
+                            servicesFound += 1
+                        }
+                    }
+                }
+                else {
+                    if (!entry.checkIfCompleted()) {
+                        foundWork = true
+                        when (entry.entryType) {
+                            MyScheduleEntryType.workOrder -> {
+                                wosFound += 1
+                            }
+                            MyScheduleEntryType.lead -> {
+                                leadsFound += 1
+                            }
+                            MyScheduleEntryType.service -> {
+                                servicesFound += 1
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        if (foundWork) {
+            binding.swipeContainer.visibility = View.VISIBLE
+            binding.noWorkScheduledTv.visibility = View.INVISIBLE
+
+            if (scheduleIsEmpty) {
+                binding.noWorkScheduledTv.text = getString(R.string.no_work_scheduled)
+            }
+            else {
+                binding.noWorkScheduledTv.text = getString(R.string.all_work_completed)
+            }
+
+        }
+        else {
+            binding.swipeContainer.visibility = View.INVISIBLE
+            binding.noWorkScheduledTv.visibility = View.VISIBLE
+            if (scheduleIsEmpty) {
+                binding.noWorkScheduledTv.text = getString(R.string.no_work_scheduled)
+            }
+            else {
+                binding.noWorkScheduledTv.text = getString(R.string.all_work_completed)
+            }
+        }
+
+
+        /*
         for (sec in GlobalVars.globalMyScheduleSections) {
             for (entry in sec.entriesFiltered) {
                 when (entry.entryType) {
@@ -449,6 +516,7 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
                 }
             }
         }
+        */
 
         binding.countTv.text = getString(R.string.my_schedule_count, wosFound, leadsFound, servicesFound)
 
@@ -522,7 +590,9 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if (!isSelectionFromTouch) { return }
         selectedDateIndex = position
+
         binding.crewsBtn.text = getString(R.string.crews_x, datesArray[selectedDateIndex])
+
         isSelectionFromTouch = false
         getMySchedule()
     }
