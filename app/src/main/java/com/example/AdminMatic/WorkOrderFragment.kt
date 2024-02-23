@@ -172,8 +172,11 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         }
 
 
-                        if (workOrder!!.nextPlannedDate != null) {
+                        if (!workOrder!!.nextPlannedDate.isNullOrBlank()) {
                             binding.scheduleValTv.text = workOrder!!.nextPlannedDate
+                        }
+                        else {
+                            binding.scheduleValTv.text = getString(R.string.not_scheduled)
                         }
                         /*
                     if(workOrder!!.department != null){
@@ -181,11 +184,18 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     }
 
                      */
-                        if (workOrder!!.crewName != null) {
+                        if (!workOrder!!.crewName.isNullOrBlank()) {
                             binding.crewValTv.text = workOrder!!.crewName!!
                         }
-                        if (workOrder!!.salesRepName != null) {
+                        else {
+                            binding.crewValTv.text = getString(R.string.no_crew)
+                        }
+
+                        if (!workOrder!!.salesRepName.isNullOrBlank()) {
                             binding.repValTv.text = workOrder!!.salesRepName!!
+                        }
+                        else {
+                            binding.repValTv.text = getString(R.string.no_sales_rep)
                         }
 
                         println("Charge Name: ${workOrder!!.chargeName}")

@@ -170,7 +170,7 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
 
 
         binding.vendorWebBtnTv.text = getString(R.string.no_website_found)
-        if(vendor!!.website != null){
+        if(!vendor!!.website.isNullOrBlank()){
             binding.vendorWebBtnTv.text = vendor!!.website!!
 
             binding.vendorWebBtnTv.setOnClickListener {
@@ -184,7 +184,6 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
 
                 startActivity(intent)
             }
-
 
         }
 

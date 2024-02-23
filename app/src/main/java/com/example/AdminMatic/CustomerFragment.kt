@@ -650,36 +650,40 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
 
         binding.customerAddressBtnTv.text = getString(R.string.no_address_found)
 
-        if (customer.mainAddr != ""){
+        if (!customer.mainAddr.isNullOrBlank()){
             binding.customerAddressBtnTv.text = customer.mainAddr
         }
 
 
         if (customer.contacts.isNotEmpty()){
             for (contact in customer.contacts) {
-                when(contact.type) {
+                when (contact.type) {
                     "1" -> {
                         println("1")
-                        binding.customerPhoneBtnTv.text = contact.value!!
-                        binding.customerPhoneBtnTv.setOnClickListener {
+                        if (!contact.value.isNullOrBlank()) {
+                            binding.customerPhoneBtnTv.text = contact.value!!
+                            binding.customerPhoneBtnTv.setOnClickListener {
 
-                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + contact.value!!))
-                            com.example.AdminMatic.myView.context.startActivity(intent)
+                                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + contact.value!!))
+                                com.example.AdminMatic.myView.context.startActivity(intent)
+                            }
                         }
 
                     }
                     "2" -> {
                         println("2")
-                        binding.customerEmailBtnTv.text = contact.value!!
-                        binding.customerEmailBtnTv.setOnClickListener {
-                            println("email btn clicked ${contact.value!!}")
-                            val intent = Intent(Intent.ACTION_SENDTO)
-                            intent.data = Uri.parse("mailto:") // only email apps should handle this
-                            val emailArray = arrayOf(contact.value!!)
-                            intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
-                            // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
-                            // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
-                            myView.context.startActivity(intent)
+                        if (!contact.value.isNullOrBlank()) {
+                            binding.customerEmailBtnTv.text = contact.value!!
+                            binding.customerEmailBtnTv.setOnClickListener {
+                                println("email btn clicked ${contact.value!!}")
+                                val intent = Intent(Intent.ACTION_SENDTO)
+                                intent.data = Uri.parse("mailto:") // only email apps should handle this
+                                val emailArray = arrayOf(contact.value!!)
+                                intent.putExtra(Intent.EXTRA_EMAIL, emailArray)
+                                // intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here")
+                                // intent.putExtra(Intent.EXTRA_TEXT, "Body Here")
+                                myView.context.startActivity(intent)
+                            }
                         }
 
                     }

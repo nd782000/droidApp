@@ -1195,6 +1195,10 @@
     <string name="charge_amount_label">Charge Amount:</string>
     <string name="all">All</string>
     <string name="enter_a_title">Add a title.</string>
+    <string name="no_crews">No Crews</string>
+    <string name="no_sales_rep">No Sales Rep</string>
+    <string name="not_scheduled">Not Scheduled</string>
+
 
 
     <!--
