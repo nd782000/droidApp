@@ -917,6 +917,4 @@
         android:indeterminateTint="@color/button"
         />
 
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

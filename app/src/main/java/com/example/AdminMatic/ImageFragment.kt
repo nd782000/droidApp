@@ -104,7 +104,8 @@ class ImageFragment : Fragment() {
 
         val gestureDetector = GestureDetector(activity, object : SimpleOnGestureListener() {
             override fun onDown(event: MotionEvent): Boolean { return true }
-            override fun onFling(event1: MotionEvent, event2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+
+            override fun onFling(e1: MotionEvent?, event1: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
                 if (abs(velocityX) > abs(velocityY)) {
                     if (velocityX > 0) {
                         println("right swipe")
@@ -125,6 +126,7 @@ class ImageFragment : Fragment() {
                 }
                 return true
             }
+
             override fun onDoubleTap(e: MotionEvent): Boolean {
                 toggleLike()
                 return true

@@ -50,9 +50,9 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
         globalVars = GlobalVars()
 
-        val woItem: WoItem = filterList[position]
+        val woItem: WoItem = filterList[holder.bindingAdapterPosition]
         holder.bind(woItem)
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
         //text highlighting for first string
 
 
@@ -61,6 +61,9 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
         val mIconView:ImageView = holder.itemView.findViewById(R.id.status_icon_iv)
         when (woItem.status) {
 
+            "0"-> Picasso.with(context)
+                .load(R.drawable.ic_not_started)
+                .into(mIconView)
             "1"-> Picasso.with(context)
                 .load(R.drawable.ic_not_started)
                 .into(mIconView)
@@ -82,7 +85,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
 
         var descriptionString = ""
-        val iterator = woItem.tasks.iterator()
+        val iterator = woItem.tasks!!.iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()
 

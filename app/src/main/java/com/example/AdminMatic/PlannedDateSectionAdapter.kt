@@ -37,7 +37,7 @@ class PlannedDateSectionAdapter(list: MutableList<PlannedDateSection>, private v
 
         val plannedDateSection: PlannedDateSection = filterList[position]
         holder.bind(plannedDateSection, plannedDateDelegate)
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
 
         val rowList = plannedDateSection.rows
 

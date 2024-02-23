@@ -262,6 +262,19 @@
         <action
             android:id="@+id/navigateToItem"
             app:destination="@id/itemFragment" />
+        <action
+            android:id="@+id/navigateToNewEditItem"
+            app:destination="@id/newEditItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newEditItemFragment"
+        android:name="com.example.AdminMatic.NewEditItemFragment"
+        android:label="fragment_new_edit_item"
+        tools:layout="@layout/fragment_new_edit_item" >
+        <argument
+            android:name="item"
+            app:argType="com.example.AdminMatic.Item"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/leadListFragment"

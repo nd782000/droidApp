@@ -49,7 +49,7 @@ class InvoicesAdapter(private val list: MutableList<Invoice>, private val contex
         holder.bind(invoice)
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
         //text highlighting for customer name
         if (queryText.isNotEmpty() && queryText != "") {
 

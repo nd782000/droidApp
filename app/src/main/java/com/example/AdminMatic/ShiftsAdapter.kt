@@ -37,7 +37,7 @@ class ShiftsAdapter(list: MutableList<Shift>) : RecyclerView.Adapter<ShiftViewHo
 
         val shift: Shift = filterList[position]
         holder.bind(shift)
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
 
     }
 

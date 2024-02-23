@@ -56,7 +56,7 @@ class WorkOrdersAdapter(
         val listCustName = holder.itemView.findViewById<TextView>(R.id.list_cust_name)
         val listTitle = holder.itemView.findViewById<TextView>(R.id.list_title)
 
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
         //text highlighting for first string
         if (queryText.isNotEmpty() && queryText != "") {
 
@@ -231,11 +231,14 @@ class WorkOrderViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
             mCl!!.background = context.getColor(R.color.backgroundHighlight).toDrawable()
         }
 
+        /*
         if (workOrder.daySort != null) {
             if (workOrder.daySort != "0") {
                 mSortView!!.text = context.getString(R.string.num, workOrder.daySort)
             }
         }
+
+         */
 
     }
 

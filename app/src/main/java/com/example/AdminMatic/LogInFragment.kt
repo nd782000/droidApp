@@ -70,7 +70,7 @@ class LogInFragment : Fragment() {
 
     lateinit  var globalVars:GlobalVars
 
-    lateinit var myView:View
+    //lateinit var myView:View
     lateinit var  pgsBar:ProgressBar
 
 
@@ -471,7 +471,7 @@ class LogInFragment : Fragment() {
             Method.POST, urlString,
             Response.Listener { response -> // response
 
-                println("Response $response")
+                println("Get session user response $response")
 
                 try {
                     val parentObject = JSONObject(response)
@@ -482,7 +482,7 @@ class LogInFragment : Fragment() {
                         createLogInView()
                     }
 
-                    println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
+                    //println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
 
                     val employee:Employee = Gson().fromJson(parentObject.getJSONObject("employee").toString(), Employee::class.java)
 
@@ -539,7 +539,7 @@ class LogInFragment : Fragment() {
                 params["empID"] = loggedInEmpID!!
                 params["sessionKey"] = sessionKey!!
 
-                println("params = $params")
+                println("Get session user params = $params")
                 return params
             }
         }
@@ -789,6 +789,7 @@ class LogInFragment : Fragment() {
 
                     }else{
 
+
                         println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
 
                         val employee:Employee = Gson().fromJson(parentObject.getJSONObject("employee").toString(), Employee::class.java)
@@ -815,6 +816,9 @@ class LogInFragment : Fragment() {
                             apply()
                         }
                         globalVars.playSaveSound(myView.context)
+
+                        GlobalVars.shouldLogOut = false
+
                         getFields()
                     }
 
@@ -932,6 +936,21 @@ class LogInFragment : Fragment() {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
+                params["salesTax"] = "1"
+                params["tax"] = "1"
+                params["crews"] = "1"
+                params["departments"] = "1"
+                params["zones"] = "1"
+                params["emails"] = "1"
+                params["contactTypes"] = "1"
+                params["hearTypes"] = "1"
+                params["vendorCategories"] = "1"
+                params["albums"] = "1"
+                params["terms"] = "1"
+                params["templates"] = "1"
+                params["depositTypes"] = "1"
+                params["defaults"] = "1"
+
                 println("params = $params")
                 return params
             }

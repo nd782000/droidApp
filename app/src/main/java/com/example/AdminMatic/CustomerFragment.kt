@@ -20,9 +20,10 @@ import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.time.LocalDate
 
 
-class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickListener, WorkOrderCellClickListener, InvoiceCellClickListener, ImageCellClickListener {
+class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCellClickListener, ContractCellClickListener, WorkOrderCellClickListener, InvoiceCellClickListener, ImageCellClickListener {
 
     lateinit  var customerID: String
 
@@ -35,10 +36,15 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
     lateinit var adapter:ImagesAdapter
 
+    private lateinit var yearAdapter:ArrayAdapter<String>
+    private val yearList = mutableListOf<String>()
+    private var yearValue = "1"
+
     lateinit var imageList: MutableList<Image>
     private var imagesLoaded:Boolean = false
     lateinit var loadMoreImageList: MutableList<Image>
     var refreshing = false
+    private var initialViewsLaidOut = false
 
 
     lateinit var addBtn: Button
@@ -245,6 +251,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["custID"] = customer.ID
+                params["year"] = yearValue
                 println("params = $params")
                 return params
             }
@@ -329,6 +336,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["custID"] = customer.ID
+                params["year"] = yearValue
                 println("params = $params")
                 return params
             }
@@ -415,6 +423,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["custID"] = customer.ID
                 params["empID"] = ""
                 params["active"] = "1"
+                params["year"] = yearValue
                 println("params = $params")
                 return params
             }
@@ -497,6 +506,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["custID"] = customer.ID
+                params["year"] = yearValue
                 println("params = $params")
                 return params
             }
@@ -595,6 +605,7 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
                 params["loginID"] = GlobalVars.loggedInEmployee!!.ID
                 params["limit"] = limit.toString()
                 params["offset"] = offset.toString()
+                params["year"] = yearValue
                 params["customer"] = customer.ID
 
 
@@ -627,7 +638,8 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         hideProgressView()
 
 
-       //  swipeRefresh= myView.findViewById(R.id.customerSwipeContainer)
+        //swipeRefresh= myView.findViewById(R.id.customerSwipeContainer)
+
 
 
         binding.customerNameTxt.text = customer.sysname
@@ -635,22 +647,6 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
         binding.customerPhoneBtnTv.text = getString(R.string.no_phone_found)
 
         binding.customerEmailBtnTv.text = getString(R.string.no_email_found)
-
-        binding.customerAddressBtnTv.setOnClickListener {
-            println("map btn clicked ${customer.mainAddr}")
-
-            val lng: String
-            val lat: String
-            if(customer.lng != null && customer.lat != null){
-                lng = customer.lng!!
-                lat = customer.lat!!
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("geo:0,0?q="+lng+","+lat+" (" + customer.sysname + ")")
-                )
-                startActivity(intent)
-            }
-        }
 
         binding.customerAddressBtnTv.text = getString(R.string.no_address_found)
 
@@ -691,6 +687,26 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
 
 
                 }
+            }
+        }
+
+        if (initialViewsLaidOut) {
+            return
+        }
+
+        binding.customerAddressBtnTv.setOnClickListener {
+            println("map btn clicked ${customer.mainAddr}")
+
+            val lng: String
+            val lat: String
+            if(customer.lng != null && customer.lat != null){
+                lng = customer.lng!!
+                lat = customer.lat!!
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("geo:0,0?q="+lng+","+lat+" (" + customer.sysname + ")")
+                )
+                startActivity(intent)
             }
         }
 
@@ -850,6 +866,31 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
             // val directions = EmployeeFragmentDirections.navigateToPayroll(employee)
             // myView.findNavController().navigate(directions)
         }
+
+
+        val dateToday = LocalDate.now()
+        var currentYear = dateToday.year
+
+        yearList.clear()
+
+        yearList.add(getString(R.string.all))
+        repeat(10) {
+            yearList.add(0, currentYear.toString())
+            currentYear--
+        }
+
+        yearAdapter = ArrayAdapter<String>(
+            myView.context,
+            android.R.layout.simple_spinner_dropdown_item,
+            yearList
+        )
+        binding.yearSpinner.adapter = yearAdapter
+        binding.yearSpinner.onItemSelectedListener = this@CustomerFragment
+
+        binding.yearSpinner.setSelection(yearList.size-1)
+
+        initialViewsLaidOut = true
+
     }
 
 
@@ -868,6 +909,27 @@ class CustomerFragment : Fragment(), LeadCellClickListener, ContractCellClickLis
     fun hideProgressView() {
         binding.progressBar.visibility = View.INVISIBLE
         binding.customerUiCl.visibility = View.VISIBLE
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        println("onItemSelected")
+
+        var yearValueNew = yearList[binding.yearSpinner.selectedItemPosition]
+
+        if (binding.yearSpinner.selectedItemPosition == yearList.size - 1) {
+            yearValueNew = "1"
+        }
+
+        if (yearValueNew != yearValue) {
+            yearValue = yearValueNew
+            showProgressView()
+            getLeads()
+        }
+
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        println("onNothingSelected")
     }
 
 }

@@ -136,7 +136,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         //var totalCost = 0.0
 
 
-        woItem!!.usage.forEach {
+        woItem!!.usage!!.forEach {
             totalPrice += it.totalPrice!!.toDouble()
         }
 
@@ -461,6 +461,10 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     private fun setStatus(status: String) {
         println("setStatus")
         when(status) {
+            "0" -> {
+                println("1")
+                binding.statusBtn.setBackgroundResource(R.drawable.ic_not_started)
+            }
             "1" -> {
                 println("1")
                 binding.statusBtn.setBackgroundResource(R.drawable.ic_not_started)

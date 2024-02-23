@@ -11,225 +11,776 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageButton
-            android:id="@+id/status_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
 
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@id/customer_search"
-            app:layout_constraintBottom_toBottomOf="@id/customer_search"
-            android:contentDescription="Customer Button" />
-
-        <com.example.AdminMatic.EmptySubmitSearchViewCompat
-            android:id="@+id/customer_search"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:accessibilityHeading="false"
-            android:background="@drawable/text_view_layout"
-            android:imeOptions="actionDone"
-            app:queryHint="@string/customer_hint"
-            app:actionViewClass="android.widget.SearchView"
-            app:defaultQueryHint='Select Customer'
-            app:iconifiedByDefault="false"
-            app:layout_constraintLeft_toRightOf="@id/status_btn"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:queryBackground="@null" />
-
-        <TextView
-            android:id="@+id/title_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/new_wo_title"
-            android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/customer_search"
-            app:layout_constraintLeft_toLeftOf="parent"
-            />
-
-        <EditText
-            android:id="@+id/title_edit_text"
-            android:layout_height="40dp"
-            android:layout_width="0dp"
-            android:layout_margin="5dp"
-            android:gravity="center_vertical"
-            android:background="@drawable/text_view_layout"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:hint="@string/title_hint"
-            app:layout_constraintTop_toBottomOf="@id/title_text"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            />
-
-        <!-- Charge Type -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/charge_type_cl"
-            android:layout_margin="5dp"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/title_edit_text">
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:layout_marginHorizontal="5dp">
 
-            <Spinner
-                android:id="@+id/charge_type_spinner"
-                android:layout_width="220dp"
-                android:layout_height="40dp"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:singleLine="true"
-                android:background="@drawable/text_view_layout"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                />
-            <TextView
-                android:id="@+id/charge_type_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="@string/invoice_charge_type"
-                android:textSize="14sp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/scroll_view_cl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <!-- Payment Terms -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/payment_terms_cl"
-            android:layout_margin="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/charge_type_cl">
+                <TextView
+                    android:id="@+id/customer_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="@string/customer_label"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toTopOf="@+id/customer_search"
+                    app:layout_constraintBottom_toBottomOf="@+id/customer_search"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
 
-            <Spinner
-                android:id="@+id/payment_terms_spinner"
-                android:layout_width="220dp"
-                android:layout_height="40dp"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:singleLine="true"
-                android:background="@drawable/text_view_layout"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                />
-            <TextView
-                android:id="@+id/payment_terms_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="@string/new_contract_payment_terms"
-                android:textSize="14sp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.example.AdminMatic.EmptySubmitSearchViewCompat
+                    android:id="@+id/customer_search"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                    android:accessibilityHeading="false"
+                    android:background="@drawable/text_view_layout"
+                    android:imeOptions="actionDone"
+                    app:queryHint="@string/customer_hint"
+                    app:actionViewClass="android.widget.SearchView"
+                    app:defaultQueryHint='Select Customer'
+                    app:iconifiedByDefault="false"
+                    app:layout_constraintLeft_toRightOf="@id/customer_tv"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:queryBackground="@null" />
+
+                <TextView
+                    android:id="@+id/template_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="@string/template_label"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toTopOf="@+id/template_search"
+                    app:layout_constraintBottom_toBottomOf="@+id/template_search"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <com.example.AdminMatic.EmptySubmitSearchViewCompat
+                    android:id="@+id/template_search"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                    android:accessibilityHeading="false"
+                    android:background="@drawable/text_view_layout"
+                    android:imeOptions="actionDone"
+                    app:queryHint="@string/template_hint"
+                    app:actionViewClass="android.widget.SearchView"
+                    app:defaultQueryHint='Select Customer'
+                    app:iconifiedByDefault="false"
+                    app:layout_constraintLeft_toRightOf="@id/customer_tv"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/customer_search"
+                    app:queryBackground="@null" />
+
+                <TextView
+                    android:id="@+id/title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="@string/new_wo_title"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toTopOf="@+id/title_edit_text"
+                    app:layout_constraintBottom_toBottomOf="@+id/title_edit_text"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <EditText
+                    android:id="@+id/title_edit_text"
+                    android:layout_height="40dp"
+                    android:layout_width="0dp"
+                    android:layout_margin="5dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/text_view_layout"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:hint="@string/title_hint"
+                    app:layout_constraintTop_toBottomOf="@id/template_search"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/title_text"
+                    />
+
+                <TextView
+                    android:id="@+id/date_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="@string/contract_date_label"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toTopOf="@+id/date_edit_text"
+                    app:layout_constraintBottom_toBottomOf="@+id/date_edit_text"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <EditText
+                    android:id="@+id/date_edit_text"
+                    android:layout_height="40dp"
+                    android:layout_width="100dp"
+                    android:layout_margin="5dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/text_view_layout"
+                    android:imeOptions="actionDone"
+                    android:inputType="date"
+                    android:singleLine="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/new_lead_date_hint"
+                    app:layout_constraintTop_toBottomOf="@id/title_edit_text"
+                    app:layout_constraintLeft_toRightOf="@id/date_text"
+                    />
+
+                <TextView
+                    android:id="@+id/rep_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="@string/contract_sales_rep"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toTopOf="@+id/rep_search"
+                    app:layout_constraintBottom_toBottomOf="@+id/rep_search"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <com.example.AdminMatic.EmptySubmitSearchViewCompat
+                    android:id="@+id/rep_search"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                    android:accessibilityHeading="false"
+                    android:background="@drawable/text_view_layout"
+                    android:imeOptions="actionDone"
+                    app:queryHint="@string/new_lead_sales_rep_hint"
+                    app:actionViewClass="android.widget.SearchView"
+                    app:defaultQueryHint='Select Customer'
+                    app:iconifiedByDefault="false"
+                    app:layout_constraintLeft_toRightOf="@id/customer_tv"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/date_edit_text"
+                    app:queryBackground="@null" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintGuide_percent="0.5"/>
+
+                <TextView
+                    android:id="@+id/charge_type_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/new_wo_charge_type"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toBottomOf="@id/rep_search"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    tools:ignore="RtlHardcoded" />
+
+                <Spinner
+                    android:id="@+id/charge_type_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:background="@drawable/text_view_layout"
+                    android:layout_margin="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/charge_type_text"
+                    app:layout_constraintRight_toRightOf="@id/guideline"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/invoice_terms_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/invoice_terms_label"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toBottomOf="@id/rep_search"
+                    app:layout_constraintLeft_toLeftOf="@id/guideline"
+                    tools:ignore="RtlHardcoded" />
+
+                <Spinner
+                    android:id="@+id/invoice_terms_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:background="@drawable/text_view_layout"
+                    android:layout_margin="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/charge_type_text"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="@id/guideline"
+                    />
+
+                <TextView
+                    android:id="@+id/deposit_type_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/deposit_type_label"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toBottomOf="@id/charge_type_spinner"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    tools:ignore="RtlHardcoded" />
+
+                <Spinner
+                    android:id="@+id/deposit_type_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:background="@drawable/text_view_layout"
+                    android:layout_margin="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/deposit_type_text"
+                    app:layout_constraintRight_toRightOf="@id/guideline"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/tax_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/sales_tax_label"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toBottomOf="@id/invoice_terms_spinner"
+                    app:layout_constraintLeft_toLeftOf="@id/guideline"
+                    tools:ignore="RtlHardcoded" />
+
+                <Spinner
+                    android:id="@+id/tax_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:background="@drawable/text_view_layout"
+                    android:layout_margin="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/tax_text"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="@id/guideline"
+                    />
 
 
+                <TextView
+                    android:id="@+id/show_wo_config_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/show_wo_config"
+                    android:textSize="14sp"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintTop_toBottomOf="@id/deposit_type_spinner"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    />
 
-        <!-- Sales Rep -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/sales_rep_cl"
-            android:layout_margin="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/payment_terms_cl">
+                <!-- Wo config -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/wo_config_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/show_wo_config_text">
 
-            <com.example.AdminMatic.EmptySubmitSearchViewCompat
-                android:id="@+id/sales_rep_search"
-                android:layout_width="300dp"
-                android:layout_height="40dp"
-                android:accessibilityHeading="false"
-                android:background="@drawable/text_view_layout"
-                android:imeOptions="actionDone"
-                app:queryHint="@string/new_lead_sales_rep_hint"
-                app:actionViewClass="android.widget.SearchView"
-                app:defaultQueryHint='Select Customer'
-                app:iconifiedByDefault="false"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:queryBackground="@null" />
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline_wo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintGuide_percent="0.5"/>
 
-            <TextView
-                android:id="@+id/sales_rep_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="@string/new_lead_sales_rep"
-                android:textSize="14sp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/department_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/department_label"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        tools:ignore="RtlHardcoded" />
+
+                    <Spinner
+                        android:id="@+id/department_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:background="@drawable/text_view_layout"
+                        android:layout_margin="5dp"
+                        app:layout_constraintTop_toBottomOf="@id/department_text"
+                        app:layout_constraintRight_toRightOf="@id/guideline_wo"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/crew_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/crew_label"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="@id/guideline_wo"
+                        tools:ignore="RtlHardcoded" />
+
+                    <Spinner
+                        android:id="@+id/crew_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:background="@drawable/text_view_layout"
+                        android:layout_margin="5dp"
+                        app:layout_constraintTop_toBottomOf="@id/crew_text"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="@id/guideline_wo"
+                        />
+
+                    <TextView
+                        android:id="@+id/invoice_type_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/new_wo_invoice_type"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toBottomOf="@id/department_spinner"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        tools:ignore="RtlHardcoded" />
+
+                    <Spinner
+                        android:id="@+id/invoice_type_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:background="@drawable/text_view_layout"
+                        android:layout_margin="5dp"
+                        app:layout_constraintTop_toBottomOf="@id/invoice_type_text"
+                        app:layout_constraintRight_toRightOf="@id/guideline_wo"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/deadline_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/new_lead_deadline"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toBottomOf="@id/crew_spinner"
+                        app:layout_constraintLeft_toLeftOf="@id/guideline_wo"
+                        tools:ignore="RtlHardcoded" />
+
+                    <EditText
+                        android:id="@+id/deadline_et"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:imeOptions="actionDone"
+                        android:inputType="date"
+                        android:singleLine="true"
+                        android:focusable="false"
+                        android:focusableInTouchMode="true"
+                        android:background="@drawable/text_view_layout"
+                        android:layout_margin="5dp"
+                        app:layout_constraintTop_toBottomOf="@id/deadline_text"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="@id/guideline_wo"
+                        />
+
+                    <TextView
+                        android:id="@+id/renewal_type_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="@string/renewal_type_label"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toTopOf="@id/renewal_type_spinner"
+                        app:layout_constraintBottom_toBottomOf="@id/renewal_type_spinner"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        tools:ignore="RtlHardcoded" />
+
+                    <Spinner
+                        android:id="@+id/renewal_type_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:background="@drawable/text_view_layout"
+                        android:layout_margin="5dp"
+                        app:layout_constraintTop_toBottomOf="@id/deadline_et"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/renewal_type_text"
+                        />
 
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/renewal_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/renewal_type_spinner">
 
-        <TextView
-            android:id="@+id/notes_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginVertical="12dp"
-            android:text="@string/new_wo_notes"
-            android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@+id/sales_rep_cl"
-            app:layout_constraintLeft_toLeftOf="parent"
-            />
+                        <TextView
+                            android:id="@+id/has_range_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="@string/has_date_range_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="@id/has_range_switch"
+                            app:layout_constraintBottom_toBottomOf="@id/has_range_switch"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
 
-        <EditText
-            android:id="@+id/notes_et"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:gravity="start"
-            android:padding="5dp"
-            android:background="@drawable/text_view_layout"
-            app:layout_constraintTop_toBottomOf="@id/notes_tv"
-            app:layout_constraintBottom_toTopOf="@id/submit_btn"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:imeOptions="actionDone"
-            android:inputType="textMultiLine"
-            />
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/has_range_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:checked="false"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintLeft_toRightOf="@+id/has_range_text"
+                            />
 
-        <Button
-            android:id="@+id/submit_btn"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/range_cl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toBottomOf="@id/has_range_switch">
 
-            android:text="@string/submit"
-            android:layout_marginHorizontal="5dp"
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline_range"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintGuide_percent="0.5"/>
 
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+                            <TextView
+                                android:id="@+id/range_start_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/range_start_label"
+                                android:textSize="14sp"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                tools:ignore="RtlHardcoded" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/customer_search_rv"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/white"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/customer_search"
-            app:layout_constraintVertical_bias="0.0"
-            tools:layout_editor_absoluteX="0dp" />
+                            <EditText
+                                android:id="@+id/range_start_et"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:imeOptions="actionDone"
+                                android:inputType="date"
+                                android:singleLine="true"
+                                android:background="@drawable/text_view_layout"
+                                android:layout_margin="5dp"
+                                android:focusable="false"
+                                android:focusableInTouchMode="true"
+                                app:layout_constraintTop_toBottomOf="@id/range_start_text"
+                                app:layout_constraintRight_toRightOf="@id/guideline_range"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/sales_rep_search_rv"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="invisible"
-            android:background="@color/white"
-            app:layout_constraintTop_toBottomOf="@+id/sales_rep_cl"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+                            <TextView
+                                android:id="@+id/range_end_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/range_end_label"
+                                android:textSize="14sp"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintLeft_toLeftOf="@id/guideline_range"
+                                tools:ignore="RtlHardcoded" />
+
+                            <EditText
+                                android:id="@+id/range_end_et"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:imeOptions="actionDone"
+                                android:inputType="date"
+                                android:singleLine="true"
+                                android:background="@drawable/text_view_layout"
+                                android:layout_margin="5dp"
+                                android:focusable="false"
+                                android:focusableInTouchMode="true"
+                                app:layout_constraintTop_toBottomOf="@id/range_end_text"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintLeft_toLeftOf="@id/guideline_range"
+                                />
+
+                            <TextView
+                                android:id="@+id/prompt_to_repeat_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:text="@string/prompt_to_repeat_label"
+                                android:textSize="14sp"
+                                app:layout_constraintTop_toTopOf="@id/prompt_to_repeat_switch"
+                                app:layout_constraintBottom_toBottomOf="@id/prompt_to_repeat_switch"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                tools:ignore="RtlHardcoded" />
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/prompt_to_repeat_switch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:checked="false"
+                                app:layout_constraintTop_toBottomOf="@id/range_start_et"
+                                app:layout_constraintLeft_toRightOf="@+id/prompt_to_repeat_text"
+                                />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <TextView
+                            android:id="@+id/has_frequency_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="@string/has_frequency_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="@id/has_frequency_switch"
+                            app:layout_constraintBottom_toBottomOf="@id/has_frequency_switch"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/has_frequency_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:checked="false"
+                            app:layout_constraintTop_toBottomOf="@id/range_cl"
+                            app:layout_constraintLeft_toRightOf="@+id/has_frequency_text"
+                            />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/frequency_cl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toBottomOf="@id/has_frequency_switch">
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline_frequency"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintGuide_percent="0.5"/>
+
+                            <TextView
+                                android:id="@+id/frequency_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:paddingRight="5dp"
+                                android:text="@string/every"
+                                android:textSize="14sp"
+                                app:layout_constraintTop_toTopOf="@id/frequency_et"
+                                app:layout_constraintBottom_toBottomOf="@id/frequency_et"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                tools:ignore="RtlHardcoded" />
+
+                            <EditText
+                                android:id="@+id/frequency_et"
+                                android:layout_width="80dp"
+                                android:layout_height="40dp"
+                                android:imeOptions="actionDone"
+                                android:inputType="phone"
+                                android:digits="1234567890"
+                                android:singleLine="true"
+                                android:background="@drawable/text_view_layout"
+                                android:layout_margin="5dp"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintLeft_toRightOf="@id/frequency_text"
+                                />
+
+                            <TextView
+                                android:id="@+id/frequency_text_days"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="10dp"
+                                android:text="@string/days"
+                                android:textSize="14sp"
+                                app:layout_constraintTop_toTopOf="@id/frequency_et"
+                                app:layout_constraintBottom_toBottomOf="@id/frequency_et"
+                                app:layout_constraintLeft_toRightOf="@+id/frequency_et"
+                                tools:ignore="RtlHardcoded" />
+
+
+                            <TextView
+                                android:id="@+id/min_days_between_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/min_days_between_label"
+                                android:textSize="14sp"
+                                app:layout_constraintTop_toBottomOf="@id/frequency_et"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                tools:ignore="RtlHardcoded" />
+
+                            <EditText
+                                android:id="@+id/min_days_between_et"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:imeOptions="actionDone"
+                                android:inputType="phone"
+                                android:digits="1234567890"
+                                android:singleLine="true"
+                                android:background="@drawable/text_view_layout"
+                                android:layout_margin="5dp"
+                                app:layout_constraintTop_toBottomOf="@id/min_days_between_text"
+                                app:layout_constraintRight_toRightOf="@id/guideline_frequency"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                />
+
+                            <TextView
+                                android:id="@+id/preferred_day_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/preferred_day_label"
+                                android:textSize="14sp"
+                                app:layout_constraintTop_toBottomOf="@id/frequency_et"
+                                app:layout_constraintLeft_toLeftOf="@id/guideline_frequency"
+                                tools:ignore="RtlHardcoded" />
+
+                            <Spinner
+                                android:id="@+id/preferred_day_spinner"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:singleLine="true"
+                                android:background="@drawable/text_view_layout"
+                                android:layout_margin="5dp"
+                                app:layout_constraintTop_toBottomOf="@id/preferred_day_text"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintLeft_toLeftOf="@id/guideline_frequency"
+                                />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/notes_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/new_wo_notes"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toBottomOf="@id/wo_config_cl"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    tools:ignore="RtlHardcoded" />
+
+                <EditText
+                    android:id="@+id/notes_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_margin="5dp"
+                    android:gravity="start"
+                    android:padding="5dp"
+                    android:background="@drawable/text_view_layout"
+                    app:layout_constraintTop_toBottomOf="@id/notes_text"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:imeOptions="actionDone"
+                    android:inputType="textMultiLine"
+                    />
+
+                <Button
+                    android:id="@+id/submit_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+
+                    android:text="@string/submit"
+                    android:layout_marginHorizontal="5dp"
+
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/notes_et"
+                    />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/customer_search_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/white"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/customer_search"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:layout_editor_absoluteX="0dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sales_rep_search_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="invisible"
+                    android:background="@color/white"
+                    app:layout_constraintTop_toBottomOf="@+id/rep_search"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/template_search_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="invisible"
+                    android:background="@color/white"
+                    app:layout_constraintTop_toBottomOf="@+id/template_search"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
@@ -250,4 +801,5 @@
         android:indeterminateTintMode="src_atop"
         android:indeterminateTint="@color/button"
         />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

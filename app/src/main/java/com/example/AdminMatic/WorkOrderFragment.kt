@@ -137,7 +137,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         }
 
         showProgressView()
-        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/workOrder.php"
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/work.php"
         val currentTimestamp = System.currentTimeMillis()
         println("urlString = ${"$urlString?cb=$currentTimestamp"}")
         urlString = "$urlString?cb=$currentTimestamp"
@@ -157,8 +157,10 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         val gson = GsonBuilder().create()
 
 
-                        workOrder = gson.fromJson(parentObject.toString(), WorkOrder::class.java)
-
+                        //workOrder = gson.fromJson(parentObject.toString(), WorkOrder::class.java)
+                        val woObject:JSONObject = parentObject.getJSONObject("workOrder")
+                        workOrder = gson.fromJson(woObject.toString(), WorkOrder::class.java)
+                        println("Total: ${workOrder!!.total}")
 
                         setStatusIcon(workOrder!!.status)
 
@@ -180,7 +182,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                      */
                         if (workOrder!!.crewName != null) {
-                            binding.crewValTv.text = workOrder!!.mainCrew!!
+                            binding.crewValTv.text = workOrder!!.crewName!!
                         }
                         if (workOrder!!.salesRepName != null) {
                             binding.repValTv.text = workOrder!!.salesRepName!!
@@ -204,24 +206,33 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         binding.chargeValTv.text = workOrder!!.chargeName
 
 
-                        val profit: Float = workOrder!!.totalPriceRaw.toFloat() - workOrder!!.totalCostRaw.toFloat()
-                        val profitPercent: Int = (profit / workOrder!!.totalPriceRaw.toFloat() * 100).toInt()
+                        binding.priceTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(workOrder!!.total.toFloat()))
+                        binding.costTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(workOrder!!.totalCost.toFloat()))
+                        binding.profitTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(workOrder!!.profitAmount.toFloat()))
+                        binding.profitPercentTv.text = workOrder!!.profit
+                        binding.profitBar.progress = 100 - workOrder!!.profit.toFloat().toInt()
 
-                        binding.priceTv.text = workOrder!!.totalPrice
+                        /*
+                        val profit: Float = workOrder!!.total.toFloat() - workOrder!!.totalCost.toFloat()
+                        val profitPercent: Int = (profit / workOrder!!.total.toFloat() * 100).toInt()
+
+                        binding.priceTv.text = workOrder!!.total
                         binding.costTv.text = workOrder!!.totalCost
                         binding.profitTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(profit))
                         binding.profitPercentTv.text = profitPercent.toString()
                         binding.profitBar.progress = 100 - profitPercent
 
-                        println("DEPARTMENT AFTER GET/WORKORDER ${workOrder!!.department}")
-                        println("CREW AFTER GET/WORKORDER ${workOrder!!.crew}")
+                         */
 
 
-                        val woItemJSON: JSONArray = parentObject.getJSONArray("items")
-                        val itemList = gson.fromJson(woItemJSON.toString(), Array<WoItem>::class.java).toMutableList()
-                        println("woItemJSON $woItemJSON")
+                        //val woItemJSON: JSONArray = parentObject.getJSONArray("items")
+                        //val itemList = gson.fromJson(woItemJSON.toString(), Array<WoItem>::class.java).toMutableList()
+                        //println("woItemJSON $woItemJSON")
 
-                        itemList.forEach {
+
+                        val itemList = workOrder!!.items
+
+                        itemList?.forEach {
                             it.woID = workOrder!!.woID
                         }
 
@@ -229,7 +240,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                             layoutManager = LinearLayoutManager(activity)
                             adapter = activity?.let {
                                 WoItemsAdapter(
-                                    itemList,
+                                    itemList!!.toMutableList(),
                                     context,
                                     requireActivity().application,
                                     workOrder!!,
@@ -293,7 +304,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["woID"] = woID.toString()
+                params["woID"] = woID
                 println("params = $params")
                 return params
             }
@@ -444,7 +455,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.invoice_type_wrong))
             return
         }
-        else if (workOrder!!.totalPriceRaw == "0" || workOrder!!.totalPriceRaw == "0.00") {
+        else if (workOrder!!.total == "0" || workOrder!!.total == "0.00") {
             com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.invoice_no_total))
             return
         }

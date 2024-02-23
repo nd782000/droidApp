@@ -11,20 +11,21 @@ import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
-import android.os.Bundle
+import android.provider.Settings.Global
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.os.bundleOf
-import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.findNavController
 import com.AdminMatic.R
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -50,9 +51,14 @@ class GlobalVars: Application() {
         var departments:Array<Department>? = null
         var crews:Array<Crew>? = null
         var zones:Array<Zone>? = null
+        var albums:Array<Album>? = null
         var vendorCategories:Array<VendorCategory>? = null
         var paymentTerms:Array<PaymentTerms>? = null
         var contactTypes:Array<ContactType>? = null
+        var templates:Array<Template>? = null
+        var defaultFields:DefaultFields? = null
+        var salesTaxTypes:Array<SalesTaxType>? = null
+        var depositTypes:Array<DepositType>? = null
 
         // Flagged when you get a server error and are kicked to the bug log view
         var shouldLogOut:Boolean = false
@@ -216,6 +222,7 @@ class GlobalVars: Application() {
         //Todo: Wire alternate formats into localization system whenever that's in place
         val dateFormatterPHP: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") //format from the php
         val dateFormatterShort: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yy") //format to display
+        val dateFormatterNoYear: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd") //format to display
         val dateFormatterMonthDay: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd") //format to display
         val dateFormatterShortDashes: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd-yy") //format to display
         val dateFormatterYYYYMMDD: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd") //format to display
@@ -315,78 +322,171 @@ class GlobalVars: Application() {
         rawBase = parentObject.getString("rawBase")
 
         val gson = GsonBuilder().create()
-        val hearTypes:JSONArray = parentObject.getJSONArray("hearTypes")
-        GlobalVars.hearTypes = gson.fromJson(hearTypes.toString() , Array<HearType>::class.java)
-
-        val departments:JSONArray = parentObject.getJSONArray("departments")
-        GlobalVars.departments = gson.fromJson(departments.toString() , Array<Department>::class.java)
-
-        val crews:JSONArray = parentObject.getJSONArray("crews")
-        GlobalVars.crews = gson.fromJson(crews.toString() , Array<Crew>::class.java)
-
-        val zones:JSONArray = parentObject.getJSONArray("zones")
-        GlobalVars.zones = gson.fromJson(zones.toString() , Array<Zone>::class.java)
-        // Add "no zone" field
-        val noZone = Zone("0", context!!.getString(R.string.no_zone))
-        var zonesMutableList: MutableList<Zone>
-        GlobalVars.zones.let {
-            zonesMutableList = it!!.toMutableList()
+        try {
+            val hearTypes: JSONArray = parentObject.getJSONArray("hearTypes")
+            GlobalVars.hearTypes = gson.fromJson(hearTypes.toString(), Array<HearType>::class.java)
         }
-        zonesMutableList.add(0, noZone)
-        GlobalVars.zones = zonesMutableList.toTypedArray()
-
-        println("zones size: ${GlobalVars.zones!!.size}")
-
-        val vendorCategories:JSONArray = parentObject.getJSONArray("vendorCategories")
-        GlobalVars.vendorCategories = gson.fromJson(vendorCategories.toString() , Array<VendorCategory>::class.java)
-        // Add "no category" field
-        val noVendorCategory = VendorCategory("0", context.getString(R.string.no_category), context.getString(R.string.no_category), "0", "1")
-        var vendorCatgoriesMutableList: MutableList<VendorCategory>
-        GlobalVars.vendorCategories.let {
-            vendorCatgoriesMutableList = it!!.toMutableList()
+        catch (e:JSONException) {
+            println("Did not find hearTypes array")
         }
-        vendorCatgoriesMutableList.add(0, noVendorCategory)
-        GlobalVars.vendorCategories = vendorCatgoriesMutableList.toTypedArray()
 
-        val paymentTerms:JSONArray = parentObject.getJSONArray("terms")
-        GlobalVars.paymentTerms = gson.fromJson(paymentTerms.toString() , Array<PaymentTerms>::class.java)
-        println("payment terms size: ${GlobalVars.paymentTerms!!.size}")
-        // Add "no payment terms" field
-        val noTerms = PaymentTerms("0", context.getString(R.string.no_payment_terms))
-        var termsMutableList: MutableList<PaymentTerms>
-        GlobalVars.paymentTerms.let {
-            termsMutableList = it!!.toMutableList()
+        try {
+            val departments:JSONArray = parentObject.getJSONArray("departments")
+            GlobalVars.departments = gson.fromJson(departments.toString() , Array<Department>::class.java)
         }
-        termsMutableList.add(0, noTerms)
-        GlobalVars.paymentTerms = termsMutableList.toTypedArray()
+        catch (e:JSONException) {
+            println("Did not find departments array")
+        }
 
-        val contactTypes:JSONArray = parentObject.getJSONArray("contactTypes")
-        GlobalVars.contactTypes = gson.fromJson(contactTypes.toString() , Array<ContactType>::class.java)
+        try {
+            val crews:JSONArray = parentObject.getJSONArray("crews")
+            GlobalVars.crews = gson.fromJson(crews.toString() , Array<Crew>::class.java)
+        }
+        catch (e:JSONException) {
+            println("Did not find crews array")
+        }
 
-        val contactTypesFiltered = mutableListOf<ContactType>()
+        try {
+            val zones: JSONArray = parentObject.getJSONArray("zones")
+            GlobalVars.zones = gson.fromJson(zones.toString(), Array<Zone>::class.java)
+            // Add "no zone" field
+            val noZone = Zone("0", context!!.getString(R.string.no_zone))
+            var zonesMutableList: MutableList<Zone>
+            GlobalVars.zones.let {
+                zonesMutableList = it!!.toMutableList()
+            }
+            zonesMutableList.add(0, noZone)
+            GlobalVars.zones = zonesMutableList.toTypedArray()
+        }
+        catch (e:JSONException) {
+            println("Did not find zones array")
+        }
 
-        // Remove jobSite, billing Addr or invoice Addr
-        // (Code copied from iOS)
-        GlobalVars.contactTypes.let {
-            it!!.forEach { ct->
-                if (ct.ID != "3" && ct.ID != "4" && ct.ID != "14") {
-                    contactTypesFiltered.add(ct)
+        try {
+            val albums:JSONArray = parentObject.getJSONArray("albums")
+            GlobalVars.albums = gson.fromJson(albums.toString() , Array<Album>::class.java)
+        }
+        catch (e:JSONException) {
+            println("Did not find albums array")
+        }
+
+        try {
+            val vendorCategories:JSONArray = parentObject.getJSONArray("vendorCategories")
+            GlobalVars.vendorCategories = gson.fromJson(vendorCategories.toString() , Array<VendorCategory>::class.java)
+            // Add "no category" field
+            val noVendorCategory = VendorCategory("0", context!!.getString(R.string.no_category), context.getString(R.string.no_category), "0", "1")
+            var vendorCategoriesMutableList: MutableList<VendorCategory>
+            GlobalVars.vendorCategories.let {
+                vendorCategoriesMutableList = it!!.toMutableList()
+            }
+            vendorCategoriesMutableList.add(0, noVendorCategory)
+            GlobalVars.vendorCategories = vendorCategoriesMutableList.toTypedArray()
+        }
+        catch (e:JSONException) {
+            println("Did not find vendorCategories array")
+        }
+
+        try {
+            val paymentTerms:JSONArray = parentObject.getJSONArray("terms")
+            GlobalVars.paymentTerms = gson.fromJson(paymentTerms.toString() , Array<PaymentTerms>::class.java)
+            println("payment terms size: ${GlobalVars.paymentTerms!!.size}")
+            // Add "no payment terms" field
+            val noTerms = PaymentTerms("0", context!!.getString(R.string.no_payment_terms))
+            var termsMutableList: MutableList<PaymentTerms>
+            GlobalVars.paymentTerms.let {
+                termsMutableList = it!!.toMutableList()
+            }
+            termsMutableList.add(0, noTerms)
+            GlobalVars.paymentTerms = termsMutableList.toTypedArray()
+        }
+        catch (e:JSONException) {
+            println("Did not find terms array")
+        }
+
+        try {
+            val contactTypes: JSONArray = parentObject.getJSONArray("contactTypes")
+            GlobalVars.contactTypes = gson.fromJson(contactTypes.toString(), Array<ContactType>::class.java)
+
+            val contactTypesFiltered = mutableListOf<ContactType>()
+
+            // Remove jobSite, billing Addr or invoice Addr
+            // (Code copied from iOS)
+            GlobalVars.contactTypes.let {
+                it!!.forEach { ct ->
+                    if (ct.ID != "3" && ct.ID != "4" && ct.ID != "14") {
+                        contactTypesFiltered.add(ct)
+                    }
                 }
             }
+
+            GlobalVars.contactTypes = contactTypesFiltered.toTypedArray()
+        }
+        catch (e:JSONException) {
+            println("Did not find contactTypes array")
         }
 
-        GlobalVars.contactTypes = contactTypesFiltered.toTypedArray()
+        try {
+            val contractSingleObject:JSONObject = parentObject.getJSONObject("contract-single")
+            contractSingle = gson.fromJson(contractSingleObject.toString() , EmailTemplate::class.java)
+        }
+        catch (e:JSONException) {
+            println("Did not find contract-single object")
+        }
 
-        val contractSingleArray:JSONObject = parentObject.getJSONObject("contract-single")
-        contractSingle = gson.fromJson(contractSingleArray.toString() , EmailTemplate::class.java)
+        try {
+            val invoiceSingleObject:JSONObject = parentObject.getJSONObject("invoice-single")
+            invoiceSingle = gson.fromJson(invoiceSingleObject.toString() , EmailTemplate::class.java)
+        }
+        catch (e:JSONException) {
+            println("Did not find invoice-single object")
+        }
 
-        val invoiceSingleArray:JSONObject = parentObject.getJSONObject("invoice-single")
-        invoiceSingle = gson.fromJson(invoiceSingleArray.toString() , EmailTemplate::class.java)
+        try {
+            val templates: JSONArray = parentObject.getJSONArray("templates")
+            GlobalVars.templates = gson.fromJson(templates.toString(), Array<Template>::class.java)
+            println("TEMPLATES ARRAY: ${templates}")
+        }
+        catch (e:JSONException) {
+            println("Did not find templates array")
+        }
 
-        println("INVOICE SINGLE: ${invoiceSingle!!.title}")
-        println("CONTRACT SINGLE: ${contractSingle!!.title}")
+        try {
+            val defaultFields:JSONObject = parentObject.getJSONObject("defaults")
+            GlobalVars.defaultFields = gson.fromJson(defaultFields.toString() , DefaultFields::class.java)
+        }
+        catch (e:JSONException) {
+            println("Did not find defaults object")
+        }
 
-        println("thumbBase= $thumbBase")
+        try {
+            val salesTaxTypes:JSONArray = parentObject.getJSONArray("salesTax")
+            GlobalVars.salesTaxTypes = gson.fromJson(salesTaxTypes.toString() , Array<SalesTaxType>::class.java)
+            val tempMLTax = mutableListOf<SalesTaxType>()
+            for (tax in GlobalVars.salesTaxTypes!!) {
+                if (tax.active == "1") {
+                    println("tax rate: ${tax.taxRate}")
+                    tax.nameAndRate = myView.context.getString(R.string.tax_name_and_rate, tax.name, tax.taxRate.toFloat())
+                    println(tax.nameAndRate)
+                    tempMLTax.add(tax)
+                }
+            }
+            GlobalVars.salesTaxTypes = tempMLTax.toTypedArray()
+        }
+        catch (e:JSONException) {
+            println("Did not find salesTax array")
+        }
+
+        try {
+            val depositTypes: JSONArray = parentObject.getJSONArray("depositTypes")
+            GlobalVars.depositTypes = gson.fromJson(depositTypes.toString(), Array<DepositType>::class.java)
+            val noDepositTypeRequired = DepositType("0", myView.context.getString(R.string.no_deposit_required))
+            val tempMLDep = GlobalVars.depositTypes!!.toMutableList()
+            tempMLDep.add(0, noDepositTypeRequired)
+            GlobalVars.depositTypes = tempMLDep.toTypedArray()
+        }
+        catch (e:JSONException) {
+            println("Did not find depositTypes array")
+        }
     }
 
 
@@ -547,11 +647,23 @@ class GlobalVars: Application() {
             playErrorSound(context)
             shouldLogOut = true
 
+
+
             var errorString = ""
             errors.forEach {
                 errorString += it
                 errorString += "\n"
             }
+
+            /*
+            Toast.makeText(
+                myView.context,
+                errorString, Toast.LENGTH_LONG
+            ).show()
+             */
+
+            println("Navigating to bug log fragment")
+
             val bundle = bundleOf("errorString" to errorString, "shouldLogOut" to true)
             myView_.findNavController().navigate(R.id.navigateToBugLog, bundle)
             return false

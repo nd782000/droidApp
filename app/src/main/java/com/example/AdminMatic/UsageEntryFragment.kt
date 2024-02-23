@@ -192,7 +192,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-        for (usage in woItem!!.usage) {
+        for (usage in woItem!!.usage!!) {
             println("usage.start = ${usage.start}")
 
             println("usage.stop = ${usage.stop}")

@@ -78,6 +78,56 @@ class MainMenuFragment : Fragment() {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.adminmatic.com/support"))
                 startActivity(intent)
             }
+            /*
+            R.id.end_sessions_item -> {
+                showProgressView()
+                println("TESTING END SESSION")
+
+                var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/other/endSessions.php"
+
+                val currentTimestamp = System.currentTimeMillis()
+                println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+                urlString = "$urlString?cb=$currentTimestamp"
+
+
+                val postRequest1: StringRequest = object : StringRequest(
+                    Method.POST, urlString,
+                    Response.Listener { response -> // response
+
+                        println("End session response $response")
+
+                        try {
+                            val parentObject = JSONObject(response)
+                            println("parentObject get fields = $parentObject")
+                            globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
+                            hideProgressView()
+
+                        } catch (e: JSONException) {
+                            println("JSONException")
+                            e.printStackTrace()
+                        }
+
+                    },
+                    Response.ErrorListener { // error
+
+                    }
+                ) {
+                    override fun getParams(): Map<String, String> {
+                        val params: MutableMap<String, String> = HashMap()
+                        params["companyUnique"] = loggedInEmployee!!.companyUnique
+                        params["sessionKey"] = loggedInEmployee!!.sessionKey
+                        params["empID"] = loggedInEmployee!!.ID
+
+                        println("End session params = $params")
+                        return params
+                    }
+                }
+                postRequest1.tag = "logIn"
+                VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+            }
+
+             */
             R.id.reload_company_data_item -> {
                 getFields()
             }
@@ -338,6 +388,20 @@ class MainMenuFragment : Fragment() {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
+                params["salesTax"] = "1"
+                params["tax"] = "1"
+                params["crews"] = "1"
+                params["departments"] = "1"
+                params["zones"] = "1"
+                params["emails"] = "1"
+                params["contactTypes"] = "1"
+                params["hearTypes"] = "1"
+                params["vendorCategories"] = "1"
+                params["albums"] = "1"
+                params["terms"] = "1"
+                params["templates"] = "1"
+                params["depositTypes"] = "1"
+                params["defaults"] = "1"
                 println("params = $params")
                 return params
             }

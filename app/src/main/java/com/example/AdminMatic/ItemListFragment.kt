@@ -68,6 +68,17 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
             println("data not loaded")
             getItems()
         }
+
+        binding.addItemBtn.setOnClickListener {
+            if (GlobalVars.permissions!!.itemsEdit == "1") {
+                val directions = ItemListFragmentDirections.navigateToNewEditItem(null)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(com.example.AdminMatic.myView.context,getString(R.string.access_denied),getString(R.string.no_permission_items_edit))
+            }
+        }
+
     }
 
     override fun onStop() {

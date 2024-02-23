@@ -236,6 +236,7 @@
     <string name="no_permission_employees">You don\'t have permission to access employees.</string>
     <string name="no_permission_employees_edit">You don\'t have permission to edit employees.</string>
     <string name="no_permission_items">You don\'t have permission to access items.</string>
+    <string name="no_permission_items_edit">You don\'t have permission to edit items.</string>
     <string name="no_permission_vendors">You don\'t have permission to access vendors.</string>
     <string name="no_permission_vendors_edit">You don\'t have permission to edit vendors.</string>
     <string name="no_permission_equipment">You don\'t have permission to access equipment.</string>
@@ -1106,11 +1107,93 @@
     <string name="contract_emails_sent_update">Contract Emails Sent! Would you like to update the contract\'s status to \"Sent?\"</string>
     <string name="update_invoice_status_title">Update Invoice Status?</string>
     <string name="invoice_emails_sent_update">Invoice Emails Sent! Would you like to update the invoice\'s status to \"Sent?\"</string>
+    <string name="customer_label">Customer:</string>
+    <string name="template_label">Template:</string>
+    <string name="contract_date_label">Contract Date:</string>
+    <string name="invoice_terms_label">Invoice Terms:</string>
+    <string name="deposit_type_label">Deposit Type:</string>
+    <string name="sales_tax_label">Sales Tax:</string>
+    <string name="show_wo_config">Show Work Order Config…</string>
+    <string name="hide_wo_config">Hide Work Order Config…</string>
+    <string name="renewal_type_label">Renewal Type:</string>
+    <string name="does_not_renew">Does Not Renew</string>
+    <string name="renews_when_finished">Renews When Finished</string>
+    <string name="prompt_to_repeat_label">Prompt to Repeat:</string>
+    <string name="has_date_range_label">Has Date Range:</string>
+    <string name="range_start_label">Range Start:</string>
+    <string name="season_start_label">Season Start:</string>
+    <string name="range_end_label">Range End:</string>
+    <string name="season_end_label">Season End:</string>
+    <string name="has_frequency_label">Has Frequency:</string>
+    <string name="every">Every</string>
+    <string name="min_days_between_label">Min. Days Between:</string>
+    <string name="preferred_day_label">Preferred Day:</string>
+    <string name="no_deposit_required">No Deposit Required</string>
+    <string name="tax_name_and_rate">%1$s (%2$.2f%%)</string>
+    <string name="template_hint">Template…</string>
+
+    <string name="none">None</string>
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wedbesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+
 
 
     <string name="delete_image_link_title">Delete Image Link?</string>
     <string name="delete_image_link_body">Are you sure you want to delete the link to this image?</string>
     <string name="caption_hint">Caption…</string>
+    <string name="dialogue_only_one_image">Only one image can be selected. If you\'d like to change the image, please press the \"X\" button on the existing image before selecting a new one.</string>
+
+
+
+    <!-- New/Edit Item Stuff -->
+    <string name="item_type_label">Item Type:</string>
+    <string name="new_edit_item_switch_label_service">Is this service performed by a subcontractor or partner?</string>
+    <string name="new_edit_item_switch_label_non_inventory">Is this item purchased for a specific customer job?</string>
+    <string name="new_edit_item_switch_label_other">Is this a reimbursable charge?</string>
+    <string name="item_name_label">Item Name:</string>
+    <string name="parent_item_name_label">Parent Item Name:</string>
+    <string name="item_full_name_label">Item Full Name:</string>
+    <string name="purchase_units_label">Purchase Unit(s):</string>
+    <string name="part_number_label">Manufacturer\'s Part Number:</string>
+    <string name="vendors_label">Vendors:</string>
+    <string name="add_vendor">Add Vendor</string>
+    <string name="description_on_purchase_transactions_label">Description on Purchase Transactions:</string>
+    <string name="description_on_sales_transactions_label">Description on Sales Transactions:</string>
+    <string name="rate_label">Rate:</string>
+    <string name="tax_code_label">Tax Code:</string>
+    <string name="purchase_info">Purchase Information</string>
+    <string name="sales_info">Sales Information</string>
+    <string name="inventory_info">Inventory Information</string>
+    <string name="estimate_info">Estimate Information</string>
+    <string name="markup_and_margin">Markup &amp; Margin</string>
+    <string name="reorder_point_label">Reorder Point (Min):</string>
+    <string name="max_label">Max:</string>
+    <string name="on_hand_label">On Hand:</string>
+    <string name="total_value_label">Total Value:</string>
+    <string name="as_of_label">As Of:</string>
+    <string name="estimate_units_label">Estimate Unit(s):</string>
+    <string name="min_sales_qty_label">Minimum Sales Qty:</string>
+    <string name="estimate_notes_label">Estimate Notes:</string>
+    <string name="markup_label">Markup:</string>
+    <string name="margin_label">Margin:</string>
+    <string name="add_new_item">Add New Item</string>
+    <string name="item_type_select">Select Item Type…</string>
+    <string name="item_type_service">Service</string>
+    <string name="item_type_non_inventory_part">Non-inventory Part</string>
+    <string name="item_type_inventory_part">Inventory Part</string>
+    <string name="item_type_other_charge">Other Charge</string>
+    <string name="is_this_item_subcontractor">Is this service performed by a subcontractor or partner?</string>
+    <string name="is_this_item_specific_customer_job">Is this item purchased for a specific customer job?</string>
+    <string name="is_this_item_reimbursable">Is this a reimbursable charge?</string>
+    <string name="sales_price_label">Sales Price:</string>
+    <string name="price_label">Price:</string>
+    <string name="charge_amount_label">Charge Amount:</string>
+    <string name="all">All</string>
 
 
     <!--
@@ -1124,7 +1207,7 @@
     <string name="dialogue_update_wo_item_finished_body">Would you also like to set the work order and item statuses to finished?</string>
     -->
 
-    <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
+    <!--<string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>-->
 
     <string name="pick_single">Please select your image</string>
     <string name="logout">Log Out</string>

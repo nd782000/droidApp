@@ -41,7 +41,7 @@ class EquipmentDetailAdapter(list: MutableList<String>, private val cellClickLis
 
         val detail: String = filterList[position]
         holder.bind(detail, position)
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
         //text highlighting for first string
 
         //if (filterList[position].name != null){

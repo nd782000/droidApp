@@ -56,7 +56,7 @@ class EquipmentAdapter(private val list: MutableList<Equipment>, private val con
         holder.bind(equipment)
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
         //text highlighting for first string
         if (queryText.isNotEmpty() && queryText != "") {
 

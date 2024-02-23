@@ -28,6 +28,12 @@
         android:id="@+id/report_a_bug_item"
         android:title="@string/report_a_bug"
         android:enabled="true"/>
+    <!--
+    <item
+        android:id="@+id/end_sessions_item"
+        android:title="End Sessions"
+        android:enabled="true"/>
+    -->
     <item
         android:id="@+id/version_item"
         android:title=""

@@ -43,7 +43,7 @@ class EquipmentCrewAdapter(list: MutableList<EquipmentCrew>, private val context
 
         val equipmentCrew: EquipmentCrew = filterList[position]
         holder.bind(equipmentCrew)
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
 
         val adapter = EquipmentAdapter(equipmentCrew.equips, appContext, context, cCL, true)
 

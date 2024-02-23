@@ -65,6 +65,8 @@ class BugLogFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        println("BugLogFragment onViewCreated")
+
         if (GlobalVars.shouldLogOut) {
             globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.error_occurred))
         }

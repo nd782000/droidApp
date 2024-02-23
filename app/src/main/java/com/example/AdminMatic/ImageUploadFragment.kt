@@ -1,10 +1,6 @@
 package com.example.AdminMatic
 
-//import com.github.dhaval2404.imagepicker.ImagePicker
-
-//import com.yongchun.library.view.ImageSelectorActivity
-//import com.yongchun.library.view.ImageSelectorActivity.*
-
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
@@ -21,9 +17,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.*
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.ImageProxy
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.children
@@ -42,24 +50,19 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.bumptech.glide.Glide
 import com.google.gson.GsonBuilder
-import com.kroegerama.imgpicker.BottomSheetImagePicker
-import com.kroegerama.imgpicker.ButtonType
 import com.squareup.picasso.Picasso
 import com.t2r2.volleyexample.FileDataPart
 import com.t2r2.volleyexample.VolleyFileUploadRequest
-import io.fotoapparat.Fotoapparat
-import io.fotoapparat.configuration.CameraConfiguration
-import io.fotoapparat.log.logcat
-import io.fotoapparat.result.transformer.scaled
-import io.fotoapparat.selector.*
-import io.fotoapparat.view.CameraView
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.nio.ByteBuffer
 import java.util.*
-import kotlin.contracts.contract
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 
 class ImageCellData(_uri:Uri?, _imageData:Image?, _toBeSaved:Boolean) {
@@ -92,6 +95,9 @@ private var uncompressed = "0"
 private var customerAllowImages: Boolean = true
 private var queriedCustomer: Customer? = null
 
+private lateinit var pickMedia:ActivityResultLauncher<PickVisualMediaRequest>
+
+private var singleSelect = false
 
 /*
 private val mRetryPolicy: RetryPolicy = DefaultRetryPolicy(
@@ -107,20 +113,24 @@ private val mRetryPolicy: RetryPolicy = DefaultRetryPolicy(
 //private val cameraRequest = 1888
 
 
-class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetImagePicker.OnImagesSelectedListener{
+class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
     //private var mode: String? = null
     //private var customer: Customer? = null
     //lateinit var  pgsBar: ProgressBar
    // private lateinit var imageView: ImageView
 
+    private var cameraInitialed = false
 
-    lateinit  var globalVars:GlobalVars
+    lateinit var globalVars:GlobalVars
 
+    private var filesToDelete:MutableList<File> = mutableListOf()
 
+    private lateinit var cameraProvider: ProcessCameraProvider
 
+    private var imageCapture: ImageCapture? = null
 
-
+    private lateinit var currentPhotoPath: String
 
     // private var imageData: ByteArray? = null
     private val postURL: String = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/image.php"
@@ -129,6 +139,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
     //var selectedUris: MutableList<Uri> = mutableListOf()
     var uploadedImageCount = 0
 
+    private lateinit var cameraExecutor: ExecutorService
 
 
     // var albumID: String = ""
@@ -145,17 +156,26 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
 
     private lateinit var permissionsDelegate: PermissionsDelegate
-    private lateinit var cameraView: CameraView
 
     private var permissionsGranted: Boolean = false
     //private var activeCamera: Camera = Camera()
 
-    private lateinit var fotoapparat: Fotoapparat
     //private lateinit var cameraZoom: Zoom.VariableZoom
 
     //private var curZoom: Float = 0f
 
     private lateinit var captureBtn: Button
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        RequestPermission()
+    ) { isGranted ->
+        println("isGranted = $isGranted")
+        if (isGranted) {
+            startCamera()
+        } else {
+            // PERMISSION NOT GRANTED
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -178,32 +198,54 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
             equipmentID = it.getString("equipmentID")!!
             usageID = it.getString("usageID")!!
 
-            /*
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                reverseOrientationObserver = context?.let { it1 ->
-                    ReverseOrientationObserver(it1) {
-                        fotoapparat.stop()
-                        fotoapparat.start()
-                    }
+            println("images.count = ${existingImages.count()}")
+
+        }
+
+
+        if (mode == "EQUIPMENT") {
+            singleSelect = true
+        }
+
+        if (singleSelect) {
+            pickMedia = registerForActivityResult(PickVisualMedia()) { uri ->
+                if (uri != null) {
+                    createImageCell(ImageCellData(uri, null, true))
+                } else {
+                    Log.d("PhotoPicker", "No media selected")
                 }
             }
 
-             */
-
-            println("images.count = ${existingImages.count()}")
-
-
         }
+        else {
+            pickMedia = registerForActivityResult(
+                PickMultipleVisualMedia(20)
+            ) { uris ->
+                // Callback is invoked after the user selects a media item or closes the
+                // photo picker.
+                if (uris.isNotEmpty()) {
+                    Log.d("PhotoPicker", "Number of items selected: ${uris.size}")
+                    for (currentUri in uris) {
+                        createImageCell(ImageCellData(currentUri, null, true))
+                    }
+                } else {
+                    Log.d("PhotoPicker", "No media selected")
+                }
+            }
+        }
+
+
+
+
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
+
     }
 
-    /*
     override fun onDestroy() {
         super.onDestroy()
-        reverseOrientationObserver?.quit()
-        reverseOrientationObserver = null
+        cameraExecutor.shutdown()
     }
-
-     */
 
     private var _binding: FragmentImageUploadBinding? = null
     private val binding get() = _binding!!
@@ -323,11 +365,6 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = titleText
 
-       // pgsBar = myView.findViewById(R.id.progress_bar)
-       // hideProgressView()
-
-
-
         descriptionTxt.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(s: Editable) {}
@@ -343,15 +380,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         })
 
 
-
-
-
-
         customerRecyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
-
-
-
 
             if(GlobalVars.customerList != null) {
                 adapter = activity?.let {
@@ -401,19 +431,11 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
                 })
 
-
-
-
-
             }
         }
 
-        cameraView = myView.findViewById(R.id.cameraView)
 
         permissionsDelegate = PermissionsDelegate((activity as MainActivity?)!!)
-
-
-
 
         binding.cameraBtn.setOnClickListener{
             println("camera btn clicked")
@@ -427,12 +449,14 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         }
 
 
+
         captureBtn = view.findViewById(R.id.capture_btn)
         captureBtn.setOnClickListener{
             println("capture btn clicked")
 
-            takePicture()
+            takePhoto()
         }
+
 
         binding.galleryBtn.setOnClickListener{
             println("gallery btn clicked")
@@ -493,37 +517,6 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
         }
 
-        //val lensPosition: LensPositionSelector
-
-        //lensPosition = LensPosition.Back
-        val configuration = CameraConfiguration(
-            previewResolution = firstAvailable(
-                wideRatio(highestResolution()),
-                standardRatio(highestResolution())
-            ),
-            previewFpsRange = highestFps(),
-            flashMode = off(),
-            focusMode = firstAvailable(
-                fixed(),
-                autoFocus()
-            )
-
-        )
-
-
-        fotoapparat = Fotoapparat(
-            context = (activity as MainActivity?)!!,
-            view = cameraView,
-            focusView = binding.focusView,
-            logger = logcat(),
-
-
-            //lensPosition = lensPosition,
-            cameraConfiguration = configuration,
-            cameraErrorCallback = { Log.e(LOGGING_TAG, "Camera error: ", it) }
-        )
-       // println(" fotoapparat.getCurrentParameters() = ${fotoapparat.getCurrentParameters()}")
-
 
         imageCellMap.clear()
         for (img in existingImages) {
@@ -532,36 +525,73 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        fotoapparat.start()
-    }
 
     override fun onStop() {
         super.onStop()
-        print("stopping camera")
-        fotoapparat.stop()
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("imageUpload")
     }
 
 
     private fun launchCamera(){
         println("launchCamera")
-
         permissionsGranted = permissionsDelegate.hasCameraPermission()
 
         if (permissionsGranted) {
 
-            binding.cameraCl.visibility = View.VISIBLE
-            //cameraView.visibility = View.VISIBLE
-            //captureBtn.visibility = View.VISIBLE
-            binding.imageUploadPrepFooterCl.visibility = View.GONE
+            startCamera()
 
         } else {
-            permissionsDelegate.requestCameraPermission()
+            //permissionsDelegate.requestCameraPermission()
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
 
     }
+
+    private fun startCamera() {
+        println("Start Camera")
+
+        if (cameraInitialed) {
+            binding.cameraCl.visibility = View.VISIBLE
+        }
+        else {
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(myView.context)
+
+            cameraProviderFuture.addListener({
+                // Used to bind the lifecycle of cameras to the lifecycle owner
+                cameraProvider = cameraProviderFuture.get()
+
+
+                // Preview
+                val preview = Preview.Builder()
+                    .build()
+                    .also {
+                        it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                    }
+
+                imageCapture = ImageCapture.Builder().build()
+
+                // Select back camera as a default
+                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+                try {
+                    // Unbind use cases before rebinding
+                    cameraProvider.unbindAll()
+
+                    // Bind use cases to camera
+                    cameraProvider.bindToLifecycle(
+                        this, cameraSelector, preview, imageCapture)
+
+                } catch(exc: Exception) {
+                    //Log.e(TAG, "Use case binding failed", exc)
+                }
+
+            }, ContextCompat.getMainExecutor(myView.context))
+
+            binding.cameraCl.visibility = View.VISIBLE
+            cameraInitialed = true
+        }
+    }
+
 
     private fun createImageCell(imageData:ImageCellData) {
         val cl = LayoutInflater.from(this.context).inflate(R.layout.image_upload_image_list_item, binding.imageUploadPrepSelectedImagesLl, false) as ConstraintLayout
@@ -631,6 +661,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         println("cl.findViewById(R.id.image_upload_image_item_iv) = ${cl.findViewById(R.id.image_upload_image_item_iv) as ImageView}")
 
         if (imageData.uri != null) {
+            println("uri isn't null")
+            println("uri = ${imageData.uri}")
             Glide.with(this).load(imageData.uri).into(cl.findViewById(R.id.image_upload_image_item_iv) as ImageView)
         }
         else {
@@ -649,195 +681,50 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         binding.imageUploadPrepSelectedImagesSv.fullScroll(View.FOCUS_DOWN)
     }
 
-    private fun takePicture(){
+    private fun takePhoto() {
+        // Get a stable reference of the modifiable image capture use case
+        val imageCapture = imageCapture ?: return
 
-        //val cl = LayoutInflater.from(this.context).inflate(R.layout.image_upload_image_list_item, binding.imageUploadPrepSelectedImagesLl, false) as ConstraintLayout
-        //cl.id = selectedUris.count()
+        imageCapture.takePicture(ContextCompat.getMainExecutor(myView.context), object :
+            ImageCapture.OnImageCapturedCallback() {
+            override fun onCaptureSuccess(image: ImageProxy) {
+                //get bitmap from image
 
+                val planeProxy = image.planes[0]
+                val buffer: ByteBuffer = planeProxy.buffer
+                val bytes = ByteArray(buffer.remaining())
+                buffer.get(bytes)
+                var bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 
-        //cameraView.visibility = View.GONE
-        //captureBtn.visibility = View.GONE
-        binding.cameraCl.visibility = View.GONE
-        binding.imageUploadPrepFooterCl.visibility = View.VISIBLE
-
-
-        val tsLong = System.currentTimeMillis()/1000
-
-/*
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-       val output_file_name = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-            .toString() + File.separator + timeStamp + ".jpeg"
+                bitmap = rotate(bitmap, image.imageInfo.rotationDegrees.toFloat())
 
 
-        try {
-            val fos = FileOutputStream(pictureFile)
-            var realImage = BitmapFactory.decodeByteArray(data, 0, data.length)
-            val exif = ExifInterface(pictureFile.toString())
-            Log.d("EXIF value", exif.getAttribute(ExifInterface.TAG_ORIENTATION)!!)
-            if (exif.getAttribute(ExifInterface.TAG_ORIENTATION).equals("6", ignoreCase = true)) {
-                realImage = rotate(realImage, 90)
-            } else if (exif.getAttribute(ExifInterface.TAG_ORIENTATION)
-                    .equals("8", ignoreCase = true)
-            ) {
-                realImage = rotate(realImage, 270)
-            } else if (exif.getAttribute(ExifInterface.TAG_ORIENTATION)
-                    .equals("3", ignoreCase = true)
-            ) {
-                realImage = rotate(realImage, 180)
-            } else if (exif.getAttribute(ExifInterface.TAG_ORIENTATION)
-                    .equals("0", ignoreCase = true)
-            ) {
-                realImage = rotate(realImage, 90)
-            }
-            val bo = realImage.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-            fos.close()
-            (findViewById(R.id.imageview) as ImageView).setImageBitmap(realImage)
-            Log.d("Info", bo.toString() + "")
-        } catch (e: FileNotFoundException) {
-            Log.d("Info", "File not found: " + e.getMessage())
-        } catch (e: IOException) {
-            Log.d("TAG", "Error accessing file: " + e.message)
-        }
+                val file = File.createTempFile("tempImage", null, myView.context.cacheDir)
 
 
+                val output = FileOutputStream(file)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
 
+                filesToDelete.add(file)
 
+                createImageCell(ImageCellData(file.toUri(), null, true))
 
-
-
-        val pictureFile = File(output_file_name)
-        if (pictureFile.exists()) {
-            pictureFile.delete()
-        }
-
-        */
-
-
-
-
-
-        val photoResult = fotoapparat
-            .autoFocus()
-            .takePicture()
-
-
-        photoResult
-            .saveToFile(File(
-                (activity as MainActivity?)!!.getExternalFilesDir("photos"),
-                "photo_$tsLong.jpg"
-            ))
-
-        println("photo name = photo_$tsLong.jpg")
-
-
-
-        photoResult
-            .toBitmap(scaled(scaleFactor = 0.25f))
-            .whenAvailable { photo ->
-                photo
-                    ?.let {
-                        Log.i(LOGGING_TAG, "New photo captured. Bitmap length: ${it.bitmap.byteCount}")
-                        val uri = File(
-
-                            (activity as MainActivity?)!!.getExternalFilesDir("photos"),
-                            "photo_$tsLong.jpg"
-                        ).toUri()
-
-                        createImageCell(ImageCellData(uri, null, true))
-/*
-
-                        try {
-                            val fos = FileOutputStream(File(
-
-                                (activity as MainActivity?)!!.getExternalFilesDir("photos"),
-                                "photo_$tsLong.jpg"
-                            ))
-                            var realImage = BitmapFactory.decodeByteArray(uri, 0, data.length)
-                            val exif = ExifInterface(pictureFile.toString())
-                            Log.d("EXIF value", exif.getAttribute(ExifInterface.TAG_ORIENTATION)!!)
-                            if (exif.getAttribute(ExifInterface.TAG_ORIENTATION).equals("6", ignoreCase = true)) {
-                                realImage = rotate(realImage, 90)
-                            } else if (exif.getAttribute(ExifInterface.TAG_ORIENTATION)
-                                    .equals("8", ignoreCase = true)
-                            ) {
-                                realImage = rotate(realImage, 270)
-                            } else if (exif.getAttribute(ExifInterface.TAG_ORIENTATION)
-                                    .equals("3", ignoreCase = true)
-                            ) {
-                                realImage = rotate(realImage, 180)
-                            } else if (exif.getAttribute(ExifInterface.TAG_ORIENTATION)
-                                    .equals("0", ignoreCase = true)
-                            ) {
-                                realImage = rotate(realImage, 90)
-                            }
-                            val bo = realImage.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-                            fos.close()
-                            (findViewById(R.id.imageview) as ImageView).setImageBitmap(realImage)
-                            Log.d("Info", bo.toString() + "")
-                        } catch (e: FileNotFoundException) {
-                            Log.d("Info", "File not found: " + e.getMessage())
-                        } catch (e: IOException) {
-                            Log.d("TAG", "Error accessing file: " + e.message)
-                        }
-
-
-                        */
-
-                        /*
-                        selectedUris.add(uri)
-
-                        println("selectedUris.count = ${selectedUris.count()}")
-
-
-
-
-                        val pb = cl.findViewById(R.id.image_upload_image_item_pb) as ProgressBar
-                        pb.visibility = View.INVISIBLE
-
-                        val tv = cl.findViewById(R.id.image_upload_image_item_tv) as TextView
-                        tv.visibility = View.INVISIBLE
-
-
-                        val deleteBtn = cl.findViewById(R.id.image_upload_image_item_delete_btn) as Button
-                        //deleteBtn.visibility = View.INVISIBLE
-                        //deleteBtn.alpha = 0.25f
-
-
-
-                        deleteBtn.setOnClickListener {
-                            println("delete")
-                            selectedUris.removeAt(selectedUris.count() - 1)
-                            binding.imageUploadPrepSelectedImagesLl.removeView(cl)
-                        }
-
-
-
-
-                        binding.imageUploadPrepSelectedImagesLl.addView(cl)
-
-                        println("cl.findViewById(R.id.image_upload_image_item_iv) = ${cl.findViewById(R.id.image_upload_image_item_iv) as ImageView}")
-                        Glide.with(this).load(uri).into(cl.findViewById(R.id.image_upload_image_item_iv) as ImageView)
-
-
-                         */
-
-
-                        //cl.requestFocus()
-                       // var image_upload_prep_selected_images_sv = cl.findViewById(R.id.image_upload_prep_selected_images_sv) as ScrollView
-                        binding.imageUploadPrepSelectedImagesSv.fullScroll(View.FOCUS_DOWN)
-
-
-                    }
-                    ?: Log.e(LOGGING_TAG, "Couldn't capture photo.")
+                super.onCaptureSuccess(image)
+                binding.cameraCl.visibility = View.GONE
             }
 
+            override fun onError(exception: ImageCaptureException) {
 
+                println("IMAGE CAPTURE ERROR")
 
+                super.onError(exception)
+                binding.cameraCl.visibility = View.GONE
+            }
 
-
-
+        })
 
     }
+
 
     private fun rotate(bitmap: Bitmap, degrees: Float): Bitmap {
         val matrix = Matrix()
@@ -845,127 +732,110 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    // Untested WIP
-    private fun handleRotation(imgPath: String) {
-        val bMap = BitmapFactory.decodeFile(imgPath) ?: return
-        try {
-            val ei = ExifInterface(imgPath)
-            val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED)
-
-            val rotatedBitmap: Bitmap = when (orientation) {
-                ExifInterface.ORIENTATION_NORMAL -> {
-                    bMap
-                }
-                ExifInterface.ORIENTATION_ROTATE_90 -> {
-                    rotate(bMap, 90f)
-                }
-                ExifInterface.ORIENTATION_ROTATE_180 -> {
-                    rotate(bMap, 180f)
-                }
-                ExifInterface.ORIENTATION_ROTATE_270 -> {
-                    rotate(bMap, 270f)
-                }
-                else -> bMap
-            }
-
-            //Update the input file with the new bytes.
-            var out: FileOutputStream? = null
-            try {
-                out = FileOutputStream(imgPath)
-                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out) // bmp is your Bitmap instance
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                try {
-                    out?.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-
-            }
-
-        } catch (e: IOException) {
-        }
-
-    }
-
-
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         println("onRequestPermissionsResult")
         if (permissionsDelegate.resultGranted(requestCode, permissions, grantResults)) {
             permissionsGranted = true
-            fotoapparat.start()
-            //adjustViewsVisibility()
-            cameraView.visibility = View.VISIBLE
-            captureBtn.visibility = View.VISIBLE
-
-            binding.imageUploadPrepFooterCl.visibility = View.GONE
         }
     }
-
-
-
-
 
 
     private fun launchGallery() {
         println("launchGallery")
 
+        // Include only one of the following calls to launch(), depending on the types
+        // of media that you want to let the user choose from.
 
-        var maxSelect = 20
-        if (mode == "EQUIPMENT") {maxSelect = 1}
+        // Launch the photo picker and let the user choose images and videos.
 
-        BottomSheetImagePicker.Builder(getString(R.string.file_provider))
+        // Include only one of the following calls to launch(), depending on the types
+        // of media that you want to let the user choose from.
 
+        // Launch the photo picker and let the user choose only images.
 
-            .cameraButton(ButtonType.None)
-            .galleryButton(ButtonType.None)//style of the camera link (Button in header, Image tile, None)
+        if (singleSelect) {
 
-            .columnSize(R.dimen.columnSize)
-            .multiSelect(1, maxSelect)//style of the gallery link
-
-            .requestTag("multi")
-            //tag can be used if multiple pickers are used
-            .show(childFragmentManager)
-
-
-
-
-    }
-
-    override fun onImagesSelected(uris: List<Uri>, tag: String?) {
-        //toast("Result from tag: $tag")
-        //selectedUris = uris
-        //imageView.removeAllViews()
-        uris.forEach { uri ->
-            println("add uri to selected uri = $uri")
-
-            createImageCell(ImageCellData(uri, null, true))
-
-
+            if (imageCellMap.size == 0) {
+                pickMedia.launch(
+                    PickVisualMediaRequest.Builder()
+                        .setMediaType(ImageOnly)
+                        .build()
+                )
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.dialogue_only_one_image))
+            }
         }
+        else {
+            pickMedia.launch(PickVisualMediaRequest(ImageOnly))
+        }
+
+
     }
-
-
-
-
-
 
     @Throws(IOException::class)
     private fun createImageData(uri: Uri): ByteArray? {
 
-            var imageData:ByteArray? = null
-        // val inputStream = ((activity as AppCompatActivity).contentResolver
-        val inputStream =  ((activity as AppCompatActivity).contentResolver.openInputStream(uri))
+        var imageData:ByteArray?
+        val inputStream = ((activity as AppCompatActivity).contentResolver.openInputStream(uri))
 
-        inputStream?.buffered()?.use {
+        val bMap = BitmapFactory.decodeStream(inputStream!!)
 
-            imageData = it.readBytes()
 
+        val inputStreamExif = ((activity as AppCompatActivity).contentResolver.openInputStream(uri))
+        val ei = ExifInterface(inputStreamExif!!)
+        val orientation = ei.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_NORMAL
+        )
+
+        val rotatedBitmap: Bitmap = when (orientation) {
+            ExifInterface.ORIENTATION_NORMAL -> {
+                bMap
+            }
+
+            ExifInterface.ORIENTATION_ROTATE_90 -> {
+                rotate(bMap, 90f)
+            }
+
+            ExifInterface.ORIENTATION_ROTATE_180 -> {
+                rotate(bMap, 180f)
+            }
+
+            ExifInterface.ORIENTATION_ROTATE_270 -> {
+                rotate(bMap, 270f)
+            }
+
+            else -> bMap
         }
+
+        when (orientation) {
+            ExifInterface.ORIENTATION_NORMAL -> {
+                println("Normal Rotation")
+            }
+            ExifInterface.ORIENTATION_ROTATE_90 -> {
+                println("Rotating 90 degrees")
+            }
+            ExifInterface.ORIENTATION_ROTATE_180 -> {
+                println("Rotating 180 degrees")
+
+            }
+            ExifInterface.ORIENTATION_ROTATE_270 -> {
+                println("Rotating 270 degrees")
+            }
+            else -> {
+                println("Undefined rotation")
+            }
+        }
+
+        val outputStream = ByteArrayOutputStream()
+        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        imageData = outputStream.toByteArray()
+
+        inputStream.close()
+        inputStreamExif.close()
+        outputStream.close()
 
         return imageData
     }
@@ -1224,32 +1094,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
     }
 
     private fun uploadImage() {
-        //println("uploadImage selectedUris count = ${selectedUris.count()}")
-        //imageData?: return
-
-        // If equipment, failsafe that there's only one image
-        /*
-        if (mode == "EQUIPMENT") {
-            println("checking to remove more than 1 image...")
-            while (map.count() > 1) {
-
-                imageCellDataList.removeAt(imageCellDataList.count()-1)
-
-                //val selectedUrisNew = mutableListOf<Uri>()
-                //selectedUrisNew.add(selectedUris.first())
-                //selectedUris = selectedUrisNew
-            }
-        }
-
-         */
-
-        //showProgressView()
-
         uploadedImageCount = 0
-
-
         uploadUri(0)
-
     }
 
     private fun uploadUri(index:Int) {
@@ -1274,6 +1120,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
 
                 if (uploadedImageCount == imageCellMap.count()) {
                     //upload complete
+
                     globalVars.playSaveSound(myView.context)
                     back()
                 } else {
@@ -1284,7 +1131,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         else {
 
             println("uploading an uri with index $index")
-            uri.path?.let { handleRotation(it) }
+            //uri.path?.let { handleRotation(uri) }
             println("views = ${binding.imageUploadPrepSelectedImagesLl.childCount}")
 
             for (cl in binding.imageUploadPrepSelectedImagesLl.children) {
@@ -1598,6 +1445,19 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
     fun back(){
         println("back")
 
+        println("filesToDelete size: ${filesToDelete.size}")
+        for (f in filesToDelete) {
+            println("checking a file to delete...")
+            if (f.delete()) {
+                println("successfully deleted temp file ${f.absolutePath}")
+            }
+            else {
+                println("failed to delete temp file ${f.absolutePath}")
+            }
+        }
+
+        cameraProvider.unbindAll()
+
         // Flag to refresh new/edit equipment if mode is equipment
         setFragmentResult("_refreshEquipment", bundleOf("_refreshEquipment" to (mode == "EQUIPMENT")))
         setFragmentResult("_refreshImages", bundleOf("_refreshImages" to true))
@@ -1616,78 +1476,4 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener, BottomSheetIm
         binding.allCl.visibility = View.VISIBLE
     }
 
-    /*
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ImageUpload.
-         */
-
-       private const val IMAGE_PICK_CODE = 999
-
-        @JvmStatic
-        fun newInstanceFromCustomer(customer: Customer) =
-            ImageUploadFragment().apply {
-                println("newInstanceFromCustomer")
-
-
-                arguments = Bundle().apply {
-                    putString(mode, "CUSTOMER")
-                    putParcelable("customer",customer)
-                }
-            }
-    }
-
-     */
-
 }
-
-
-
-/*
-private sealed class Camera(
-    val lensPosition: LensPositionSelector,
-    val configuration: CameraConfiguration
-) {
-
-    object Back : Camera(
-        lensPosition = back(),
-        configuration = CameraConfiguration(
-            previewResolution = firstAvailable(
-                wideRatio(highestResolution()),
-                standardRatio(highestResolution())
-            ),
-            previewFpsRange = highestFps(),
-            flashMode = off(),
-            focusMode = firstAvailable(
-                continuousFocusPicture(),
-                autoFocus()
-            ),
-            frameProcessor = {
-                // Do something with the preview frame
-            }
-        )
-    )
-
-    object Front : Camera(
-        lensPosition = front(),
-        configuration = CameraConfiguration(
-            previewResolution = firstAvailable(
-                wideRatio(highestResolution()),
-                standardRatio(highestResolution())
-            ),
-            previewFpsRange = highestFps(),
-            flashMode = off(),
-            focusMode = firstAvailable(
-                fixed(),
-                autoFocus()
-            )
-        )
-    )
-}
-
-*/

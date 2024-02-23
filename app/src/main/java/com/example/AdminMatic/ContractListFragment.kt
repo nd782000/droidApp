@@ -176,7 +176,7 @@ class ContractListFragment : Fragment(), ContractCellClickListener {
             Response.Listener { response -> // response
                 //Log.d("Response", response)
 
-                println("Response $response")
+                println("Get contracts esponse $response")
 
                 hideProgressView()
 

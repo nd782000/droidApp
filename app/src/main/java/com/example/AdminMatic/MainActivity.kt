@@ -18,9 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import com.AdminMatic.R
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -37,8 +35,6 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.util.*
 import kotlin.collections.set
-import java.util.Timer
-import kotlin.concurrent.schedule
 
 
 interface  LogOut{
@@ -109,7 +105,7 @@ data class Contact(
 @Parcelize
 data class Contract(var ID: String = "0",
                     var status: String = "",
-                    var title:String = "Contract",
+                    var title:String = "",
                     var createdBy:String = "",
                     var statusName:String? = "",
                     var chargeType:String? = "",
@@ -121,23 +117,52 @@ data class Contract(var ID: String = "0",
                     var repName:String? = "",
                     var addr:String? = "",
                     var createDate:String? = "",
-                    var subTotal:String? = "",
-                    var taxTotal:String? = "",
-                    var total:String? = "",
+                    var subTotal:String? = "0",
+                    var taxTotal:String? = "0",
+                    var total:String? = "0",
+                    var salesTax:String? = "",
+                    var custTax:String? = "",
+                    var custTerms:String? = "",
+                    var lead:Lead? = null,
+                    var contractDate:String? = "",
+                    var depositType:String? = "",
                     @field:SerializedName(value="paymentTermsID", alternate= ["paymentTerms", "terms"])
                     var paymentTermsID:String? = "",
                     var termsDescription:String? = "",
-                    var daysAged:String? = "",
+                    var daysAged:String? = "0",
                     var repSignature:String? = "",
-                    var customerSignature:String? = "",
+                    //var customerSignature:String? = "",
                     var customerSigned:String? = "",
                     var repSignaturePath:String? = "",
                     var customerSignaturePath:String? = "",
                     var custNameAndID:String? = "",
-                    var items: Array<ContractItem>? = null
-): Parcelable{
+                    var items: Array<ContractItem>? = null,
+                    var sugDepartment:String? = "",
+                    var sugCrew:String? = "",
+                    var sugInvoice:String? = "",
+                    var sugRenew:String? = "",
+                    var sugDeadline:String? = "",
+                    var recSettings:ContractRecSettings? = null
+
+                    ): Parcelable{
     override fun toString(): String {
         return title
+    }
+}
+
+@Parcelize
+data class ContractRecSettings(var contractID:String,
+                               var startDate:String? = "",
+                               var endDate:String? = "",
+                               var frequency:String? = "",
+                               var minDays:String? = "",
+                               var prefDay:String? = "",
+                               var fixedDate:String? = "",
+                               var renew_prompt:String? = "0"
+
+): Parcelable{
+    override fun toString(): String {
+        return ""
     }
 }
 
@@ -240,6 +265,9 @@ data class Customer(
     var gardenSize: String? = "",
     var drivewaySize: String? = "",
     var floorSize: String? = "",
+
+    var taxID: String? = "",
+    var termsID: String? = "",
 
     var zone: String? = "",
     var sort: String? = "",
@@ -603,7 +631,7 @@ data class Invoice(var ID: String = "0",
 data class Item(
     var ID: String,
     val name: String,
-    val typeID:String?,
+    var typeID:String?,
     val type:String?,
     val remQty:String?,
     val price:String?,
@@ -751,7 +779,6 @@ data class EmailTemplate(
     }
 }
 
-
 @Parcelize
 data class PayrollArray(var combinedTotal: String?,
         var regTotal: String?,
@@ -849,8 +876,22 @@ data class Task(var ID:String,
 
 @Parcelize
 data class Template(var ID:String,
-                var name: String,
-                var description: String? = ""
+                    var departmentID: String? = "",
+                    var name: String,
+                    var description: String? = "",
+                    var active: String? = "",
+                    var parentID: String? = "",
+                    var createDate: String? = "",
+                    var createdBy: String? = "",
+                    var customTerms: String? = "",
+                    var chargeType: String? = "",
+                    var paymentTerms: String? = "",
+                    var depositType: String? = "",
+                    var invoiceType: String? = "",
+                    var mainCrew: String? = "",
+                    var renew: String? = "",
+                    var depName: String? = "",
+                    var recSettings: ContractRecSettings? = null
 ): Parcelable{
     override fun toString(): String {
         return  name
@@ -858,8 +899,71 @@ data class Template(var ID:String,
 }
 
 
+@Parcelize
+data class DefaultFields(var recRangeMS:String,
+                         var recRangeDS:String,
+                         var recRangeME:String,
+                         var recRangeDE:String,
+                         var recFreq:String,
+                         var recMin:String,
+                         var recPref:String,
+                         var defCharge:String,
+                         var defPayTerms:String,
+                         var defDeposit:String,
+                         var defInvoice:String,
+                         var defTaxRate:String
+): Parcelable{
+    override fun toString(): String {
+        return ""
+    }
+}
 
+@Parcelize
+data class SalesTaxType(var ID:String,
+                        @field:SerializedName("listID", alternate= ["ListID"])
+                        var listID:String,
+                        @field:SerializedName("name", alternate= ["Name"])
+                        var name:String,
+                        @field:SerializedName("description", alternate= ["Description"])
+                        var description:String,
+                        @field:SerializedName("taxRate", alternate= ["TaxRate"])
+                        var taxRate:String,
+                        var active:String,
+                        var nameAndRate:String? = ""
+): Parcelable{
+    override fun toString(): String {
+        return name
+    }
+}
 
+@Parcelize
+data class DepositType(var ID:String,
+                       var name:String,
+                       var depositTerms:String? = "",
+                       var fixed:String? = "",
+                       var perc:String? = "",
+                       var fixedAmount:String? = "",
+                       var paymentDays:String? = ""
+): Parcelable{
+    override fun toString(): String {
+        return name
+    }
+}
+
+@Parcelize
+data class Album(var ID:String,
+                 var name: String,
+                 var created: String? = "",
+                 var creator: String? = "",
+                 var description: String? = "",
+                 var coverImage: String? = "",
+                 var onWeb: String? = "",
+                 var featured: String? = ""
+): Parcelable{
+    override fun toString(): String {
+        return  name
+    }
+}
 
 
 @Parcelize
@@ -1059,6 +1163,7 @@ data class WoItem(var ID:String,
                   var remaining: String = "",
                   var extraUsage: String = "",
                   var unitName: String = "",
+                  @field:SerializedName(value="woID", alternate= ["workOrderID"])
                   var woID: String = "",
                   var woTitle: String = "",
                   var contractID: String = "",
@@ -1068,10 +1173,15 @@ data class WoItem(var ID:String,
                   var subcontractor: String = "",
                   var locked: String = "",
                   var printView: String = "",
+                  var estValue: String = "",
+                  var estUnit: String = "",
+                  var estNotes: String = "",
+                  var minQty: String? = "",
+                  var tax: String? = "",
 
-                  var tasks:Array<Task> = arrayOf(),
-                  var usage:Array<Usage> = arrayOf(),
-                  var vendors:Array<Vendor> = arrayOf()
+                  var tasks:Array<Task>? = arrayOf(),
+                  var usage:Array<Usage>? = arrayOf(),
+                  var vendors:Array<Vendor>? = arrayOf()
                           //usage
                           //vendors
 
@@ -1085,19 +1195,26 @@ data class WoItem(var ID:String,
 
 
 @Parcelize
-data class WorkOrder(var woID: String = "0",
+data class WorkOrder(@field:SerializedName(value="woID", alternate= ["ID"])
+                     var woID: String = "0",
                      var status: String = "",
                      var title:String = "Work Order",
                      var titleTranslated:String? = null,
                      var progress:String = "",
-                     var totalPrice:String = "",
+                     //var totalPrice:String = "",
+
+                     //@field:SerializedName(value="totalPriceRaw", alternate= ["price"])
+                     //var totalPriceRaw:String = "",
+                     //var totalCostRaw:String = "",
+
+                     var total:String = "",
                      var totalCost:String = "",
-                     var totalPriceRaw:String = "",
-                     var totalCostRaw:String = "",
-                     var profitAmount:String = "",
                      var profit:String = "",
+                     var profitAmount:String = "",
 
                      var statusName:String? = "",
+                     var prompt:String? = "",
+                     var recID:String? = "",
                      var customer:String? = "",
                      var custName:String? = "",
                      var custAddress:String? = "",
@@ -1105,6 +1222,7 @@ data class WorkOrder(var woID: String = "0",
                      var date:String? = "",
                      var dateNice:String? = "",
                      var salesRep:String? = "",
+                     @field:SerializedName(value="salesRepName", alternate= ["repName"])
                      var salesRepName:String? = "",
                      var notes:String? = "",
                      var charge:String? = "",
@@ -1112,6 +1230,7 @@ data class WorkOrder(var woID: String = "0",
                      @field:SerializedName(value="invoiceType", alternate= ["invoice"])
                      var invoiceType:String? = "",
                      var invoiceID:String? = "0",
+                     var ignoreExpired:String? = "0",
                      var nextPlannedDate:String? = "",
                      var locked:String? = "",
                      @field:SerializedName(value="department", alternate= ["departmentID"])
@@ -1123,15 +1242,23 @@ data class WorkOrder(var woID: String = "0",
                      var daySort:String? = "",
                      var lng:String? = "",
                      var lat:String? = "",
-                     var urgent:String? = "",
-                     var skipped:String? = "",
+                     var urgent:String? = "0",
+                     var archived:String? = "0",
+                     var copied:String? = "0",
+                     var skipped:String? = "0",
+                     var paymentTermsID: String? = "",
+                     var deadline: String? = "",
+                     var contractID: String? = "0",
+                     var salesTaxID: String? = "0",
+                     //var renew: String? = "0",
 
                      var items:Array<WoItem>? = null,
                      var lead:Lead? = null,
                      var contract:Contract? = null,
 
                      var crews:Array<Crew>? = null,
-                     var emps:MutableList<Employee> = mutableListOf()
+                     var emps:MutableList<Employee> = mutableListOf(),
+                     var recSettings:ContractRecSettings? = null
 
                      ) : Parcelable {
 
@@ -1504,7 +1631,7 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
     override fun onBackPressed() {
         println("on back pressed")
         if (GlobalVars.shouldLogOut) {
-            GlobalVars.shouldLogOut = false
+            //GlobalVars.shouldLogOut = false
 
             globalVars.logOut(myView.context, myView)
 
@@ -1603,11 +1730,10 @@ class MainActivity : AppCompatActivity(), LogOut, Callbacks {
                         hideProgressView()
                         //val navController = Navigation.findNavController(view)
 
+                        GlobalVars.shouldLogOut = false
+
                         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
                         val navController = navHostFragment.navController
-
-
-
 
                         // Clear existing data
                         if (GlobalVars.globalWorkOrdersList != null) {

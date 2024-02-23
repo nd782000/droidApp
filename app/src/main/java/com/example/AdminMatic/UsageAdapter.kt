@@ -199,7 +199,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 "", null -> {
                     vendorSelectText.text = context.getString(R.string.select_vendor)
 
-                    woItem.vendors.forEach {
+                    woItem.vendors!!.forEach {
                         if (it.preferred == "1") {
                             vendorSelectText.text = it.name
                             usageEditListener.editCost(position,it.cost!!,EditorInfo.IME_ACTION_DONE, false)
@@ -211,7 +211,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 else -> {
                     vendorSelectText.text = context.getString(R.string.existing_vendor)
 
-                    woItem.vendors.forEach {
+                    woItem.vendors!!.forEach {
                         if (it.ID == usage.vendor) {
                             vendorSelectText.text = it.name
                         }
@@ -226,7 +226,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.textViewOptions))
                     popUp.inflate(R.menu.task_status_menu)
 
-                    woItem.vendors.forEach { v->
+                    woItem.vendors!!.forEach { v->
                         popUp.menu.add(0, v.ID.toInt(), 1, v.name)
                     }
                     popUp.menu.add(0, 0, 1, R.string.other)
@@ -234,7 +234,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     popUp.setOnMenuItemClickListener {
 
                         // Update cost from the selected vendor
-                        woItem.vendors.forEach { v->
+                        woItem.vendors!!.forEach { v->
                             if (v.ID.toInt() == it.itemId) {
                                 usageEditListener.editCost(position,v.cost!!,EditorInfo.IME_ACTION_DONE, true)
                             }

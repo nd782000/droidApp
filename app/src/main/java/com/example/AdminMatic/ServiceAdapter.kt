@@ -41,7 +41,7 @@ class ServiceAdapter(list: MutableList<EquipmentService>, private val context: C
 
         val service: EquipmentService = filterList[position]
         holder.bind(service, context, isHistoryMode, usageType, equipmentUsage)
-        println("queryText = $queryText")
+        //println("queryText = $queryText")
         //text highlighting for first string
 
     //if (filterList[position].name != null){
