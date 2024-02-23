@@ -930,6 +930,11 @@ class NewEditWorkOrderFragment : Fragment(), AdapterView.OnItemSelectedListener,
             return false
         }
 
+        if (binding.titleEditText.text.isNullOrBlank()) {
+            globalVars.simpleAlert(myView.context,getString(R.string.dialogue_incomplete_wo),getString(R.string.enter_a_title))
+            return false
+        }
+
         if (binding.hasRangeSwitch.isChecked) {
 
             if (binding.promptToRepeatSwitch.isChecked) {

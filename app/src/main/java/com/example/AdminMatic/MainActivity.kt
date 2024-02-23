@@ -1198,7 +1198,7 @@ data class WoItem(var ID:String,
 data class WorkOrder(@field:SerializedName(value="woID", alternate= ["ID"])
                      var woID: String = "0",
                      var status: String = "",
-                     var title:String = "Work Order",
+                     var title:String = "",
                      var titleTranslated:String? = null,
                      var progress:String = "",
                      //var totalPrice:String = "",
