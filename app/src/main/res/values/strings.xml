@@ -1129,14 +1129,14 @@
     <string name="min_days_between_label">Min. Days Between:</string>
     <string name="preferred_day_label">Preferred Day:</string>
     <string name="no_deposit_required">No Deposit Required</string>
-    <string name="tax_name_and_rate">%1$s (%2$.2f%%)</string>
+    <string name="tax_name_and_rate" translatable="false">%1$s (%2$.2f%%)</string>
     <string name="template_hint">Template…</string>
 
     <string name="none">None</string>
     <string name="sunday">Sunday</string>
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
-    <string name="wednesday">Wedbesday</string>
+    <string name="wednesday">Wednesday</string>
     <string name="thursday">Thursday</string>
     <string name="friday">Friday</string>
     <string name="saturday">Saturday</string>
@@ -1194,6 +1194,11 @@
     <string name="price_label">Price:</string>
     <string name="charge_amount_label">Charge Amount:</string>
     <string name="all">All</string>
+    <string name="enter_a_title">Add a title.</string>
+    <string name="no_crews">No Crews</string>
+    <string name="no_sales_rep">No Sales Rep</string>
+    <string name="not_scheduled">Not Scheduled</string>
+
 
 
     <!--

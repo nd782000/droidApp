@@ -8,308 +8,315 @@
     tools:context="com.example.AdminMatic.ContractFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/empty_cl"
+        android:id="@+id/all_cl"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/background"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Status Cust CL -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/contract_status_cust_cl"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/empty_cl"
-        android:background="@color/background"
-        >
-
-
-        <ImageButton
-            android:id="@+id/contract_status_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/contract_customer_btn"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/empty_cl"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:textSize="12sp"
-            android:text=""
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/contract_status_btn"
-            android:layout_marginHorizontal="3dp"/>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Data CL -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/contract_data_cl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/contract_status_cust_cl"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:background="@color/background"
-        >
-
-
-
-        <!-- Schedule -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contract_title_cl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/background"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Status Cust CL -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contract_status_cust_cl"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/empty_cl"
+            android:background="@color/background"
             >
 
-            <TextView
-                android:id="@+id/contract_title_val_tv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center_vertical"
-                android:text=""
-                android:textSize="22sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <ImageButton
+                android:id="@+id/contract_status_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
 
-        <!-- Deadline -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contract_charge_cl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/contract_title_cl"
-            app:layout_constraintLeft_toLeftOf="parent"
-            >
-            <TextView
-                android:id="@+id/contract_charge_lbl_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/contract_charge"
-                android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-            <TextView
-                android:id="@+id/contract_charge_val_tv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:minHeight="30dp"
-                android:maxHeight="100dp"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center_vertical"
-                android:text=""
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toRightOf="@+id/contract_charge_lbl_tv"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-        <!-- Sales Rep-->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contract_payment_cl"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            app:layout_constraintTop_toBottomOf="@id/contract_charge_cl"
-            app:layout_constraintLeft_toLeftOf="parent"
-            >
-            <TextView
-                android:id="@+id/contract_payment_lbl_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/contract_payment"
-                android:textSize="18sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-            <TextView
-                android:id="@+id/contract_payment_val_tv"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center_vertical"
-                android:text=""
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toRightOf="@+id/contract_payment_lbl_tv"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/contract_payment_lbl_tv" />
-
-
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Requested By -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contract_sales_rep_cl"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            app:layout_constraintTop_toBottomOf="@id/contract_payment_cl"
-            app:layout_constraintLeft_toLeftOf="parent"
-            >
-            <TextView
-                android:id="@+id/contract_sales_rep_lbl_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/contract_sales_rep"
-                android:textSize="18sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-            <TextView
-                android:id="@+id/contract_sales_rep_val_tv"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center_vertical"
-                android:text=""
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toRightOf="@+id/contract_sales_rep_lbl_tv"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <!-- Description -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contract_notes_cl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/contract_sales_rep_cl"
-            app:layout_constraintLeft_toLeftOf="parent">
-            <TextView
-                android:id="@+id/contract_notes_lbl_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/contract_notes"
-                android:textSize="18sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-            <TextView
-                android:id="@+id/contract_notes_val_tv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:scrollbars = "vertical"
-                android:text=""
-                android:textSize="14sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/contract_notes_lbl_tv" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Requested By -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contract_items_lbl_cl"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            app:layout_constraintTop_toBottomOf="@id/contract_notes_cl"
-            app:layout_constraintLeft_toLeftOf="parent"
-            >
-            <TextView
-                android:id="@+id/contract_items_lbl_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/contract_items"
-                android:textSize="18sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/contract_item_rv"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/contract_data_cl"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/contract_footer_cl"/>
-
-
-    <LinearLayout
-        android:id="@+id/contract_footer_cl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/contract_item_rv"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".50">
             <Button
-                android:id="@+id/contract_sign_btn"
-                android:layout_height="60dp"
-                android:layout_width="match_parent"
-                android:layout_marginHorizontal="5dp"
-                android:text="@string/contract_sign"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight=".50">
-
-            <TextView
-                android:id="@+id/contract_price_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:text=""
-                android:textSize="30sp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/contract_tax_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:text="@string/contract_includes_any_tax"
+                android:id="@+id/contract_customer_btn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                android:text=""
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/contract_status_btn"
+                android:layout_marginHorizontal="3dp"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
+        <!-- Data CL -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contract_data_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/contract_status_cust_cl"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:background="@color/background"
+            >
+
+
+
+            <!-- Schedule -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contract_title_cl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+
+                <TextView
+                    android:id="@+id/contract_title_val_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <!-- Deadline -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contract_charge_cl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/contract_title_cl"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+                <TextView
+                    android:id="@+id/contract_charge_lbl_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/contract_charge"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/contract_charge_val_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="30dp"
+                    android:maxHeight="100dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@+id/contract_charge_lbl_tv"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            <!-- Sales Rep-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contract_payment_cl"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                app:layout_constraintTop_toBottomOf="@id/contract_charge_cl"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+                <TextView
+                    android:id="@+id/contract_payment_lbl_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/contract_payment"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/contract_payment_val_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@+id/contract_payment_lbl_tv"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/contract_payment_lbl_tv" />
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Requested By -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contract_sales_rep_cl"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                app:layout_constraintTop_toBottomOf="@id/contract_payment_cl"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+                <TextView
+                    android:id="@+id/contract_sales_rep_lbl_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/contract_sales_rep"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/contract_sales_rep_val_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@+id/contract_sales_rep_lbl_tv"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <!-- Description -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contract_notes_cl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/contract_sales_rep_cl"
+                app:layout_constraintLeft_toLeftOf="parent">
+                <TextView
+                    android:id="@+id/contract_notes_lbl_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/contract_notes"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/contract_notes_val_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:scrollbars = "vertical"
+                    android:text=""
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/contract_notes_lbl_tv" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Requested By -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contract_items_lbl_cl"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                app:layout_constraintTop_toBottomOf="@id/contract_notes_cl"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+                <TextView
+                    android:id="@+id/contract_items_lbl_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/contract_items"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/contract_item_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/contract_data_cl"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/contract_footer_cl"/>
+
+
+        <LinearLayout
+            android:id="@+id/contract_footer_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/contract_item_rv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".50">
+                <Button
+                    android:id="@+id/contract_sign_btn"
+                    android:layout_height="60dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="@string/contract_sign"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".50">
+
+                <TextView
+                    android:id="@+id/contract_price_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:text=""
+                    android:textSize="30sp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/contract_tax_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/contract_includes_any_tax"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <ProgressBar
