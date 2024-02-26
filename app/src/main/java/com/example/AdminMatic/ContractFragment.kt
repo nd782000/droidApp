@@ -275,16 +275,12 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE
-        binding.contractStatusCustCl.visibility = View.INVISIBLE
-        binding.contractDataCl.visibility = View.INVISIBLE
-        binding.contractFooterCl.visibility = View.INVISIBLE
+        binding.allCl.visibility = View.INVISIBLE
     }
 
     fun hideProgressView() {
         binding.progressBar.visibility = View.INVISIBLE
-        binding.contractStatusCustCl.visibility = View.VISIBLE
-        binding.contractDataCl.visibility = View.VISIBLE
-        binding.contractFooterCl.visibility = View.VISIBLE
+        binding.allCl.visibility = View.VISIBLE
     }
 
 
@@ -321,12 +317,7 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
                     contract = contractNew
 
-
-                    dataLoaded = true
-
                     layoutViews()
-
-                    hideProgressView()
 
                 } catch (e: JSONException) {
                     println("JSONException")
@@ -372,9 +363,11 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         }
 
         //TODO: Figure out how to hide and show the stack view here during progress bar
-        val ft = childFragmentManager.beginTransaction()
-        ft.add(R.id.contract_cl, stackFragment, "stackFrag")
-        ft.commitAllowingStateLoss()
+        if (!dataLoaded) {
+            val ft = childFragmentManager.beginTransaction()
+            ft.add(R.id.contract_cl, stackFragment, "stackFrag")
+            ft.commitAllowingStateLoss()
+        }
 
         binding.contractStatusBtn.setOnClickListener{
             println("status btn clicked")
@@ -447,6 +440,10 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
         binding.contractPriceTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(contract!!.total!!.toDouble()))
 
         setStatus(contract!!.status)
+
+        dataLoaded = true
+
+        hideProgressView()
     }
 
     override fun onContractItemCellClickListener(data:ContractItem) {
@@ -509,25 +506,30 @@ class ContractFragment : Fragment(), StackDelegate, ContractItemCellClickListene
 
     override fun newContractView(_contract: Contract) {
         println("newContractView ${_contract.ID}")
-        // val directions = ContractFragmentDirections.na(_lead)
-        // myView.findNavController().navigate(directions)
+        //val directions = ContractFragmentDirections.navig
+        //myView.findNavController().navigate(directions)
 
         contract = _contract
+        contractID = contract!!.ID
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text =
+            getString(R.string.contract_number, contractID)
+        showProgressView()
+        getContract()
 
     }
 
     override fun newWorkOrderView(_workOrder: WorkOrder) {
         println("newWorkOrderView $_workOrder")
 
-        //val directions = ContractFragmentDirections.navigateContractToWorkOrder(_workOrder)
-        // myView.findNavController().navigate(directions)
+        val directions = ContractFragmentDirections.navigateContractToWorkOrder(_workOrder)
+        myView.findNavController().navigate(directions)
 
     }
 
     override fun newInvoiceView(_invoice: Invoice) {
         println("newInvoiceView ${_invoice.ID}")
 
-        // val directions = ContractFragmentDirections.navigateContractToInvoice(_invoice)
-        // myView.findNavController().navigate(directions)
+        val directions = ContractFragmentDirections.navigateContractToInvoice(_invoice)
+        myView.findNavController().navigate(directions)
     }
 }
