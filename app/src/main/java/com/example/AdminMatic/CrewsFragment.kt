@@ -198,7 +198,6 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
                         val crewArrayTemp = gson.fromJson(crews.toString(), Array<Crew>::class.java)
                         println("crewArray count = ${crewArrayTemp.count()}")
 
-
                         crewArrayTemp.forEach {
                             if (it.subcolor == "" || it.subcolor == null) {
                                 it.subcolor = it.color
@@ -358,24 +357,32 @@ class CrewsFragment : Fragment(), CrewCellClickListener, CrewEntryCellClickListe
     fun createSections() {
         crewSections.clear()
 
-        crewList.forEach{
-
-            if (it.subcolor == null) {
-                it.subcolor = it.color
-            }
-
-            val crewSection = CrewSection(it.name, it.ID, it.subcolor!!)
-
-            it.emps!!.forEach { emp ->
-                crewSection.entries.add(EmployeeOrEquipment(emp))
-            }
-
-            it.equipment!!.forEach { equip ->
-                crewSection.entries.add(EmployeeOrEquipment(equip))
-            }
-
-            crewSections.add(crewSection)
+        if (crewList.isEmpty()) {
+            binding.noCrewsTv.visibility = View.VISIBLE
         }
+        else {
+            binding.noCrewsTv.visibility = View.INVISIBLE
+            crewList.forEach{
+
+                if (it.subcolor == null) {
+                    it.subcolor = it.color
+                }
+
+                val crewSection = CrewSection(it.name, it.ID, it.subcolor!!)
+
+                it.emps!!.forEach { emp ->
+                    crewSection.entries.add(EmployeeOrEquipment(emp))
+                }
+
+                it.equipment!!.forEach { equip ->
+                    crewSection.entries.add(EmployeeOrEquipment(equip))
+                }
+
+                crewSections.add(crewSection)
+            }
+        }
+
+
 
         if (!viewsLaidOut) {
             layoutViews()

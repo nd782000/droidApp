@@ -126,7 +126,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
     private var filesToDelete:MutableList<File> = mutableListOf()
 
-    private lateinit var cameraProvider: ProcessCameraProvider
+    private var cameraProvider: ProcessCameraProvider? = null
 
     private var imageCapture: ImageCapture? = null
 
@@ -575,10 +575,10 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
                 try {
                     // Unbind use cases before rebinding
-                    cameraProvider.unbindAll()
+                    cameraProvider?.unbindAll()
 
                     // Bind use cases to camera
-                    cameraProvider.bindToLifecycle(
+                    cameraProvider?.bindToLifecycle(
                         this, cameraSelector, preview, imageCapture)
 
                 } catch(exc: Exception) {
@@ -1185,7 +1185,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
                     println("getByteData")
                     val params = HashMap<String, FileDataPart>()
                     // createImageData(uri)
-                    params["pic"] = FileDataPart("droid_file.jpeg", createImageData(uri!!)!!, "image/jpeg")
+                    params["pic"] = FileDataPart("droid_file.jpeg", createImageData(uri)!!, "image/jpeg")
                     return params
                 }
 
@@ -1456,7 +1456,9 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
             }
         }
 
-        cameraProvider.unbindAll()
+
+        cameraProvider?.unbindAll()
+
 
         // Flag to refresh new/edit equipment if mode is equipment
         setFragmentResult("_refreshEquipment", bundleOf("_refreshEquipment" to (mode == "EQUIPMENT")))
