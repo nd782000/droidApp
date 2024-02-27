@@ -129,7 +129,8 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                         breakTxt.clearFocus()
                         usageEditListener.editBreak(position, breakTxt.text.toString(), actionId)
                         true
-                    } else {
+                    }
+                    else {
                         false
                     }
                 }
@@ -139,38 +140,20 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             }
 
             val totalTxt:TextView = holder.itemView.findViewById(R.id.usage_total_tv)
-
-
             totalTxt.text = context.getString(R.string.usage_hours, usage.qty)
 
+            val byTxt:TextView = holder.itemView.findViewById(R.id.usage_by_tv)
+            byTxt.text = context.getString(R.string.usage_added_by_x, "---")
 
 
             //options btn click
-            holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
-                println("status click")
-
-                val popUp = PopupMenu(myView.context,holder.itemView)
-
-
-                if (!usage.locked!!) {
-                    popUp.inflate(R.menu.task_status_menu)
-
-                    popUp.menu.add(0, usage.ID.toInt(), 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(context, R.drawable.ic_canceled)!!,context), context.getString(R.string.delete)))
-
-                    popUp.setOnMenuItemClickListener {
-                        usageEditListener.deleteUsage(position)
-
-                        true
-                    }
-
-
-                    popUp.gravity = Gravity.END
-                    popUp.show()
-                }
-
+            holder.itemView.findViewById<TextView>(R.id.usage_delete_btn).setOnClickListener {
+                println("delete click")
+                usageEditListener.deleteUsage(position)
             }
 
-        }else{
+        }
+        else {
             //material type
             laborCl.isVisible = false
 

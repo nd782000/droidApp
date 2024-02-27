@@ -1200,6 +1200,9 @@
     <string name="not_scheduled">Not Scheduled</string>
 
 
+    <!-- New usage stuff -->
+    <string name="usage_added_by_x">Added By: %1$s</string>
+    <string name="dashes">---</string>
 
     <!--
     <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>

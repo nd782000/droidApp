@@ -33,6 +33,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -67,7 +68,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     var usageToLog:MutableList<Usage> = mutableListOf()
     private var usageToLogJSONMutableList:MutableList<String> = mutableListOf()
 
-
+    private var dateValue: LocalDate = LocalDate.now(ZoneOffset.UTC)
+    private lateinit var datePicker: DatePickerHelper
 
     private lateinit var timePicker: TimePickerHelper
 
@@ -163,6 +165,17 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.enter_usage)
 
+        binding.usageDateEt.setText(dateValue.format(GlobalVars.dateFormatterShort))
+        binding.usageDateEt.setOnClickListener {
+            datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
+            datePicker.showDialog(dateValue.year, dateValue.monthValue-1, dateValue.dayOfMonth, object : DatePickerHelper.Callback {
+                override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+                    dateValue = LocalDate.of(year, month+1, dayOfMonth)
+                    binding.usageDateEt.setText(dateValue.format(GlobalVars.dateFormatterShort))
+                    //todo: add functionality here
+                }
+            })
+        }
 
         // We do already have the woitem passed, but we call get here to ensure that when the receipt is added, it will show up. A bit brute force, but works for now
         getWoItem()
@@ -1357,7 +1370,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                         woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
 
                         if (!initialViewsLaidOut) {
-                            binding.usageEmpSpinner.setBackgroundResource(R.drawable.text_view_layout)
 
                             binding.startBtn.setOnClickListener {
                                 start()
