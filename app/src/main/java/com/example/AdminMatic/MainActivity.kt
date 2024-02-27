@@ -446,8 +446,7 @@ data class Employee(val ID: String,
                     val city: String?,
                     val state: String?,
                     val zip: String?,
-                    @field:SerializedName("dep", alternate= ["depID"])
-                    val dep: String?,
+                    val depID: String?,
                     val lang: String?,
                     val active: String,
                     val salesRep: String?,
@@ -459,8 +458,6 @@ data class Employee(val ID: String,
                     var companyUnique:String,
                     var licenses:Array<License>? = null
 ) : Parcelable{
-
-
     override fun toString(): String {
         return name
     }
@@ -987,6 +984,7 @@ data class Usage(var ID:String,
                  var unitCost: String? = "",
                  var totalCost: String? = "",
                  var usageCharge: String? = "",
+                 var chargeType: String? = "",
                  var override: String? = "",
                  var pic: String? = "",
                  var del: String? = "",

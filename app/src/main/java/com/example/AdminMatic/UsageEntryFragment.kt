@@ -9,11 +9,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +20,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.math.BigDecimal
@@ -34,7 +30,6 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.math.roundToInt
@@ -105,7 +100,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             override fun handleOnBackPressed() {
                 // Handle the back button event
                 println("handleOnBackPressed")
-                if(editsMade){
+                if (editsMade) {
                     println("edits made")
                     val builder = AlertDialog.Builder(myView.context)
                     builder.setTitle("Unsaved Changes")
@@ -126,7 +121,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                         println("stay here")
                     }
                     builder.show()
-                }else{
+                }
+                else {
                     println("go back")
 
                     myView.findNavController().navigateUp()
@@ -190,83 +186,86 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
     private fun addActiveUsage() {
-        //loop thru usage array and edit start time
+
         println("addActiveUsage()")
 
-        print("usageToLog.count = ${usageToLog.count()}")
-        var openUsage = false
+        usageToLog.clear()
 
         val todayDate = LocalDateTime.now()
-
-        val formatterLong = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-
-        val formatterShort = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val todayShort = todayDate.format(formatterShort)
-
-        println("Current Date short: $todayShort")
-
-
-
+        val todayShort = todayDate.format(GlobalVars.dateFormatterShort)
         for (usage in woItem!!.usage!!) {
-            println("usage.start = ${usage.start}")
 
-            println("usage.stop = ${usage.stop}")
-
-            var formattedUsageDateString = ""
+            var startShort = ""
 
             if (usage.start != null && usage.start != "0000-00-00 00:00:00") {
 
-
-                val date = LocalDate.parse(usage.start!!, formatterLong)
-
-                println("date from usage = $date")
-
-                formattedUsageDateString = date.toString()
-                println("usage date string = $formattedUsageDateString")
+                val dateFromStart = LocalDate.parse(usage.start!!, GlobalVars.dateFormatterPHP)
+                startShort = dateFromStart.format(GlobalVars.dateFormatterShort)
 
             }
 
-            if(usage.stop == null || usage.stop == "0000-00-00 00:00:00" || todayShort == formattedUsageDateString){
-                openUsage = true
+            println("Compraring $startShort against today's $todayShort")
+            if (startShort == todayShort) {
+                if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID) {
+                    usage.locked = true
+                }
+
                 usageToLog.add(usage)
-
-
 
             }
 
         }
 
         println("usageToLog.count = ${usageToLog.count()}")
-        println("openUsage = $openUsage")
 
-        //add rows for emps on work order if there is no open usage rows
-        if(woItem!!.type == "1"){
-            //labor type
+        //add rows for emps on work order
+        if (woItem!!.type == "1") {
 
-            if(!openUsage) {
-                for (emp in workOrder.emps) {
-                    print("empName = ${emp.name}")
+            for (emp in workOrder.emps) {
+                print("empName = ${emp.name}")
 
-                    val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
-                    usage.empID = emp.ID
-                    usage.empName = emp.name
-                    usage.pic = emp.pic
-                    usage.depID = emp.dep
-                    usage.unitPrice = woItem!!.price
-                    usage.totalPrice = woItem!!.total
-                    usage.usageCharge = woItem!!.charge
-                    usage.override = "1"
+                var empAlreadyIncluded = false
 
-                    usageToLog.add(0,usage)
+                for (usage in usageToLog) {
+                    if (usage.empID == emp.ID) {
+                        empAlreadyIncluded = true
+                    }
+                }
 
-
+                if (!empAlreadyIncluded) {
 
                 }
-                updateUsageTable()
+
+                val usage = Usage("0", workOrder.woID, woItem!!.ID, woItem!!.type, GlobalVars.loggedInEmployee!!.ID,"0.00")
+
+                usage.empID = emp.ID
+                usage.empName = emp.name
+                usage.pic = emp.pic
+                usage.depID = emp.depID
+                usage.unitPrice = woItem!!.price
+                usage.totalPrice = woItem!!.total
+                usage.chargeType = woItem!!.charge
+                usage.start = null
+                usage.stop = null
+                usage.lunch = ""
+                usage.vendor = ""
+                usage.unitCost = ""
+                usage.totalCost = ""
+                usage.del = ""
+                usage.override = "0"
+                usage.locked = false
+
+
+                usageToLog.add(0, usage)
+
             }
 
+            updateUsageTable()
 
-        }else{
+
+
+        }
+        else {
             //material type
 
             if (usageToLog.isEmpty()){
@@ -446,7 +445,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         usage.empID = emp.ID
         usage.empName = emp.name
         usage.pic = emp.pic
-        usage.depID = emp.dep
+        usage.depID = emp.depID
         usage.unitPrice = woItem!!.price
         usage.totalPrice = woItem!!.total
         usage.usageCharge = woItem!!.charge
@@ -1402,7 +1401,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
                         hideProgressView()
 
-                        usageToLog.clear()
+
                         addActiveUsage()
                     }
 
