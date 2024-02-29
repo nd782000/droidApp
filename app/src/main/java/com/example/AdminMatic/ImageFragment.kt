@@ -201,7 +201,7 @@ class ImageFragment : Fragment() {
     }
 
     private fun setLiked(liked:Boolean) {
-        println("getImages")
+        println("setLiked")
 
         //showProgressView()
 
@@ -285,6 +285,10 @@ class ImageFragment : Fragment() {
         if (image!!.liked == "1") {
             Picasso.with(context).load(R.drawable.ic_liked).into(binding.likeIv)
             ImageViewCompat.setImageTintList(binding.likeIv, null)
+        }
+        else {
+            Picasso.with(context).load(R.drawable.ic_unliked).into(binding.likeIv)
+            ImageViewCompat.setImageTintList(binding.likeIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, primaryColor)))
         }
 
         setLikesViewText()

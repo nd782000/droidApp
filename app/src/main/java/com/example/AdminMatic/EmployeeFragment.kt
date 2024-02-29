@@ -395,11 +395,13 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                             // Now we call setRefreshing(false) to signal refresh has finished
                             binding.customerSwipeContainer.isRefreshing = false
 
+                            /*
                             Toast.makeText(
                                 activity,
                                 "${imageList.count()} Images Loaded",
                                 Toast.LENGTH_SHORT
                             ).show()
+                             */
 
                             //employee!!.fName = fName
 
@@ -407,7 +409,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                             adapter.filterList = imageList
                         }
 
-                        //adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
 
 
