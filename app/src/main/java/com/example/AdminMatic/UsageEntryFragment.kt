@@ -3,6 +3,9 @@ package com.example.AdminMatic
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -96,6 +99,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         _binding = FragmentUsageEntryBinding.inflate(inflater, container, false)
         myView = binding.root
 
+        setHasOptionsMenu(true)
+
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // Handle the back button event
@@ -166,9 +171,45 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
             datePicker.showDialog(dateValue.year, dateValue.monthValue-1, dateValue.dayOfMonth, object : DatePickerHelper.Callback {
                 override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
-                    dateValue = LocalDate.of(year, month+1, dayOfMonth)
-                    binding.usageDateEt.setText(dateValue.format(GlobalVars.dateFormatterShort))
-                    //todo: add functionality here
+
+                    var pendingEdits = false
+
+                    if (usageToLog.isNotEmpty()) {
+                        for (usage in usageToLog) {
+                            if (usage.editsMade) {
+                                pendingEdits = true
+                            }
+                        }
+                    }
+                    else {
+                        addActiveUsage()
+                        dateValue = LocalDate.of(year, month+1, dayOfMonth)
+                        binding.usageDateEt.setText(dateValue.format(GlobalVars.dateFormatterShort))
+                    }
+
+                    if (pendingEdits) {
+                        val builder = androidx.appcompat.app.AlertDialog.Builder(myView.context)
+                        builder.setTitle(getString(R.string.save_usage_before_date_change_title))
+                        builder.setMessage(getString(R.string.save_usage_before_date_change_body))
+
+                        builder.setPositiveButton(android.R.string.ok) { _, _ ->
+                            addActiveUsage()
+                            dateValue = LocalDate.of(year, month+1, dayOfMonth)
+                            binding.usageDateEt.setText(dateValue.format(GlobalVars.dateFormatterShort))
+                        }
+
+                        builder.setNegativeButton(android.R.string.cancel) { _, _ ->
+
+                        }
+
+                        builder.show()
+                    }
+                    else {
+                        addActiveUsage()
+                        dateValue = LocalDate.of(year, month+1, dayOfMonth)
+                        binding.usageDateEt.setText(dateValue.format(GlobalVars.dateFormatterShort))
+                    }
+
                 }
             })
         }
@@ -177,6 +218,35 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         getWoItem()
 
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.usage_entry_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val item = menu.findItem(R.id.history_item)
+
+        if ((woItem?.extraUsage ?: "0") == "1") {
+            item.isEnabled = true
+        }
+        else {
+            item.isEnabled = false
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.history_item) {
+            println("History menu item selected")
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
 
     override fun onStop() {
         super.onStop()
@@ -233,30 +303,29 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 }
 
                 if (!empAlreadyIncluded) {
+                    val usage = Usage("0", workOrder.woID, woItem!!.ID, woItem!!.type, GlobalVars.loggedInEmployee!!.ID,"0.00")
 
+                    usage.empID = emp.ID
+                    usage.empName = emp.name
+                    usage.pic = emp.pic
+                    usage.depID = emp.depID
+                    usage.unitPrice = woItem!!.price
+                    usage.totalPrice = woItem!!.total
+                    usage.chargeType = woItem!!.charge
+                    usage.start = null
+                    usage.stop = null
+                    usage.lunch = ""
+                    usage.vendor = ""
+                    usage.unitCost = ""
+                    usage.totalCost = ""
+                    usage.del = ""
+                    usage.override = "0"
+                    usage.locked = false
+
+                    usageToLog.add(0, usage)
                 }
 
-                val usage = Usage("0", workOrder.woID, woItem!!.ID, woItem!!.type, GlobalVars.loggedInEmployee!!.ID,"0.00")
 
-                usage.empID = emp.ID
-                usage.empName = emp.name
-                usage.pic = emp.pic
-                usage.depID = emp.depID
-                usage.unitPrice = woItem!!.price
-                usage.totalPrice = woItem!!.total
-                usage.chargeType = woItem!!.charge
-                usage.start = null
-                usage.stop = null
-                usage.lunch = ""
-                usage.vendor = ""
-                usage.unitCost = ""
-                usage.totalCost = ""
-                usage.del = ""
-                usage.override = "0"
-                usage.locked = false
-
-
-                usageToLog.add(0, usage)
 
             }
 
@@ -440,18 +509,27 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     private fun addEmployee(emp:Employee){
         println("add employee with $emp")
 
-
         val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
-        usage.empID = emp.ID
-        usage.empName = emp.name
-        usage.pic = emp.pic
-        usage.depID = emp.depID
-        usage.unitPrice = woItem!!.price
-        usage.totalPrice = woItem!!.total
-        usage.usageCharge = woItem!!.charge
-        usage.override = "1"
+        usage.unitPrice = woItem?.price
+        usage.totalPrice = woItem?.total
+        usage.chargeType = woItem?.charge
+        usage.override = "0"
+        usage.locked = false
 
-        usageToLog.add(0,usage)
+        usage.empID = null
+        usage.empName = null
+        usage.pic = null
+        usage.depID = emp.depID
+        usage.start = null
+        usage.stop = null
+        usage.lunch = ""
+
+        usage.vendor = ""
+        usage.unitCost = ""
+        usage.totalCost = ""
+        usage.del = ""
+
+        usageToLog.add(usage)
         editsMade = true
 
         updateUsageTable()
@@ -505,7 +583,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             }
 
 
-            if((usage.locked == false  || usage.locked == null) && usage.start == null){
+            if(!usage.locked && usage.start == null) {
 
                 //test if start is before stop or stop is nil
                 if(usage.stop == null || usage.stop == "0000-00-00 00:00:00"){
@@ -520,7 +598,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
-                }else if(globalVars.getTimeFromString(usage.stop!!)!!  < Date().toInstant().atZone(ZoneId.systemDefault()).toLocalTime()){
+                }else if(globalVars.getTimeFromString(usage.stop!!)!! < Date().toInstant().atZone(ZoneId.systemDefault()).toLocalTime()){
                     println("start is after stop")
 
                     //start is after stop
@@ -545,7 +623,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         for (usage in usageToLog){
 
             println("usage.locked = ${usage.locked}")
-            if(usage.locked == false || usage.locked == null){
+            if(!usage.locked){
                 //test if stop is after start or start is nil
                 if(usage.start == null){
                     println("no start time")
@@ -583,10 +661,17 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     //methods for text edits
     override fun editStart(row: Int) {
 
+        val stopDate = usageToLog[row].stop
+
+        if (stopDate == null) {
+            editOthersStart()
+        }
+
+
         val cal:Calendar
         val h:Int
         val m:Int
-        if (usageToLog[row].start == null || usageToLog[row].start == "0000-00-00 00:00:00"){
+        if (usageToLog[row].start == null || usageToLog[row].start == "0000-00-00 00:00:00") {
             println("usage start == null")
             cal = Calendar.getInstance()
             h = cal.get(Calendar.HOUR_OF_DAY)
@@ -751,7 +836,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 var locked = true
                 if(usageToLog.count() > 1){
                     for (usage in usageToLog){
-                        if(usage.locked == false){
+                        if(!usage.locked){
                             locked = false
                         }
                     }
@@ -1014,28 +1099,37 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     }
 
 
-
-
     override fun deleteUsage(row: Int) {
-        println("updateUsageToLog row = $row")
+        println("deleteUsage row = $row")
 
-        editsMade = false //resets edit checker
+        if (usageToLog.isNotEmpty()) {
+            if (!usageToLog[row].locked) {
+                val builder = AlertDialog.Builder(myView.context)
+                builder.setTitle(getString(R.string.delete_usage_title))
+                builder.setMessage(getString(R.string.delete_usage_title))
+                builder.setPositiveButton(android.R.string.ok) { _, _ ->
+                    if (usageToLog[row].ID == "0") {
+                        usageToLog.removeAt(row)
+                        updateUsageTable()
+                    }
+                    else {
+                        usageToLog[row].del = "1"
+                        submitUsage()
 
-        if (usageToLog[row].ID == "0"){
-            usageToLog.removeAt(row)
-            updateUsageTable()
-        }else{
-            usageToLog[row].del = "1"
-            submitUsage()
+                        //usageToLog.removeAt(row)
+                        //updateUsageTable()
+                    }
 
-            usageToLog.removeAt(row)
-            updateUsageTable()
+                }
+                builder.setNegativeButton(android.R.string.cancel) { _, _ ->
+
+                }
+                builder.show()
+            }
+            else {
+                globalVars.simpleAlert(myView.context, getString(R.string.cant_delete_saved_rows))
+            }
         }
-
-
-
-
-
     }
 
     private fun submitUsage(){
@@ -1122,74 +1216,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
     }
-
-    /*
-    private fun getUsage() {
-        println("getUsage")
-
-        showProgressView()
-
-        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/usage.php"
-
-        val currentTimestamp = System.currentTimeMillis()
-        urlString = "$urlString?cb=$currentTimestamp"
-
-        val postRequest1: StringRequest = object : StringRequest(
-            Method.POST, urlString,
-            Response.Listener { response -> // response
-
-                println("Get Usage Response $response")
-
-                try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
-
-
-
-                        val usageNew: JSONArray = parentObject.getJSONArray("usages")
-
-                        val gson = GsonBuilder().create()
-                        woItem!!.usage = gson.fromJson(usageNew.toString(), Array<Usage>::class.java)
-                        binding.usageEntryRv.adapter!!.notifyDataSetChanged()
-                        usageToLog.clear()
-                        addActiveUsage()
-
-
-
-                        //globalVars.playSaveSound(myView.context)
-
-
-                    }
-
-                    hideProgressView()
-
-
-                } catch (e: JSONException) {
-                    println("JSONException")
-                    e.printStackTrace()
-                }
-
-            },
-            Response.ErrorListener { // error
-
-            }
-        ) {
-            override fun getParams(): Map<String, String> {
-                val params: MutableMap<String, String> = HashMap()
-                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["woItemID"] = woItem!!.ID
-
-                println("get usage params = $params")
-                return params
-            }
-        }
-        postRequest1.tag = "usageEntry"
-        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
-    }
-
-     */
 
     private fun callDB(json:String){
         println("callDB w json: $json")

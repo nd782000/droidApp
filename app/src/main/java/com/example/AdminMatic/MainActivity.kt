@@ -993,8 +993,9 @@ data class Usage(var ID:String,
                  var hasReceipt: String? = "",
 
 
-                 var locked: Boolean? = false,
-                 var receipt:Image? = null
+                 var locked: Boolean = false,
+                 var receipt:Image? = null,
+                 var editsMade:Boolean = false
 ): Parcelable{
     override fun toString(): String {
         return  ID
