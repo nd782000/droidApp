@@ -872,7 +872,7 @@
     <string name="service_check_empty">Ingrese el uso de la machina (distancia/horas).</string>
     <string name="service_check_less_than_usage_title">Valor inferior al uso</string>
     <string name="service_check_less_than_usage_body">El valor de uso ingresado es menor que el valor de uso actual de %1$s. ¿Seguro que quieres actualizarlo?</string>
-    <string name="dialog_yes">Sí</string>
+    <string name="dialogue_yes">Sí</string>
     <string name="mileage_hours">Millaje/horas</string>
     <string name="no_services_due_prompt_change">%1$s se ve bien, ¿le gustaría actualizar su estado a \"Operativo?\"</string>
     <string name="no_services_due_title">No hay servicios vencidos ahora</string>

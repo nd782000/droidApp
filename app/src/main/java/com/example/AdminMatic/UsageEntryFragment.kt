@@ -27,7 +27,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -274,7 +273,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             }
 
-            println("Compraring $startShort against today's $todayShort")
             if (startShort == todayShort) {
                 if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID) {
                     usage.locked = true
@@ -366,122 +364,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         }
 
-
         updateUsageTable()
-
-
-
-
-
-
-        /*
-
-
-
-        for usage in self.woItem.usages! {
-            // print("usage.qty = \(String(describing: usage.qty))")
-            print("usage.startString = \(String(describing: usage.startString))")
-            print("usage.start = \(String(describing: usage.start))")
-
-            print("usage.stopString = \(String(describing: usage.stopString))")
-            print("usage.stop = \(String(describing: usage.stop))")
-
-            let todaysDate = Date()
-            let formatLong = DateFormatter()
-            formatLong.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            let formatShort = DateFormatter()
-            formatShort.dateFormat = "yyyy-MM-dd"
-            let formattedTodaysDate = formatShort.string(from: todaysDate)
-            print("todays date = \(formattedTodaysDate)")
-
-            var formattedUsageDateString:String = ""
-
-            if usage.startString != nil{
-                //let formattedUsageDate = format.string(from: usage.startString!)
-                let formattedUsageDate = formatLong.date(from: usage.startString!)
-
-                print("usage date = \(String(describing: formattedUsageDate))")
-
-                formattedUsageDateString = formatShort.string(from: formattedUsageDate!)
-                print("usage date string = \(formattedUsageDateString)")
-            }
-
-            if(usage.stop == nil || formattedTodaysDate == formattedUsageDateString){
-                openUsage = true
-                usageToLog.append(usage)//append to your list
-            }
-        }
-
-        print("usageToLog.count = \(usageToLog.count)")
-
-        //add rows for emps on work order if there is no open usage rows
-        if(woItem.type == "1"){
-            print("openUsage = \(openUsage)")
-            if(openUsage == false){
-                for employee in self.empsOnWo {
-                    print("empName = \(employee.name)")
-
-                    let usage = Usage2(_ID: "0", _woID: self.workOrderID, _itemID: self.woItem.ID, _type: self.woItem.type!, _addedBy: appDelegate.loggedInEmployee!.ID,_qty: "")
-
-                    usage.empID = employee.ID
-                    usage.empName = employee.name
-                    usage.pic = employee.pic
-                    usage.depID = employee.depID
-                    usage.unitPrice = self.woItem.price
-                    usage.totalPrice = self.woItem.total
-                    usage.chargeType = self.woItem.charge
-                    usage.override = "1"
-                    usage.locked = false
-
-                    usage.start = nil
-                    usage.stop = nil
-                    usage.lunch = ""
-
-                    usage.vendor = ""
-                    usage.unitCost = ""
-                    usage.totalCost = ""
-                    usage.del = ""
-
-                    usageToLog.insert(usage, at: 0)
-                }
-
-            }
-        }else{
-            if usageToLog.count == 0{
-
-                let usage = Usage2(_ID: "0", _woID: self.workOrderID, _itemID: self.woItem.ID, _type: self.woItem.type!, _addedBy: appDelegate.loggedInEmployee!.ID,_qty: "")
-
-                usage.empID = nil
-                usage.empName = nil
-                usage.pic = nil
-                usage.depID = nil
-                usage.unitPrice = self.woItem.price
-                usage.totalPrice = self.woItem.total
-                usage.chargeType = self.woItem.charge
-                usage.override = "1"
-                usage.locked = false
-
-                usage.start = nil
-                usage.stop = nil
-                usage.lunch = ""
-
-                usage.vendor = ""
-                usage.unitCost = ""
-                usage.totalCost = ""
-                usage.del = ""
-
-                usageToLog.insert(usage, at: 0)
-            }
-
-        }
-        self.usageTableView.reloadData()
-    }
-
-
-*/
-
-
-
 
     }
 
@@ -516,9 +399,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         usage.override = "0"
         usage.locked = false
 
-        usage.empID = null
-        usage.empName = null
-        usage.pic = null
+        usage.empID = emp.ID
+        usage.empName = emp.name
+        usage.pic = emp.pic
         usage.depID = emp.depID
         usage.start = null
         usage.stop = null
@@ -567,203 +450,128 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
 
+    private fun insertStartValue(usage: Usage, startValue: LocalDateTime) : Boolean {
+        if (!usage.locked) {
+
+            if (usage.stopDateTime != null && usage.stopDateTime!! < startValue) {
+                println("start is after stop")
+                globalVars.playErrorSound(myView.context)
+                globalVars.simpleAlert(myView.context,"Start Time Error","${usage.empName!!}'s start time can not be later then their stop time.")
+                usage.startDateTime = null
+                usage.start = null
+                return false
+
+            }
+            else {
+                usage.startDateTime = startValue
+                usage.start = GlobalVars.dateFormatterPHP.format(startValue)
+                usage.editsMade = true
+                editsMade = true
+            }
+        }
+        return true
+    }
 
 
+    private fun insertStopValue(usage: Usage, stopValue: LocalDateTime) : Boolean {
+        if (!usage.locked) {
+            if (usage.startDateTime == null){
+                globalVars.playErrorSound(myView.context)
+                globalVars.simpleAlert(myView.context, "Stop Time Error","${usage.empName} has no start time.")
+                return false
+            }
+            else if (usage.startDateTime!! > stopValue) {
+                println("stop is before start")
+                globalVars.playErrorSound(myView.context)
+                globalVars.simpleAlert(myView.context,"Stop Time Error","${usage.empName}'s stop time can not be earlier then their start time.")
+                usage.stopDateTime = null
+                usage.stop = null
+                return false
+            }
+            else {
+                usage.stopDateTime = stopValue
+                usage.stop = GlobalVars.dateFormatterPHP.format(stopValue)
+                usage.editsMade = true
+                editsMade = true
+            }
+        }
+        return true
+    }
+
+    private fun insertBreakValue(usage: Usage, breakValue: String) : Boolean {
+
+        if (usage.startDateTime == null || usage.stopDateTime == null) {
+
+            globalVars.playErrorSound(myView.context)
+            globalVars.simpleAlert(myView.context,"Break Time Error","Add start and stop time before break time.")
+
+            usage.lunch = null
+
+            return false
+        }
+
+        usage.lunch = breakValue.replace(",",".")
+        
+        return true
+    }
 
 
     //methods for button taps
-    private fun start(){
-        println("start")
+    private fun startBtnPressed() {
+        println("startBtnPressed")
 
-        for (usage in usageToLog){
+        val cal:Calendar = Calendar.getInstance()
+        val currentDateTime = LocalDateTime.of(dateValue.year, dateValue.month, dateValue.dayOfMonth, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
 
-            if(usage.stop != null && usage.stop != "0000-00-00 00:00:00"){
-                println("date from stop string = ${globalVars.getLocalDateFromString(usage.stop!!)}")
-                println("time from stop string = ${globalVars.getTimeFromString(usage.stop!!)}")
-            }
-
-
-            if(!usage.locked && usage.start == null) {
-
-                //test if start is before stop or stop is nil
-                if(usage.stop == null || usage.stop == "0000-00-00 00:00:00"){
-                    println("usage.stop == null || usage.stop == \"0000-00-00 00:00:00\"")
-
-
-                    usage.start = globalVars.getDBDateStringFromDate(Date())
-
-                    println("usage.start = ${usage.start}")
-
-                    // editsMade = true
-
-
-
-                }else if(globalVars.getTimeFromString(usage.stop!!)!! < Date().toInstant().atZone(ZoneId.systemDefault()).toLocalTime()){
-                    println("start is after stop")
-
-                    //start is after stop
-                    globalVars.simpleAlert(myView.context,"Start Time Error","${usage.empName!!}'s start time can not be later then their stop time.")
-                    usage.start = null
-                }else{
-                    println("start before stop")
-
-                    usage.start = Date().toString()
-                    // editsMade = true
-                }
-            }
-        }
-
-        setQty()
-
-    }
-
-
-    private fun stop(){
-        println("stop")
-        for (usage in usageToLog){
-
-            println("usage.locked = ${usage.locked}")
-            if(!usage.locked){
-                //test if stop is after start or start is nil
-                if(usage.start == null){
-                    println("no start time")
-
-                    //no start time
-                    globalVars.playErrorSound(myView.context)
-                    globalVars.simpleAlert(myView.context,"Stop Time Error","${usage.empName} has no start time.  Enter start time first.")
-
-                }else if (LocalTime.now() <  globalVars.getTimeFromString(usage.start!!)){
-                    println("stop is before start")
-
-                    //stop is before start
-                    globalVars.playErrorSound(myView.context)
-                    globalVars.simpleAlert(myView.context,"Stop Time Error","${usage.empName}'s stop time can not be earlier then their start time.")
-
-                }else{
-
-                    println("else")
-                    if(usage.stop == null || usage.stop == "0000-00-00 00:00:00"){
-                        println("set stop")
-                        usage.stop =  globalVars.getDBDateStringFromDate(Date())
-                        // editsMade = true
-                    }
-
-                }
-            }
-
+        for (usage in usageToLog) {
+            insertStartValue(usage, currentDateTime)
         }
 
         setQty()
     }
 
+
+    private fun stopBtnPressed(){
+        println("stopBtnPressed")
+
+        val cal:Calendar = Calendar.getInstance()
+        val currentDateTime = LocalDateTime.of(dateValue.year, dateValue.month, dateValue.dayOfMonth, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
+
+        for (usage in usageToLog) {
+            insertStopValue(usage, currentDateTime)
+        }
+
+        setQty()
+    }
 
 
     //methods for text edits
     override fun editStart(row: Int) {
 
-        val stopDate = usageToLog[row].stop
-
-        if (stopDate == null) {
-            editOthersStart()
-        }
-
-
         val cal:Calendar
         val h:Int
         val m:Int
-        if (usageToLog[row].start == null || usageToLog[row].start == "0000-00-00 00:00:00") {
+        if (usageToLog[row].startDateTime == null) {
             println("usage start == null")
             cal = Calendar.getInstance()
             h = cal.get(Calendar.HOUR_OF_DAY)
             m = cal.get(Calendar.MINUTE)
-        }else{
-
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-
-            cal = Calendar.getInstance()
-
-            cal.time = sdf.parse(usageToLog[row].start!!) as Date
-            h = cal.get(Calendar.HOUR_OF_DAY)
-            m = cal.get(Calendar.MINUTE)
         }
-
+        else {
+            h = usageToLog[row].startDateTime!!.hour
+            m = usageToLog[row].startDateTime!!.minute
+        }
 
         timePicker = TimePickerHelper(myView.context, false, true)
         timePicker.showDialog(h, m, object : TimePickerHelper.Callback {
             override fun onTimeSelected(hourOfDay: Int, minute: Int) {
 
-                println("hourOfDay = $hourOfDay")
-                println("minute = $minute")
+                val selectedDateTime = LocalDateTime.of(dateValue.year, dateValue.month, dateValue.dayOfMonth, hourOfDay, minute)
 
-                val current = LocalDate.now()
-
-                val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "$hourOfDay"
-                val minuteStr = if (minute < 10) "0${minute}" else "$minute"
-
-                val startString = "$current $hourStr:$minuteStr:00"
-                println("startString is  $startString")
-
-
-                if(usageToLog[row].stop != null && usageToLog[row].stop != "0000-00-00 00:00:00"){
-                    if(globalVars.getTimeFromString(usageToLog[row].stop!!)!!  < globalVars.getTimeFromString(startString)!!){
-                        println("start is after stop")
-
-                        //start is after stop
-                        globalVars.playErrorSound(myView.context)
-                        globalVars.simpleAlert(myView.context,"Start Time Error","${usageToLog[row].empName!!}'s start time can not be later then their stop time.")
-                        usageToLog[row].start = null
-                        updateUsageTable()
-                        return
-                    }
+                if (insertStartValue(usageToLog[row], selectedDateTime)) {
+                    editOthersStart(row)
                 }
-
-
-                usageToLog[row].start = startString
-                // editsMade = true
-
-
-                //check if usageToLog is greater then 1
-                //loop through usage
-                //check if start is null
-
-
-
-
-                //check to update other starts
-                var locked = true
-                if(usageToLog.count() > 1){
-                    for (usage in usageToLog){
-                        if(usage.locked == false){
-                            locked = false
-                        }
-                    }
-                    if (!locked){
-
-                        val builder = AlertDialog.Builder(myView.context)
-                        builder.setTitle("Update Everyone's Start Time?")
-                        builder.setPositiveButton("YES") { _, _ ->
-                            //Toast.makeText(context,
-                            // android.R.string.yes, Toast.LENGTH_SHORT).show()
-                            editOthersStart(row)
-                        }
-                        builder.setNegativeButton("NO") { _, _ ->
-                            //Toast.makeText(context,
-                            // android.R.string.yes, Toast.LENGTH_SHORT).show()
-                            setQty()
-
-                        }
-                        builder.show()
-                    }else{
-                        setQty()
-                    }
-                }else{
-                    setQty()
-                }
-
-
-
-
-
+                setQty()
             }
         })
     }
@@ -774,101 +582,30 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         val cal:Calendar
         val h:Int
         val m:Int
-        if (usageToLog[row].stop == null || usageToLog[row].stop == "0000-00-00 00:00:00"){
-            println("usage start == null")
+        if (usageToLog[row].stopDateTime == null) {
+            println("usage stop == null")
             cal = Calendar.getInstance()
-            h = cal.get(Calendar.HOUR_OF_DAY)
-            m = cal.get(Calendar.MINUTE)
-        }else{
-
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-
-            cal = Calendar.getInstance()
-
-            cal.time = sdf.parse(usageToLog[row].stop!!) as Date
             h = cal.get(Calendar.HOUR_OF_DAY)
             m = cal.get(Calendar.MINUTE)
         }
-
+        else {
+            h = usageToLog[row].stopDateTime!!.hour
+            m = usageToLog[row].stopDateTime!!.minute
+        }
 
         timePicker = TimePickerHelper(myView.context, false, true)
         timePicker.showDialog(h, m, object : TimePickerHelper.Callback {
             override fun onTimeSelected(hourOfDay: Int, minute: Int) {
 
-                println("hourOfDay = $hourOfDay")
-                println("minute = $minute")
+                val selectedDateTime = LocalDateTime.of(dateValue.year, dateValue.month, dateValue.dayOfMonth, hourOfDay, minute)
 
-                val current = LocalDate.now()
-
-                val hourStr = if (hourOfDay < 10) "0${hourOfDay}" else "$hourOfDay"
-                val minuteStr = if (minute < 10) "0${minute}" else "$minute"
-
-                val stopString = "$current $hourStr:$minuteStr:00"
-                println("stopString is  $stopString")
-
-
-                if (usageToLog[row].start == null){
-                    globalVars.playErrorSound(myView.context)
-                    globalVars.simpleAlert(myView.context, "Start Time Error","${usageToLog[row].empName} has no start time.")
-                    return
+                if (insertStopValue(usageToLog[row], selectedDateTime)) {
+                    editOthersStop(row)
                 }
-
-                println("got past return")
-
-
-
-                if (globalVars.getTimeFromString(stopString)!! <  globalVars.getTimeFromString(usageToLog[row].start!!)){
-                    println("stop is before start")
-
-                    //stop is before start
-                    globalVars.playErrorSound(myView.context)
-                    globalVars.simpleAlert(myView.context,"Stop Time Error","${usageToLog[row].empName}'s stop time can not be earlier then their start time.")
-                    usageToLog[row].stop = null
-
-                }else{
-
-                    usageToLog[row].stop = stopString
-                    //   editsMade = true
-                }
-
-
-                //check to update other stops
-                var locked = true
-                if(usageToLog.count() > 1){
-                    for (usage in usageToLog){
-                        if(!usage.locked){
-                            locked = false
-                        }
-                    }
-                    if (!locked){
-
-                        val builder = AlertDialog.Builder(myView.context)
-                        builder.setTitle("Update Everyone's Stop Time?")
-                        builder.setPositiveButton("YES") { _, _ ->
-                            //Toast.makeText(context,
-                            // android.R.string.yes, Toast.LENGTH_SHORT).show()
-                            editOthersStop(row)
-                        }
-                        builder.setNegativeButton("NO") { _, _ ->
-                            //Toast.makeText(context,
-                            // android.R.string.yes, Toast.LENGTH_SHORT).show()
-                            setQty()
-
-                        }
-                        builder.show()
-                    }else{
-                        setQty()
-                    }
-                }else{
-                    setQty()
-                }
-
-
-
-                //  setQty()
-
+                setQty()
             }
         })
+
     }
 
 
@@ -877,7 +614,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     override fun editBreak(row: Int, lunch: String, actionID:Int) {
 
         try {
-            val num = java.lang.Double.parseDouble(lunch.toString().replace(',', '.'))
+            val num = java.lang.Double.parseDouble(lunch.replace(',', '.'))
         } catch (e: NumberFormatException) {
             // numeric = false
 
@@ -887,186 +624,159 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             usageToLog[row].lunch = null
             setQty()
             // updateUsageTable()
-
             return
         }
 
-
-
-
-
         if (actionID == EditorInfo.IME_ACTION_DONE) {
 
-
-
-
-
             println("done btn hit")
-
-            println("currentPayroll.startTime = ${ usageToLog[row].start}")
-            //validate break time
-            if (usageToLog[row].start == null || usageToLog[row].start == "0000-00-00 00:00:00" || usageToLog[row].stop == null || usageToLog[row].stop == "0000-00-00 00:00:00")
-            {
-                // Toast.makeText(myView.context,"Add Start Time First",Toast.LENGTH_LONG).show()
-
-                globalVars.playErrorSound(myView.context)
-                globalVars.simpleAlert(myView.context,"Break Time Error","Add start and stop time before break time.")
-
-
-                //breakTxt.setText("0")
-                usageToLog[row].lunch = null
-                updateUsageTable()
-                return
+            
+            if (insertBreakValue(usageToLog[row], lunch)) {
+                editOthersBreak(row)
             }
-
-
-            usageToLog[row].lunch = lunch.replace(",",".")
-
-            // setQty()
-
-
-            //check to update other breaks
-            var locked = true
-            if(usageToLog.count() > 1){
-                for (usage in usageToLog){
-                    if(usage.locked == false){
-                        locked = false
-                    }
-                }
-                if (!locked){
-
-                    val builder = AlertDialog.Builder(myView.context)
-                    builder.setTitle("Update Everyone's Break Time?")
-                    builder.setPositiveButton("YES") { _, _ ->
-                        //Toast.makeText(context,
-                        // android.R.string.yes, Toast.LENGTH_SHORT).show()
-                        editOthersBreak(row)
-                    }
-                    builder.setNegativeButton("NO") { _, _ ->
-                        //Toast.makeText(context,
-                        // android.R.string.yes, Toast.LENGTH_SHORT).show()
-                        setQty()
-                    }
-                    builder.show()
-                }else{
-                    setQty()
-                }
-            }else{
-                setQty()
-            }
-
-
-
-            /*
-            println("currentPayroll.total = ${currentPayroll.total}")
-            // make sure there is a stop time
-            if (currentPayroll.total  != null){
-
-                val totalMins = currentPayroll!!.total!!.toFloat() * 60
-
-                if (breakTxt.text.toString().toFloat() >= totalMins){
-
-                    globalVars.simpleAlert(myView.context,"Break Time Error","Break time can not be equal or greater then total shift time.")
-
-                    // Toast.makeText(myView.context,"Break time can not be equal or greater then total shift time.",Toast.LENGTH_LONG).show()
-                    breakTxt.setText("0")
-                    return false
-                }
-
-            }
-
-            breakTxt.hideKeyboard()
-
-            currentPayroll.lunch = breakTxt.text.toString()
-            submitPayroll()
-            return true
-            */
-
-
+            setQty()
 
         }
     }
 
 
-    fun editOthersStart(row:Int){
-
+    fun editOthersStart(row:Int) {
         println("editOthersStart")
-        for (usage in usageToLog){
-            if (usage.locked == false){
-                usage.start = usageToLog[row].start
+
+        var locked = true
+        if (usageToLog.count() > 1){
+            for (usage in usageToLog) {
+                if (!usage.locked) {
+                    locked = false
+                }
+            }
+            if (!locked) {
+
+                val builder = AlertDialog.Builder(myView.context)
+                builder.setTitle("Update Everyone's Start Time?")
+                builder.setPositiveButton(getString(R.string.dialogue_yes)) { _, _ ->
+                    for (usage in usageToLog) {
+                        if (usage.startDateTime == null) {
+                            insertStartValue(usage, usageToLog[row].startDateTime!!)
+                        }
+                    }
+                    setQty()
+                }
+                builder.setNegativeButton(getString(R.string.dialogue_no)) { _, _ ->
+                    setQty()
+                }
+                builder.show()
+            }
+            else {
+                setQty()
             }
         }
-
-        setQty()
-
-
+        else {
+            setQty()
+        }
     }
 
     fun editOthersStop(row:Int){
 
         println("editOthersStop")
-        for (usage in usageToLog){
-            if (usage.locked == false){
-                usage.stop = usageToLog[row].stop
+
+        var locked = true
+        if (usageToLog.count() > 1){
+            for (usage in usageToLog) {
+                if (!usage.locked) {
+                    locked = false
+                }
+            }
+            if (!locked) {
+
+                val builder = AlertDialog.Builder(myView.context)
+                builder.setTitle("Update Everyone's Stop Time?")
+                builder.setPositiveButton(getString(R.string.dialogue_yes)) { _, _ ->
+                    for (usage in usageToLog) {
+                        insertStopValue(usage, usageToLog[row].stopDateTime!!)
+                    }
+                    setQty()
+                }
+                builder.setNegativeButton(getString(R.string.dialogue_no)) { _, _ ->
+                    setQty()
+                }
+                builder.show()
+            }
+            else {
+                setQty()
             }
         }
-
-        setQty()
+        else {
+            setQty()
+        }
 
 
     }
 
     private fun editOthersBreak(row:Int){
 
-        println("editOthersBreak")
-        for (usage in usageToLog){
-            if (usage.locked == false){
-                usage.lunch = usageToLog[row].lunch
+        var locked = true
+        if (usageToLog.count() > 1){
+            for (usage in usageToLog) {
+                if (!usage.locked) {
+                    locked = false
+                }
+            }
+            if (!locked) {
+
+                val builder = AlertDialog.Builder(myView.context)
+                builder.setTitle("Update Everyone's Break Time?")
+                builder.setPositiveButton(getString(R.string.dialogue_yes)) { _, _ ->
+                    for (usage in usageToLog) {
+                        if (!usage.locked) {
+                            insertBreakValue(usage, usageToLog[row].lunch!!)
+                        }
+                    }
+                    setQty()
+                }
+                builder.setNegativeButton(getString(R.string.dialogue_no)) { _, _ ->
+                    setQty()
+                }
+                builder.show()
+            }
+            else {
+                setQty()
             }
         }
-
-        setQty()
+        else {
+            setQty()
+        }
 
     }
 
-
-
-
-
-
-
-
-
-
-    fun setQty(){
+    private fun setQty(){
         println("setQty")
 
         for (usage in usageToLog) {
-            if(usage.start == null && usage.stop == null){
+            if (usage.startDateTime == null && usage.stopDateTime == null) {
                 println("blank row")
-            }else{
+            }
+            else {
 
                 var qtySeconds: Long
 
-                if(usage.start == null || usage.start == "0000-00-00 00:00:00" || usage.stop == null || usage.stop == "0000-00-00 00:00:00"){
+                if (usage.startDateTime == null || usage.stopDateTime == null) {
                     println("start or stop is null")
                     usage.qty = "0.00"
-                    //updateUsageTable()
+                }
+                else {
 
-                }else{
+                    val startTime = usage.startDateTime
+                    val stopTime = usage.stopDateTime
 
-                    val startTime = globalVars.getTimeFromString(usage.start!!)
-                    val stopTime = globalVars.getTimeFromString(usage.stop!!)
-
-
-                    if(startTime != null && stopTime != null){
+                    if (startTime != null && stopTime != null) {
                         qtySeconds = startTime.until(stopTime, ChronoUnit.SECONDS)
                         usage.qty =   startTime.until(stopTime, ChronoUnit.HOURS).toString()
 
                         var breakTime = 0.0
-                        if(usage.lunch != null && usage.lunch != "" && usage.lunch != "0"){
+                        if (usage.lunch != null && usage.lunch != "" && usage.lunch != "0") {
                             breakTime = usage.lunch!!.toDouble() * 60
-                            if(breakTime >= qtySeconds){
+                            if (breakTime >= qtySeconds) {
                                 globalVars.playErrorSound(myView.context)
                                 globalVars.simpleAlert(myView.context,"Break Time Error","${usage.empName!!}'s break time can not be greater or equal to total time.")
                                 usage.lunch = "0"
@@ -1080,11 +790,10 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
                         usage.qty = decimal.toString()
 
-
-                    }else{
+                    }
+                    else {
                         usage.qty = "0.00"
                     }
-
 
                 }
 
@@ -1394,13 +1103,22 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                         val gson = GsonBuilder().create()
                         woItem = gson.fromJson(parentObject.toString(), WoItem::class.java)
 
+                        for (usage in woItem!!.usage!!) {
+                            if (usage.start != null && usage.start != "0000-00-00 00:00:00") {
+                                usage.startDateTime = GlobalVars.dateFormatterPHP.parse(usage.start) as LocalDateTime?
+                            }
+                            if (usage.stop != null && usage.stop != "0000-00-00 00:00:00") {
+                                usage.stopDateTime = GlobalVars.dateFormatterPHP.parse(usage.start) as LocalDateTime?
+                            }
+                        }
+
                         if (!initialViewsLaidOut) {
 
                             binding.startBtn.setOnClickListener {
-                                start()
+                                startBtnPressed()
                             }
                             binding.stopBtn.setOnClickListener {
-                                stop()
+                                stopBtnPressed()
                             }
 
                             binding.usageSubmitBtn.setOnClickListener {

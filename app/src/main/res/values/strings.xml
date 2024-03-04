@@ -390,7 +390,8 @@
     <string name="new_customer_referral_yelp" translatable="false">Yelp</string>
     <string name="new_customer_autofill_sysname" translatable="false">%1$s, %2$s</string>
 
-    <string name="dialog_yes">Yes</string>
+    <string name="dialogue_yes">Yes</string>
+    <string name="dialogue_no">No</string>
 
     <!--New Employee stuff-->
     <string name="new_employee_name">Employee Name</string>
