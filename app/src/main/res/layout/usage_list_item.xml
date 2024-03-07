@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -189,15 +190,14 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
     <!-- Start Material View -->
+    <!-- android:background="@color/background" -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/usage_material_cl"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:background="@color/background"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -351,6 +351,16 @@
             app:layout_constraintTop_toBottomOf="@id/usage_total_cost_tv"
             app:layout_constraintLeft_toRightOf="@id/guideline10"
             app:layout_constraintRight_toLeftOf="@id/guideline11"/>
+
+        <TextView
+            android:id="@+id/usage_material_by_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/addedBy"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/usage_receipt_iv"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 

@@ -1208,6 +1208,11 @@
     <string name="delete_usage_title">Delete Usage?</string>
     <string name="delete_usage_body">Are you sure you want to delete this usage entry?</string>
     <string name="cant_delete_saved_rows">Saved rows cannot be deleted.</string>
+    <string name="qty_error_title">Quantity Error</string>
+    <string name="qty_error_body">Quantity needs to be added.</string>
+    <string name="no_usage_edited">No Usage Edited</string>
+    <string name="notice">Notice</string>
+    <string name="usage_exceeds_estimated">Usage exceeds estimated quantity.</string>
 
     <!--
     <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>

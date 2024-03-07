@@ -984,6 +984,7 @@ data class Usage(var ID:String,
                  var unitCost: String? = "",
                  var totalCost: String? = "",
                  var usageCharge: String? = "",
+                 @field:SerializedName("chargeType", alternate= ["charge"])
                  var chargeType: String? = "",
                  var override: String? = "",
                  var pic: String? = "",
@@ -991,13 +992,16 @@ data class Usage(var ID:String,
                  var custName: String? = "",
                  var woStatus: String? = "",
                  var hasReceipt: String? = "",
-
+                 var addedByName: String? = "",
+                 var addedNice: String? = "",
 
                  var locked: Boolean = false,
                  var receipt:Image? = null,
                  var editsMade:Boolean = false,
                  var startDateTime: LocalDateTime? = null,
-                 var stopDateTime: LocalDateTime? = null
+                 var stopDateTime: LocalDateTime? = null,
+
+                 var progressViewVisible: Boolean = false
 ): Parcelable{
     override fun toString(): String {
         return  ID

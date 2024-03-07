@@ -29,8 +29,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -71,10 +69,10 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     private lateinit var timePicker: TimePickerHelper
 
     private var editsMade: Boolean = false
+    private var submitIndex = 0
+    private var usageExceedsEstimate = false
 
     val gson = Gson()
-    private val gsonPretty: Gson = GsonBuilder().setPrettyPrinting().create()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -171,6 +169,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             datePicker.showDialog(dateValue.year, dateValue.monthValue-1, dateValue.dayOfMonth, object : DatePickerHelper.Callback {
                 override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
 
+                    //todo: update all this
+
                     var pendingEdits = false
 
                     if (usageToLog.isNotEmpty()) {
@@ -181,9 +181,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                         }
                     }
                     else {
-                        addActiveUsage()
                         dateValue = LocalDate.of(year, month+1, dayOfMonth)
                         binding.usageDateEt.setText(dateValue.format(GlobalVars.dateFormatterShort))
+                        addActiveUsage()
                     }
 
                     if (pendingEdits) {
@@ -191,22 +191,20 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                         builder.setTitle(getString(R.string.save_usage_before_date_change_title))
                         builder.setMessage(getString(R.string.save_usage_before_date_change_body))
 
-                        builder.setPositiveButton(android.R.string.ok) { _, _ ->
-                            addActiveUsage()
-                            dateValue = LocalDate.of(year, month+1, dayOfMonth)
-                            binding.usageDateEt.setText(dateValue.format(GlobalVars.dateFormatterShort))
+                        builder.setPositiveButton(getString(R.string.submit)) { _, _ ->
+                            submitUsage()
                         }
 
-                        builder.setNegativeButton(android.R.string.cancel) { _, _ ->
+                        builder.setNegativeButton(getString(R.string.cancel)) { _, _ ->
 
                         }
 
                         builder.show()
                     }
                     else {
-                        addActiveUsage()
                         dateValue = LocalDate.of(year, month+1, dayOfMonth)
                         binding.usageDateEt.setText(dateValue.format(GlobalVars.dateFormatterShort))
+                        addActiveUsage()
                     }
 
                 }
@@ -214,6 +212,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
 
         // We do already have the woitem passed, but we call get here to ensure that when the receipt is added, it will show up. A bit brute force, but works for now
+        showProgressView()
         getWoItem()
 
     }
@@ -260,8 +259,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         usageToLog.clear()
 
-        val todayDate = LocalDateTime.now()
-        val todayShort = todayDate.format(GlobalVars.dateFormatterShort)
+
+        val dateValueShort = dateValue.format(GlobalVars.dateFormatterShort)
         for (usage in woItem!!.usage!!) {
 
             var startShort = ""
@@ -273,7 +272,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             }
 
-            if (startShort == todayShort) {
+            if (startShort == dateValueShort) {
                 if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID) {
                     usage.locked = true
                 }
@@ -459,6 +458,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 globalVars.simpleAlert(myView.context,"Start Time Error","${usage.empName!!}'s start time can not be later then their stop time.")
                 usage.startDateTime = null
                 usage.start = null
+                usage.editsMade = true
                 return false
 
             }
@@ -486,6 +486,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 globalVars.simpleAlert(myView.context,"Stop Time Error","${usage.empName}'s stop time can not be earlier then their start time.")
                 usage.stopDateTime = null
                 usage.stop = null
+                usage.editsMade = true
                 return false
             }
             else {
@@ -493,6 +494,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usage.stop = GlobalVars.dateFormatterPHP.format(stopValue)
                 usage.editsMade = true
                 editsMade = true
+                println("New stopDateTime: ${usage.stopDateTime}")
             }
         }
         return true
@@ -844,9 +846,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     private fun submitUsage(){
         println("submitUsage")
 
-
-        usageToLogJSONMutableList = mutableListOf()
-
+        if (usageToLog.isEmpty()) {
+            return
+        }
 
         //loop thru usage array and build JSON array
         editsMade = false //resets edit checker
@@ -870,26 +872,38 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             println("usageQty = $usageQty")
 
-            if(usage.locked == false){
-                if(usage.type == "1"){
+            if (!usage.locked) {
+                if (usage.type == "1") {
                     //labor
-                    if(!foundStartTime && usage.del != "1"){
+                    if (!foundStartTime && usage.del != "1") {
                         globalVars.playErrorSound(myView.context)
                         globalVars.simpleAlert(myView.context, "Start Time Error","No employees have a start time.")
                         return
-                    }else{
-
-                        if(usageQty > 0.0){
-                            if( GlobalVars.loggedInEmployee!!.ID != usage.addedBy){
-
+                    }
+                    else {
+                        if (usageQty > 0.0) {
+                            if (GlobalVars.loggedInEmployee!!.ID != usage.addedBy) {
                                 usage.locked = true
-
                             }
                         }
                     }
-
-                }else{
+                }
+                else {
                     //material
+
+                    if (usageQty > 0.0) {
+                        if (GlobalVars.loggedInEmployee!!.ID != usage.addedBy) {
+                            usage.locked = true
+                        }
+
+                        usage.startDateTime = LocalDateTime.from(dateValue)
+                        usage.stopDateTime = LocalDateTime.from(dateValue)
+                        usage.override = "1"
+
+                    }
+                    else {
+                        globalVars.simpleAlert(myView.context, getString(R.string.qty_error_title),getString(R.string.qty_error_body))
+                    }
 
                     if (usage.vendor == null || usage.vendor == "") {
                         //globalVars.simpleAlert(myView.context, "Error","No vendor selected.")
@@ -898,89 +912,166 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                     }
                 }
             }
-
-
-
-
-            if (usageToLog[i].start != null) {
-                val jsonUsagePretty: String = gsonPretty.toJson(usageToLog[i])
-                usageToLogJSONMutableList.add(jsonUsagePretty)
-                println("jsonUsagePretty = $jsonUsagePretty")
-            }
-            else {
-                println("start time was null")
-            }
-
-
-
-
-
-
         }
 
-        println("Usage to log: ${usageToLogJSONMutableList.toString()}:")
+        callDB()
 
-        callDB(usageToLogJSONMutableList.toString())
+    }
 
+    private fun callDB(override: String = "0") {
+        println("callDB with index $submitIndex")
+
+        var usageWithEdits = 0
+
+        for (usage in usageToLog) {
+            if (usage.editsMade) {
+                usageWithEdits += 1
+            }
+        }
+
+        println("Usage with edits: $usageWithEdits")
+
+        if (usageWithEdits > 0) {
+
+            editsMade = false
+
+            // Skip this cell if it's not flagged for edits made or if it has no start time
+            if (!usageToLog[submitIndex].editsMade || usageToLog[submitIndex].startDateTime == null) {
+                handleSaveComplete()
+                return
+            }
+
+            if (usageToLog[submitIndex].empID == null) { usageToLog[submitIndex].empID = ""}
+            if (usageToLog[submitIndex].empName == null) { usageToLog[submitIndex].empName = ""}
+            if (usageToLog[submitIndex].depID == null) { usageToLog[submitIndex].depID = ""}
+            if (usageToLog[submitIndex].lunch == null) { usageToLog[submitIndex].lunch = ""}
+            if (usageToLog[submitIndex].vendor == null) { usageToLog[submitIndex].vendor = ""}
+            if (usageToLog[submitIndex].unitPrice == null) { usageToLog[submitIndex].unitPrice = ""}
+            if (usageToLog[submitIndex].totalPrice == null) { usageToLog[submitIndex].totalPrice = ""}
+            if (usageToLog[submitIndex].unitCost == null) { usageToLog[submitIndex].unitCost = ""}
+            if (usageToLog[submitIndex].unitCost == null) { usageToLog[submitIndex].unitCost = ""}
+            if (usageToLog[submitIndex].totalCost == null) { usageToLog[submitIndex].totalCost = ""}
+            if (usageToLog[submitIndex].chargeType == null) { usageToLog[submitIndex].chargeType = ""}
+            if (usageToLog[submitIndex].del == null) { usageToLog[submitIndex].del = ""}
+            
+
+            usageToLog[submitIndex].progressViewVisible = true
+            println("before notifyitemchanged")
+            binding.usageEntryRv.adapter?.notifyItemChanged(submitIndex)
+            println("after notifyitemchanged")
+
+            var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/usage_single.php"
+
+            val currentTimestamp = System.currentTimeMillis()
+            println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+            urlString = "$urlString?cb=$currentTimestamp"
+
+            val postRequest1: StringRequest = object : StringRequest(
+                Method.POST, urlString,
+                Response.Listener { response -> // response
+
+                    println("Response $response")
+
+                    try {
+                        val parentObject = JSONObject(response)
+                        println("parentObject = $parentObject")
+                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+                            usageToLog[submitIndex].progressViewVisible = false
+                            println("before notifyitemchanged 2")
+                            binding.usageEntryRv.adapter?.notifyItemChanged(submitIndex)
+                            println("after notifyitemchanged 2")
+
+                            handleSaveComplete()
+
+                        }
+
+
+                    } catch (e: JSONException) {
+                        println("JSONException")
+                        e.printStackTrace()
+                    }
+
+                },
+                Response.ErrorListener { // error
+
+                }
+            ) {
+                override fun getParams(): Map<String, String> {
+                    val params: MutableMap<String, String> = HashMap()
+                    params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                    params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                    params["ID"] = usageToLog[submitIndex].ID
+                    params["woID"] = usageToLog[submitIndex].woID
+                    params["itemID"] = usageToLog[submitIndex].woItemID
+                    params["type"] = usageToLog[submitIndex].type
+                    params["addedBy"] = GlobalVars.loggedInEmployee!!.ID
+                    params["qty"] = usageToLog[submitIndex].qty
+                    params["empID"] = usageToLog[submitIndex].empID!!
+                    params["empName"] = usageToLog[submitIndex].empName!!
+                    params["depID"] = usageToLog[submitIndex].depID!!
+                    params["lunch"] = usageToLog[submitIndex].lunch!!
+                    params["vendor"] = usageToLog[submitIndex].vendor!!
+                    params["unitCost"] = usageToLog[submitIndex].unitCost!!
+                    params["totalCost"] = usageToLog[submitIndex].totalCost!!
+                    params["unitPrice"] = usageToLog[submitIndex].unitPrice!!
+                    params["totalPrice"] = usageToLog[submitIndex].totalPrice!!
+                    params["usageCharge"] = usageToLog[submitIndex].chargeType!!
+                    params["del"] = usageToLog[submitIndex].del!!
+                    params["override"] = override
+
+                    if (usageToLog[submitIndex].startDateTime != null) {
+                        params["start"] = GlobalVars.dateFormatterPHP.format(usageToLog[submitIndex].startDateTime!!)
+                    }
+
+                    if (usageToLog[submitIndex].stopDateTime != null) {
+                        params["stop"] = GlobalVars.dateFormatterPHP.format(usageToLog[submitIndex].stopDateTime!!)
+                    }
+
+                    println("update usage single params = $params")
+                    return params
+
+                }
+            }
+            postRequest1.tag = "usageEntry"
+            VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+        }
+        else {
+            globalVars.simpleAlert(myView.context, getString(R.string.no_usage_edited))
+        }
 
 
     }
 
-    private fun callDB(json:String){
-        println("callDB w json: $json")
+    private fun handleSaveComplete() {
+        submitIndex += 1
 
-        showProgressView()
-
-        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/usage.php"
-
-        val currentTimestamp = System.currentTimeMillis()
-        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
-        urlString = "$urlString?cb=$currentTimestamp"
-
-        val postRequest1: StringRequest = object : StringRequest(
-            Method.POST, urlString,
-            Response.Listener { response -> // response
-
-                println("Response $response")
-
-                try {
-                    val parentObject = JSONObject(response)
-                    println("parentObject = $parentObject")
-                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
-
-
-                        globalVars.playSaveSound(myView.context)
-                        getWoItem()
-
-                    }
-
-
-                    //todo: prompt to update wo status
-
-
-                } catch (e: JSONException) {
-                    println("JSONException")
-                    e.printStackTrace()
-                }
-
-            },
-            Response.ErrorListener { // error
-
-            }
-        ) {
-            override fun getParams(): Map<String, String> {
-                val params: MutableMap<String, String> = HashMap()
-                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
-                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
-                params["usageToLog"] = json
-
-                println("update usage params = $params")
-                return params
-            }
+        if (submitIndex < usageToLog.size) {
+            callDB()
         }
-        postRequest1.tag = "usageEntry"
-        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+        else {
+            //done submitting
+            globalVars.playSaveSound(myView.context)
 
+            submitIndex = 0
+
+            //todo: refresh woItem
+            getWoItem()
+
+            //todo: update wo status:
+            if (workOrder.status == "1") {
+                // workOrder.status = 2
+                // UPDATE WORK ORDER
+            }
+
+            if (usageExceedsEstimate) {
+                globalVars.simpleAlert(myView.context, getString(R.string.notice), getString(R.string.usage_exceeds_estimated))
+            }
+
+            usageExceedsEstimate = false
+
+            //todo: see if date field reset code needs to go here
+        }
     }
 
 
@@ -1078,7 +1169,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
 
         //if (!pgsBar.isVisible){
-        showProgressView()
+        //showProgressView()
         // }
 
 
@@ -1105,11 +1196,12 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
                         for (usage in woItem!!.usage!!) {
                             if (usage.start != null && usage.start != "0000-00-00 00:00:00") {
-                                usage.startDateTime = GlobalVars.dateFormatterPHP.parse(usage.start) as LocalDateTime?
+                                usage.startDateTime = LocalDateTime.parse(usage.start, GlobalVars.dateFormatterPHP)
                             }
                             if (usage.stop != null && usage.stop != "0000-00-00 00:00:00") {
-                                usage.stopDateTime = GlobalVars.dateFormatterPHP.parse(usage.start) as LocalDateTime?
+                                usage.stopDateTime = LocalDateTime.parse(usage.stop, GlobalVars.dateFormatterPHP)
                             }
+                            usage.chargeType = woItem!!.charge
                         }
 
                         if (!initialViewsLaidOut) {

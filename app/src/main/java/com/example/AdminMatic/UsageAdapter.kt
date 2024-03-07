@@ -146,20 +146,27 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             totalTxt.text = context.getString(R.string.usage_hours, usage.qty)
 
             val byTxt:TextView = holder.itemView.findViewById(R.id.usage_by_tv)
-            byTxt.text = context.getString(R.string.usage_added_by_x, "---")
+            if (usage.addedByName == null || usage.addedByName == "") {
+                byTxt.text = context.getString(R.string.usage_added_by_x, "---")
+            }
+            else {
+                byTxt.text = context.getString(R.string.usage_added_by_x, usage.addedByName + " " + usage.addedNice)
+            }
 
 
-            //options btn click
+            //delete btn click
             holder.itemView.findViewById<TextView>(R.id.usage_delete_btn).setOnClickListener {
                 println("delete click")
                 usageEditListener.deleteUsage(position)
             }
 
+
+
         }
         else {
             //material type
-            laborCl.visibility = View.VISIBLE
-            materialCl.visibility = View.GONE
+            laborCl.visibility = View.GONE
+            materialCl.visibility = View.VISIBLE
 
             usage.locked = false
             if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID
@@ -207,10 +214,11 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 }
 
             }
-            if (!usage.locked!!) {
+            if (!usage.locked) {
                 vendorSelectText.setOnClickListener {
                     println("status click")
-                    val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.textViewOptions))
+                    println("woItem.vendors!!.size: ${woItem.vendors!!.size}")
+                    val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.usage_vendor_select_tv))
                     popUp.inflate(R.menu.task_status_menu)
 
                     woItem.vendors!!.forEach { v->
@@ -398,7 +406,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     //.centerCrop()                        //optional
                     .into(receiptImageView)                       //Your image view object.
             }
-            if (!usage.locked!!) {
+            if (!usage.locked) {
                 receiptImageView.setOnClickListener{
                     if (usage.ID == "0") {
                         globalVars.simpleAlert(myView.context, "Submit Usage","Please submit usage before attempting to add a receipt.")
@@ -413,7 +421,26 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     }
                 }
             }
+
+            val byTxt:TextView = holder.itemView.findViewById(R.id.usage_material_by_tv)
+            if (usage.addedByName == null || usage.addedByName == "") {
+                byTxt.text = context.getString(R.string.usage_added_by_x, "---")
+            }
+            else {
+                byTxt.text = context.getString(R.string.usage_added_by_x, usage.addedByName + " " + usage.addedNice)
+            }
+
         }
+
+
+        val loadingCl:ConstraintLayout = holder.itemView.findViewById(R.id.loading_overlay_cl)
+        if (usage.progressViewVisible) {
+            loadingCl.visibility = View.VISIBLE
+        }
+        else {
+            loadingCl.visibility = View.INVISIBLE
+        }
+
     }
 
 
