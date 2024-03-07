@@ -58,6 +58,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     //lateinit var empsOnWo:Array<Employee>
 
+    private var dataLoaded = false
+
     private var initialViewsLaidOut = false
 
     var usageToLog:MutableList<Usage> = mutableListOf()
@@ -169,8 +171,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             datePicker.showDialog(dateValue.year, dateValue.monthValue-1, dateValue.dayOfMonth, object : DatePickerHelper.Callback {
                 override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
 
-                    //todo: update all this
-
                     var pendingEdits = false
 
                     if (usageToLog.isNotEmpty()) {
@@ -212,8 +212,14 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
 
         // We do already have the woitem passed, but we call get here to ensure that when the receipt is added, it will show up. A bit brute force, but works for now
-        showProgressView()
-        getWoItem()
+
+        if (!dataLoaded) {
+            showProgressView()
+            getWoItem()
+        }
+        else {
+            layoutViews()
+        }
 
     }
 
@@ -238,20 +244,17 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         val id = item.itemId
 
         if (id == R.id.history_item) {
-            println("History menu item selected")
+            val directions = UsageEntryFragmentDirections.navigateUsageEntryToUsageHistory(woItem!!.ID, woItem!!.type, woItem!!.unitName)
+            myView.findNavController().navigate(directions)
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
-
-
     override fun onStop() {
         super.onStop()
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("usageEntry")
     }
-
-
 
     private fun addActiveUsage() {
 
@@ -526,7 +529,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         val currentDateTime = LocalDateTime.of(dateValue.year, dateValue.month, dateValue.dayOfMonth, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
 
         for (usage in usageToLog) {
-            insertStartValue(usage, currentDateTime)
+            if (usage.startDateTime == null) {
+                insertStartValue(usage, currentDateTime)
+            }
         }
 
         setQty()
@@ -1204,41 +1209,17 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                             usage.chargeType = woItem!!.charge
                         }
 
+                        dataLoaded = true
+
                         if (!initialViewsLaidOut) {
-
-                            binding.startBtn.setOnClickListener {
-                                startBtnPressed()
-                            }
-                            binding.stopBtn.setOnClickListener {
-                                stopBtnPressed()
-                            }
-
-                            binding.usageSubmitBtn.setOnClickListener {
-                                submitUsage()
-                            }
-
-                            val empAdapter = EmpAdapter(myView.context, GlobalVars.employeeList!!.toList())
-                            binding.usageEmpSpinner.adapter = empAdapter
-
-
-                            binding.usageEmpSpinner.onItemSelectedListener = this@UsageEntryFragment
-
-                            val itemDecoration: RecyclerView.ItemDecoration =
-                                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-                            binding.usageEntryRv.addItemDecoration(itemDecoration)
-
-                            println("woItem!!.type = ${woItem!!.type}")
-                            if (woItem!!.type != "1") {
-                                binding.usageEmpSpinner.visibility = View.GONE
-                                binding.startStopCl.visibility = View.GONE
-                            }
-                            initialViewsLaidOut = true
+                            layoutViews()
+                        }
+                        else {
+                            addActiveUsage()
                         }
 
                         hideProgressView()
 
-
-                        addActiveUsage()
                     }
 
 
@@ -1264,6 +1245,38 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
         postRequest1.tag = "usageEntry"
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
+
+    private fun layoutViews() {
+        binding.startBtn.setOnClickListener {
+            startBtnPressed()
+        }
+        binding.stopBtn.setOnClickListener {
+            stopBtnPressed()
+        }
+
+        binding.usageSubmitBtn.setOnClickListener {
+            submitUsage()
+        }
+
+        val empAdapter = EmpAdapter(myView.context, GlobalVars.employeeList!!.toList())
+        binding.usageEmpSpinner.adapter = empAdapter
+
+
+        binding.usageEmpSpinner.onItemSelectedListener = this@UsageEntryFragment
+
+        val itemDecoration: RecyclerView.ItemDecoration =
+            DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
+        binding.usageEntryRv.addItemDecoration(itemDecoration)
+
+        println("woItem!!.type = ${woItem!!.type}")
+        if (woItem!!.type != "1") {
+            binding.usageEmpSpinner.visibility = View.GONE
+            binding.startStopCl.visibility = View.GONE
+        }
+        initialViewsLaidOut = true
+
+        addActiveUsage()
     }
 
     override fun showHistory() {

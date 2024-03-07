@@ -1213,6 +1213,12 @@
     <string name="no_usage_edited">No Usage Edited</string>
     <string name="notice">Notice</string>
     <string name="usage_exceeds_estimated">Usage exceeds estimated quantity.</string>
+    <string name="full_usage_history">Full Usage History</string>
+    <string name="receipt_question_mark">Receipt?</string>
+    <string name="cost">Cost</string>
+    <string name="total">Total</string>
+    <string name="usage_history_footer_material">Total: %1$.2f %2$s(s)</string>
+    <string name="x_units">%1$s %2$s(s)</string>
 
     <!--
     <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>
