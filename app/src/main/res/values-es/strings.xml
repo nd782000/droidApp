@@ -1018,5 +1018,8 @@
     <string name="service_reminder_warning_miles">Millas antes</string>
     <string name="service_reminder_warning_km">Kilómetros antes</string>
     <string name="service_reminder_warning_hours">Horas antes</string>
+    <string name="login_company_unique">Identificador de la empresa</string>
+    <string name="login_username">Nombre de usuario</string>
+    <string name="login_password">Contraseña</string>
 
 </resources>

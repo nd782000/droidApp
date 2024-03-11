@@ -19,7 +19,7 @@ android {
         applicationId "com.adminmatic"
         minSdk 30
         targetSdk 34
-        versionCode 56
+        versionCode 57
         versionName '1.5.1'
 
 
