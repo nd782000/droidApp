@@ -497,8 +497,8 @@ class NewEditEmployeeFragment : Fragment(), AdapterView.OnItemSelectedListener {
         // Account Info
         usernameValue = employee!!.username
         binding.newEmployeeUsernameEt.setText(usernameValue)
-        if (employee!!.dep != null) {
-            departmentValue = employee!!.dep!!
+        if (employee!!.depID != null) {
+            departmentValue = employee!!.depID!!
             if (departmentValue != "") {
                 println("Setting Department $departmentValue")
                 for (i in 0 until GlobalVars.departments!!.size) {

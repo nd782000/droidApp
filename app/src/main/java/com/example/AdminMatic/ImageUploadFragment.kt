@@ -203,7 +203,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
         }
 
 
-        if (mode == "EQUIPMENT") {
+        if (mode == "EQUIPMENT" || mode == "WOITEM") {
             singleSelect = true
         }
 
@@ -440,8 +440,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
         binding.cameraBtn.setOnClickListener{
             println("camera btn clicked")
 
-            if (mode == "EQUIPMENT" && existingImages.isNotEmpty()) {
-                globalVars.simpleAlert(myView.context, getString(R.string.dialogue_error), getString(R.string.equipment_one_image))
+            if (singleSelect && imageCellMap.isNotEmpty()) {
+                globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.dialogue_only_one_image))
             }
             else {
                 launchCamera()
@@ -479,7 +479,6 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
                 globalVars.simpleAlert(myView.context,getString(R.string.no_image_collection),getString(R.string.no_image_collection_error))
                 return@setOnClickListener
             }
-
 
             when (mode) {
                 "GALLERY" -> {
@@ -756,7 +755,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
         if (singleSelect) {
 
-            if (imageCellMap.size == 0) {
+            if (imageCellMap.isEmpty()) {
                 pickMedia.launch(
                     PickVisualMediaRequest.Builder()
                         .setMediaType(ImageOnly)
@@ -1463,6 +1462,11 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
         // Flag to refresh new/edit equipment if mode is equipment
         setFragmentResult("_refreshEquipment", bundleOf("_refreshEquipment" to (mode == "EQUIPMENT")))
         setFragmentResult("_refreshImages", bundleOf("_refreshImages" to true))
+
+        println("mode = $mode")
+        if (mode == "WOITEM") {
+            setFragmentResult("refreshWoItemListener", bundleOf("shouldRefreshWoItemListener" to true))
+        }
 
         //requireActivity().supportFragmentManager.popBackStack()
         myView.findNavController().navigateUp()

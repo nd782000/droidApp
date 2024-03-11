@@ -1230,6 +1230,18 @@
         <action
             android:id="@+id/navigateUsageEntryToImageUpload"
             app:destination="@id/imageUpload" />
+        <action
+            android:id="@+id/navigateUsageEntryToUsageHistory"
+            app:destination="@id/usageHistoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/usageHistoryFragment"
+        android:name="com.example.AdminMatic.UsageHistoryFragment"
+        android:label="fragment_usage_history"
+        tools:layout="@layout/fragment_usage_history" >
+        <argument
+            android:name="woItem"
+            app:argType="com.example.AdminMatic.WoItem" />
     </fragment>
     <fragment
         android:id="@+id/customerContactFragment"

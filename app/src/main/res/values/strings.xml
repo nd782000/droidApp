@@ -53,9 +53,9 @@
     <string name="uploaded">Uploaded</string>
     <string name="vendor_label">Vendor:</string>
     <string name="quantity_label">Quantity:</string>
-    <string name="units">Units</string>
-    <string name="usage_unit_cost">Unit Cost $</string>
-    <string name="usage_total_cost">Total Cost $</string>
+    <string name="units">Unit(s)</string>
+    <string name="usage_unit_cost">Unit Cost: $</string>
+    <string name="usage_total_cost">Total Cost: $</string>
     <string name="receipt">Receipt</string>
     <string name="home">Home</string>
     <string name="today">Today</string>
@@ -390,7 +390,8 @@
     <string name="new_customer_referral_yelp" translatable="false">Yelp</string>
     <string name="new_customer_autofill_sysname" translatable="false">%1$s, %2$s</string>
 
-    <string name="dialog_yes">Yes</string>
+    <string name="dialogue_yes">Yes</string>
+    <string name="dialogue_no">No</string>
 
     <!--New Employee stuff-->
     <string name="new_employee_name">Employee Name</string>
@@ -1198,6 +1199,35 @@
     <string name="no_crews">No Crews</string>
     <string name="no_sales_rep">No Sales Rep</string>
     <string name="not_scheduled">Not Scheduled</string>
+
+
+    <!-- New usage stuff -->
+    <string name="usage_added_by_x">Added By: %1$s</string>
+    <string name="save_usage_before_date_change_title">Save Usage First?</string>
+    <string name="save_usage_before_date_change_body">Do you want to save usage for current date first?</string>
+    <string name="delete_usage_title">Delete Usage?</string>
+    <string name="delete_usage_body">Are you sure you want to delete this usage entry?</string>
+    <string name="cant_delete_saved_rows">Saved rows cannot be deleted.</string>
+    <string name="qty_error_title">Quantity Error</string>
+    <string name="qty_error_body">Quantity needs to be added.</string>
+    <string name="no_usage_edited">No Usage Edited</string>
+    <string name="notice">Notice</string>
+    <string name="usage_exceeds_estimated">Usage exceeds estimated quantity.</string>
+    <string name="full_usage_history">Full Usage History</string>
+    <string name="receipt_question_mark">Receipt?</string>
+    <string name="cost">Cost</string>
+    <string name="total">Total</string>
+    <string name="usage_history_footer_material">Total: %1$.2f %2$s(s)</string>
+    <string name="x_units" translatable="false">%1$s %2$s(s)</string>
+    <string name="overlapping_usage_title">Overlapping Usage</string>
+    <string name="overlapping_usage_body">Do you want to save anyway?</string>
+    <string name="units_x" translatable="false">%1$s(s)</string>
+
+    <!-- New login view stuff -->
+    <string name="login_company_unique">Company Unique</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+
 
 
 

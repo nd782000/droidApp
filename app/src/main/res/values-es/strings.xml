@@ -240,6 +240,7 @@
     <string name="new_customer_referral_other">Otro</string>
     <string name="new_customer_referral_truck_advertisement">Anuncio de camión</string>
     <string name="new_customer_referral_word_of_mouth">Boca a boca</string>
+    <string name="dialogue_no">No</string>
     <string name="new_employee_name">Nombre de empleado</string>
     <string name="new_employee_address">Dirección</string>
     <string name="new_employee_account_info">Información de la cuenta</string>
@@ -736,6 +737,24 @@
     <string name="no_crews">Sin personales.</string>
     <string name="no_sales_rep">Sin rep de ventas</string>
     <string name="not_scheduled">No programada</string>
+    <string name="usage_added_by_x">Añadido por: %1$s</string>
+    <string name="save_usage_before_date_change_title">¿Guardar el uso primero?</string>
+    <string name="save_usage_before_date_change_body">¿Quiere guardar primero el uso de la fecha actual?</string>
+    <string name="delete_usage_title">¿Eliminar uso?</string>
+    <string name="delete_usage_body">¿Está seguro de que desea eliminar esta entrada de uso?</string>
+    <string name="cant_delete_saved_rows">Las filas guardadas no se pueden eliminar.</string>
+    <string name="qty_error_title">Error de cantidad</string>
+    <string name="qty_error_body">Es necesario agregar cantidad.</string>
+    <string name="no_usage_edited">Sin uso editado</string>
+    <string name="notice">Aviso</string>
+    <string name="usage_exceeds_estimated">El uso excede la cantidad estimada.</string>
+    <string name="full_usage_history">Historial de uso completo</string>
+    <string name="receipt_question_mark">Recibo?</string>
+    <string name="cost">Costo</string>
+    <string name="total">Total</string>
+    <string name="usage_history_footer_material">Total: %1$.2f %2$s(s)</string>
+    <string name="overlapping_usage_title">Uso superpuesto</string>
+    <string name="overlapping_usage_body">¿Quieres guardar de todos modos?</string>
     <string name="pick_single">Por favor, seleccione su imagen</string>
     <string name="logout">Cerrar sesión</string>
     <string name="pick_multi_limit">Tienes más de %1$d imágenes seleccionadas…</string>
@@ -776,9 +795,9 @@
     <string name="uploaded">Cargado</string>
     <string name="vendor_label">Proveedor:</string>
     <string name="quantity_label">Cantidad:</string>
-    <string name="units">Unidades:</string>
-    <string name="usage_unit_cost">Costo unidad $</string>
-    <string name="usage_total_cost">Costo total $</string>
+    <string name="units">Unidad(es)</string>
+    <string name="usage_unit_cost">Costo unidad: $</string>
+    <string name="usage_total_cost">Costo total: $</string>
     <string name="payroll_break_label">Descanso:</string>
     <string name="todays_payroll">Nómina de hoy:</string>
     <string name="payroll_current_total">Total actual:</string>
@@ -872,7 +891,7 @@
     <string name="service_check_empty">Ingrese el uso de la machina (distancia/horas).</string>
     <string name="service_check_less_than_usage_title">Valor inferior al uso</string>
     <string name="service_check_less_than_usage_body">El valor de uso ingresado es menor que el valor de uso actual de %1$s. ¿Seguro que quieres actualizarlo?</string>
-    <string name="dialog_yes">Sí</string>
+    <string name="dialogue_yes">Sí</string>
     <string name="mileage_hours">Millaje/horas</string>
     <string name="no_services_due_prompt_change">%1$s se ve bien, ¿le gustaría actualizar su estado a \"Operativo?\"</string>
     <string name="no_services_due_title">No hay servicios vencidos ahora</string>
@@ -999,5 +1018,8 @@
     <string name="service_reminder_warning_miles">Millas antes</string>
     <string name="service_reminder_warning_km">Kilómetros antes</string>
     <string name="service_reminder_warning_hours">Horas antes</string>
+    <string name="login_company_unique">Identificador de la empresa</string>
+    <string name="login_username">Nombre de usuario</string>
+    <string name="login_password">Contraseña</string>
 
 </resources>
