@@ -9,11 +9,6 @@
     tools:context="com.example.AdminMatic.LogInFragment">
 
 
-
-
-
-
-
     <ProgressBar
         android:id="@+id/progressBar"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"

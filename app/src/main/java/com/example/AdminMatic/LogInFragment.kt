@@ -64,6 +64,8 @@ class LogInFragment : Fragment() {
     private lateinit var demoLoginText: TextView
     //private lateinit  var tvDynamic: TextView
 
+    private var loginViewCreated = false
+
     var rememberMe:String = "0"
 
     val logIns = arrayOf<String>()
@@ -235,7 +237,7 @@ class LogInFragment : Fragment() {
         println("createLogInView")
 
         companyEditText = EditText(myView.context)
-        companyEditText.hint = "Company Unique"
+        companyEditText.hint = getString(R.string.login_company_unique)
         //companyEditText.highlightColor = resources.getColor(R.color.colorTextSelected)
         companyEditText.setSingleLine()
         companyEditText.setPadding(10,0,10,0)
@@ -246,7 +248,7 @@ class LogInFragment : Fragment() {
         binding.loginLayout.addView(companyEditText)
 
         userEditText = EditText(myView.context)
-        userEditText.hint = "User Name"
+        userEditText.hint = getString(R.string.login_username)
         userEditText.setSingleLine()
         userEditText.setPadding(10,0,10,0)
         userEditText.height = 100
@@ -255,7 +257,7 @@ class LogInFragment : Fragment() {
         binding.loginLayout.addView(userEditText)
 
         passEditText = EditText(myView.context)
-        passEditText.hint = "Password"
+        passEditText.hint = getString(R.string.login_password)
         passEditText.setSingleLine()
         passEditText.setPadding(10,0,10,0)
         passEditText.height = 100

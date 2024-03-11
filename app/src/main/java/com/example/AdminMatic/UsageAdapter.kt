@@ -54,8 +54,11 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
         val laborCl = holder.itemView.findViewById<ConstraintLayout>(R.id.usage_labor_cl)
         val materialCl = holder.itemView.findViewById<ConstraintLayout>(R.id.usage_material_cl)
 
-        if(usage.type == "1") {
+        if (usage.type == "1") {
             //labor type
+
+            laborCl.visibility = View.VISIBLE
+            materialCl.visibility = View.GONE
 
             // Lock this cell if the values are already filled and it's a different person than the logged in employee
             usage.locked = false
@@ -71,7 +74,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 optionsButton.visibility = View.INVISIBLE
             }
 
-            materialCl.isVisible = false
+
 
 
             val employeeImageView:ImageView = holder.itemView.findViewById(R.id.usage_emp_iv)
@@ -90,10 +93,10 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
             val startTxt:TextView = holder.itemView.findViewById(R.id.usage_start_edit_txt)
             startTxt.setBackgroundResource(R.drawable.text_view_layout)
-            if (usage.start != null && usage.start != "0000-00-00 00:00:00"){
-                startTxt.text = usage.getTime(usage.start!!)
+            if (usage.startDateTime != null) {
+                startTxt.text = usage.startDateTime!!.format(GlobalVars.dateFormatterHMMA)
             }
-            if (!usage.locked!!) {
+            if (!usage.locked) {
                 startTxt.setOnClickListener {
                     // editStart()
                     usageEditListener.editStart(position)
@@ -103,10 +106,10 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
             val stopTxt:TextView = holder.itemView.findViewById(R.id.usage_stop_edit_txt)
             stopTxt.setBackgroundResource(R.drawable.text_view_layout)
-            if (usage.stop != null && usage.stop != "0000-00-00 00:00:00"){
-                stopTxt.text = usage.getTime(usage.stop!!)
+            if (usage.stopDateTime != null) {
+                stopTxt.text = usage.stopDateTime!!.format(GlobalVars.dateFormatterHMMA)
             }
-            if (!usage.locked!!) {
+            if (!usage.locked) {
                 stopTxt.setOnClickListener {
                     //editStart()
                     usageEditListener.editStop(position)
@@ -116,20 +119,21 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
             val breakTxt:TextView = holder.itemView.findViewById(R.id.usage_break_edit_txt)
 
-            breakTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
-            breakTxt.setSelectAllOnFocus(true)
+            //breakTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
+            //breakTxt.setSelectAllOnFocus(true)
 
             breakTxt.setBackgroundResource(R.drawable.text_view_layout)
             if (usage.lunch != null){
                 breakTxt.text = usage.lunch!!
             }
-            if (!usage.locked!!) {
+            if (!usage.locked) {
                 breakTxt.setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         breakTxt.clearFocus()
                         usageEditListener.editBreak(position, breakTxt.text.toString(), actionId)
                         true
-                    } else {
+                    }
+                    else {
                         false
                     }
                 }
@@ -139,40 +143,30 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             }
 
             val totalTxt:TextView = holder.itemView.findViewById(R.id.usage_total_tv)
-
-
             totalTxt.text = context.getString(R.string.usage_hours, usage.qty)
 
-
-
-            //options btn click
-            holder.itemView.findViewById<TextView>(R.id.textViewOptions).setOnClickListener {
-                println("status click")
-
-                val popUp = PopupMenu(myView.context,holder.itemView)
-
-
-                if (!usage.locked!!) {
-                    popUp.inflate(R.menu.task_status_menu)
-
-                    popUp.menu.add(0, usage.ID.toInt(), 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(context, R.drawable.ic_canceled)!!,context), context.getString(R.string.delete)))
-
-                    popUp.setOnMenuItemClickListener {
-                        usageEditListener.deleteUsage(position)
-
-                        true
-                    }
-
-
-                    popUp.gravity = Gravity.END
-                    popUp.show()
-                }
-
+            val byTxt:TextView = holder.itemView.findViewById(R.id.usage_by_tv)
+            if (usage.addedByName == null || usage.addedByName == "") {
+                byTxt.text = context.getString(R.string.usage_added_by_x, "---")
+            }
+            else {
+                byTxt.text = context.getString(R.string.usage_added_by_x, usage.addedByName + " " + usage.addedNice)
             }
 
-        }else{
+
+            //delete btn click
+            holder.itemView.findViewById<TextView>(R.id.usage_delete_btn).setOnClickListener {
+                println("delete click")
+                usageEditListener.deleteUsage(position)
+            }
+
+
+
+        }
+        else {
             //material type
-            laborCl.isVisible = false
+            laborCl.visibility = View.GONE
+            materialCl.visibility = View.VISIBLE
 
             usage.locked = false
             if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID
@@ -220,10 +214,11 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 }
 
             }
-            if (!usage.locked!!) {
+            if (!usage.locked) {
                 vendorSelectText.setOnClickListener {
                     println("status click")
-                    val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.textViewOptions))
+                    println("woItem.vendors!!.size: ${woItem.vendors!!.size}")
+                    val popUp = PopupMenu(myView.context, holder.itemView.findViewById<TextView>(R.id.usage_vendor_select_tv))
                     popUp.inflate(R.menu.task_status_menu)
 
                     woItem.vendors!!.forEach { v->
@@ -311,6 +306,15 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
 
             quantityTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
             quantityTxt.setSelectAllOnFocus(true)
+
+            val unitsTxt:TextView = holder.itemView.findViewById(R.id.usage_units_tv)
+            if (woItem.unitName.isNotBlank()) {
+                unitsTxt.text = context.getString(R.string.units_x, woItem.unitName)
+            }
+            else {
+                unitsTxt.text = context.getString(R.string.units)
+
+            }
 
             quantityTxt.setBackgroundResource(R.drawable.text_view_layout)
             if (!usage.locked!!) {
@@ -411,7 +415,7 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     //.centerCrop()                        //optional
                     .into(receiptImageView)                       //Your image view object.
             }
-            if (!usage.locked!!) {
+            if (!usage.locked) {
                 receiptImageView.setOnClickListener{
                     if (usage.ID == "0") {
                         globalVars.simpleAlert(myView.context, "Submit Usage","Please submit usage before attempting to add a receipt.")
@@ -426,7 +430,26 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                     }
                 }
             }
+
+            val byTxt:TextView = holder.itemView.findViewById(R.id.usage_material_by_tv)
+            if (usage.addedByName == null || usage.addedByName == "") {
+                byTxt.text = context.getString(R.string.usage_added_by_x, "---")
+            }
+            else {
+                byTxt.text = context.getString(R.string.usage_added_by_x, usage.addedByName + " " + usage.addedNice)
+            }
+
         }
+
+
+        val loadingCl:ConstraintLayout = holder.itemView.findViewById(R.id.loading_overlay_cl)
+        if (usage.progressViewVisible) {
+            loadingCl.visibility = View.VISIBLE
+        }
+        else {
+            loadingCl.visibility = View.INVISIBLE
+        }
+
     }
 
 

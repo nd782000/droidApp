@@ -63,6 +63,7 @@ class ContractItemFragment : Fragment(), ContractTaskCellClickListener, SearchIt
             val shouldRefresh = bundle.getBoolean("shouldRefreshContractItem")
             if (shouldRefresh) {
                 println("got result listener")
+                showProgressView()
                 reloadContractItem()
             }
         }
