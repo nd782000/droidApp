@@ -1218,10 +1218,10 @@
     <string name="cost">Cost</string>
     <string name="total">Total</string>
     <string name="usage_history_footer_material">Total: %1$.2f %2$s(s)</string>
-    <string name="x_units">%1$s %2$s(s)</string>
+    <string name="x_units" translatable="false">%1$s %2$s(s)</string>
     <string name="overlapping_usage_title">Overlapping Usage</string>
     <string name="overlapping_usage_body">Do you want to save anyway?</string>
-    <string name="units_x">%1$s(s)</string>
+    <string name="units_x" translatable="false">%1$s(s)</string>
 
 
 
