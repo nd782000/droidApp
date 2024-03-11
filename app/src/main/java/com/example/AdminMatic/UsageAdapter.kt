@@ -307,6 +307,15 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             quantityTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
             quantityTxt.setSelectAllOnFocus(true)
 
+            val unitsTxt:TextView = holder.itemView.findViewById(R.id.usage_units_tv)
+            if (woItem.unitName.isNotBlank()) {
+                unitsTxt.text = context.getString(R.string.units_x, woItem.unitName)
+            }
+            else {
+                unitsTxt.text = context.getString(R.string.units)
+
+            }
+
             quantityTxt.setBackgroundResource(R.drawable.text_view_layout)
             if (!usage.locked!!) {
                 quantityTxt.setOnEditorActionListener { _, actionId, _ ->

@@ -983,7 +983,6 @@ data class Usage(var ID:String,
                  var vendor: String? = "",
                  var unitCost: String? = "",
                  var totalCost: String? = "",
-                 var usageCharge: String? = "",
                  @field:SerializedName("chargeType", alternate= ["charge"])
                  var chargeType: String? = "",
                  var override: String? = "",

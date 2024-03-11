@@ -53,9 +53,9 @@
     <string name="uploaded">Uploaded</string>
     <string name="vendor_label">Vendor:</string>
     <string name="quantity_label">Quantity:</string>
-    <string name="units">Units</string>
-    <string name="usage_unit_cost">Unit Cost $</string>
-    <string name="usage_total_cost">Total Cost $</string>
+    <string name="units">Unit(s)</string>
+    <string name="usage_unit_cost">Unit Cost: $</string>
+    <string name="usage_total_cost">Total Cost: $</string>
     <string name="receipt">Receipt</string>
     <string name="home">Home</string>
     <string name="today">Today</string>
@@ -1219,6 +1219,14 @@
     <string name="total">Total</string>
     <string name="usage_history_footer_material">Total: %1$.2f %2$s(s)</string>
     <string name="x_units">%1$s %2$s(s)</string>
+    <string name="overlapping_usage_title">Overlapping Usage</string>
+    <string name="overlapping_usage_body">Do you want to save anyway?</string>
+    <string name="units_x">%1$s(s)</string>
+
+
+
+
+
 
     <!--
     <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>

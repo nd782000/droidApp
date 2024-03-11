@@ -13,6 +13,7 @@ import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -63,14 +64,13 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     private var initialViewsLaidOut = false
 
     var usageToLog:MutableList<Usage> = mutableListOf()
-    private var usageToLogJSONMutableList:MutableList<String> = mutableListOf()
 
     private var dateValue: LocalDate = LocalDate.now(ZoneOffset.UTC)
     private lateinit var datePicker: DatePickerHelper
 
     private lateinit var timePicker: TimePickerHelper
 
-    private var editsMade: Boolean = false
+    //private var editsMade: Boolean = false
     private var submitIndex = 0
     private var usageExceedsEstimate = false
 
@@ -81,6 +81,14 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         arguments?.let {
             woItem = it.getParcelable("woItem")
             workOrder = it.getParcelable("workOrder")!!
+        }
+
+        setFragmentResultListener("refreshWoItemListener") { _, bundle ->
+            val shouldRefresh = bundle.getBoolean("shouldRefreshWoItemListener")
+            if (shouldRefresh) {
+                println("got result listener")
+                getWoItem()
+            }
         }
 
     }
@@ -104,7 +112,16 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             override fun handleOnBackPressed() {
                 // Handle the back button event
                 println("handleOnBackPressed")
-                if (editsMade) {
+
+                var localEditsMade = false
+
+                for (usage in usageToLog) {
+                    if (usage.editsMade) {
+                        localEditsMade = true
+                    }
+                }
+
+                if (localEditsMade) {
                     println("edits made")
                     val builder = AlertDialog.Builder(myView.context)
                     builder.setTitle("Unsaved Changes")
@@ -347,7 +364,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usage.depID = null
                 usage.unitPrice = woItem!!.price
                 usage.totalPrice = woItem!!.total
-                usage.usageCharge = woItem!!.charge
+                usage.chargeType = woItem!!.charge
                 usage.override = "1"
                 usage.locked = false
 
@@ -413,9 +430,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         usage.unitCost = ""
         usage.totalCost = ""
         usage.del = ""
+        usage.editsMade = true
 
         usageToLog.add(usage)
-        editsMade = true
 
         updateUsageTable()
 
@@ -469,7 +486,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usage.startDateTime = startValue
                 usage.start = GlobalVars.dateFormatterPHP.format(startValue)
                 usage.editsMade = true
-                editsMade = true
             }
         }
         return true
@@ -496,7 +512,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usage.stopDateTime = stopValue
                 usage.stop = GlobalVars.dateFormatterPHP.format(stopValue)
                 usage.editsMade = true
-                editsMade = true
                 println("New stopDateTime: ${usage.stopDateTime}")
             }
         }
@@ -804,11 +819,11 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
                 }
 
+                usage.editsMade = true
+
             }
 
         }
-
-        editsMade = true
 
         updateUsageTable()
 
@@ -855,9 +870,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             return
         }
 
-        //loop thru usage array and build JSON array
-        editsMade = false //resets edit checker
-
         var foundStartTime = false
         usageToLog.forEach {
             if (it.start != null) {
@@ -872,7 +884,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 println("set usage.qty to 0.0")
                 usageQty = usage.qty.toDouble()
             }
-            usage.usageCharge = woItem!!.charge
             //usage.del = "0"
 
             println("usageQty = $usageQty")
@@ -901,8 +912,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                             usage.locked = true
                         }
 
-                        usage.startDateTime = LocalDateTime.from(dateValue)
-                        usage.stopDateTime = LocalDateTime.from(dateValue)
+                        usage.startDateTime = dateValue.atStartOfDay()
+                        usage.stopDateTime = dateValue.atStartOfDay()
                         usage.override = "1"
 
                     }
@@ -937,8 +948,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         println("Usage with edits: $usageWithEdits")
 
         if (usageWithEdits > 0) {
-
-            editsMade = false
 
             // Skip this cell if it's not flagged for edits made or if it has no start time
             if (!usageToLog[submitIndex].editsMade || usageToLog[submitIndex].startDateTime == null) {
@@ -980,14 +989,33 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                     try {
                         val parentObject = JSONObject(response)
                         println("parentObject = $parentObject")
-                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView, suppressWarnings = true)) {
 
                             usageToLog[submitIndex].progressViewVisible = false
                             println("before notifyitemchanged 2")
                             binding.usageEntryRv.adapter?.notifyItemChanged(submitIndex)
                             println("after notifyitemchanged 2")
 
-                            handleSaveComplete()
+
+                            val gson = GsonBuilder().create()
+                            val overlap: String = gson.fromJson(parentObject["overlap"].toString(), String::class.java)
+
+                            if (overlap == "1") {
+                                val builder = AlertDialog.Builder(myView.context)
+                                builder.setTitle(getString(R.string.overlapping_usage_title))
+                                builder.setMessage(getString(R.string.overlapping_usage_body))
+                                builder.setPositiveButton(android.R.string.ok) { _, _ ->
+                                    callDB("1")
+                                }
+                                builder.setNegativeButton(android.R.string.cancel) { _, _ ->
+                                    handleSaveComplete()
+                                }
+                                builder.show()
+                            }
+                            else {
+                                handleSaveComplete()
+                            }
+
 
                         }
 
@@ -1060,7 +1088,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             submitIndex = 0
 
-            //todo: refresh woItem
             getWoItem()
 
             //todo: update wo status:
@@ -1075,7 +1102,6 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
             usageExceedsEstimate = false
 
-            //todo: see if date field reset code needs to go here
         }
     }
 
@@ -1119,7 +1145,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             usageToLog[row].qty = String.format("%.2f", qtyTrimmed)
             val totalCost = (usageToLog[row].unitCost!!.toDouble() * usageToLog[row].qty.toDouble())
             usageToLog[row].totalCost = String.format("%.2f", totalCost)
-            editsMade = true
+            usageToLog[row].editsMade = true
             updateUsageTable()
         }
     }
@@ -1152,7 +1178,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             usageToLog[row].unitCost = String.format("%.2f", costTrimmed)
             val totalCost = (usageToLog[row].qty.toDouble() * usageToLog[row].unitCost!!.toDouble())
             usageToLog[row].totalCost = String.format("%.2f", totalCost)
-            editsMade = true
+            usageToLog[row].editsMade = true
             if (updateUsageTable) {
                 updateUsageTable()
             }
@@ -1162,11 +1188,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     override fun editVendor(row: Int, vendor: String) {
         usageToLog[row].vendor = vendor
+        usageToLog[row].editsMade = true
 
-        editsMade = true
-
-        //This isn't needed because the spinner display updates itself, also calling it here creates an infinite loop?
-        //updateUsageTable()
     }
 
     private fun getWoItem(){

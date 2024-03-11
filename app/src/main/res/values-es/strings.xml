@@ -776,9 +776,9 @@
     <string name="uploaded">Cargado</string>
     <string name="vendor_label">Proveedor:</string>
     <string name="quantity_label">Cantidad:</string>
-    <string name="units">Unidades:</string>
-    <string name="usage_unit_cost">Costo unidad $</string>
-    <string name="usage_total_cost">Costo total $</string>
+    <string name="units">Unidad(es)</string>
+    <string name="usage_unit_cost">Costo unidad: $</string>
+    <string name="usage_total_cost">Costo total: $</string>
     <string name="payroll_break_label">Descanso:</string>
     <string name="todays_payroll">Nómina de hoy:</string>
     <string name="payroll_current_total">Total actual:</string>
