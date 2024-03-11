@@ -136,13 +136,23 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
 
         binding.empNameTxt.text = employee!!.name
 
-        binding.empPhoneBtnCl.setOnClickListener {
-            println("phone btn clicked ${employee!!.phone}")
 
-            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + employee!!.phone))
-            startActivity(intent)
+
+        if (employee!!.phone.isNullOrBlank()) {
+            binding.empPhoneBtnTv.text = getString(R.string.no_phone_found)
         }
-        binding.empPhoneBtnTv.text = employee!!.phone
+        else {
+            binding.empPhoneBtnTv.text = employee!!.phone
+
+            binding.empPhoneBtnCl.setOnClickListener {
+                println("phone btn clicked ${employee!!.phone}")
+
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + employee!!.phone))
+                startActivity(intent)
+            }
+        }
+
+
 
         binding.empEmailBtnCl.setOnClickListener {
             println("email btn clicked ${employee!!.email}")
@@ -395,11 +405,13 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                             // Now we call setRefreshing(false) to signal refresh has finished
                             binding.customerSwipeContainer.isRefreshing = false
 
+                            /*
                             Toast.makeText(
                                 activity,
                                 "${imageList.count()} Images Loaded",
                                 Toast.LENGTH_SHORT
                             ).show()
+                             */
 
                             //employee!!.fName = fName
 
@@ -407,7 +419,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
                             adapter.filterList = imageList
                         }
 
-                        //adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
 
 

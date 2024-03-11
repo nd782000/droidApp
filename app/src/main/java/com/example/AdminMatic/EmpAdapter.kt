@@ -3,6 +3,7 @@ package com.example.AdminMatic
 import android.R.layout
 import android.content.Context
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +34,7 @@ class EmpAdapter(context: Context, items: List<Employee>?) :
         // Just an example using a simple TextView. Create whatever default view
         // to suit your needs, inflating a separate layout if it's cleaner.
         val view = TextView(context)
-        view.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        view.gravity = Gravity.CENTER
 
         //android:textColor="@color/colorPrimary"
         //android:textSize="16sp"

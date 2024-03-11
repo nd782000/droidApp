@@ -628,7 +628,7 @@ class GlobalVars: Application() {
     }
 
 
-    fun checkPHPWarningsAndErrors(jsonObject: JSONObject, context:Context, myView_: View): Boolean {
+    fun checkPHPWarningsAndErrors(jsonObject: JSONObject, context:Context, myView_: View, suppressWarnings:Boolean = false): Boolean {
 
         val gson = GsonBuilder().create()
 
@@ -668,7 +668,7 @@ class GlobalVars: Application() {
             myView_.findNavController().navigate(R.id.navigateToBugLog, bundle)
             return false
         }
-        else if (warnings.isNotEmpty()) {
+        else if (warnings.isNotEmpty() && !suppressWarnings) {
             //playErrorSound(context)
             var warningString = ""
             warnings.forEach {

@@ -298,6 +298,11 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                             binding.workOrderFooterCl.visibility = View.GONE
                         }
 
+                        if (listIndex >= 0) {
+                            println("Setting this work order to list index $listIndex in the global list")
+                            GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder!!)
+                        }
+
                     }
 
                     hideProgressView()
