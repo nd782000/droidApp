@@ -51,7 +51,7 @@ class UsageHistoryAdapter(list: MutableList<Usage>, private val context: Context
             holder.materialTotalView!!.text = context.getString(R.string.dollar_sign, usage.totalCost)
 
             println("usage.hasReceipt: ${usage.hasReceipt}")
-            if (usage.hasReceipt != null) {
+            if (usage.hasReceipt == "1") {
                 Picasso.with(context).load(R.drawable.ic_check_enabled).into(holder.materialReceiptView)
             }
             else {

@@ -1240,14 +1240,8 @@
         android:label="fragment_usage_history"
         tools:layout="@layout/fragment_usage_history" >
         <argument
-            android:name="woItemID"
-            app:argType="string" />
-        <argument
-            android:name="type"
-            app:argType="string" />
-        <argument
-            android:name="unit"
-            app:argType="string" />
+            android:name="woItem"
+            app:argType="com.example.AdminMatic.WoItem" />
     </fragment>
     <fragment
         android:id="@+id/customerContactFragment"

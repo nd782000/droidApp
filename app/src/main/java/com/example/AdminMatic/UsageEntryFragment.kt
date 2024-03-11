@@ -261,7 +261,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         val id = item.itemId
 
         if (id == R.id.history_item) {
-            val directions = UsageEntryFragmentDirections.navigateUsageEntryToUsageHistory(woItem!!.ID, woItem!!.type, woItem!!.unitName)
+            val directions = UsageEntryFragmentDirections.navigateUsageEntryToUsageHistory(woItem!!)
             myView.findNavController().navigate(directions)
             return true
         }
