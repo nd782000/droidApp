@@ -1223,6 +1223,10 @@
     <string name="overlapping_usage_body">Do you want to save anyway?</string>
     <string name="units_x" translatable="false">%1$s(s)</string>
 
+    <!-- Work order view update stuff -->
+    <string name="urgent">URGENT</string>
+
+
     <!-- New login view stuff -->
     <string name="login_company_unique">Company Unique</string>
     <string name="login_username">Username</string>
