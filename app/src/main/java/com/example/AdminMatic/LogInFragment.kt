@@ -13,19 +13,11 @@ import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.provider.Settings
-import android.text.InputType
-import android.text.method.PasswordTransformationMethod
-import android.util.TypedValue
 import android.view.*
-import android.view.View.generateViewId
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.AdminMatic.BuildConfig
@@ -42,7 +34,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -54,26 +45,12 @@ class LogInFragment : Fragment() {
     var  loggedInEmpID:String? = null
     var  companyUnique:String? = null
 
-    private lateinit var constraintLayout:ConstraintLayout
-    private lateinit var companyEditText: EditText
-    private lateinit var userEditText: EditText
-    private lateinit var passEditText: EditText
-    private lateinit var rememberSwitch: SwitchCompat
-    private lateinit var submitBtn: Button
-    private lateinit var versionText: TextView
-    private lateinit var demoLoginText: TextView
-    //private lateinit  var tvDynamic: TextView
-
-    private var loginViewCreated = false
-
     var rememberMe:String = "0"
 
     val logIns = arrayOf<String>()
 
     lateinit  var globalVars:GlobalVars
-
-    //lateinit var myView:View
-    lateinit var  pgsBar:ProgressBar
+    
 
 
 
@@ -141,8 +118,7 @@ class LogInFragment : Fragment() {
         when (item.itemId) {
             R.id.force_logout_item -> {
                 listener!!.logOut(myView)
-                pgsBar.isVisible = false
-                createLogInView()
+                stopLoading()
             }
 
             R.id.privacy_policy_item -> {
@@ -183,11 +159,6 @@ class LogInFragment : Fragment() {
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.login_to_adminmatic)
 
-        //set up layout container
-        constraintLayout = binding.loginLayout
-        constraintLayout.setBackgroundColor(Color.parseColor(resources.getString(R.color.background)))
-
-
         val preferences =
             this.requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE)
 
@@ -198,148 +169,25 @@ class LogInFragment : Fragment() {
         companyUnique = preferences.getString("companyUnique","")
         println("stored companyUnique = $companyUnique")
 
-        pgsBar = binding.progressBar
-        pgsBar.visibility = View.GONE
+        //binding.progressBar.visibility = View.GONE
 
         return myView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginOrGetSessionUser()
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-
-    private fun loginOrGetSessionUser(){
-        println("loginOrGetSessionUser")
-
-
-
-        if (sessionKey != ""){
-            //skip ahead to getSessionUser info
-            getSessionUser()
-
-        }else{
-            createLogInView()
-        }
-
-
-
-
-    }
-
-    private fun createLogInView(){
-        println("createLogInView")
-
-        companyEditText = EditText(myView.context)
-        companyEditText.hint = getString(R.string.login_company_unique)
-        //companyEditText.highlightColor = resources.getColor(R.color.colorTextSelected)
-        companyEditText.setSingleLine()
-        companyEditText.setPadding(10,0,10,0)
-        companyEditText.height = 100
-        companyEditText.setBackgroundResource(R.drawable.text_view_layout)
-
-        companyEditText.id = generateViewId() // Views must have IDs in order to add them to chain later.
-        binding.loginLayout.addView(companyEditText)
-
-        userEditText = EditText(myView.context)
-        userEditText.hint = getString(R.string.login_username)
-        userEditText.setSingleLine()
-        userEditText.setPadding(10,0,10,0)
-        userEditText.height = 100
-        userEditText.setBackgroundResource(R.drawable.text_view_layout)
-        userEditText.id = generateViewId()
-        binding.loginLayout.addView(userEditText)
-
-        passEditText = EditText(myView.context)
-        passEditText.hint = getString(R.string.login_password)
-        passEditText.setSingleLine()
-        passEditText.setPadding(10,0,10,0)
-        passEditText.height = 100
-        passEditText.setBackgroundResource(R.drawable.text_view_layout)
-        passEditText.id = generateViewId()
-        passEditText.transformationMethod = PasswordTransformationMethod()
-        passEditText.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
-        binding.loginLayout.addView(passEditText)
-
-        rememberSwitch = SwitchCompat(myView.context)
-        rememberSwitch.text = getString(R.string.remember_me)
-        rememberSwitch.id = generateViewId()
-
-
-
-        /*
-        val colorList = ColorStateList(
-            arrayOf(
-                intArrayOf(-android.R.attr.state_checked),  // Disabled
-                intArrayOf(android.R.attr.state_checked)    // Enabled
-
-            ),
-            intArrayOf(
-                resources.getColor(R.color.gray),     // The color for the Disabled state
-                resources.getColor(R.color.colorPrimary)      // The color for the Enabled state
-            )
-        )
-
-        rememberSwitch.trackTintList = colorList
-
-         */
-
-        rememberSwitch.setOnClickListener{
-            rememberMe = if (rememberSwitch.isChecked){
+        binding.loginRememberMeSwitch.setOnClickListener{
+            rememberMe = if (binding.loginRememberMeSwitch.isChecked){
                 "1"
-            }else{
+            }
+            else {
                 "2"
             }
-
-        }
-        binding.loginLayout.addView(rememberSwitch)
-
-
-
-        submitBtn = Button(myView.context)
-        submitBtn.text = getString(R.string.login)
-        submitBtn.id = generateViewId()
-        submitBtn.setBackgroundResource(R.drawable.button_layout)
-        submitBtn.setTextColor(Color.WHITE)
-        submitBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP,18f)
-        binding.loginLayout.addView(submitBtn)
-
-        versionText = TextView(myView.context)
-        versionText.text = getString(R.string.version, BuildConfig.VERSION_NAME, GlobalVars.phpVersion)
-        versionText.gravity = Gravity.CENTER_HORIZONTAL
-        versionText.id = generateViewId()
-        binding.loginLayout.addView(versionText)
-
-        demoLoginText = TextView(myView.context)
-        demoLoginText.text = getString(R.string.enter_demo_instance)
-        demoLoginText.setTextColor(resources.getColor(R.color.colorPrimary))
-        demoLoginText.gravity = Gravity.CENTER_HORIZONTAL
-        demoLoginText.id = generateViewId()
-
-        demoLoginText.setOnClickListener {
-            companyEditText.setText("demo")
-            userEditText.setText("demo")
-            passEditText.setText("adminmatic")
-            attemptLogIn()
         }
 
-        binding.loginLayout.addView(demoLoginText)
-
-
-
-
-
-        submitBtn.setOnClickListener {
-            // your code to perform when the user clicks on the TextView
+        binding.loginButton.setOnClickListener {
             println("submit")
-
-            //pgsBar.isVisible = true
 
             if (validateFields()) {
                 println("all good")
@@ -352,116 +200,43 @@ class LogInFragment : Fragment() {
             }
         }
 
-        val listOfViews:ArrayList<View> = ArrayList()
-        listOfViews.add(companyEditText)
-        listOfViews.add(userEditText)
-        listOfViews.add(passEditText)
-        listOfViews.add(rememberSwitch)
-        listOfViews.add(demoLoginText)
+        binding.loginVersionTv.text = getString(R.string.version, BuildConfig.VERSION_NAME, GlobalVars.phpVersion)
 
-
-
-
-        val listOfInts = IntArray(5)
-        listOfInts[0] = companyEditText.id
-        listOfInts[1] = userEditText.id
-        listOfInts[2] = passEditText.id
-        listOfInts[3] = rememberSwitch.id
-        listOfInts[4] = demoLoginText.id
-
-
-
-        println("companyEditText.id = ${companyEditText.id}")
-        println("submitBtn.id = ${submitBtn.id}")
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(constraintLayout)
-
-
-        var previousItem: View? =  null
-        for (tv in listOfViews) {
-            //val lastItem = listOfViews.indexOf(tv) === listOfViews.size() - 1
-            //val lastItem = listOfViews.indexOf(tv) === listOfViews.size - 1
-            if (previousItem == null) {
-
-
-                constraintSet.connect(
-                    tv.id,
-                    ConstraintSet.TOP,
-                    ConstraintSet.PARENT_ID,
-                    ConstraintSet.TOP,50
-                )
-
-                constraintSet.constrainWidth(tv.id,ConstraintSet.WRAP_CONTENT)
-                constraintSet.constrainMinWidth(tv.id,600)
-                constraintSet.centerHorizontally(tv.id,ConstraintSet.PARENT_ID)
-
-
-            } else {
-                constraintSet.connect(
-                    tv.id,
-                    ConstraintSet.TOP,
-                    previousItem.id,
-                    ConstraintSet.BOTTOM,
-                    50
-                )
-
-                constraintSet.constrainWidth(tv.id,ConstraintSet.WRAP_CONTENT)
-                constraintSet.constrainMinWidth(tv.id,600)
-                constraintSet.centerHorizontally(tv.id,ConstraintSet.PARENT_ID)
-
-
-
-
-            }
-            previousItem = tv
+        binding.loginEnterDemoTv.setOnClickListener {
+            binding.loginCompanyUniqueEt.setText("demo")
+            binding.loginUsernameEt.setText("demo")
+            binding.loginPasswordEt.setText("adminmatic")
+            attemptLogIn()
         }
 
-        constraintSet.connect(
-            submitBtn.id,
-            ConstraintSet.TOP,
-            rememberSwitch.id,
-            ConstraintSet.BOTTOM,
-            50
-        )
+        loginOrGetSessionUser()
+    }
 
-        constraintSet.constrainWidth(submitBtn.id,ConstraintSet.WRAP_CONTENT)
-        constraintSet.constrainMinWidth(submitBtn.id,900)
-        constraintSet.centerHorizontally(submitBtn.id,ConstraintSet.PARENT_ID)
-
-        constraintSet.connect(
-            versionText.id,
-            ConstraintSet.TOP,
-            submitBtn.id,
-            ConstraintSet.BOTTOM,
-            50
-        )
-
-        constraintSet.constrainWidth(versionText.id,ConstraintSet.WRAP_CONTENT)
-        constraintSet.constrainMinWidth(versionText.id,900)
-        constraintSet.centerHorizontally(versionText.id,ConstraintSet.PARENT_ID)
-
-        /*
-        constraintSet.constrainWidth(demoLoginText.id,ConstraintSet.WRAP_CONTENT)
-        constraintSet.constrainMinWidth(demoLoginText.id,900)
-        constraintSet.centerHorizontally(demoLoginText.id,ConstraintSet.PARENT_ID)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
 
-         */
-        constraintSet.connect(
-            demoLoginText.id,
-            ConstraintSet.TOP,
-            versionText.id,
-            ConstraintSet.BOTTOM,
-            50
-        )
+    private fun loginOrGetSessionUser(){
+        println("loginOrGetSessionUser")
 
-        constraintSet.applyTo(constraintLayout)
+        if (sessionKey != ""){
+            //skip ahead to getSessionUser info
+            //binding.loginCl.visibility = View.VISIBLE
+            getSessionUser()
+        }
+        else {
+            stopLoading()
+        }
 
     }
+
 
     private fun getSessionUser(){
         println("getSessionEmp")
 
+        loading()
 
         var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/sessionUser.php"
 
@@ -480,8 +255,7 @@ class LogInFragment : Fragment() {
                     println("parentObject = $parentObject")
                     if (!globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
                         listener!!.logOut(myView)
-                        pgsBar.isVisible = false
-                        createLogInView()
+                        stopLoading()
                     }
 
                     //println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
@@ -507,6 +281,12 @@ class LogInFragment : Fragment() {
 
                     deviceID = Settings.Secure.getString(activity?.contentResolver, Settings.Secure.ANDROID_ID)
 
+                    binding.loginCompanyUniqueEt.text.clear()
+                    binding.loginUsernameEt.text.clear()
+                    binding.loginPasswordEt.text.clear()
+                    binding.loginRememberMeSwitch.isChecked = false
+                    binding.loginRememberMeSwitch.jumpDrawablesToCurrentState()
+
                     getFields()
 
 
@@ -515,21 +295,14 @@ class LogInFragment : Fragment() {
                     println("JSONException")
                     e.printStackTrace()
                     listener!!.logOut(myView)
-                    pgsBar.isVisible = false
-                    createLogInView()
-
-
+                    stopLoading()
                 }
-
-
-
             },
             Response.ErrorListener { error ->
                 println("GET SESSION USER ERROR: $error")
                 globalVars.simpleAlert(myView.context,"Get Session User Error:", error.toString())
                 listener!!.logOut(myView)
-                pgsBar.isVisible = false
-                createLogInView()
+                stopLoading()
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
 
@@ -570,8 +343,7 @@ class LogInFragment : Fragment() {
                     println("parentObject = $parentObject")
                     if (!globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
                         listener!!.logOut(myView)
-                        pgsBar.isVisible = false
-                        createLogInView()
+                        stopLoading()
                     }
 
                     val permissions: Permissions = Gson().fromJson(parentObject.toString(), Permissions::class.java)
@@ -595,8 +367,7 @@ class LogInFragment : Fragment() {
                     e.printStackTrace()
                     globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
                     listener!!.logOut(myView)
-                    pgsBar.isVisible = false
-                    createLogInView()
+                    stopLoading()
                 }
 
 
@@ -605,8 +376,7 @@ class LogInFragment : Fragment() {
             Response.ErrorListener { // error
                 globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
                 listener!!.logOut(myView)
-                pgsBar.isVisible = false
-                createLogInView()
+                stopLoading()
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
             }
@@ -692,19 +462,19 @@ class LogInFragment : Fragment() {
 
         val allGood: Boolean
 
-        val company: String = companyEditText.text.toString()
+        val company: String = binding.loginCompanyUniqueEt.text.toString()
         //check if the EditText have values or not
         println("company = $company")
         if(company.trim().isNotEmpty() && company != "") {
             //Toast.makeText(activity,"Message : $company",Toast.LENGTH_SHORT).show()
            // allGood = true
-            val user: String = userEditText.text.toString()
+            val user: String = binding.loginUsernameEt.text.toString()
             //check if the EditText have values or not
             println("user = $user")
             if(user.trim().isNotEmpty() && user != "") {
                 //Toast.makeText(getActivity(),"Message : $user",Toast.LENGTH_SHORT).show()
                // allGood = true
-                val pass: String = passEditText.text.toString()
+                val pass: String = binding.loginPasswordEt.text.toString()
                 //check if the EditText have values or not
                 println("pass = $pass")
                 allGood = if(pass.trim().isNotEmpty() && pass != "") {
@@ -773,24 +543,24 @@ class LogInFragment : Fragment() {
                         // Should probably send an error code, but this works for now
                         when (errorString[0]) {
                             'N' -> { //No company found with that identifier
-                                companyEditText.setText("")
+                                binding.loginCompanyUniqueEt.setText("")
                             }
                             'I' -> { //Incorrect login
-                                userEditText.setText("")
-                                passEditText.setText("")
+                                binding.loginUsernameEt.setText("")
+                                binding.loginPasswordEt.setText("")
                             }
                             'P' -> { //Password incorrect
-                                passEditText.setText("")
+                                binding.loginPasswordEt.setText("")
                             }
                             else -> {
-                                companyEditText.setText("")
-                                userEditText.setText("")
-                                passEditText.setText("")
+                                binding.loginCompanyUniqueEt.setText("")
+                                binding.loginUsernameEt.setText("")
+                                binding.loginPasswordEt.setText("")
                             }
                         }
 
-                    }else{
-
+                    }
+                    else {
 
                         println("parentObject.getJSONObject(\"employee\").toString() = ${parentObject.getJSONObject("employee")}")
 
@@ -821,6 +591,12 @@ class LogInFragment : Fragment() {
 
                         GlobalVars.shouldLogOut = false
 
+                        binding.loginCompanyUniqueEt.text.clear()
+                        binding.loginUsernameEt.text.clear()
+                        binding.loginPasswordEt.text.clear()
+                        binding.loginRememberMeSwitch.isChecked = false
+                        binding.loginRememberMeSwitch.jumpDrawablesToCurrentState()
+
                         getFields()
                     }
 
@@ -832,8 +608,7 @@ class LogInFragment : Fragment() {
                     e.printStackTrace()
                     globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
                     listener!!.logOut(myView)
-                    pgsBar.isVisible = false
-                    createLogInView()
+                    stopLoading()
                 }
 
 
@@ -844,17 +619,16 @@ class LogInFragment : Fragment() {
                 println("LOGIN USER ERROR: $error")
                 globalVars.simpleAlert(myView.context,"Login Error:", error.toString())
                 listener!!.logOut(myView)
-                pgsBar.isVisible = false
-                createLogInView()
+                stopLoading()
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
             }
         ) {
             override fun getParams(): Map<String, String> {
                 val params: MutableMap<String, String> = HashMap()
-                params["companyUnique"] = "${companyEditText.text}"
-                params["username"] = "${userEditText.text}"
-                params["password"] = "${passEditText.text}"
+                params["companyUnique"] = "${binding.loginCompanyUniqueEt.text}"
+                params["username"] = "${binding.loginUsernameEt.text}"
+                params["password"] = "${binding.loginPasswordEt.text}"
                 params["remember"] = rememberMe
                 params["device"] = globalVars.getDeviceName()
                 params["deviceToken"] = "345"
@@ -907,8 +681,7 @@ class LogInFragment : Fragment() {
                     }
                     else {
                         listener!!.logOut(myView)
-                        pgsBar.isVisible = false
-                        createLogInView()
+                        stopLoading()
                     }
 
 
@@ -918,8 +691,7 @@ class LogInFragment : Fragment() {
                     e.printStackTrace()
                     globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
                     listener!!.logOut(myView)
-                    pgsBar.isVisible = false
-                    createLogInView()
+                    stopLoading()
                 }
 
 
@@ -928,8 +700,7 @@ class LogInFragment : Fragment() {
             },
             Response.ErrorListener { // error
                 listener!!.logOut(myView)
-                pgsBar.isVisible = false
-                createLogInView()
+                stopLoading()
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
             }
@@ -985,8 +756,7 @@ class LogInFragment : Fragment() {
                     if (!globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
                         globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
                         listener!!.logOut(myView)
-                        pgsBar.isVisible = false
-                        createLogInView()
+                        stopLoading()
                     }
                     //println("parentObject = ${parentObject.toString()}")
                     //var employees:JSONArray = parentObject.getJSONArray("employees")
@@ -1011,16 +781,14 @@ class LogInFragment : Fragment() {
                     e.printStackTrace()
                     globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
                     listener!!.logOut(myView)
-                    pgsBar.isVisible = false
-                    createLogInView()
+                    stopLoading()
                 }
 
             },
             Response.ErrorListener { // error
                 globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
                 listener!!.logOut(myView)
-                pgsBar.isVisible = false
-                createLogInView()
+                stopLoading()
 
                 // Log.e("VOLLEY", error.toString())
                 // Log.d("Error.Response", error())
@@ -1063,8 +831,7 @@ class LogInFragment : Fragment() {
                     println("parentObject = $parentObject")
                     if (!globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)){
                         listener!!.logOut(myView)
-                        pgsBar.isVisible = false
-                        createLogInView()
+                        stopLoading()
                     }
 
                     //var customers: JSONObject = parentObject.getJSONObject("customers")
@@ -1086,15 +853,13 @@ class LogInFragment : Fragment() {
                     e.printStackTrace()
                     globalVars.simpleAlert(myView.context,"Login Error:", "JSONException")
                     listener!!.logOut(myView)
-                    pgsBar.isVisible = false
-                    createLogInView()
+                    stopLoading()
                 }
             },
             Response.ErrorListener { // error
                 //Log.e("VOLLEY", error.toString())
                 listener!!.logOut(myView)
-                pgsBar.isVisible = false
-                createLogInView()
+                stopLoading()
             }
         ) {
             override fun getParams(): Map<String, String> {
@@ -1109,20 +874,14 @@ class LogInFragment : Fragment() {
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
-    fun loading(){
-        for (index in 0 until (binding.loginLayout as ViewGroup).childCount) {
-            val nextChild = (binding.loginLayout as ViewGroup).getChildAt(index)
-            nextChild.isVisible = false
-        }
-        pgsBar.isVisible = true
+    fun loading() {
+        binding.loginCl.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
-    fun stopLoading(){
-        for (index in 0 until (binding.loginLayout as ViewGroup).childCount) {
-            val nextChild = (binding.loginLayout as ViewGroup).getChildAt(index)
-            nextChild.isVisible = true
-        }
-        pgsBar.isVisible = false
+    fun stopLoading() {
+        binding.loginCl.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
     }
 
 
