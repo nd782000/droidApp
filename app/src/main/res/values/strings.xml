@@ -175,10 +175,10 @@
     <string name="comma" translatable="false">%1$s, %2$s</string>
 
     
-    <string name="leads_amount">Leads(%1$d)</string>
-    <string name="contracts_amount">Contracts(%1$d)</string>
-    <string name="work_orders_amount">Work Orders(%1$d)</string>
-    <string name="invoices_amount">Invoices(%1$d)</string>
+    <string name="leads_amount">Leads (%1$d)</string>
+    <string name="contracts_amount">Contracts (%1$d)</string>
+    <string name="work_orders_amount">W.O. (%1$d)</string>
+    <string name="invoices_amount">Invoices (%1$d)</string>
     <string name="usage_hours">%1$s Hours</string>
     <string name="plus_x" translatable="false">+%1$d</string>
 
