@@ -26,35 +26,176 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/status_cust_cl"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/empty_cl"
-            android:background="@color/background"
-           >
-
-
-            <ImageButton
-                android:id="@+id/status_btn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="Customer Button" />
+            android:background="@color/background">
 
             <Button
                 android:id="@+id/customer_btn"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:text=""
-                android:textSize="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:textSize="12sp"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/status_btn"
                 android:layout_marginHorizontal="3dp"/>
+
+            <ImageView
+                android:id="@+id/customer_iv"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_cust"
+                app:tint="@color/white"
+                android:elevation="8dp"
+                android:padding="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/customer_tv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="8dp"
+                android:textColor="@color/white"
+                android:gravity="center_vertical"
+                android:paddingLeft="42dp"
+                android:text="@string/customer"
+                app:layout_constraintTop_toTopOf="@id/customer_btn"
+                app:layout_constraintBottom_toBottomOf="@id/customer_btn"/>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/customer_buttons_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/customer_btn">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/status_btn_cl"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="-5dp">
+
+                    <Button
+                        android:id="@+id/status_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="3dp"
+                        android:gravity="left|center"
+                        android:paddingLeft="45dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <ImageView
+                        android:id="@+id/status_iv"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/ic_in_progress"
+                        app:tint="@color/white"
+                        android:elevation="8dp"
+                        android:padding="10dp"
+
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/status_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:elevation="8dp"
+                        android:textColor="@color/white"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="42dp"
+                        android:text=""/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/directions_btn_cl"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="-5dp">
+
+                    <Button
+                        android:id="@+id/directions_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="3dp"
+                        android:gravity="left|center"
+                        android:paddingLeft="45dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <ImageView
+                        android:id="@+id/directions_iv"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/ic_map_pin"
+                        app:tint="@color/white"
+                        android:elevation="8dp"
+                        android:padding="10dp"
+
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/directions_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:elevation="8dp"
+                        android:textColor="@color/white"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="42dp"
+                        android:text="@string/directions"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/call_btn_cl"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="-5dp">
+
+                    <Button
+                        android:id="@+id/call_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="3dp"
+                        android:gravity="left|center"
+                        android:paddingLeft="45dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <ImageView
+                        android:id="@+id/call_iv"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/ic_phone_white"
+                        app:tint="@color/white"
+                        android:elevation="8dp"
+                        android:padding="10dp"
+
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/call_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:elevation="8dp"
+                        android:textColor="@color/white"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="42dp"
+                        android:text="@string/call_text"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -183,6 +324,29 @@
                     app:layout_constraintLeft_toRightOf="@id/crew_lbl_tv"
 
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/urgent_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:paddingRight="10dp"
+                    android:text="@string/urgent"
+                    android:textColor="@color/red"
+                    android:visibility="gone"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/urgent_iv"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_warning"
+                    android:paddingRight="3dp"
+                    android:visibility="gone"
+                    app:layout_constraintRight_toLeftOf="@id/urgent_tv"
+                    app:layout_constraintTop_toTopOf="@+id/urgent_tv"
+                    app:layout_constraintBottom_toBottomOf="@+id/urgent_tv"/>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

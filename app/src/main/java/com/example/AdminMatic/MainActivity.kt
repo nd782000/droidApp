@@ -1215,7 +1215,8 @@ data class WorkOrder(@field:SerializedName(value="woID", alternate= ["ID"])
                      var totalCost:String = "",
                      var profit:String = "",
                      var profitAmount:String = "",
-
+                     var mainEmail:String? = "",
+                     var mainPhone:String? = "",
                      var statusName:String? = "",
                      var prompt:String? = "",
                      var recID:String? = "",

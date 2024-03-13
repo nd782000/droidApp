@@ -90,7 +90,6 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:src="@drawable/ic_warning"
-        app:tint="@color/red"
         android:paddingRight="3dp"
         android:visibility="gone"
         app:layout_constraintRight_toLeftOf="@id/list_urgent_tv"

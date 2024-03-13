@@ -721,6 +721,9 @@
             app:argType="integer"
             android:defaultValue="-1"/>
         <action
+            android:id="@+id/navigateWorkOrderToContacts"
+            app:destination="@id/customerContactFragment" />
+        <action
             android:id="@+id/navigateWorkOrderToLead"
             app:destination="@id/leadFragment" />
         <action

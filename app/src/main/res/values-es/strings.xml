@@ -202,7 +202,7 @@
     <string name="item_other_type">Otro tipo</string>
     <string name="group_text">Mensaje de texto grupal</string>
     <string name="group_text_send">Enviar mensaje</string>
-    <string name="group_text_send_batch">Enviar mensaje por lotes</string>
+    <string name="group_text_send_batch">Enviar mensaje por lotes (Parte %1$d of %2$d)</string>
     <string name="edit_customer_menu">Editar cliente</string>
     <string name="add_new_customer">Cliente nuevo</string>
     <string name="new_customer_duplicate_message">Ingrese la dirección de la calle para buscar clientes existentes. Queremos evitar entradas duplicadas de clientes.</string>
@@ -617,7 +617,7 @@
     <string name="dialogue_group_text_message_empty_title">El mensaje está vacío</string>
     <string name="dialogue_group_text_message_empty_body">Por favor ingrese un mensaje.</string>
     <string name="dialogue_group_text_send">¿Enviar %1$s mensaje(s) de texto?</string>
-    <string name="dialogue_group_text_send_batch">¿Enviar %1$s mensajes de texto? (Lote %2$d de %3$d)</string>
+    <string name="dialogue_group_text_send_batch">¿Enviar %1$d mensajes de texto? (Lote %2$d de %3$d)</string>
     <string name="dialogue_group_text_stop_batch_title">¿Detener el procesamiento por lotes?</string>
     <string name="dialogue_group_text_stop_batch_body">La selección o anulación de la selección de empleados detendrá el texto del lote actualmente en proceso. ¿Está seguro de que desea continuar?</string>
     <string name="dialogue_sysname_too_long_title">Nombre del sistema demasiado largo</string>
@@ -924,7 +924,7 @@
     <string name="equipment_details_fuel_x">Combustible: %1$s</string>
     <string name="equipment_details_serial_x">Serie: %1$s</string>
     <string name="equipment_details_model_x">Modelo: %1$s</string>
-    <string name="equipment_details_make_x">Marca:</string>
+    <string name="equipment_details_make_x">Marca: %1$s</string>
     <string name="equipment_details_crew_x">Personal: %1$s</string>
     <string name="equipment_details_type_x">Tipo: %1$s</string>
     <string name="equipment_details_name_x">Nombre: %1$s</string>

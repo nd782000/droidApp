@@ -1,5 +1,9 @@
 package com.example.AdminMatic
 
+import android.content.Intent
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
 import android.view.*
@@ -18,6 +22,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
+import com.squareup.picasso.Picasso
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -36,7 +41,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
 
-    lateinit var context: AppCompatActivity
+    //lateinit var context: AppCompatActivity
 
     private lateinit var  stackFragment: StackFragment
 
@@ -215,6 +220,15 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         }
                         binding.chargeValTv.text = workOrder!!.chargeName
 
+                        if (workOrder?.urgent == "1") {
+                            binding.urgentIv.visibility = View.VISIBLE
+                            binding.urgentTv.visibility = View.VISIBLE
+                        }
+                        else {
+                            binding.urgentIv.visibility = View.GONE
+                            binding.urgentTv.visibility = View.GONE
+                        }
+
 
                         binding.priceTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(workOrder!!.total.toFloat()))
                         binding.costTv.text = getString(R.string.dollar_sign, GlobalVars.moneyFormatter.format(workOrder!!.totalCost.toFloat()))
@@ -279,12 +293,78 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                         binding.customerBtn.setOnClickListener {
                             println("customer btn clicked")
-                            val customer = Customer(workOrder!!.customer!!)
-                            val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer.ID)
-                            myView.findNavController().navigate(directions)
+                            if (GlobalVars.permissions!!.customers == "1") {
+                                val customer = Customer(workOrder!!.customer!!)
+                                val directions = WorkOrderFragmentDirections.navigateWorkOrderToCustomer(customer.ID)
+                                myView.findNavController().navigate(directions)
+                            }
+                            else {
+                                com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_customers))
+                            }
                         }
+
                         //customerBtn.text = "${workOrder!!.custName} ${workOrder!!.custAddress}"
-                        binding.customerBtn.text = getString(R.string.customer_button, workOrder!!.custName, workOrder!!.custAddress)
+                        binding.customerTv.text = getString(R.string.customer_button, workOrder!!.custName, workOrder!!.custAddress)
+
+                        binding.directionsBtn.setOnClickListener {
+                            val lng: String
+                            val lat: String
+                            if(workOrder!!.lng != null && workOrder!!.lat != null){
+                                lng = workOrder!!.lng!!
+                                lat = workOrder!!.lat!!
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("geo:0,0?q="+lng+","+lat+" (" + workOrder!!.custName + ")")
+                                )
+                                startActivity(intent)
+                            }
+                        }
+
+                        binding.callBtn.setOnClickListener {
+
+                            if (GlobalVars.permissions!!.customers == "1") {
+                                if (!workOrder!!.mainPhone.isNullOrBlank()) {
+                                    val popUp = PopupMenu(myView.context, binding.callBtn)
+                                    popUp.inflate(R.menu.task_status_menu)
+                                    popUp.menu.add(0, 1, 1, getString(R.string.call_x, workOrder!!.mainPhone!!))
+                                    popUp.menu.add(0, 2, 1, getString(R.string.text_x, workOrder!!.mainPhone!!))
+                                    popUp.menu.add(0, 3, 1, getString(R.string.all_contacts))
+
+                                    popUp.setOnMenuItemClickListener { item: MenuItem? ->
+                                        when (item?.itemId) {
+                                            1 -> {
+                                                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + workOrder?.mainPhone!!))
+                                                com.example.AdminMatic.myView.context.startActivity(intent)
+                                            }
+                                            2 -> {
+                                                val smsIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + workOrder?.mainPhone!!))
+                                                smsIntent.putExtra("sms_body", "")
+                                                com.example.AdminMatic.myView.context.startActivity(smsIntent)
+                                            }
+                                            3 -> {
+                                                val tempCustomer = Customer(workOrder!!.customer!!)
+                                                val directions = WorkOrderFragmentDirections.navigateWorkOrderToContacts(tempCustomer)
+                                                myView.findNavController().navigate(directions)
+                                            }
+                                        }
+                                        true
+                                    }
+                                    popUp.gravity = Gravity.START
+                                    popUp.show()
+
+                                }
+                                else {
+                                    com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.dialogue_error),getString(R.string.no_phone_found))
+                                }
+                            }
+                            else {
+                                com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_customers))
+                            }
+
+
+
+                        }
+
 
                         println("lat: ${workOrder!!.lat}")
                         println("lng: ${workOrder!!.lng}")
@@ -320,6 +400,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["woID"] = woID
+                params["view"] = "main"
                 println("params = $params")
                 return params
             }
@@ -580,14 +661,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
         }
-
-
     }
-
-
-
-
-
 
 
     private fun setStatusIcon(status: String) {
@@ -595,23 +669,43 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         when(status) {
             "1" -> {
                 println("1")
-                binding.statusBtn.setBackgroundResource(R.drawable.ic_not_started)
+                Picasso.with(context)
+                    .load(R.drawable.ic_not_started)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusGray))
+                binding.statusTv.text = getString(R.string.not_started)
             }
             "2" -> {
                 println("2")
-                binding.statusBtn.setBackgroundResource(R.drawable.ic_in_progress)
+                Picasso.with(context)
+                    .load(R.drawable.ic_in_progress)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusOrange))
+                binding.statusTv.text = getString(R.string.in_progress)
             }
             "3" -> {
                 println("3")
-                binding.statusBtn.setBackgroundResource(R.drawable.ic_done)
+                Picasso.with(context)
+                    .load(R.drawable.ic_done)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusGreen))
+                binding.statusTv.text = getString(R.string.finished)
             }
             "4" -> {
                 println("4")
-                binding.statusBtn.setBackgroundResource(R.drawable.ic_canceled)
+                Picasso.with(context)
+                    .load(R.drawable.ic_canceled)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusRed))
+                binding.statusTv.text = getString(R.string.canceled)
             }
             "5" -> {
                 println("5")
-                binding.statusBtn.setBackgroundResource(R.drawable.ic_waiting)
+                Picasso.with(context)
+                    .load(R.drawable.ic_waiting)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusBlue))
+                binding.statusTv.text = getString(R.string.waiting)
             }
         }
     }
