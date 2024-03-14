@@ -1,11 +1,15 @@
 package com.example.AdminMatic
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +42,81 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
 
     private var _binding: FragmentWorkOrderListBinding? = null
     private val binding get() = _binding!!
+
+    // Filter Variables
+    private var startDate = ""
+    private var endDate = ""
+    private var lockedDates = ""
+    private var department = ""
+    private var crew = ""
+    private var status = ""
+    private var sort = ""
+
+    /*
+    "employeeID":"",
+    "custID":"",
+    "startDate":startDateDB,
+    "endDate":endDateDB,
+    "deptID":department,
+    "crewID":crew,
+    "status":status,
+    "locked":locked,
+    "order":sort,
+    "sessionKey": self.appDelegate.defaults.string(forKey: loggedInKeys.sessionKey)!,
+    "companyUnique": self.appDelegate.defaults.string(forKey: loggedInKeys.companyUnique)!]
+     */
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setFragmentResultListener("WorkOrderListSettings") { _, bundle ->
+            val newStartDate = bundle.getString("startDate")
+            val newEndDate = bundle.getString("endDate")
+            val newLockedDates = bundle.getString("lockedDates")
+            val newDepartment = bundle.getString("department")
+            val newCrew = bundle.getString("crew")
+            val newStatus = bundle.getString("status")
+            val newSort = bundle.getString("sort")
+
+
+
+            if (newStartDate != startDate ||
+                newEndDate != endDate ||
+                newLockedDates != lockedDates ||
+                newDepartment != department ||
+                newCrew != crew ||
+                newStatus != status ||
+                newSort != sort
+                ) {
+
+                startDate = newStartDate!!
+                endDate = newEndDate!!
+                lockedDates = newLockedDates!!
+                department = newDepartment!!
+                crew = newCrew!!
+                status = newStatus!!
+                sort = newSort!!
+
+                if (newStartDate != "" ||
+                    newEndDate != "" ||
+                    newLockedDates != "" ||
+                    newDepartment != "" ||
+                    newCrew != "" ||
+                    newStatus != "" ||
+                    newSort != ""
+                ) {
+                    println("setting button color yellow")
+                    ImageViewCompat.setImageTintList(binding.settingsIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, R.color.settingsActive)))
+                }
+                else {
+                    println("setting button color default")
+                    ImageViewCompat.setImageTintList(binding.settingsIv, null)
+                }
+
+                getWorkOrders()
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,9 +165,14 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
             }
         }
 
-        binding.mapBtn.setOnClickListener{
+        binding.mapBtn.setOnClickListener {
             println("Map button clicked!")
             val directions = WorkOrderListFragmentDirections.navigateToMap(0)
+            myView.findNavController().navigate(directions)
+        }
+
+        binding.settingsBtn.setOnClickListener {
+            val directions = WorkOrderListFragmentDirections.navigateToWorkOrderListSettings(startDate, endDate, lockedDates, department, crew, status, sort)
             myView.findNavController().navigate(directions)
         }
 
@@ -96,16 +180,14 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
 
             getWorkOrders()
 
-        }else{
-
-
+        }
+        else {
 
             //skip get workOrders and go directly to layoutViews
             //layoutViews()
             if (this.isVisible){
                 layoutViews()
             }
-
 
         }
 

@@ -1236,6 +1236,13 @@
     <string name="all_contacts">All Contacts</string>
     <string name="add_note">Add Note</string>
     <string name="note_label">Note:</string>
+    <string name="all_dates_label">All Dates:</string>
+    <string name="work_order_schedule_dates_label">Work Order Schedule Dates:</string>
+    <string name="end_label">End:</string>
+    <string name="show_locked_dates_label">Show Locked Dates:</string>
+    <string name="work_order_department_and_main_crew_label">Work Order Department &amp; Crew:</string>
+    <string name="status_label">Status:</string>
+    <string name="sort_label">Sort:</string>
 
 
 
