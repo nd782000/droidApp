@@ -4,6 +4,7 @@ package com.example.AdminMatic
 import android.app.AlertDialog
 import android.app.Application
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -242,6 +243,9 @@ class GlobalVars: Application() {
 
     //private var listener: LogOut? = null
 
+    fun dpToPx(dp: Int): Int {
+        return (dp * Resources.getSystem().displayMetrics.density).toInt()
+    }
 
     fun updateGlobalMySchedule(id:String, entryType:MyScheduleEntryType, newStatus:String) {
 

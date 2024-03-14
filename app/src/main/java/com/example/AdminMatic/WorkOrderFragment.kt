@@ -1,13 +1,21 @@
 package com.example.AdminMatic
 
 import android.content.Intent
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
-import android.view.*
-import android.widget.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -23,10 +31,8 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 
 
 interface WoItemCellClickListener {
@@ -383,6 +389,39 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                             GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder!!)
                         }
 
+                        binding.addNoteBtn.setOnClickListener {
+                            val builder = AlertDialog.Builder(myView.context)
+                            builder.setTitle(getString(R.string.note_label))
+
+                            val input = EditText(myView.context)
+
+
+                            val container = LinearLayout(myView.context)
+                            container.orientation = LinearLayout.VERTICAL
+                            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+
+                            lp.setMargins(globalVars.dpToPx(24), globalVars.dpToPx(12), globalVars.dpToPx(24), 0)
+                            input.layoutParams = lp
+                            input.setBackgroundResource(R.drawable.text_view_layout)
+                            //input.gravity = Gravity.TOP or Gravity.LEFT
+                            input.inputType = InputType.TYPE_CLASS_TEXT
+                            //input.setLines(1)
+                            //input.maxLines = 1
+                            container.addView(input, lp)
+
+                            builder.setView(container)
+
+                            builder.setPositiveButton(getString(R.string.submit)) { _, _ ->
+                                addNote(input.text.toString())
+                            }
+
+                            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                                dialog.cancel()
+                            }
+
+                            builder.show()
+                        }
+
                     }
 
                     hideProgressView()
@@ -409,7 +448,54 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
-    private fun showStatusMenu(){
+    private fun addNote(newNote:String) {
+        println("getWorkOrder")
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/workOrderNote.php"
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                println("Update Note Response $response")
+                try {
+
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+                        val gson = GsonBuilder().setLenient().create()
+                        //val newString = gson.fromJson(parentObject["notes"].toString(), String::class.java)
+                        println("New Notes: ${parentObject["notes"]}")
+                        workOrder?.notes = parentObject["notes"].toString()
+                        globalVars.playSaveSound(com.example.AdminMatic.myView.context)
+
+                    }
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["woID"] = workOrder!!.woID
+                params["note"] = newNote
+                return params
+            }
+        }
+        postRequest1.tag = "workOrder"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
+
+    private fun showStatusMenu() {
         println("showStatusMenu")
 
         val popUp = PopupMenu(myView.context, binding.statusBtn)
@@ -709,8 +795,6 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             }
         }
     }
-
-
 
     fun showProgressView() {
         println("showProgressView")

@@ -264,8 +264,6 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
 
 
     override fun onLeadCellClickListener(data:Lead) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = CustomerFragmentDirections.navigateCustomerToLead(it.ID)
@@ -346,14 +344,11 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
     }
 
     override fun onContractCellClickListener(data:Contract) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = CustomerFragmentDirections.navigateCustomerToContract(data.ID)
             myView.findNavController().navigate(directions)
         }
-
 
     }
 
@@ -433,8 +428,6 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
     }
 
     override fun onWorkOrderCellClickListener(data:WorkOrder, listIndex:Int) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = CustomerFragmentDirections.navigateCustomerToWorkOrder(it)
@@ -516,8 +509,6 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
     }
 
     override fun onInvoiceCellClickListener(data:Invoice) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = CustomerFragmentDirections.navigateCustomerToInvoice(it)

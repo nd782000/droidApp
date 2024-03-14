@@ -333,8 +333,7 @@
     <string name="group_text_send">Send Message</string>
     <string name="group_text_send_batch">Send Batch Message (Part %1$d of %2$d)</string>
     <string name="group_text_body" translatable="false">%1$s ~ AdminMatic Group Message by %2$s</string>
-
-    <!--New Customer stuff-->
+        <!--New Customer stuff-->
     <string name="edit_customer_menu">Edit Customer</string>
     <string name="add_new_customer">Add New Customer</string>
     <string name="new_customer_duplicate_message">Enter street address to search existing customers. We want to avoid duplicate customer entries.</string>
@@ -1235,6 +1234,8 @@
     <string name="call_x">Call: %1$s</string>
     <string name="text_x">Text: %1$s</string>
     <string name="all_contacts">All Contacts</string>
+    <string name="add_note">Add Note</string>
+    <string name="note_label">Note:</string>
 
 
 
