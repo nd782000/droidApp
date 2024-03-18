@@ -19,21 +19,54 @@
 
 
         <!--  Item Search -->
-        <ImageButton
-            android:id="@+id/status_btn"
-            android:layout_width="50dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/status_btn_cl"
+            android:layout_width="130dp"
             android:layout_height="50dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-
+            android:layout_weight="1"
+            android:layout_marginTop="-5dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="Customer Button" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/status_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="3dp"
+                android:gravity="left|center"
+                android:paddingLeft="45dp"
+
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/status_iv"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_in_progress"
+                app:tint="@color/white"
+                android:elevation="8dp"
+                android:padding="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <TextView
+                android:id="@+id/status_tv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="8dp"
+                android:textColor="@color/white"
+                android:gravity="center_vertical"
+                android:paddingLeft="42dp"
+                android:text=""/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <SearchView
             android:id="@+id/wo_item_search"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:background="@drawable/text_view_layout"
             android:textCursorDrawable="@null"
             android:layout_marginVertical="5dp"
@@ -42,7 +75,7 @@
             android:queryHint="Select Item"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/status_btn"/>
+            app:layout_constraintLeft_toRightOf="@+id/status_btn_cl"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/wo_item_search_results_rv"
@@ -56,7 +89,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/wo_item_est_cl"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginVertical="10dp"
             app:layout_constraintTop_toBottomOf="@+id/wo_item_search">
 
@@ -137,7 +170,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/wo_item_hide_cl"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginVertical="10dp"
             app:layout_constraintTop_toBottomOf="@+id/wo_item_est_cl">
 
@@ -207,7 +240,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/wo_item_tax_cl"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginVertical="10dp"
             app:layout_constraintTop_toBottomOf="@+id/wo_item_hide_cl">
 
@@ -277,7 +310,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/wo_item_total_cl"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginVertical="10dp"
             app:layout_constraintTop_toBottomOf="@+id/wo_item_tax_cl">
 
@@ -334,11 +367,11 @@
 
         <!--  Lead Task  -->
         <Button
-            android:id="@+id/wo_item_lead_task_btn"
+            android:id="@+id/add_new_task_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginHorizontal="3dp"
-            android:text="@string/assign_lead_tasks"
+            android:text="@string/add_new_task"
             app:layout_constraintTop_toBottomOf="@+id/wo_item_total_cl" />
 
 
@@ -350,7 +383,7 @@
             android:layout_height="0dp"
             android:layout_marginHorizontal="3dp"
             android:layout_marginVertical="6dp"
-            app:layout_constraintTop_toBottomOf="@+id/wo_item_lead_task_btn"
+            app:layout_constraintTop_toBottomOf="@+id/add_new_task_btn"
             app:layout_constraintBottom_toTopOf="@id/wo_item_usage_btn"/>
 
         <!--  Description -->
@@ -359,8 +392,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/wo_item_lead_task_btn"
-            app:layout_constraintBottom_toTopOf="@id/wo_item_usage_btn">
+            app:layout_constraintTop_toBottomOf="@+id/add_new_task_btn"
+            app:layout_constraintBottom_toTopOf="@id/usage_quantity_cl">
             <TextView
                 android:id="@+id/wo_item_description_label_tv"
                 android:layout_width="match_parent"
@@ -389,8 +422,60 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/usage_quantity_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/wo_item_usage_btn">
 
+            <TextView
+                android:id="@+id/usage_qty_lbl_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/usage_qty_label"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/usage_qty_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="10dp"
+                android:gravity="center_vertical"
+                android:text="0.00"
+                android:textColor="@color/red"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toRightOf="@+id/usage_qty_lbl_tv"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textStyle="bold"/>
 
+            <TextView
+                android:id="@+id/remaining_qty_lbl_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/remaining_qty_label"
+                android:textSize="14sp"
+                app:layout_constraintRight_toLeftOf="@+id/remaining_qty_tv"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/remaining_qty_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="10dp"
+                android:gravity="center_vertical"
+                android:text="0.00"
+                android:textColor="@color/red"
+                android:textSize="14sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textStyle="bold"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!--  Usage Btn -->
         <Button

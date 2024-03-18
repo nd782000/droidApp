@@ -16,6 +16,7 @@ import com.AdminMatic.databinding.FragmentWoItemBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.GsonBuilder
+import com.squareup.picasso.Picasso
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -47,6 +48,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
     private var chargeTypeArray:Array<String> = arrayOf("No Charge", "Flat", "T & M")
 
     private var editMode = false
+    private var editsMade = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +59,30 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.wo_item_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+
+        when (item.itemId) {
+            R.id.edit -> {
+                if (GlobalVars.permissions!!.scheduleEdit == "1") {
+                    editMode = true
+                    setUpViews()
+                }
+                else {
+                    globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_schedule_edit))
+                }
+                return true
+            }
+
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
 
     private var _binding: FragmentWoItemBinding? = null
     private val binding get() = _binding!!
@@ -71,6 +97,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         globalVars = GlobalVars()
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.work_order_item)
+
+        setHasOptionsMenu(true)
 
         return myView
     }
@@ -93,8 +121,25 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             }
 
         }
-        binding.statusBtn.setOnClickListener{
+        binding.statusBtn.setOnClickListener {
             showStatusMenu()
+        }
+
+        binding.addNewTaskBtn.setOnClickListener {
+            if (woItem == null || editsMade) {
+                globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.submit_item_first_title), getString(R.string.submit_item_first_body))
+                return@setOnClickListener
+            }
+
+            var taskStatus = "1"
+            if (woItem?.tasks!!.isNotEmpty()) {
+                taskStatus = woItem?.tasks!![0].status
+            }
+            //ntroller(_imageType: "Task", _taskID: "0", _taskStatus: taskStatus, _customerID: self.workOrder.customer!, _images: [], _allowImages: self.workOrder.allowImages!)
+
+            val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",arrayOf(),workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"","", "","", taskStatus,"","", "")
+            myView.findNavController().navigate(directions)
+
         }
 
 
@@ -306,7 +351,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         println("Cell clicked with task: ${data.task}")
         val images:Array<Image> = if(data.images == null){
             arrayOf()
-        }else{
+        }
+        else {
             data.images!!
         }
 
@@ -463,23 +509,43 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
         when(status) {
             "0" -> {
                 println("1")
-                binding.statusBtn.setBackgroundResource(R.drawable.ic_not_started)
+                Picasso.with(context)
+                    .load(R.drawable.ic_not_started)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusGray))
+                binding.statusTv.text = getString(R.string.not_started)
             }
             "1" -> {
                 println("1")
-                binding.statusBtn.setBackgroundResource(R.drawable.ic_not_started)
+                Picasso.with(context)
+                    .load(R.drawable.ic_not_started)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusGray))
+                binding.statusTv.text = getString(R.string.not_started)
             }
             "2" -> {
                 println("2")
-                binding.statusBtn.setBackgroundResource(R.drawable.ic_in_progress)
+                Picasso.with(context)
+                    .load(R.drawable.ic_in_progress)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusOrange))
+                binding.statusTv.text = getString(R.string.in_progress)
             }
             "3" -> {
                 println("3")
-                binding.statusBtn.setBackgroundResource(R.drawable.ic_done)
+                Picasso.with(context)
+                    .load(R.drawable.ic_done)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusGreen))
+                binding.statusTv.text = getString(R.string.finished)
             }
             "4" -> {
                 println("4")
-                binding.statusBtn.setBackgroundResource(R.drawable.ic_canceled)
+                Picasso.with(context)
+                    .load(R.drawable.ic_canceled)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusRed))
+                binding.statusTv.text = getString(R.string.canceled)
             }
         }
     }
@@ -506,8 +572,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
         binding.woItemChargeSpinner.adapter = adapter
 
-
-        if (woItem == null){
+        if (woItem == null) {
             println("woItem = null")
 
             binding.progressBar.visibility = View.INVISIBLE
@@ -517,7 +582,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             binding.woItemEstCl.visibility = View.VISIBLE
 
 
-            binding.woItemLeadTaskBtn.visibility = View.GONE
+            binding.addNewTaskBtn.visibility = View.GONE
             binding.woItemProfitCl.visibility = View.GONE
             binding.woItemUsageBtn.visibility = View.GONE
             binding.woItemTasksRv.visibility = View.GONE
@@ -525,9 +590,10 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
             binding.woItemSubmitBtn.visibility = View.VISIBLE
 
+            binding.usageQuantityCl.visibility = View.GONE
 
-
-        }else{
+        }
+        else {
 
             // set text, spinner and switch values
             binding.woItemSearch.isIconified = false // Expand it
@@ -537,28 +603,29 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
             binding.woItemEstValEt.setText(woItem!!.est)
             binding.woItemProfitCl.visibility = View.VISIBLE
 
-
+            binding.usageQuantityCl.visibility = View.VISIBLE
+            binding.usageQtyTv.text = woItem!!.usageQty
+            binding.remainingQtyTv.text = woItem!!.remaining
 
             if (woItem != null){
                 binding.woItemChargeSpinner.setSelection(woItem!!.charge.toInt() - 1)
             }
 
 
-
-            if (woItem!!.hideUnits == "1"){
+            if (woItem!!.hideUnits == "1") {
                 binding.woItemHideQtySwitch.isChecked = true
             }
 
             binding.woItemQtyValEt.setText(woItem!!.act)
 
-            if (woItem!!.taxType == "1"){
+            if (woItem!!.taxType == "1") {
                 binding.woItemTaxableSwitch.isChecked = true
             }
             binding.woItemPriceValEt.setText(woItem!!.price)
 
             binding.woItemTotalValEt.setText(woItem!!.total)
 
-            if (editMode){
+            if (editMode) {
                 println("editMode = true")
 
                 // woItemSearch.isEnabled = true
@@ -582,7 +649,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 binding.woItemHideCl.visibility = View.VISIBLE
                 binding.woItemTaxCl.visibility = View.VISIBLE
                 binding.woItemTotalCl.visibility = View.VISIBLE
-                binding.woItemLeadTaskBtn.visibility = View.VISIBLE
+                binding.addNewTaskBtn.visibility = View.VISIBLE
 
                 binding.woItemProfitCl.visibility = View.GONE
 
@@ -593,7 +660,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
 
                 binding.woItemProfitCl.visibility = View.GONE
 
-            }else{
+            }
+            else {
                 println("editMode = false")
 
                 //woItemSearch.isEnabled = false
@@ -621,7 +689,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener ,AdapterView.OnItemSele
                 binding.woItemHideCl.visibility = View.GONE
                 binding.woItemTaxCl.visibility = View.GONE
                 binding.woItemTotalCl.visibility = View.GONE
-                binding.woItemLeadTaskBtn.visibility = View.GONE
+                binding.addNewTaskBtn.visibility = View.GONE
 
                 binding.woItemProfitCl.visibility = View.VISIBLE
 

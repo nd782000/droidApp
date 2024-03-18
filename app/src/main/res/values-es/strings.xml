@@ -771,7 +771,6 @@
     <string name="edit_lead_menu">Editar pista</string>
     <string name="new_lead">Pista nueva</string>
     <string name="edit_lead">Editar pista #%1$s</string>
-    <string name="assign_lead_tasks">Asignar tareas de pista</string>
     <string name="lead_number">Pista #%1$s</string>
     <string name="add_new_lead">Añadir nuevo pista</string>
     <string name="dialogue_incomplete_lead">Pista incompleto</string>

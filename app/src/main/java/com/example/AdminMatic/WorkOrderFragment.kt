@@ -37,6 +37,7 @@ import org.json.JSONObject
 
 interface WoItemCellClickListener {
     fun onWoItemCellClickListener(data:WoItem)
+    fun onAddNewItemClickListener()
 }
 
 class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
@@ -732,6 +733,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         println("Cell clicked with woItem: ${data.item}")
 
 
+
         data.let {
 
             //var woItemFragment: WoItemFragment
@@ -747,6 +749,10 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
         }
+    }
+
+    override fun onAddNewItemClickListener() {
+        println("Add New Woitem")
     }
 
 

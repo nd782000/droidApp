@@ -5,10 +5,12 @@ import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
@@ -47,10 +49,27 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
     override fun onBindViewHolder(holder: WoItemViewHolder, position: Int) {
 
-
         globalVars = GlobalVars()
 
+
+
+        val allCl:ConstraintLayout = holder.itemView.findViewById(R.id.all_cl)
+        val addNewText:TextView = holder.itemView.findViewById(R.id.add_new_item_tv)
+        if (position == filterList.size) {
+            allCl.visibility = View.INVISIBLE
+            addNewText.visibility = View.VISIBLE
+            holder.itemView.setOnClickListener {
+                cellClickListener.onAddNewItemClickListener()
+            }
+            return
+        }
+        else {
+            allCl.visibility = View.VISIBLE
+            addNewText.visibility = View.INVISIBLE
+        }
+
         val woItem: WoItem = filterList[holder.bindingAdapterPosition]
+
         holder.bind(woItem)
         //println("queryText = $queryText")
         //text highlighting for first string
@@ -114,7 +133,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
 
 
-        val data = filterList[position]
+        val data = filterList[holder.bindingAdapterPosition]
         holder.itemView.setOnClickListener {
             cellClickListener.onWoItemCellClickListener(data)
         }
@@ -170,7 +189,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
                                                     if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
                                                         globalVars.playSaveSound(myView.context)
-                                                        filterList.removeAt(position)
+                                                        filterList.removeAt(holder.bindingAdapterPosition)
                                                         notifyDataSetChanged()
                                                     }
 
@@ -258,7 +277,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
     override fun getItemCount(): Int{
 
         //print("getItemCount = ${filterList.size}")
-        return filterList.size
+        return filterList.size + 1
 
     }
 

@@ -710,7 +710,6 @@
     <string name="woItemTaxableLbl">Taxable:</string>
     <string name="woItemPriceLbl">Price:</string>
     <string name="woItemTotalLbl">Total:</string>
-    <string name="assign_lead_tasks">Assign Lead Tasks</string>
     <string name="add_usage">Add Usage</string>
     <string name="woItemSubmitBtn">Submit</string>
     <string name="not_started">Not Started</string>
@@ -1254,6 +1253,13 @@
     <string name="wo_sort_highest_price">Highest Price</string>
     <string name="wo_sort_lowest_profit">Lowest Profit</string>
     <string name="wo_sort_highest_profit">Highest Profit</string>
+
+    <!-- Woitem order view update stuff -->
+    <string name="usage_qty_label">Usage Qty:</string>
+    <string name="remaining_qty_label">Remaining Qty:</string>
+    <string name="add_new_task">Add New Task</string>
+    <string name="submit_item_first_title">Submit First</string>
+    <string name="submit_item_first_body">Please submit the item before adding tasks.</string>
 
 
 
