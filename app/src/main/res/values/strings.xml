@@ -1236,6 +1236,8 @@
     <string name="all_contacts">All Contacts</string>
     <string name="add_note">Add Note</string>
     <string name="note_label">Note:</string>
+
+    <!-- Work Order settings view stuff -->
     <string name="all_dates_label">All Dates:</string>
     <string name="work_order_schedule_dates_label">Work Order Schedule Dates:</string>
     <string name="end_label">End:</string>
@@ -1243,6 +1245,15 @@
     <string name="work_order_department_and_main_crew_label">Work Order Department &amp; Crew:</string>
     <string name="status_label">Status:</string>
     <string name="sort_label">Sort:</string>
+    <string name="wo_sort_oldest">Oldest</string>
+    <string name="wo_sort_newest">Newest</string>
+    <string name="wo_sort_next_planned">Next Planned</string>
+    <string name="wo_sort_lowest_cost">Lowest Cost</string>
+    <string name="wo_sort_highest_cost">Highest Cost</string>
+    <string name="wo_sort_lowest_price">Lowest Price</string>
+    <string name="wo_sort_highest_price">Highest Price</string>
+    <string name="wo_sort_lowest_profit">Lowest Profit</string>
+    <string name="wo_sort_highest_profit">Highest Profit</string>
 
 
 

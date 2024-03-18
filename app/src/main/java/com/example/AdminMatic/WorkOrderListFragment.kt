@@ -69,7 +69,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setFragmentResultListener("WorkOrderListSettings") { _, bundle ->
+        setFragmentResultListener("workOrderListSettings") { _, bundle ->
             val newStartDate = bundle.getString("startDate")
             val newEndDate = bundle.getString("endDate")
             val newLockedDates = bundle.getString("lockedDates")
@@ -271,12 +271,14 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
                 val params: MutableMap<String, String> = HashMap()
                 params["companyUnique"] = loggedInEmployee!!.companyUnique
                 params["sessionKey"] = loggedInEmployee!!.sessionKey
-                params["employeeID"] = ""
-                params["startDate"] = ""
-                params["endDate"] = ""
-                params["active"] = "1"
                 params["custID"] = ""
-
+                params["startDate"] = startDate
+                params["endDate"] = endDate
+                params["deptID"] = department
+                params["crewID"] = crew
+                params["status"] = status
+                params["locked"] = lockedDates
+                params["order"] = sort
 
                 println("params = $params")
                 return params

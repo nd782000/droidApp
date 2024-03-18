@@ -38,10 +38,31 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
     private var status = ""
     private var sort = ""
 
-    private lateinit var departmentAdapter: ArrayAdapter<String>
-    private lateinit var crewAdapter: ArrayAdapter<String>
+    private lateinit var departmentsAdapter: ArrayAdapter<String>
+    private lateinit var crewsAdapter: ArrayAdapter<String>
     private lateinit var statusAdapter: ArrayAdapter<String>
     private lateinit var sortAdapter: ArrayAdapter<String>
+
+    private var statusNameArray = arrayOf<String>()
+
+    private var statusArray = arrayOf("","1", "2", "3", "4", "5")
+
+    private var sortNameArray = arrayOf<String>()
+
+    private var sortArray = arrayOf(
+        "",
+        "old",
+        "new",
+        "next_plan",
+        "low_cost",
+        "high_cost",
+        "low_price",
+        "high_price",
+        "low_profit",
+        "high_profit",
+        )
+
+
 
 
     //lateinit  var globalVars:GlobalVars
@@ -60,11 +81,11 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
         }
 
         if (startDate != "") {
-            startDateValue = LocalDate.parse(startDate, GlobalVars.dateFormatterPHP)
+            startDateValue = LocalDate.parse(startDate, GlobalVars.dateFormatterYYYYMMDD)
         }
 
         if (endDate != "") {
-            endDateValue = LocalDate.parse(endDate, GlobalVars.dateFormatterPHP)
+            endDateValue = LocalDate.parse(endDate, GlobalVars.dateFormatterYYYYMMDD)
         }
 
     }
@@ -86,7 +107,7 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 println("handleOnBackPressed")
-                setFragmentResult("leadListSettings", bundleOf( "startDate" to startDate,
+                setFragmentResult("workOrderListSettings", bundleOf( "startDate" to startDate,
                                                                                 "endDate" to endDate,
                                                                                 "lockedDates" to lockedDates,
                                                                                 "department" to department,
@@ -113,6 +134,12 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
                 binding.endEt.text.clear()
                 endDate = ""
             }
+            else {
+                startDate = GlobalVars.dateFormatterYYYYMMDD.format(startDateValue)
+                binding.startEt.setText(startDateValue.format(GlobalVars.dateFormatterShort))
+                endDate = GlobalVars.dateFormatterYYYYMMDD.format(endDateValue)
+                binding.endEt.setText(endDateValue.format(GlobalVars.dateFormatterShort))
+            }
         }
 
         if (startDate != "" || endDate != "") {
@@ -133,13 +160,16 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
 
                     if (binding.endEt.text.isBlank()) {
                         startDateValue = pendingDate
+                        startDate = GlobalVars.dateFormatterYYYYMMDD.format(startDateValue)
                         binding.startEt.setText(startDateValue.format(GlobalVars.dateFormatterShort))
                         endDateValue = pendingDate
+                        endDate = startDate
                         binding.endEt.setText(endDateValue.format(GlobalVars.dateFormatterShort))
                         binding.allDatesSwitch.isChecked = false
                     }
                     else if (pendingDate < endDateValue) {
                         startDateValue = pendingDate
+                        startDate = GlobalVars.dateFormatterYYYYMMDD.format(startDateValue)
                         binding.startEt.setText(startDateValue.format(GlobalVars.dateFormatterShort))
                         binding.allDatesSwitch.isChecked = false
                     }
@@ -151,7 +181,8 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
         }
 
         if (startDate != "") {
-            startDateValue = LocalDate.parse(startDate, GlobalVars.dateFormatterPHP)
+            startDateValue = LocalDate.parse(startDate, GlobalVars.dateFormatterYYYYMMDD)
+            binding.startEt.setText(startDateValue.format(GlobalVars.dateFormatterShort))
         }
 
         // End Date Picker
@@ -165,12 +196,15 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
                     if (binding.startEt.text.isBlank()) {
                         startDateValue = pendingDate
                         binding.startEt.setText(startDateValue.format(GlobalVars.dateFormatterShort))
+                        startDate = GlobalVars.dateFormatterYYYYMMDD.format(startDateValue)
                         endDateValue = pendingDate
+                        endDate = startDate
                         binding.endEt.setText(endDateValue.format(GlobalVars.dateFormatterShort))
                         binding.allDatesSwitch.isChecked = false
                     }
                     else if (pendingDate > startDateValue) {
                         endDateValue = pendingDate
+                        endDate = GlobalVars.dateFormatterYYYYMMDD.format(endDateValue)
                         binding.endEt.setText(endDateValue.format(GlobalVars.dateFormatterShort))
                         binding.allDatesSwitch.isChecked = false
                     }
@@ -182,7 +216,8 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
         }
 
         if (endDate != "") {
-            endDateValue = LocalDate.parse(endDate, GlobalVars.dateFormatterPHP)
+            endDateValue = LocalDate.parse(endDate, GlobalVars.dateFormatterYYYYMMDD)
+            binding.endEt.setText(endDateValue.format(GlobalVars.dateFormatterShort))
         }
 
         // Show Locked Dates Switch
@@ -200,141 +235,131 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
         }
         binding.allDatesSwitch.jumpDrawablesToCurrentState()
 
+        // Department Spinner
+        val departmentNameList = mutableListOf<String>()
+        GlobalVars.departments!!.forEach {
+            departmentNameList.add(it.name)
+        }
+        departmentNameList[0] = getString(R.string.no_filter)
 
+        departmentsAdapter = ArrayAdapter<String>(
+            myView.context,
+            android.R.layout.simple_spinner_dropdown_item,
+            departmentNameList
+        )
+        binding.departmentSpinner.adapter = departmentsAdapter
+        binding.departmentSpinner.onItemSelectedListener = this@WorkOrderListSettingsFragment
 
+        if (department != "") {
+            GlobalVars.departments!!.forEachIndexed { i, e ->
+                if (e.ID == department) {
+                    binding.departmentSpinner.setSelection(i)
+                }
+            }
+        }
+        else {
+            binding.departmentSpinner.setSelection(0)
+        }
 
+        // Crew Spinner
+        val crewNameList = mutableListOf<String>()
+        GlobalVars.crews!!.forEach {
+            crewNameList.add(it.name)
+        }
+        crewNameList[0] = getString(R.string.no_filter)
 
+        crewsAdapter = ArrayAdapter<String>(
+            myView.context,
+            android.R.layout.simple_spinner_dropdown_item,
+            crewNameList.toTypedArray()
+        )
+        binding.crewSpinner.adapter = crewsAdapter
+        binding.crewSpinner.onItemSelectedListener = this@WorkOrderListSettingsFragment
 
+        if (crew != "") {
+            GlobalVars.crews!!.forEachIndexed { i, e ->
+                if (e.ID == crew) {
+                    binding.crewSpinner.setSelection(i)
+                }
+            }
+        }
+        else {
+            binding.crewSpinner.setSelection(0)
+        }
 
-        /*
-        val statusArray = arrayOf("No Filter", getString(R.string.not_started), getString(R.string.in_progress), getString(R.string.finished), getString(R.string.canceled), getString(R.string.waiting))
+        // Status Picker
+        statusNameArray = arrayOf (
+            getString(R.string.no_filter),
+            getString(R.string.not_started),
+            getString(R.string.in_progress),
+            getString(R.string.finished),
+            getString(R.string.canceled),
+            getString(R.string.waiting)
+        )
+
         statusAdapter = ArrayAdapter<String>(
             myView.context,
             android.R.layout.simple_spinner_dropdown_item,
-            statusArray
+            statusNameArray
         )
         binding.statusSpinner.adapter = statusAdapter
-        binding.statusSpinner.onItemSelectedListener = this@LeadListSettingsFragment
+        binding.statusSpinner.onItemSelectedListener = this@WorkOrderListSettingsFragment
 
-        binding.salesRepSearchRv.apply {
-            layoutManager = LinearLayoutManager(activity)
-
-
-            adapter = activity?.let {
-                EmployeesAdapter(
-                    GlobalVars.employeeList!!.toMutableList(), false, myView.context, this@LeadListSettingsFragment
-                )
-            }
-
-            val itemDecoration: RecyclerView.ItemDecoration =
-                DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
-            binding.salesRepSearchRv.addItemDecoration(itemDecoration)
-
-            binding.salesRepSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
-                androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    binding.salesRepSearchRv.visibility = View.GONE
-                    if (salesRepName.isNotBlank()) {
-                        binding.salesRepSearch.setQuery(salesRepName, false)
-                    }
-                    else {
-                        binding.salesRepSearch.setQuery("", false)
-                    }
-                    binding.salesRepSearch.clearFocus()
-                    return false
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    println("onQueryTextChange = $newText")
-                    if(newText == ""){
-                        binding.salesRepSearchRv.visibility = View.INVISIBLE
-                    }else{
-                        binding.salesRepSearchRv.visibility = View.VISIBLE
-                    }
-                    (adapter as EmployeesAdapter).filter.filter(newText)
-                    return false
-                }
-
-            })
-
-
-            val closeButton: View? = binding.salesRepSearch.findViewById(androidx.appcompat.R.id.search_close_btn)
-            closeButton?.setOnClickListener {
-                binding.salesRepSearch.setQuery("", false)
-                salesRep = ""
-                salesRepName = ""
-                //myView.hideKeyboard()
-                binding.salesRepSearch.clearFocus()
-                binding.salesRepSearchRv.visibility = View.INVISIBLE
-            }
-
-            binding.salesRepSearch.setOnQueryTextFocusChangeListener { _, isFocused ->
-                if (!isFocused) {
-                    //binding.salesRepSearch.setQuery(lead!!.custName, false)
-                    binding.salesRepSearchRv.visibility = View.INVISIBLE
-                }
-            }
-
-            binding.salesRepSearch.setOnQueryTextFocusChangeListener { _, isFocused ->
-                if (!isFocused) {
-                    if (salesRepName.isNotBlank()) {
-                        binding.salesRepSearch.setQuery(salesRepName, false)
-                    }
-                    else {
-                        binding.salesRepSearch.setQuery("", false)
-                    }
-                    binding.salesRepSearchRv.visibility = View.INVISIBLE
-                }
-            }
+        if (status == "") {
+            binding.statusSpinner.setSelection(0)
         }
-
-        val zonesList = mutableListOf<String>()
-        GlobalVars.zones!!.forEach {
-            zonesList.add(it.name)
-        }
-        zoneAdapter = ArrayAdapter<String>(
-            myView.context,
-            android.R.layout.simple_spinner_dropdown_item,
-            zonesList
-        )
-        binding.zoneSpinner.adapter = zoneAdapter
-        binding.zoneSpinner.onItemSelectedListener = this@LeadListSettingsFragment
-
-        binding.clearAllFiltersBtn.setOnClickListener {
-            setFragmentResult("leadListSettings", bundleOf("status" to "", "salesRep" to "", "zone" to ""))
-            myView.findNavController().navigateUp()
-        }
-
-
-        // populate fields
-        if (status.isNotBlank()) {
+        else {
             binding.statusSpinner.setSelection(status.toInt())
         }
 
-        if (salesRep.isNotBlank()) {
-            for (i in 0 until GlobalVars.employeeList!!.size) {
-                if (salesRep == GlobalVars.employeeList!![i].ID) {
-                    binding.salesRepSearch.setQuery(GlobalVars.employeeList!![i].name, false)
-                    binding.salesRepSearch.clearFocus()
-                    binding.salesRepSearchRv.visibility = View.INVISIBLE
-                    break
-                }
-            }
+        // Sort Picker
+        sortNameArray = arrayOf (
+            getString(R.string.no_filter),
+            getString(R.string.wo_sort_oldest),
+            getString(R.string.wo_sort_newest),
+            getString(R.string.wo_sort_next_planned),
+            getString(R.string.wo_sort_lowest_cost),
+            getString(R.string.wo_sort_highest_cost),
+            getString(R.string.wo_sort_lowest_price),
+            getString(R.string.wo_sort_highest_price),
+            getString(R.string.wo_sort_lowest_profit),
+            getString(R.string.wo_sort_highest_profit)
+        )
+
+        sortAdapter = ArrayAdapter<String>(
+            myView.context,
+            android.R.layout.simple_spinner_dropdown_item,
+            sortNameArray
+        )
+        binding.sortSpinner.adapter = sortAdapter
+        binding.sortSpinner.onItemSelectedListener = this@WorkOrderListSettingsFragment
+
+        if (sort == "") {
+            binding.sortSpinner.setSelection(0)
+        }
+        else {
+            binding.sortSpinner.setSelection(sortArray.indexOf(sort))
         }
 
-        if (zone.isNotBlank()) {
-            for (i in 0 until GlobalVars.zones!!.size) {
-                if (zone == GlobalVars.zones!![i].ID) {
-                    binding.zoneSpinner.setSelection(i)
-                    break
-                }
-            }
+        // Clear all filters button
+        binding.clearAllFiltersBtn.setOnClickListener {
+            binding.allDatesSwitch.isChecked = true
+            binding.startEt.text.clear()
+            binding.endEt.text.clear()
+            binding.lockedSwitch.isChecked = false
+            binding.departmentSpinner.setSelection(0)
+            binding.crewSpinner.setSelection(0)
+            binding.statusSpinner.setSelection(0)
+            binding.sortSpinner.setSelection(0)
+
+            startDate = ""
+            endDate = ""
+            lockedDates = ""
+            department = ""
+            crew = ""
+            status = ""
+            sort = ""
         }
-
-         */
-
-
 
     }
 
@@ -343,24 +368,24 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        /*
+
         when (parent!!.id) {
-            R.id.status_spinner -> {
-                status = position.toString()
-                if (status == "0") {
-                    status = ""
-                }
+            R.id.department_spinner -> {
+                department = GlobalVars.departments?.get(position)?.ID.toString()
+                if (department == "0") { department = "" }
             }
-            R.id.zone_spinner -> {
-                println("Spinner was set")
-                zone = GlobalVars.zones!![position].ID
-                if (zone == "0") {
-                    zone = ""
-                }
+            R.id.crew_spinner -> {
+                crew = GlobalVars.crews?.get(position)?.ID.toString()
+                if (crew == "0") { crew = "" }
+            }
+            R.id.status_spinner -> {
+                status = statusArray[position]
+            }
+            R.id.sort_spinner -> {
+                sort = sortArray[position]
             }
         }
 
-         */
     }
 
 
