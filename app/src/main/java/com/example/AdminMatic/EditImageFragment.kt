@@ -545,7 +545,7 @@ class EditImageFragment : Fragment(), CustomerCellClickListener, VendorCellClick
 
         // ===== POPULATE FIELDS =====
 
-        if (image!!.tags!!.isNotEmpty()) {
+        if (image!!.tags != null && image!!.tags!!.isNotEmpty()) {
             val tagsListTemp = image!!.tags!!.split(",").map { it.trim() }
             appliedTagsList = tagsListTemp.toMutableList()
         }

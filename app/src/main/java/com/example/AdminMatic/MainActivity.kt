@@ -627,7 +627,9 @@ data class Invoice(var ID: String = "0",
 @Parcelize
 data class Item(
     var ID: String,
+    @field:SerializedName("name", alternate= ["item"])
     val name: String,
+    val fullname: String,
     var typeID:String?,
     val type:String?,
     val remQty:String?,
@@ -635,6 +637,7 @@ data class Item(
     var unit:String?,
     val salesDescription:String?,
     val tax:String?,
+    val subcontractor: String = "0",
     var vendors: Array<Vendor>? = null,
     var workOrders: Array<WorkOrder>? = null
 ): Parcelable{

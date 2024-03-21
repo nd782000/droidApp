@@ -753,6 +753,9 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
     override fun onAddNewItemClickListener() {
         println("Add New Woitem")
+        val directions = WorkOrderFragmentDirections.navigateToWoItem(null, workOrder!!)
+        directions.listIndex = listIndex
+        myView.findNavController().navigate(directions)
     }
 
 

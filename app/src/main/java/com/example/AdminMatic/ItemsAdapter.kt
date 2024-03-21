@@ -17,18 +17,15 @@ import com.AdminMatic.R
 import java.util.*
 
 
-class ItemsAdapter(private val list: MutableList<Item>, private val context: Context, private val cellClickListener: ItemCellClickListener)
+class ItemsAdapter(private val list: MutableList<Item>, private val context: Context, private val cellClickListener: ItemCellClickListener, private val minimalView: Boolean)
 
     : RecyclerView.Adapter<ItemViewHolder>(), Filterable {
 
 
     var filterList:MutableList<Item> = emptyList<Item>().toMutableList()
-
-
     var queryText = ""
 
     init {
-
         filterList = list
     }
 
@@ -40,20 +37,19 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
 
         val item: Item = filterList[position]
-        holder.bind(item, context)
+        holder.bind(item, context, minimalView)
 
         val listItemName = holder.itemView.findViewById<TextView>(R.id.list_item_name_tv)
 
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
-        //println("queryText = $queryText")
         //text highlighting for first string
         if (queryText.isNotEmpty() && queryText != "") {
 
-            val startPos1: Int = filterList[position].name.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
+            val startPos1: Int = filterList[position].fullname.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos1 = startPos1 + queryText.length
             if (startPos1 != -1) {
-                val spannable: Spannable = SpannableString(filterList[position].name)
+                val spannable: Spannable = SpannableString(filterList[position].fullname)
                 val colorStateList = ColorStateList(
                     arrayOf(intArrayOf()),
                     intArrayOf(Color.parseColor("#005100"))
@@ -68,10 +64,10 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
                 )
                 listItemName.text = spannable
             } else {
-                listItemName.text = filterList[position].name
+                listItemName.text = filterList[position].fullname
             }
         } else {
-            listItemName.text = filterList[position].name
+            listItemName.text = filterList[position].fullname
         }
 
 
@@ -104,7 +100,7 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
                     resultList = list
                 } else {
                     for (row in list) {
-                        if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
+                        if (row.fullname.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
                             resultList.add(row)
                         }
                     }
@@ -160,19 +156,24 @@ class ItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         mPriceView = itemView.findViewById(R.id.list_item_price_tv)
     }
 
-    fun bind(item: Item, context:Context) {
-        mNameView?.text = item.name
+    fun bind(item: Item, context:Context, minimalView: Boolean) {
+        mNameView?.text = item.fullname
         mTypeView?.text = item.type
 
-        if (item.unit != null) {
-            mPriceView?.text = context.getString(R.string.item_price_each, item.price, item.unit)
+        if (minimalView) {
+            mTypeView?.visibility = View.GONE
+            mPriceView?.visibility = View.GONE
         }
         else {
-            mPriceView?.text = "---"
-        }
+            if (item.unit != null) {
+                mPriceView?.text = context.getString(R.string.item_price_each, item.price, item.unit)
+            } else {
+                mPriceView?.text = "---"
+            }
 
-        if (GlobalVars.permissions!!.itemsMoney == "0") {
-            mPriceView?.visibility = View.GONE
+            if (GlobalVars.permissions!!.itemsMoney == "0") {
+                mPriceView?.visibility = View.GONE
+            }
         }
 
     }

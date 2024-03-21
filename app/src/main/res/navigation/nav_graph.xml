@@ -1254,7 +1254,10 @@
             app:destination="@id/usageEntryFragment" />
         <action
             android:id="@+id/navigateWoItemToImageUpload"
-            app:destination="@id/imageUpload" />
+            app:destination="@id/imageUpload"/>
+        <action
+            android:id="@+id/navigateWoItemToImage"
+            app:destination="@id/imageFragment"/>
     </fragment>
     <fragment
         android:id="@+id/usageEntryFragment"

@@ -1258,9 +1258,20 @@
     <string name="usage_qty_label">Usage Qty:</string>
     <string name="remaining_qty_label">Remaining Qty:</string>
     <string name="add_new_task">Add New Task</string>
-    <string name="submit_item_first_title">Submit First</string>
+    <string name="submit_item_first_title">Submit Item First</string>
     <string name="submit_item_first_body">Please submit the item before adding tasks.</string>
-
+    <string name="submit_item_first_status_body">Select and submit item before changing status.</string>
+    <string name="submit_item_first_images_body">Select and submit item before adding images.</string>
+    <string name="select_an_item_body">Select an item.</string>
+    <string name="no_edits_made">No Edits Made</string>
+    <string name="cancel_editing">Cancel Editing</string>
+    <string name="set_a_quantity">Set a quantity.</string>
+    <string name="set_estimated_quantity">Set estimated quantity.</string>
+    <string name="add_task_or_description">Add task or description?</string>
+    <string name="select_item">Select Item</string>
+    <string name="images_label">Images:</string>
+    <string name="edit_to_add_images_title">Edit to Add Images</string>
+    <string name="edit_to_add_images_body">Select the edit option to add or edit images.</string>
 
 
 
