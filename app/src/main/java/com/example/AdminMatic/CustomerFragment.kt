@@ -700,7 +700,7 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
                 lat = customer.lat!!
                 val intent = Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("geo:0,0?q="+lng+","+lat+" (" + customer.sysname + ")")
+                    Uri.parse("geo:0,0?q="+lat+","+lng+" (" + customer.sysname + ")")
                 )
                 startActivity(intent)
             }

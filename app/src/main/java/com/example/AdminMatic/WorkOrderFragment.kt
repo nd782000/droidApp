@@ -321,7 +321,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                                 lat = workOrder!!.lat!!
                                 val intent = Intent(
                                     Intent.ACTION_VIEW,
-                                    Uri.parse("geo:0,0?q="+lng+","+lat+" (" + workOrder!!.custName + ")")
+                                    Uri.parse("geo:0,0?q="+lat+","+lng+" (" + workOrder!!.custName + ")")
                                 )
                                 startActivity(intent)
                             }
