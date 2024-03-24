@@ -46,10 +46,10 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
         //text highlighting for first string
         if (queryText.isNotEmpty() && queryText != "") {
 
-            val startPos1: Int = filterList[position].fullname.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
+            val startPos1: Int = filterList[position].name.lowercase(Locale.getDefault()).indexOf(queryText.lowercase(Locale.getDefault()))
             val endPos1 = startPos1 + queryText.length
             if (startPos1 != -1) {
-                val spannable: Spannable = SpannableString(filterList[position].fullname)
+                val spannable: Spannable = SpannableString(filterList[position].name)
                 val colorStateList = ColorStateList(
                     arrayOf(intArrayOf()),
                     intArrayOf(Color.parseColor("#005100"))
@@ -64,10 +64,10 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
                 )
                 listItemName.text = spannable
             } else {
-                listItemName.text = filterList[position].fullname
+                listItemName.text = filterList[position].name
             }
         } else {
-            listItemName.text = filterList[position].fullname
+            listItemName.text = filterList[position].name
         }
 
 
@@ -100,7 +100,7 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
                     resultList = list
                 } else {
                     for (row in list) {
-                        if (row.fullname.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
+                        if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
                             resultList.add(row)
                         }
                     }
@@ -157,7 +157,7 @@ class ItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     }
 
     fun bind(item: Item, context:Context, minimalView: Boolean) {
-        mNameView?.text = item.fullname
+        mNameView?.text = item.name
         mTypeView?.text = item.type
 
         if (minimalView) {

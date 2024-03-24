@@ -281,11 +281,19 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                         }
 
                         remainingQty = 0.0
-                        item!!.workOrders!!.forEach {
+                        item!!.workOrders?.forEach {
                             remainingQty += it.remQty!!.toDouble()
                         }
                         println("Vendors: ${item!!.unit!!}")
+                        if (item!!.vendors == null) {
+                            item!!.vendors = arrayOf()
+                        }
                         vendorsAdapter = ItemVendorsAdapter(item!!.vendors!!.toMutableList(), this.myView.context, item!!.unit!!, this)
+
+
+                        if (item!!.workOrders == null) {
+                            item!!.workOrders = arrayOf()
+                        }
 
                         workOrdersAdapter = ItemWorkOrdersAdapter(item!!.workOrders!!.toMutableList(), this.myView.context, item!!.unit!!, this)
                         binding.itemRecyclerView.layoutManager = LinearLayoutManager(this.myView.context, RecyclerView.VERTICAL, false)

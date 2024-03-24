@@ -216,7 +216,7 @@ class GlobalVars: Application() {
 
         var deviceID:String? = null
 
-        var phpVersion:String = "1-11"
+        var phpVersion:String = "1-10"
 
         var customerList: MutableList<Customer>? = null
 

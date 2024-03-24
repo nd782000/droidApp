@@ -258,7 +258,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener, ItemCellClickListener,
 
 
         binding.addNewTaskBtn.setOnClickListener {
-            if (woItem == null || editsMade) {
+            if (woItem == null || woItem!!.ID == "0") {
                 globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.submit_item_first_title), getString(R.string.submit_item_first_body))
                 return@setOnClickListener
             }
@@ -739,8 +739,14 @@ class WoItemFragment : Fragment(), TaskCellClickListener, ItemCellClickListener,
             taskStatus = woItem?.tasks!![0].status
         }
 
-        val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",arrayOf(),workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"","", "","", taskStatus,"","", "")
-        myView.findNavController().navigate(directions)
+        if (GlobalVars.permissions!!.scheduleEdit == "1") {
+            val directions = WoItemFragmentDirections.navigateWoItemToImageUpload("TASK",arrayOf(),workOrder.customer!!,workOrder.custName!!,workOrder.woID,woItem!!.ID,"","", "","", taskStatus,"","", "")
+            myView.findNavController().navigate(directions)
+        }
+        else {
+            globalVars.simpleAlert(myView.context, getString(R.string.access_denied), getString(R.string.no_permission_schedule_edit))
+        }
+        
     }
 
     private fun updateWorkOrderStatus(newStatus: String) {

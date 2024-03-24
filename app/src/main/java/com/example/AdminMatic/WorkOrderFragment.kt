@@ -753,9 +753,16 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
     override fun onAddNewItemClickListener() {
         println("Add New Woitem")
-        val directions = WorkOrderFragmentDirections.navigateToWoItem(null, workOrder!!)
-        directions.listIndex = listIndex
-        myView.findNavController().navigate(directions)
+
+        if (GlobalVars.permissions!!.scheduleEdit == "1") {
+            val directions = WorkOrderFragmentDirections.navigateToWoItem(null, workOrder!!)
+            directions.listIndex = listIndex
+            myView.findNavController().navigate(directions)
+        }
+        else {
+            com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_schedule_edit))
+        }
+
     }
 
 

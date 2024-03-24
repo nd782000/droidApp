@@ -973,7 +973,7 @@ data class Usage(var ID:String,
                  var type: String,
                  var addedBy: String,
                  var qty: String,
-
+                 var total_only: String,
                  var empID: String? = "",
                  var depID: String? = "",
                  var start: String? = null,
