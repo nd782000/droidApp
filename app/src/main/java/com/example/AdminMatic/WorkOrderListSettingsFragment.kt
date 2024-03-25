@@ -343,22 +343,17 @@ class WorkOrderListSettingsFragment : Fragment(), AdapterView.OnItemSelectedList
 
         // Clear all filters button
         binding.clearAllFiltersBtn.setOnClickListener {
-            binding.allDatesSwitch.isChecked = true
-            binding.startEt.text.clear()
-            binding.endEt.text.clear()
-            binding.lockedSwitch.isChecked = false
-            binding.departmentSpinner.setSelection(0)
-            binding.crewSpinner.setSelection(0)
-            binding.statusSpinner.setSelection(0)
-            binding.sortSpinner.setSelection(0)
 
-            startDate = ""
-            endDate = ""
-            lockedDates = ""
-            department = ""
-            crew = ""
-            status = ""
-            sort = ""
+            setFragmentResult("workOrderListSettings", bundleOf( "startDate" to "",
+                "endDate" to "",
+                "lockedDates" to "",
+                "department" to "",
+                "crew" to "",
+                "status" to "",
+                "sort" to ""))
+
+            myView.findNavController().navigateUp()
+
         }
 
     }

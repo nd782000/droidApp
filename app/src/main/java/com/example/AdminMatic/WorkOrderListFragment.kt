@@ -97,21 +97,7 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
                 status = newStatus!!
                 sort = newSort!!
 
-                if (newStartDate != "" ||
-                    newEndDate != "" ||
-                    newLockedDates != "" ||
-                    newDepartment != "" ||
-                    newCrew != "" ||
-                    newStatus != "" ||
-                    newSort != ""
-                ) {
-                    println("setting button color yellow")
-                    ImageViewCompat.setImageTintList(binding.settingsIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, R.color.settingsActive)))
-                }
-                else {
-                    println("setting button color default")
-                    ImageViewCompat.setImageTintList(binding.settingsIv, null)
-                }
+                setSettingsButtonColor()
 
                 getWorkOrders()
             }
@@ -245,7 +231,6 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
                         globalWorkOrdersList = temp.workOrders!!.toMutableList()
                         //globalDayNote = temp.note
 
-                        binding.workOrderCountTextview.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
 
                         if (this.isVisible) {
                             layoutViews()
@@ -377,8 +362,9 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
 
         }
 
-       //scheduleSpinner.onItemSelectedListener = this@WorkOrderListFragment
 
+        binding.workOrderCountTextview.text = getString(R.string.wo_count, globalWorkOrdersList!!.size.toString())
+        setSettingsButtonColor()
 
     }
 
@@ -393,7 +379,23 @@ class WorkOrderListFragment : Fragment(), WorkOrderCellClickListener {
         }
     }
 
-
+    private fun setSettingsButtonColor() {
+        if (startDate != "" ||
+            endDate != "" ||
+            lockedDates != "" ||
+            department != "" ||
+            crew != "" ||
+            status != "" ||
+            sort != ""
+        ) {
+            println("setting button color yellow")
+            ImageViewCompat.setImageTintList(binding.settingsIv, ColorStateList.valueOf(ContextCompat.getColor(myView.context, R.color.settingsActive)))
+        }
+        else {
+            println("setting button color default")
+            ImageViewCompat.setImageTintList(binding.settingsIv, null)
+        }
+    }
 
     fun showProgressView() {
         binding.progressBar.visibility = View.VISIBLE

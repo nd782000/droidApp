@@ -565,12 +565,6 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
                         imageList.addAll(loadMoreImageList)
                         println("imageList count = ${imageList.count()}")
 
-                        Toast.makeText(
-                            activity,
-                            "${imageList.count()} Images Loaded",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
                         adapter.filterList = imageList
                         imagesLoaded = true
                         binding.customerImagesRv.adapter = adapter

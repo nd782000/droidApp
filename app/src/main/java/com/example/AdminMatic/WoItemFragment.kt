@@ -561,11 +561,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener, ItemCellClickListener,
 
                 woItem!!.status = item!!.itemId.toString()
 
-
-
                 setStatus(woItem!!.status)
-                Toast.makeText(com.example.AdminMatic.myView.context, item.title, Toast.LENGTH_SHORT)
-                    .show()
 
                 showProgressView()
 

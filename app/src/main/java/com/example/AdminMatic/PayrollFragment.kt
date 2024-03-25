@@ -440,9 +440,9 @@ class PayrollFragment : Fragment(),AdapterView.OnItemSelectedListener{
             binding.breakEditTxt.setText("0")
 
             submitPayroll("1")
-        }else{
-            Toast.makeText(myView.context,"Nothing to Reset",Toast.LENGTH_LONG).show()
-
+        }
+        else {
+            println("Nothing to Reset")
 
 
         }
