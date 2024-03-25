@@ -1273,6 +1273,8 @@
     <string name="edit_to_add_images_title">Edit to Add Images</string>
     <string name="edit_to_add_images_body">Select the edit option to add or edit images.</string>
 
+    <!-- Items stuff -->
+    <string name="no_locations_saved">No Locations Saved</string>
 
 
 

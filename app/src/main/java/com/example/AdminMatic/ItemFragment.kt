@@ -74,6 +74,8 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showProgressView()
+
         println("item name = ${item!!.name}")
         println("item id = ${item!!.ID}")
         println("item price = ${item!!.price}")
@@ -123,7 +125,14 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                 when (tab!!.position) {
                     0 -> {
                         tableMode = 0
-                        binding.itemMapCl.visibility = View.VISIBLE
+                        if (markerList.isNotEmpty()) {
+                            binding.itemMapCl.visibility = View.VISIBLE
+                            binding.noLocationsTv.visibility = View.INVISIBLE
+                        }
+                        else {
+                            binding.itemMapCl.visibility = View.INVISIBLE
+                            binding.noLocationsTv.visibility = View.VISIBLE
+                        }
                         binding.itemRecyclerView.visibility = View.INVISIBLE
 
                         //serviceRecyclerView.adapter = currentServicesAdapter
@@ -131,6 +140,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                     1 -> {
                         tableMode = 1
                         binding.itemMapCl.visibility = View.INVISIBLE
+                        binding.noLocationsTv.visibility = View.INVISIBLE
                         binding.itemRecyclerView.visibility = View.VISIBLE
                         binding.itemFooterTv.text = getString(R.string.item_x_vendors, item!!.vendors!!.size.toString(), item!!.name)
                         binding.itemRecyclerView.adapter = vendorsAdapter
@@ -139,6 +149,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                     2 -> {
                         tableMode = 2
                         binding.itemMapCl.visibility = View.INVISIBLE
+                        binding.noLocationsTv.visibility = View.INVISIBLE
                         binding.itemRecyclerView.visibility = View.VISIBLE
                         binding.itemRecyclerView.adapter = workOrdersAdapter
 
@@ -181,16 +192,20 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
 
         item!!.vendors!!.forEach {
-            println("Marker: $it: ${it.lat}, ${it.lng}")
 
-            newMarker = googleMapGlobal.addMarker(
-                MarkerOptions()
-                    .position(LatLng(it.lat!!.toDouble(), it.lng!!.toDouble()))
-                    .title(getString(R.string.item_price_each, it.cost, item!!.unit))
-                    .snippet(it.name)
-            )
-            newMarker?.let { it1 -> markerList.add(it1) }
-            pinMapVendor[newMarker] = it
+            if (it.lat != null && it.lng != null) {
+                println("Marker: $it: ${it.lat}, ${it.lng}")
+
+                newMarker = googleMapGlobal.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(it.lat!!.toDouble(), it.lng!!.toDouble()))
+                        .title(getString(R.string.item_price_each, it.cost, item!!.unit))
+                        .snippet(it.name)
+                )
+                newMarker?.let { it1 -> markerList.add(it1) }
+                pinMapVendor[newMarker] = it
+            }
+
         }
 
         /*
@@ -208,15 +223,21 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
         for (marker in markerList) {
             builder.include(marker.position)
         }
-        val bounds = builder.build()
-        var cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
-        if (markerList.size == 1) {
-            // If there's only one pin, zoom out a little
-            cu = CameraUpdateFactory.newLatLngZoom(markerList[0].position, 16f)
+
+        if (markerList.isNotEmpty()) {
+            val bounds = builder.build()
+            var cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+            if (markerList.size == 1) {
+                // If there's only one pin, zoom out a little
+                cu = CameraUpdateFactory.newLatLngZoom(markerList[0].position, 16f)
+            }
+
+            googleMapGlobal.moveCamera(cu)
         }
-
-
-        googleMapGlobal.moveCamera(cu)
+        else {
+            binding.itemMapCl.visibility = View.INVISIBLE
+            binding.noLocationsTv.visibility = View.VISIBLE
+        }
 
         hideProgressView()
 
@@ -237,7 +258,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
         }
     }
 
-    private fun getItem(){
+    private fun getItem() {
         showProgressView()
 
         // get/item.php is bugged and doesn't store the item ID, so this is a band aid fix for now
