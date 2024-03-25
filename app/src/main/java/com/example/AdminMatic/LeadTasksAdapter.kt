@@ -283,7 +283,6 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
             popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 task.status = item!!.itemId.toString()
-                Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
 
                 if (item.itemId == 5 || item.itemId == 6) {
                     println("prompt for image upload")
@@ -294,19 +293,12 @@ class LeadTasksAdapter(private val list: MutableList<Task>, private val context:
 //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
                     builder.setPositiveButton(android.R.string.ok) { _, _ ->
-                        Toast.makeText(
-                            myView.context,
-                            android.R.string.ok, Toast.LENGTH_SHORT
-                        ).show()
 
                         cellClickListener.uploadImage(task)
                     }
 
                     builder.setNegativeButton(android.R.string.cancel) { _, _ ->
-                        Toast.makeText(
-                            myView.context,
-                            android.R.string.cancel, Toast.LENGTH_SHORT
-                        ).show()
+
                     }
 
                     /*

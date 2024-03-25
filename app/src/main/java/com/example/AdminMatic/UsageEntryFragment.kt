@@ -320,7 +320,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 }
 
                 if (!empAlreadyIncluded) {
-                    val usage = Usage("0", workOrder.woID, woItem!!.ID, woItem!!.type, GlobalVars.loggedInEmployee!!.ID,"0.00")
+                    val usage = Usage("0", workOrder.woID, woItem!!.ID, woItem!!.type, GlobalVars.loggedInEmployee!!.ID,"0.00", "0")
 
                     usage.empID = emp.ID
                     usage.empName = emp.name
@@ -357,7 +357,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             if (usageToLog.isEmpty()){
 
 
-                val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
+                val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00", "0")
                 usage.empID = null
                 usage.empName = null
                 usage.pic = null
@@ -411,7 +411,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     private fun addEmployee(emp:Employee){
         println("add employee with $emp")
 
-        val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00")
+        val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00", "0")
         usage.unitPrice = woItem?.price
         usage.totalPrice = woItem?.total
         usage.chargeType = woItem?.charge

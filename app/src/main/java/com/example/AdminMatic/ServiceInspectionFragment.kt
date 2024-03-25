@@ -376,26 +376,16 @@ class ServiceInspectionFragment : Fragment() {
                 builder.setMessage(R.string.dialogue_inspection_bad_checked_body)
 
                 builder.setPositiveButton(R.string.equipment_status_broken) { _, _ ->
-                    Toast.makeText(
-                        com.example.AdminMatic.myView.context,
-                        android.R.string.ok, Toast.LENGTH_SHORT
-                    ).show()
                     setEquipmentStatus("2")
                 }
 
                 builder.setNegativeButton(R.string.equipment_status_needs_repair) { _, _ ->
-                    Toast.makeText(
-                        com.example.AdminMatic.myView.context,
-                        android.R.string.cancel, Toast.LENGTH_SHORT
-                    ).show()
+
                     setEquipmentStatus("1")
                 }
 
                 builder.setNeutralButton(android.R.string.cancel) { _, _ ->
-                    Toast.makeText(
-                        com.example.AdminMatic.myView.context,
-                        android.R.string.cancel, Toast.LENGTH_SHORT
-                    ).show()
+
                 }
 
                 /*

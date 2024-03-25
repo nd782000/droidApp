@@ -52,7 +52,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
 
         val emptyList:MutableList<Item> = mutableListOf()
 
-        adapter = ItemsAdapter(emptyList, myView.context, this)
+        adapter = ItemsAdapter(emptyList, myView.context, this, false)
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.item_list)
 
@@ -140,7 +140,7 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
                             adapter = activity?.let {
                                 ItemsAdapter(
                                     itemsList, myView.context,
-                                    this@ItemListFragment
+                                    this@ItemListFragment, false
                                 )
                             }
 

@@ -84,6 +84,7 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initialViewsLaidOut = false
         getCustomer()
     }
 
@@ -264,8 +265,6 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
 
 
     override fun onLeadCellClickListener(data:Lead) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = CustomerFragmentDirections.navigateCustomerToLead(it.ID)
@@ -346,14 +345,11 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
     }
 
     override fun onContractCellClickListener(data:Contract) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = CustomerFragmentDirections.navigateCustomerToContract(data.ID)
             myView.findNavController().navigate(directions)
         }
-
 
     }
 
@@ -433,8 +429,6 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
     }
 
     override fun onWorkOrderCellClickListener(data:WorkOrder, listIndex:Int) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = CustomerFragmentDirections.navigateCustomerToWorkOrder(it)
@@ -516,8 +510,6 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
     }
 
     override fun onInvoiceCellClickListener(data:Invoice) {
-        //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        Toast.makeText(activity,"${data.custName} Clicked",Toast.LENGTH_SHORT).show()
 
         data.let {
             val directions = CustomerFragmentDirections.navigateCustomerToInvoice(it)
@@ -572,12 +564,6 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
                         println("loadMoreImageList count = ${loadMoreImageList.count()}")
                         imageList.addAll(loadMoreImageList)
                         println("imageList count = ${imageList.count()}")
-
-                        Toast.makeText(
-                            activity,
-                            "${imageList.count()} Images Loaded",
-                            Toast.LENGTH_SHORT
-                        ).show()
 
                         adapter.filterList = imageList
                         imagesLoaded = true
@@ -708,7 +694,7 @@ class CustomerFragment : Fragment(), AdapterView.OnItemSelectedListener, LeadCel
                 lat = customer.lat!!
                 val intent = Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("geo:0,0?q="+lng+","+lat+" (" + customer.sysname + ")")
+                    Uri.parse("geo:0,0?q="+lat+","+lng+" (" + customer.sysname + ")")
                 )
                 startActivity(intent)
             }

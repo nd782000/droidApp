@@ -109,7 +109,6 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
             popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 task.status = item!!.itemId.toString()
-                Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
 
                 if (item.itemId == 2 || item.itemId == 3) {
                     println("prompt for image upload")
@@ -120,19 +119,12 @@ class TasksAdapter(private val list: MutableList<Task>, private val context: Con
 //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
                     builder.setPositiveButton(android.R.string.ok) { _, _ ->
-                        Toast.makeText(
-                            myView.context,
-                            android.R.string.ok, Toast.LENGTH_SHORT
-                        ).show()
 
                         cellClickListener.uploadImage(task)
                     }
 
                     builder.setNegativeButton(android.R.string.cancel) { _, _ ->
-                        Toast.makeText(
-                            myView.context,
-                            android.R.string.cancel, Toast.LENGTH_SHORT
-                        ).show()
+
                     }
 
                     /*

@@ -51,7 +51,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
         val emptyList:MutableList<String> = mutableListOf()
 
-        adapter = EquipmentDetailAdapter(emptyList, this)
+        adapter = EquipmentDetailAdapter(emptyList, equipment!!.dealer != "0", this)
 
 
         ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.equipment_details)
@@ -95,6 +95,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
             adapter = activity?.let {
                 EquipmentDetailAdapter(
                     detailList,
+                    equipment!!.dealer != "0",
                     this@EquipmentDetailsFragment
                 )
             }
@@ -124,7 +125,7 @@ class EquipmentDetailsFragment : Fragment(), EquipmentDetailCellClickListener {
 
     override fun onEquipmentDetailCellClickListener(data:Int) {
         //Toast.makeText(this,"Cell clicked", Toast.LENGTH_SHORT).show()
-        if (data == 11) { //vendor cell
+        if (equipment!!.dealer != "0") { //vendor cell
             val directions = VendorListFragmentDirections.navigateToVendor(null, equipment!!.dealer)
             myView.findNavController().navigate(directions)
         }

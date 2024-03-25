@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 
 
-class EquipmentDetailAdapter(list: MutableList<String>, private val cellClickListener: EquipmentDetailCellClickListener)
+class EquipmentDetailAdapter(list: MutableList<String>, private val vendorLink:Boolean, private val cellClickListener: EquipmentDetailCellClickListener)
 
     : RecyclerView.Adapter<EquipmentDetailViewHolder>() {
 
@@ -40,7 +40,7 @@ class EquipmentDetailAdapter(list: MutableList<String>, private val cellClickLis
 
 
         val detail: String = filterList[position]
-        holder.bind(detail, position)
+        holder.bind(detail, position, vendorLink)
         //println("queryText = $queryText")
         //text highlighting for first string
 
@@ -54,7 +54,9 @@ class EquipmentDetailAdapter(list: MutableList<String>, private val cellClickLis
 
         //val data = filterList[position]
         holder.itemView.setOnClickListener {
-            cellClickListener.onEquipmentDetailCellClickListener(position)
+            if (position == 11 && vendorLink) {
+                cellClickListener.onEquipmentDetailCellClickListener(position)
+            }
         }
 
 
@@ -89,9 +91,9 @@ class EquipmentDetailViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
     }
 
-    fun bind(detail: String, position: Int) {
+    fun bind(detail: String, position: Int, vendorLink: Boolean) {
         mNameView?.text = detail
-        if (position == 11) { // vendor link
+        if (position == 11 && vendorLink) { // vendor link
             mNameView!!.setTextColor(mNameView!!.context.getColor(R.color.link))
         }
     }

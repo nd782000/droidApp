@@ -187,6 +187,40 @@
             app:nullable="false" />
     </fragment>
     <fragment
+        android:id="@+id/workOrderListSettingsFragment"
+        android:name="com.example.AdminMatic.WorkOrderListSettingsFragment"
+        android:label="fragment_work_order_list_settings"
+        tools:layout="@layout/fragment_work_order_list_settings" >
+        <argument
+            android:name="startDate"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="endDate"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="lockedDates"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="department"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="crew"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="status"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="sort"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
+    <fragment
         android:id="@+id/contractListSettingsFragment"
         android:name="com.example.AdminMatic.ContractListSettingsFragment"
         android:label="fragment_contract_list_settings"
@@ -347,6 +381,9 @@
         <action
             android:id="@+id/navigateToNewEditContract"
             app:destination="@id/newEditContractFragment" />
+        <action
+            android:id="@+id/navigateToWorkOrderListSettings"
+            app:destination="@id/workOrderListSettingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/myScheduleFragment"
@@ -720,6 +757,9 @@
             android:name="listIndex"
             app:argType="integer"
             android:defaultValue="-1"/>
+        <action
+            android:id="@+id/navigateWorkOrderToContacts"
+            app:destination="@id/customerContactFragment" />
         <action
             android:id="@+id/navigateWorkOrderToLead"
             app:destination="@id/leadFragment" />
@@ -1214,7 +1254,10 @@
             app:destination="@id/usageEntryFragment" />
         <action
             android:id="@+id/navigateWoItemToImageUpload"
-            app:destination="@id/imageUpload" />
+            app:destination="@id/imageUpload"/>
+        <action
+            android:id="@+id/navigateWoItemToImage"
+            app:destination="@id/imageFragment"/>
     </fragment>
     <fragment
         android:id="@+id/usageEntryFragment"

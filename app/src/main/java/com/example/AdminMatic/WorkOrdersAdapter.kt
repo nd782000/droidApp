@@ -132,6 +132,17 @@ class WorkOrdersAdapter(
                 .into(serviceStatusImageView)
         }
 
+        val urgentIv: ImageView = holder.itemView.findViewById(R.id.list_urgent_iv)
+        val urgentTv: TextView = holder.itemView.findViewById(R.id.list_urgent_tv)
+        if (!workOrder.urgent.isNullOrBlank() && workOrder.urgent!! == "1") {
+            urgentIv.visibility = View.VISIBLE
+            urgentTv.visibility = View.VISIBLE
+        }
+        else {
+            urgentIv.visibility = View.GONE
+            urgentTv.visibility = View.GONE
+        }
+
 
         val data = filterList[position]
         holder.itemView.setOnClickListener {

@@ -175,10 +175,10 @@
     <string name="comma" translatable="false">%1$s, %2$s</string>
 
     
-    <string name="leads_amount">Leads(%1$d)</string>
-    <string name="contracts_amount">Contracts(%1$d)</string>
-    <string name="work_orders_amount">Work Orders(%1$d)</string>
-    <string name="invoices_amount">Invoices(%1$d)</string>
+    <string name="leads_amount">Leads (%1$d)</string>
+    <string name="contracts_amount">Contracts (%1$d)</string>
+    <string name="work_orders_amount">W.O. (%1$d)</string>
+    <string name="invoices_amount">Invoices (%1$d)</string>
     <string name="usage_hours">%1$s Hours</string>
     <string name="plus_x" translatable="false">+%1$d</string>
 
@@ -333,8 +333,7 @@
     <string name="group_text_send">Send Message</string>
     <string name="group_text_send_batch">Send Batch Message (Part %1$d of %2$d)</string>
     <string name="group_text_body" translatable="false">%1$s ~ AdminMatic Group Message by %2$s</string>
-
-    <!--New Customer stuff-->
+        <!--New Customer stuff-->
     <string name="edit_customer_menu">Edit Customer</string>
     <string name="add_new_customer">Add New Customer</string>
     <string name="new_customer_duplicate_message">Enter street address to search existing customers. We want to avoid duplicate customer entries.</string>
@@ -711,7 +710,6 @@
     <string name="woItemTaxableLbl">Taxable:</string>
     <string name="woItemPriceLbl">Price:</string>
     <string name="woItemTotalLbl">Total:</string>
-    <string name="assign_lead_tasks">Assign Lead Tasks</string>
     <string name="add_usage">Add Usage</string>
     <string name="woItemSubmitBtn">Submit</string>
     <string name="not_started">Not Started</string>
@@ -1228,6 +1226,55 @@
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
 
+    <!-- Work order view update stuff -->
+    <string name="urgent">URGENT</string>
+    <string name="directions">Directions</string>
+    <string name="call_text">Call/Text</string>
+    <string name="call_x">Call: %1$s</string>
+    <string name="text_x">Text: %1$s</string>
+    <string name="all_contacts">All Contacts</string>
+    <string name="add_note">Add Note</string>
+    <string name="note_label">Note:</string>
+
+    <!-- Work Order settings view stuff -->
+    <string name="all_dates_label">All Dates:</string>
+    <string name="work_order_schedule_dates_label">Work Order Schedule Dates:</string>
+    <string name="end_label">End:</string>
+    <string name="show_locked_dates_label">Show Locked Dates:</string>
+    <string name="work_order_department_and_main_crew_label">Work Order Department &amp; Crew:</string>
+    <string name="status_label">Status:</string>
+    <string name="sort_label">Sort:</string>
+    <string name="wo_sort_oldest">Oldest</string>
+    <string name="wo_sort_newest">Newest</string>
+    <string name="wo_sort_next_planned">Next Planned</string>
+    <string name="wo_sort_lowest_cost">Lowest Cost</string>
+    <string name="wo_sort_highest_cost">Highest Cost</string>
+    <string name="wo_sort_lowest_price">Lowest Price</string>
+    <string name="wo_sort_highest_price">Highest Price</string>
+    <string name="wo_sort_lowest_profit">Lowest Profit</string>
+    <string name="wo_sort_highest_profit">Highest Profit</string>
+
+    <!-- Woitem order view update stuff -->
+    <string name="usage_qty_label">Usage Qty:</string>
+    <string name="remaining_qty_label">Remaining Qty:</string>
+    <string name="add_new_task">Add New Task</string>
+    <string name="submit_item_first_title">Submit Item First</string>
+    <string name="submit_item_first_body">Please submit the item before adding tasks.</string>
+    <string name="submit_item_first_status_body">Select and submit item before changing status.</string>
+    <string name="submit_item_first_images_body">Select and submit item before adding images.</string>
+    <string name="select_an_item_body">Select an item.</string>
+    <string name="no_edits_made">No Edits Made</string>
+    <string name="cancel_editing">Cancel Editing</string>
+    <string name="set_a_quantity">Set a quantity.</string>
+    <string name="set_estimated_quantity">Set estimated quantity.</string>
+    <string name="add_task_or_description">Add task or description?</string>
+    <string name="select_item">Select Item</string>
+    <string name="images_label">Images:</string>
+    <string name="edit_to_add_images_title">Edit to Add Images</string>
+    <string name="edit_to_add_images_body">Select the edit option to add or edit images.</string>
+
+    <!-- Items stuff -->
+    <string name="no_locations_saved">No Locations Saved</string>
 
 
 

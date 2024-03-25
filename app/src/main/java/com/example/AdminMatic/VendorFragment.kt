@@ -202,7 +202,7 @@ class VendorFragment : Fragment(), OnMapReadyCallback {
 
             val intent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("geo:0,0?q="+lng+","+lat+" (" + vendor!!.name + ")")
+                Uri.parse("geo:0,0?q="+lat+","+lng+" (" + vendor!!.name + ")")
             )
             startActivity(intent)
 

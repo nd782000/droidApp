@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_work_order_list_settings"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintGuide_percent="0.5"/>
+
+        <TextView
+            android:id="@+id/all_dates_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/all_dates_label"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/all_dates_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:checked="true"
+            app:layout_constraintTop_toBottomOf="@+id/all_dates_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/dates_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/work_order_schedule_dates_label"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/all_dates_switch"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/start_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/start_label"
+            app:layout_constraintTop_toBottomOf="@+id/dates_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+
+        <EditText
+            android:id="@+id/start_et"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:imeOptions="actionDone"
+            android:inputType="date"
+            android:singleLine="true"
+            android:background="@drawable/text_view_layout"
+            android:layout_margin="5dp"
+            android:focusable="false"
+            android:focusableInTouchMode="true"
+            app:layout_constraintTop_toBottomOf="@id/start_tv"
+            app:layout_constraintRight_toRightOf="@id/guideline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/end_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/end_label"
+            app:layout_constraintTop_toBottomOf="@+id/dates_title"
+            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            />
+
+
+        <EditText
+            android:id="@+id/end_et"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:imeOptions="actionDone"
+            android:inputType="date"
+            android:singleLine="true"
+            android:background="@drawable/text_view_layout"
+            android:layout_margin="5dp"
+            android:focusable="false"
+            android:focusableInTouchMode="true"
+            app:layout_constraintTop_toBottomOf="@id/start_tv"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            />
+
+        <TextView
+            android:id="@+id/locked_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/show_locked_dates_label"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/start_et"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/locked_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:checked="false"
+            app:layout_constraintTop_toBottomOf="@+id/locked_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/else_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/work_order_department_and_main_crew_label"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/locked_switch"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/department_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/department_label"
+            app:layout_constraintTop_toBottomOf="@+id/else_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <Spinner
+            android:id="@+id/department_spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:singleLine="true"
+            android:background="@drawable/text_view_layout"
+            app:layout_constraintTop_toBottomOf="@id/department_tv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/guideline"
+            />
+
+        <TextView
+            android:id="@+id/crew_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/crew_label"
+            app:layout_constraintTop_toBottomOf="@+id/else_title"
+            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            />
+
+        <Spinner
+            android:id="@+id/crew_spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:singleLine="true"
+            android:background="@drawable/text_view_layout"
+            app:layout_constraintTop_toBottomOf="@id/department_tv"
+            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/status_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/status_label"
+            app:layout_constraintTop_toBottomOf="@+id/department_spinner"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <Spinner
+            android:id="@+id/status_spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:singleLine="true"
+            android:background="@drawable/text_view_layout"
+            app:layout_constraintTop_toBottomOf="@id/status_tv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/guideline"
+            />
+
+        <TextView
+            android:id="@+id/sort_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:paddingTop="10dp"
+            android:text="@string/sort_label"
+            app:layout_constraintTop_toBottomOf="@+id/department_spinner"
+            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            />
+
+        <Spinner
+            android:id="@+id/sort_spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:singleLine="true"
+            android:background="@drawable/text_view_layout"
+            app:layout_constraintTop_toBottomOf="@id/sort_tv"
+            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <Button
+            android:id="@+id/clear_all_filters_btn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:text="@string/clear_all_filters"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="14sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sort_spinner"
+            />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

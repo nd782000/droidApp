@@ -41,7 +41,12 @@
     <color name="colorTitle">#225CB3</color>
     <color name="colorRecyclerHeader">#292929</color>
 
-
+    <!-- Colors for status buttons, based on old status icons -->
+    <color name="statusGray">#777777</color>
+    <color name="statusOrange">#FF6600</color>
+    <color name="statusGreen">#006600</color>
+    <color name="statusRed">#FF0000</color>
+    <color name="statusBlue">#0033FF</color>
 
 
 </resources>
