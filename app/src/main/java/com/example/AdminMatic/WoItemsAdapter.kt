@@ -5,10 +5,12 @@ import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.android.volley.Response
@@ -47,10 +49,27 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
     override fun onBindViewHolder(holder: WoItemViewHolder, position: Int) {
 
-
         globalVars = GlobalVars()
 
+
+
+        val allCl:ConstraintLayout = holder.itemView.findViewById(R.id.all_cl)
+        val addNewText:TextView = holder.itemView.findViewById(R.id.add_new_item_tv)
+        if (position == filterList.size) {
+            allCl.visibility = View.INVISIBLE
+            addNewText.visibility = View.VISIBLE
+            holder.itemView.setOnClickListener {
+                cellClickListener.onAddNewItemClickListener()
+            }
+            return
+        }
+        else {
+            allCl.visibility = View.VISIBLE
+            addNewText.visibility = View.INVISIBLE
+        }
+
         val woItem: WoItem = filterList[holder.bindingAdapterPosition]
+
         holder.bind(woItem)
         //println("queryText = $queryText")
         //text highlighting for first string
@@ -114,7 +133,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
 
 
-        val data = filterList[position]
+        val data = filterList[holder.bindingAdapterPosition]
         holder.itemView.setOnClickListener {
             cellClickListener.onWoItemCellClickListener(data)
         }
@@ -170,7 +189,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
                                                     if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
                                                         globalVars.playSaveSound(myView.context)
-                                                        filterList.removeAt(position)
+                                                        filterList.removeAt(holder.bindingAdapterPosition)
                                                         notifyDataSetChanged()
                                                     }
 
@@ -238,18 +257,129 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
         }
 
+        // FOR 1-11
         /*
-        var descriptionString = ""
-        val iterator = woItem.tasks.iterator()
-        while (iterator.hasNext()) {
-            val item = iterator.next()
-            descriptionString = descriptionString + "- " + item.task
-            if (iterator.hasNext()) {
-                descriptionString += "\n"
-            }
-        }
-        holder.mDescriptionView!!.text = descriptionString
+        optionsTv.setOnClickListener {
+            println("menu click")
 
+            val popUp = PopupMenu(myView.context,optionsTv)
+            popUp.gravity = Gravity.CENTER
+            popUp.inflate(R.menu.delete_menu)
+            popUp.setOnMenuItemClickListener { item: MenuItem? ->
+
+                when (item!!.itemId) {
+                    R.id.menu1 -> {
+                        //Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
+
+                        if (workOrder.invoiceID == "0") {
+
+                            if (GlobalVars.permissions!!.scheduleEdit == "0") {
+                                globalVars.simpleAlert(myView.context, context.getString(R.string.access_denied), context.getString(R.string.no_permission_schedule_edit))
+                            }
+                            else {
+
+                                if (filterList.size > 1) {
+
+                                    val builder = AlertDialog.Builder(myView.context)
+                                    builder.setTitle(context.getString(R.string.dialogue_delete_wo_item_title))
+                                    builder.setMessage(context.getString(R.string.dialogue_delete_wo_item_body))
+                                    builder.setPositiveButton(context.getString(R.string.yes)) { _, _ ->
+
+                                        var urlString =
+                                            "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/delete/workOrderItem.php"
+
+                                        val currentTimestamp = System.currentTimeMillis()
+                                        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+                                        urlString = "$urlString?cb=$currentTimestamp"
+
+                                        val postRequest1: StringRequest = object : StringRequest(
+                                            Method.POST, urlString,
+                                            Response.Listener { response -> // response
+                                                //Log.d("Response", response)
+
+                                                println("Response $response")
+
+                                                val parentObject = JSONObject(response)
+
+                                                if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+                                                    val gson = GsonBuilder().create()
+                                                    val hasUsage: String = gson.fromJson(parentObject["hasUsage"].toString(), String::class.java)
+
+                                                    if (hasUsage == "0") {
+                                                        globalVars.playSaveSound(myView.context)
+                                                        filterList.removeAt(holder.bindingAdapterPosition)
+                                                        notifyDataSetChanged()
+                                                    }
+                                                    else {
+                                                        globalVars.simpleAlert(myView.context,context.getString(R.string.dialogue_usage_exists_title),context.getString(R.string.dialogue_usage_exists_body))
+                                                    }
+
+
+                                                }
+
+
+
+
+
+
+                                            },
+                                            Response.ErrorListener { // error
+
+
+                                                // Log.e("VOLLEY", error.toString())
+                                                // Log.d("Error.Response", error())
+                                            }
+                                        ) {
+                                            override fun getParams(): Map<String, String> {
+                                                val params: MutableMap<String, String> = HashMap()
+                                                params["companyUnique"] =
+                                                    GlobalVars.loggedInEmployee!!.companyUnique
+                                                params["sessionKey"] =
+                                                    GlobalVars.loggedInEmployee!!.sessionKey
+                                                params["workOrderID"] = woItem.woID
+                                                params["workOrderItemID"] = woItem.ID
+                                                println("params = $params")
+                                                return params
+                                            }
+                                        }
+                                        postRequest1.tag = "woItem"
+                                        VolleyRequestQueue.getInstance(appContext).addToRequestQueue(postRequest1)
+                                    }
+                                    builder.setNegativeButton(context.getString(R.string.no)) { _, _ ->
+
+                                    }
+                                    builder.show()
+
+                                }
+                                else {
+                                    globalVars.simpleAlert(myView.context,context.getString(R.string.dialogue_only_wo_item_title),context.getString(R.string.dialogue_only_wo_item_body))
+
+                                }
+                            }
+                        }
+                        else { // invoiceID != 0
+                            globalVars.simpleAlert(myView.context, context.getString(R.string.dialogue_error), context.getString(R.string.invoiced_wo_cant_edit))
+                        }
+
+                    }
+                }
+
+                true
+            }
+
+
+
+            popUp.show()
+
+            /*
+            fun onClick(view: View?) {
+                println("menu click")
+                //will show popup menu here
+            }*/
+
+
+        }
          */
 
 
@@ -258,7 +388,7 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
     override fun getItemCount(): Int{
 
         //print("getItemCount = ${filterList.size}")
-        return filterList.size
+        return filterList.size + 1
 
     }
 

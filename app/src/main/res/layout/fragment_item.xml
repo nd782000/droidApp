@@ -125,6 +125,22 @@
         </com.google.android.material.tabs.TabLayout>
 
         <TextView
+            android:id="@+id/no_locations_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="10dp"
+            android:singleLine="true"
+            android:text="@string/no_locations_saved"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_tab_layout" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/item_footer_tv"

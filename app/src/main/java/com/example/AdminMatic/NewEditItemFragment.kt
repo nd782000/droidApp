@@ -41,7 +41,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
             editMode = true
         }
         else {
-            item = Item("0", "", "", "","", "", "", "", "", null, null)
+            item = Item("0", "", "", "","", "", "", "", "", "0", "0")
         }
 
 

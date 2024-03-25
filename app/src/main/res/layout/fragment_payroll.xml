@@ -225,9 +225,8 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="3dp"
-                android:gravity="center_vertical"
+                android:gravity="right|center"
                 android:text="@string/payroll_break_label"
-                android:textAlignment="textEnd"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -315,7 +314,7 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginHorizontal="3dp"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:text="@string/payroll_current_total"
@@ -333,7 +332,7 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginHorizontal="3dp"
-                android:gravity="center_vertical"
+                android:gravity="center"
 
                 android:text="@string/payroll_week_total"
 
@@ -349,7 +348,7 @@
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginHorizontal="3dp"
-
+                android:gravity="center"
                 android:text="0.00"
                 android:textSize="72sp"
                 android:textAlignment="center"
@@ -361,7 +360,7 @@
                 android:id="@+id/total_pending_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:text="@string/payroll_pending_shift"
                 app:layout_constraintTop_toBottomOf="@+id/combined_total_val_tv"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -378,11 +377,9 @@
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginHorizontal="3dp"
-
+                android:gravity="center"
                 android:text="0.00"
-
                 android:textSize="72sp"
-                android:textAlignment="center"
                 app:layout_constraintLeft_toRightOf="@+id/guideline4"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/total_lbl_tv"  />
@@ -391,7 +388,7 @@
                 android:id="@+id/combined_total_pending_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:text="@string/payroll_excludes_pending"
                 app:layout_constraintTop_toBottomOf="@+id/combined_total_val_tv"
                 app:layout_constraintLeft_toRightOf="@+id/guideline4"

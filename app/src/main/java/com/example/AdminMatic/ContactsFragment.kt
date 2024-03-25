@@ -18,6 +18,8 @@ import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentContactListBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
+import com.google.gson.GsonBuilder
+import org.json.JSONException
 import org.json.JSONObject
 
 interface ContactCellClickListener {
@@ -80,8 +82,14 @@ class ContactsFragment : Fragment(), ContactCellClickListener, ContactEditListen
             }
         }
 
-       //recyclerView.adapter = adapter
-        layoutViews()
+        if (customer?.contacts!!.isEmpty()) {
+            getCustomer()
+        }
+        else {
+            layoutViews()
+        }
+
+
     }
 
 
@@ -90,7 +98,64 @@ class ContactsFragment : Fragment(), ContactCellClickListener, ContactEditListen
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("contacts")
     }
 
+    private fun getCustomer(){
+        // println("getCustomer = ${customer!!.ID}")
+        showProgressView()
 
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/customer.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+
+
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+
+                        val gson = GsonBuilder().create()
+                        val customerArray =
+                            gson.fromJson(parentObject.toString(), CustomerArray::class.java)
+
+                        customer = customerArray.customers[0]
+                    }
+
+                    hideProgressView()
+                    layoutViews()
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["ID"] = customer!!.ID
+
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "contacts"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
 
     private fun layoutViews(){
         println("layoutViews")

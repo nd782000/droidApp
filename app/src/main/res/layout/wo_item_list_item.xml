@@ -8,96 +8,110 @@
     android:layout_gravity="center_horizontal"
     android:minHeight="0dp">
 
-    <ImageView
-        android:id="@+id/status_icon_iv"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="11dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/all_cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
 
-        />
+        <ImageView
+            android:id="@+id/status_icon_iv"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="11dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/list_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/item"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@id/status_icon_iv"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/list_act_tv"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/item"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toLeftOf="@id/textViewOptions"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/list_est_tv"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/item"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toLeftOf="@id/list_act_tv"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/textViewOptions"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="8dp"
+            android:text="@string/menu_dots"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/list_description_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:gravity="center_vertical"
+            android:ellipsize="end"
+            android:text="@string/description"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toRightOf="@id/status_icon_iv"
+            app:layout_constraintTop_toBottomOf="@id/list_name"
+            app:layout_constraintRight_toLeftOf="@id/textViewOptions"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/list_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:id="@+id/add_new_item_tv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/item"
+        android:textColor="@color/colorPrimary"
+        android:text="@string/add_new_item"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@id/status_icon_iv"
+        android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
-
-        />
-
-    <TextView
-        android:id="@+id/list_act_tv"
-        android:layout_width="55dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:gravity="center_vertical"
-        android:text="@string/item"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintRight_toLeftOf="@id/textViewOptions"
-        app:layout_constraintTop_toTopOf="parent"
-
-        />
-
-    <TextView
-        android:id="@+id/list_est_tv"
-        android:layout_width="55dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:gravity="center_vertical"
-        android:text="@string/item"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintRight_toLeftOf="@id/list_act_tv"
-        app:layout_constraintTop_toTopOf="parent"
-
-        />
-
-
-    <TextView
-        android:id="@+id/textViewOptions"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_margin="8dp"
-        android:text="@string/menu_dots"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-/>
-    <TextView
-        android:id="@+id/list_description_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:gravity="center_vertical"
-        android:ellipsize="end"
-        android:text="@string/description"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toRightOf="@id/status_icon_iv"
-        app:layout_constraintTop_toBottomOf="@id/list_name"
-        app:layout_constraintRight_toLeftOf="@id/textViewOptions"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

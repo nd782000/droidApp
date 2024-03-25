@@ -17,18 +17,15 @@ import com.AdminMatic.R
 import java.util.*
 
 
-class ItemsAdapter(private val list: MutableList<Item>, private val context: Context, private val cellClickListener: ItemCellClickListener)
+class ItemsAdapter(private val list: MutableList<Item>, private val context: Context, private val cellClickListener: ItemCellClickListener, private val minimalView: Boolean)
 
     : RecyclerView.Adapter<ItemViewHolder>(), Filterable {
 
 
     var filterList:MutableList<Item> = emptyList<Item>().toMutableList()
-
-
     var queryText = ""
 
     init {
-
         filterList = list
     }
 
@@ -40,13 +37,12 @@ class ItemsAdapter(private val list: MutableList<Item>, private val context: Con
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
 
         val item: Item = filterList[position]
-        holder.bind(item, context)
+        holder.bind(item, context, minimalView)
 
         val listItemName = holder.itemView.findViewById<TextView>(R.id.list_item_name_tv)
 
         //holder.itemView.list_sysname.text = filterList[position].sysname
         //holder.itemView.list_mainAddr.text = filterList[position].mainAddr
-        //println("queryText = $queryText")
         //text highlighting for first string
         if (queryText.isNotEmpty() && queryText != "") {
 
@@ -160,19 +156,24 @@ class ItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         mPriceView = itemView.findViewById(R.id.list_item_price_tv)
     }
 
-    fun bind(item: Item, context:Context) {
+    fun bind(item: Item, context:Context, minimalView: Boolean) {
         mNameView?.text = item.name
         mTypeView?.text = item.type
 
-        if (item.unit != null) {
-            mPriceView?.text = context.getString(R.string.item_price_each, item.price, item.unit)
+        if (minimalView) {
+            mTypeView?.visibility = View.GONE
+            mPriceView?.visibility = View.GONE
         }
         else {
-            mPriceView?.text = "---"
-        }
+            if (item.unit != null) {
+                mPriceView?.text = context.getString(R.string.item_price_each, item.price, item.unit)
+            } else {
+                mPriceView?.text = "---"
+            }
 
-        if (GlobalVars.permissions!!.itemsMoney == "0") {
-            mPriceView?.visibility = View.GONE
+            if (GlobalVars.permissions!!.itemsMoney == "0") {
+                mPriceView?.visibility = View.GONE
+            }
         }
 
     }
