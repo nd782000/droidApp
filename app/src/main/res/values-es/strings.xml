@@ -698,7 +698,7 @@
     <string name="parent_item_name_label">Nombre del elemento principal:</string>
     <string name="item_full_name_label">Nombre completo del artículo:</string>
     <string name="purchase_units_label">Unidad(es) de compra:</string>
-    <string name="part_number_label">Número de pieza del fabricante:</string>
+    <string name="manufacturer_part_number_label">Número de pieza del fabricante:</string>
     <string name="vendors_label">Proveedores:</string>
     <string name="add_vendor">Añadir proveedore</string>
     <string name="description_on_purchase_transactions_label">Descripción de las transacciones de compra:</string>

@@ -147,6 +147,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
         println("when: ${binding.typeSpinner.selectedItemPosition}")
 
         when (binding.typeSpinner.selectedItemPosition) {
+            /*
             0 -> { // None Selected
                 println("None Selected")
                 binding.yesNoSwitch.visibility = View.GONE
@@ -163,7 +164,8 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
 
                 binding.submitBtn.visibility = View.GONE
             }
-            1 -> { // Service
+             */
+            0 -> { // Service
                 binding.mainInfoCl.visibility = View.VISIBLE
                 binding.yesNoSwitch.visibility = View.VISIBLE
                 binding.yesNoTv.visibility = View.VISIBLE
@@ -194,7 +196,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 binding.submitBtn.visibility = View.VISIBLE
 
             }
-            2 -> { // Inventory Part
+            1 -> { // Inventory Part
                 println("Inventory Part")
                 binding.mainInfoCl.visibility = View.VISIBLE
                 binding.yesNoSwitch.visibility = View.GONE
@@ -213,7 +215,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 binding.submitBtn.visibility = View.VISIBLE
 
             }
-            3 -> { // Non-inventory Part
+            2 -> { // Non-inventory Part
                 binding.mainInfoCl.visibility = View.VISIBLE
                 binding.yesNoSwitch.visibility = View.VISIBLE
                 binding.yesNoTv.visibility = View.VISIBLE
@@ -244,7 +246,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
                 binding.submitBtn.visibility = View.VISIBLE
 
             }
-            4 -> { // Other Charge
+            3 -> { // Other Charge
 
                 binding.mainInfoCl.visibility = View.VISIBLE
                 binding.yesNoSwitch.visibility = View.VISIBLE

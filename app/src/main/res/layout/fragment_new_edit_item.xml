@@ -64,8 +64,6 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintGuide_percent="0.5"/>
 
-
-
                     <TextView
                         android:id="@+id/yes_no_tv"
                         android:layout_width="wrap_content"
@@ -114,6 +112,114 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         />
 
+
+
+
+
+                    <TextView
+                        android:id="@+id/sales_unit_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/sales_unit_label"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toBottomOf="@id/name_et"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        tools:ignore="RtlHardcoded" />
+
+                    <Spinner
+                        android:id="@+id/sales_unit_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:background="@drawable/text_view_layout"
+                        android:layout_margin="5dp"
+                        app:layout_constraintTop_toBottomOf="@id/sales_unit_tv"
+                        app:layout_constraintRight_toRightOf="@id/guideline"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/rate_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/rate_label"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toBottomOf="@id/name_et"
+                        app:layout_constraintLeft_toLeftOf="@id/guideline"
+                        tools:ignore="RtlHardcoded" />
+
+                    <EditText
+                        android:id="@+id/rate_et"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:imeOptions="actionDone"
+                        android:inputType="phone"
+                        android:digits="1234567890"
+                        android:singleLine="true"
+                        android:background="@drawable/text_view_layout"
+                        android:layout_margin="5dp"
+                        app:layout_constraintTop_toBottomOf="@id/rate_tv"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="@id/guideline"
+                        />
+
+                    <TextView
+                        android:id="@+id/sales_description_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/sales_description_label"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toBottomOf="@id/sales_unit_spinner"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        tools:ignore="RtlHardcoded" />
+
+                    <EditText
+                        android:id="@+id/sales_description_et"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_margin="5dp"
+                        android:gravity="start"
+                        android:padding="5dp"
+                        android:background="@drawable/text_view_layout"
+                        app:layout_constraintTop_toBottomOf="@id/sales_description_tv"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        android:imeOptions="actionDone"
+                        android:inputType="textMultiLine"
+                        />
+
+                    <TextView
+                        android:id="@+id/advanced_settings_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/advanced_settings"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorPrimaryDark"
+                        app:layout_constraintTop_toBottomOf="@id/sales_description_et"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- End Main Info CL -->
+
+
+                <!-- Advanced Settings CL -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/advanced_settings_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/main_info_cl"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
                     <TextView
                         android:id="@+id/parent_tv"
                         android:layout_width="wrap_content"
@@ -122,7 +228,7 @@
                         android:layout_marginTop="10dp"
                         android:text="@string/parent_item_name_label"
                         android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@id/name_et"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         tools:ignore="RtlHardcoded" />
 
@@ -149,7 +255,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="10dp"
-                        android:text="@string/item_full_name_label"
+                        android:text="@string/item_name_label"
                         android:textSize="14sp"
                         app:layout_constraintTop_toBottomOf="@id/parent_search"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -160,7 +266,6 @@
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:imeOptions="actionDone"
-                        android:enabled="false"
                         android:inputType="text"
                         android:singleLine="true"
                         android:background="@drawable/text_view_layout"
@@ -170,620 +275,712 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         />
 
-                    <TextView
-                        android:id="@+id/purchase_units_tv"
-                        android:layout_width="wrap_content"
+                    <!-- Sales Info CL -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/sales_info_cl"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/purchase_units_label"
-                        android:textSize="14sp"
                         app:layout_constraintTop_toBottomOf="@id/full_name_et"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
+                        app:layout_constraintLeft_toLeftOf="parent">
 
-                    <Spinner
-                        android:id="@+id/preferred_day_spinner"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/purchase_units_tv"
-                        app:layout_constraintRight_toRightOf="@id/guideline"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        />
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_sales"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintGuide_percent="0.5"/>
 
-                    <TextView
-                        android:id="@+id/part_number_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/part_number_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@id/full_name_et"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline"
-                        tools:ignore="RtlHardcoded" />
+                        <TextView
+                            android:id="@+id/sales_info_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:paddingTop="10dp"
+                            android:text="@string/sales_info"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            />
 
-                    <EditText
-                        android:id="@+id/part_number_et"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="phone"
-                        android:digits="1234567890"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/part_number_tv"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline"
-                        />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <!-- End Main Info CL -->
+                        <TextView
+                            android:id="@+id/taxable_tv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/woItemTaxableLbl"
+                            android:textSize="14sp"
+                            android:singleLine="true"
+                            app:layout_constraintTop_toBottomOf="@+id/sales_info_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toLeftOf="@id/guideline_sales"
+                            tools:ignore="RtlHardcoded" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/purchase_info_cl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/main_info_cl"
-                    app:layout_constraintLeft_toLeftOf="parent">
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/taxable_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:checked="false"
+                            app:layout_constraintTop_toTopOf="@id/tax_rate_spinner"
+                            app:layout_constraintBottom_toBottomOf="@id/tax_rate_spinner"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            />
 
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline_purchase_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintGuide_percent="0.5"/>
+                        <TextView
+                            android:id="@+id/tax_rate_tv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/tax_rate_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/sales_info_tv"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintLeft_toRightOf="@id/guideline_sales"
+                            tools:ignore="RtlHardcoded" />
 
-                    <TextView
-                        android:id="@+id/purchase_info_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/purchase_info"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
+                        <Spinner
+                            android:id="@+id/tax_rate_spinner"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/tax_rate_tv"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintLeft_toRightOf="@id/guideline_sales"
+                            />
 
-                    <TextView
-                        android:id="@+id/cost_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/woCostLbl"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/purchase_info_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- End Sales Info CL -->
 
-                    <EditText
-                        android:id="@+id/cost_et"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/cost_tv"
-                        app:layout_constraintRight_toRightOf="@id/guideline_purchase_info"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        />
-
-                    <TextView
-                        android:id="@+id/vendor_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/vendors_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/purchase_info_tv"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline_purchase_info"
-                        tools:ignore="RtlHardcoded" />
-
-                    <Button
-                        android:id="@+id/vendors_btn"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:text="@string/add_vendor"
-                        android:layout_marginHorizontal="5dp"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline_purchase_info"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/vendor_tv"
-                        app:layout_constraintBottom_toBottomOf="@id/cost_et"
-                        />
-
-                    <TextView
-                        android:id="@+id/description_on_purchase_transactions_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/description_on_purchase_transactions_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@id/vendors_btn"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
-
-                    <EditText
-                        android:id="@+id/description_on_purchase_transactions_et"
+                    <!-- Purchase Info CL -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/purchase_info_cl"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_margin="5dp"
-                        android:gravity="start"
-                        android:padding="5dp"
-                        android:background="@drawable/text_view_layout"
-                        app:layout_constraintTop_toBottomOf="@id/description_on_purchase_transactions_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        android:imeOptions="actionDone"
-                        android:inputType="textMultiLine"
-                        />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <!-- End Purchase Info CL -->
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/sales_info_cl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/purchase_info_cl"
-                    app:layout_constraintLeft_toLeftOf="parent">
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline_sales_info"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintGuide_percent="0.5"/>
+                        app:layout_constraintTop_toBottomOf="@id/sales_info_cl"
+                        app:layout_constraintLeft_toLeftOf="parent">
 
-                    <TextView
-                        android:id="@+id/sales_info_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/sales_info"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_purchase"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintGuide_percent="0.5"/>
 
-                    <TextView
-                        android:id="@+id/rate_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/rate_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/sales_info_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
+                        <TextView
+                            android:id="@+id/purchase_info_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:paddingTop="10dp"
+                            android:text="@string/purchase_info"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            />
 
-                    <EditText
-                        android:id="@+id/rate_et"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/rate_tv"
-                        app:layout_constraintRight_toRightOf="@id/guideline_sales_info"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        />
+                        <TextView
+                            android:id="@+id/cost_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/cost_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/purchase_info_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
 
-                    <TextView
-                        android:id="@+id/tax_code_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/tax_code_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/sales_info_tv"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline_sales_info"
-                        tools:ignore="RtlHardcoded" />
+                        <EditText
+                            android:id="@+id/cost_et"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="phone"
+                            android:digits="1234567890"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/cost_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toLeftOf="@id/guideline_purchase"
+                            />
 
-                    <Spinner
-                        android:id="@+id/tax_code_spinner"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/tax_code_tv"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline_sales_info"
-                        />
+                        <TextView
+                            android:id="@+id/vendor_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/vendors_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@+id/purchase_info_tv"
+                            app:layout_constraintLeft_toLeftOf="@id/guideline_purchase"
+                            tools:ignore="RtlHardcoded" />
 
-                    <TextView
-                        android:id="@+id/description_on_sales_transactions_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/description_on_sales_transactions_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@id/tax_code_spinner"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
+                        <Button
+                            android:id="@+id/vendors_btn"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:text="@string/add_vendor"
+                            android:layout_marginHorizontal="5dp"
+                            app:layout_constraintLeft_toLeftOf="@id/guideline_purchase"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/vendor_tv"
+                            app:layout_constraintBottom_toBottomOf="@id/cost_et"
+                            />
 
-                    <EditText
-                        android:id="@+id/description_on_sales_transactions_et"
+                        <TextView
+                            android:id="@+id/part_number_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/part_number_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/cost_et"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <EditText
+                            android:id="@+id/part_number_et"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="textNoSuggestions"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/part_number_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toLeftOf="@id/guideline_purchase"
+                            tools:ignore="TextFields" />
+
+                        <TextView
+                            android:id="@+id/purchase_unit_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/purchase_unit_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/cost_et"
+                            app:layout_constraintLeft_toRightOf="@id/guideline_purchase"
+                            tools:ignore="RtlHardcoded" />
+
+                        <Spinner
+                            android:id="@+id/purchase_unit_spinner"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/purchase_unit_tv"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintLeft_toLeftOf="@id/guideline_purchase"
+                            />
+
+                        <TextView
+                            android:id="@+id/purchase_description_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/purchase_description_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/purchase_unit_spinner"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <EditText
+                            android:id="@+id/purchase_description_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_margin="5dp"
+                            android:gravity="start"
+                            android:padding="5dp"
+                            android:background="@drawable/text_view_layout"
+                            app:layout_constraintTop_toBottomOf="@id/purchase_description_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            android:imeOptions="actionDone"
+                            android:inputType="textMultiLine"
+                            />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- End Purchase Info CL -->
+
+                    <!-- Inventory Info CL -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/inventory_info_cl"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_margin="5dp"
-                        android:gravity="start"
-                        android:padding="5dp"
-                        android:background="@drawable/text_view_layout"
-                        app:layout_constraintTop_toBottomOf="@id/description_on_sales_transactions_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        android:imeOptions="actionDone"
-                        android:inputType="textMultiLine"
-                        />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <!-- End Sales Info CL -->
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/inventory_info_cl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/sales_info_cl"
-                    app:layout_constraintLeft_toLeftOf="parent">
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline_inventory_info"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintGuide_percent="0.5"/>
+                        app:layout_constraintTop_toBottomOf="@id/purchase_info_cl"
+                        app:layout_constraintLeft_toLeftOf="parent">
 
-                    <TextView
-                        android:id="@+id/inventory_info_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/inventory_info"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_inventory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintGuide_percent="0.5"/>
 
-                    <TextView
-                        android:id="@+id/min_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/reorder_point_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/inventory_info_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
+                        <TextView
+                            android:id="@+id/inventory_info_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:paddingTop="10dp"
+                            android:text="@string/inventory_info"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            />
 
-                    <EditText
-                        android:id="@+id/min_et"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/min_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="@id/guideline_inventory_info"
-                        />
+                        <TextView
+                            android:id="@+id/reorder_point_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/reorder_point_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/inventory_info_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
 
-                    <TextView
-                        android:id="@+id/max_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/max_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/inventory_info_tv"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline_inventory_info"
-                        tools:ignore="RtlHardcoded" />
+                        <EditText
+                            android:id="@+id/reorder_point_et"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="phone"
+                            android:digits="1234567890"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/reorder_point_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toLeftOf="@id/guideline_inventory"
+                            />
 
-                    <EditText
-                        android:id="@+id/max_et"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/max_tv"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline_inventory_info"
-                        />
+                        <TextView
+                            android:id="@+id/max_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/max_quantity_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/inventory_info_tv"
+                            app:layout_constraintLeft_toLeftOf="@id/guideline_inventory"
+                            tools:ignore="RtlHardcoded" />
 
-                    <TextView
-                        android:id="@+id/on_hand_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/on_hand_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/min_et"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
+                        <EditText
+                            android:id="@+id/max_et"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="phone"
+                            android:digits="1234567890"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/max_tv"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintLeft_toLeftOf="@id/guideline_inventory"
+                            />
 
-                    <EditText
-                        android:id="@+id/on_hand_et"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/on_hand_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="@id/guideline_inventory_info"
-                        />
+                        <TextView
+                            android:id="@+id/on_hand_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/on_hand_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/max_et"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
 
-                    <TextView
-                        android:id="@+id/total_value_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/total_value_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/on_hand_et"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
+                        <EditText
+                            android:id="@+id/on_hand_et"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="phone"
+                            android:digits="1234567890"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/on_hand_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toLeftOf="@id/guideline_inventory"
+                            />
 
-                    <EditText
-                        android:id="@+id/total_value_et"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/total_value_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="@id/guideline_inventory_info"
-                        />
+                        <TextView
+                            android:id="@+id/total_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/total_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/max_et"
+                            app:layout_constraintLeft_toLeftOf="@id/guideline_inventory"
+                            tools:ignore="RtlHardcoded" />
 
-                    <TextView
-                        android:id="@+id/as_of_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/as_of_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/on_hand_et"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline_inventory_info"
-                        tools:ignore="RtlHardcoded" />
+                        <EditText
+                            android:id="@+id/total_et"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="phone"
+                            android:digits="1234567890"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/total_tv"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintLeft_toLeftOf="@id/guideline_inventory"
+                            />
 
-                    <EditText
-                        android:id="@+id/as_of_et"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/as_of_tv"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline_inventory_info"
-                        />
+                        <TextView
+                            android:id="@+id/as_of_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/as_of_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/on_hand_et"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <!-- End Inventory Info CL -->
+                        <EditText
+                            android:id="@+id/as_of_et"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="date"
+                            android:singleLine="true"
+                            android:focusable="false"
+                            android:focusableInTouchMode="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/as_of_tv"
+                            app:layout_constraintRight_toRightOf="@id/guideline_inventory"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/estimate_info_cl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/inventory_info_cl"
-                    app:layout_constraintLeft_toLeftOf="parent">
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- End Inventory Info CL -->
 
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline_estimate_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintGuide_percent="0.5"/>
-
-                    <TextView
-                        android:id="@+id/estimate_info_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/estimate_info"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
-
-                    <TextView
-                        android:id="@+id/estimate_units_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/estimate_units_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/estimate_info_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
-
-                    <EditText
-                        android:id="@+id/estimate_units_et"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/estimate_units_tv"
-                        app:layout_constraintRight_toRightOf="@id/guideline_estimate_info"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        />
-
-                    <TextView
-                        android:id="@+id/min_sales_qty_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/min_sales_qty_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@+id/estimate_info_tv"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline_estimate_info"
-                        tools:ignore="RtlHardcoded" />
-
-                    <EditText
-                        android:id="@+id/min_sales_qty_ev"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:background="@drawable/text_view_layout"
-                        android:layout_margin="5dp"
-                        app:layout_constraintTop_toBottomOf="@id/min_sales_qty_tv"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="@id/guideline_estimate_info"
-                        />
-
-                    <TextView
-                        android:id="@+id/estimate_notes_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/estimate_notes_label"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@id/min_sales_qty_ev"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
-
-                    <EditText
-                        android:id="@+id/estimate_notes_et"
+                    <!-- Estimate Info CL -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/estimate_info_cl"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_margin="5dp"
-                        android:gravity="start"
-                        android:padding="5dp"
-                        android:background="@drawable/text_view_layout"
-                        app:layout_constraintTop_toBottomOf="@id/estimate_notes_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        android:imeOptions="actionDone"
-                        android:inputType="textMultiLine"
-                        />
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/inventory_info_cl"
+                        app:layout_constraintLeft_toLeftOf="parent">
 
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_estimate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintGuide_percent="0.5"/>
+
+                        <TextView
+                            android:id="@+id/estimate_info_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:paddingTop="10dp"
+                            android:text="@string/estimate_info"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            />
+
+                        <TextView
+                            android:id="@+id/estimate_unit_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/estimate_unit_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/estimate_info_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <Spinner
+                            android:id="@+id/estimate_unit_spinner"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/estimate_unit_tv"
+                            app:layout_constraintRight_toRightOf="@id/guideline_estimate"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            />
+
+                        <TextView
+                            android:id="@+id/suggested_min_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/suggested_min_qty_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/estimate_info_tv"
+                            app:layout_constraintLeft_toLeftOf="@id/guideline_estimate"
+                            tools:ignore="RtlHardcoded" />
+
+                        <EditText
+                            android:id="@+id/suggested_min_et"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="phone"
+                            android:digits="1234567890"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/suggested_min_tv"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintLeft_toLeftOf="@id/guideline_estimate"
+                            />
+
+                        <TextView
+                            android:id="@+id/estimate_notes_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/estimate_notes_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/estimate_unit_spinner"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <EditText
+                            android:id="@+id/estimate_notes_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_margin="5dp"
+                            android:gravity="start"
+                            android:padding="5dp"
+                            android:background="@drawable/text_view_layout"
+                            app:layout_constraintTop_toBottomOf="@id/estimate_notes_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            android:imeOptions="actionDone"
+                            android:inputType="textMultiLine"
+                            />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- End Estimate Info CL -->
+
+                    <!-- Other Info CL -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/other_info_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/estimate_info_cl"
+                        app:layout_constraintLeft_toLeftOf="parent">
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_other"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintGuide_percent="0.5"/>
+
+                        <TextView
+                            android:id="@+id/other_info_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:paddingTop="10dp"
+                            android:text="@string/other_info"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            />
+
+                        <TextView
+                            android:id="@+id/department_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/department_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/other_info_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <Spinner
+                            android:id="@+id/department_spinner"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:background="@drawable/text_view_layout"
+                            android:layout_margin="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/department_tv"
+                            app:layout_constraintRight_toRightOf="@id/guideline_other"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            />
+
+                        <TextView
+                            android:id="@+id/terms_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/terms_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/department_spinner"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <EditText
+                            android:id="@+id/terms_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_margin="5dp"
+                            android:gravity="start"
+                            android:padding="5dp"
+                            android:background="@drawable/text_view_layout"
+                            app:layout_constraintTop_toBottomOf="@id/terms_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            android:imeOptions="actionDone"
+                            android:inputType="textMultiLine"
+                            />
+
+                        <TextView
+                            android:id="@+id/active_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/active_label"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@+id/terms_et"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/active_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:checked="false"
+                            app:layout_constraintTop_toBottomOf="@id/active_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- End Other Info CL -->
+
+                    <!-- Markup & Margin CL -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/markup_margin_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/other_info_cl"
+                        app:layout_constraintLeft_toLeftOf="parent">
+
+                        <TextView
+                            android:id="@+id/markup_margin_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/markup_and_margin"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <TextView
+                            android:id="@+id/markup_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/markup_label"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintTop_toBottomOf="@id/markup_margin_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <TextView
+                            android:id="@+id/markup_value_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text=""
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/markup_margin_tv"
+                            app:layout_constraintLeft_toRightOf="@+id/markup_tv"
+                            tools:ignore="RtlHardcoded" />
+
+                        <TextView
+                            android:id="@+id/margin_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/margin_label"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintTop_toBottomOf="@id/markup_tv"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:ignore="RtlHardcoded" />
+
+                        <TextView
+                            android:id="@+id/margin_value_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text=""
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/markup_tv"
+                            app:layout_constraintLeft_toRightOf="@+id/margin_tv"
+                            tools:ignore="RtlHardcoded" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- End Markup & Margin CL -->
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-                <!-- End Estimate Info CL -->
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/markup_margin_cl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/estimate_info_cl"
-                    app:layout_constraintLeft_toLeftOf="parent">
-
-                    <TextView
-                        android:id="@+id/markup_margin_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/markup_and_margin"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
-
-                    <TextView
-                        android:id="@+id/markup_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/markup_label"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toBottomOf="@id/markup_margin_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
-
-                    <TextView
-                        android:id="@+id/markup_value_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="0.00%"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@id/markup_margin_tv"
-                        app:layout_constraintLeft_toRightOf="@+id/markup_tv"
-                        tools:ignore="RtlHardcoded" />
-
-                    <TextView
-                        android:id="@+id/margin_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/margin_label"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toBottomOf="@id/markup_tv"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        tools:ignore="RtlHardcoded" />
-
-                    <TextView
-                        android:id="@+id/margin_value_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="0.00%"
-                        android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@id/markup_tv"
-                        app:layout_constraintLeft_toRightOf="@+id/margin_tv"
-                        tools:ignore="RtlHardcoded" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <!-- End Markup & Margin CL -->
+                <!-- End Advanced Settings CL -->
 
                 <Button
                     android:id="@+id/submit_btn"
@@ -796,7 +993,7 @@
 
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/markup_margin_cl"
+                    app:layout_constraintTop_toBottomOf="@id/advanced_settings_cl"
                     />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

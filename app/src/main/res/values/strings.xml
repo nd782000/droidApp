@@ -1148,34 +1148,17 @@
     <string name="dialogue_only_one_image">Only one image can be selected. If you\'d like to change the image, please press the \"X\" button on the existing image before selecting a new one.</string>
 
 
-
     <!-- New/Edit Item Stuff -->
     <string name="item_type_label">Item Type:</string>
     <string name="new_edit_item_switch_label_service">Is this service performed by a subcontractor or partner?</string>
     <string name="new_edit_item_switch_label_non_inventory">Is this item purchased for a specific customer job?</string>
     <string name="new_edit_item_switch_label_other">Is this a reimbursable charge?</string>
-    <string name="item_name_label">Item Name:</string>
-    <string name="parent_item_name_label">Parent Item Name:</string>
-    <string name="item_full_name_label">Item Full Name:</string>
-    <string name="purchase_units_label">Purchase Unit(s):</string>
-    <string name="part_number_label">Manufacturer\'s Part Number:</string>
     <string name="vendors_label">Vendors:</string>
     <string name="add_vendor">Add Vendor</string>
     <string name="description_on_purchase_transactions_label">Description on Purchase Transactions:</string>
     <string name="description_on_sales_transactions_label">Description on Sales Transactions:</string>
-    <string name="rate_label">Rate:</string>
     <string name="tax_code_label">Tax Code:</string>
-    <string name="purchase_info">Purchase Information</string>
-    <string name="sales_info">Sales Information</string>
-    <string name="inventory_info">Inventory Information</string>
-    <string name="estimate_info">Estimate Information</string>
     <string name="markup_and_margin">Markup &amp; Margin</string>
-    <string name="reorder_point_label">Reorder Point (Min):</string>
-    <string name="max_label">Max:</string>
-    <string name="on_hand_label">On Hand:</string>
-    <string name="total_value_label">Total Value:</string>
-    <string name="as_of_label">As Of:</string>
-    <string name="estimate_units_label">Estimate Unit(s):</string>
     <string name="min_sales_qty_label">Minimum Sales Qty:</string>
     <string name="estimate_notes_label">Estimate Notes:</string>
     <string name="markup_label">Markup:</string>
@@ -1279,6 +1262,33 @@
     <string name="item_num">Item #%1$s</string>
     <string name="new_item">New Item</string>
     <string name="edit_item">Edit Item #%1$s</string>
+    <string name="sales_unit_label">Sales Unit:</string>
+    <string name="purchase_unit_label">Purchase Unit:</string>
+    <string name="estimate_unit_label">Estimate Unit:</string>
+    <string name="sales_description_label">Sales Description:</string>
+    <string name="purchase_description_label">Purchase Description:</string>
+    <string name="advanced_settings">Advanced Settings</string>
+    <string name="hide_advanced_settings">Hide Advanced Settings</string>
+    <string name="item_name_label">Item Name:</string>
+    <string name="parent_item_name_label">Parent Item Name:</string>
+    <string name="item_full_name_label">Item Full Name:</string>
+    <string name="tax_rate_label">Tax Rate:</string>
+    <string name="rate_label">Rate:</string>
+    <string name="purchase_info">Purchase Info</string>
+    <string name="sales_info">Sales Info</string>
+    <string name="inventory_info">Inventory Info</string>
+    <string name="estimate_info">Estimate Info</string>
+    <string name="other_info">Other Info</string>
+    <string name="cost_label">Cost:</string>
+    <string name="part_number_label">Part Number:</string>
+    <string name="reorder_point_label">Reorder Point</string>
+    <string name="max_quantity_label">Max Quantity:</string>
+    <string name="on_hand_label">On Hand:</string>
+    <string name="total_label">Total:</string>
+    <string name="as_of_label">As Of:</string>
+    <string name="suggested_min_qty_label">Suggested Min Qty:</string>
+    <string name="terms_label">Terms:</string>
+    <string name="active_label">Active:</string>
 
 
     <!--
