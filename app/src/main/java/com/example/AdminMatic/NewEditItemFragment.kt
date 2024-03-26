@@ -88,10 +88,10 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
 
         globalVars = GlobalVars()
         if (editMode) {
-            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.edit_work_order, item!!.ID)
+            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.edit_item, item!!.ID)
         }
         else {
-            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.new_work_order)
+            ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.new_item)
         }
 
         return myView
@@ -111,7 +111,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
         }
 
         // Type Spinner
-        itemTypesArray = arrayOf(getString(R.string.item_type_select),
+        itemTypesArray = arrayOf(
             getString(R.string.item_type_service),
             getString(R.string.item_type_inventory_part),
             getString(R.string.item_type_non_inventory_part),
@@ -126,8 +126,8 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
         binding.typeSpinner.adapter = itemTypesAdapter
         binding.typeSpinner.onItemSelectedListener = this@NewEditItemFragment
 
-        if (!item!!.typeID.isNullOrBlank()) {
-            binding.typeSpinner.setSelection(item!!.typeID!!.toInt())
+        if (!item!!.type.isNullOrBlank()) {
+            binding.typeSpinner.setSelection(item!!.type!!.toInt())
         }
 
         binding.yesNoSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -290,7 +290,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Cust
 
         when (parent!!.id) {
             R.id.type_spinner -> {
-                item!!.typeID = position.toString()
+                item!!.type = position.toString()
                 hideShowFields()
             }
         }

@@ -65,7 +65,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
         myView = binding.root
 
         globalVars = GlobalVars()
-        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.item)
+        ((activity as AppCompatActivity).supportActionBar?.customView!!.findViewById(R.id.app_title_tv) as TextView).text = getString(R.string.item_num, item!!.ID)
         mapFragment = childFragmentManager.findFragmentById(R.id.map_support_map_fragment) as SupportMapFragment?
 
         return myView
@@ -82,7 +82,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
 
         binding.itemNameTv.text = item!!.name
-        binding.itemPriceTv.text = getString(R.string.item_price_each, item!!.price, item!!.unit)
+        binding.itemPriceTv.text = getString(R.string.item_price_each, item!!.price, item!!.unitName)
         if (GlobalVars.permissions!!.itemsMoney == "0") {
             binding.itemPriceTv.visibility = View.GONE
         }
@@ -95,17 +95,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
             binding.itemDescriptionTv.text = item!!.salesDescription
         }
 
-        when (item!!.typeID) {
-            "1" -> {
-                binding.itemTypeTv.text = getString(R.string.item_labor_type)
-            }
-            "2" -> {
-                binding.itemTypeTv.text = getString(R.string.item_material_type)
-            }
-            else -> {
-                binding.itemTypeTv.text = getString(R.string.item_other_type)
-            }
-        }
+        binding.itemTypeTv.text = item?.typeName
 
         //itemTypeTv.text = item!!.type
 
@@ -134,6 +124,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                             binding.noLocationsTv.visibility = View.VISIBLE
                         }
                         binding.itemRecyclerView.visibility = View.INVISIBLE
+                        binding.itemFooterTv.visibility = View.INVISIBLE
 
                         //serviceRecyclerView.adapter = currentServicesAdapter
                     }
@@ -142,9 +133,9 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                         binding.itemMapCl.visibility = View.INVISIBLE
                         binding.noLocationsTv.visibility = View.INVISIBLE
                         binding.itemRecyclerView.visibility = View.VISIBLE
+                        binding.itemFooterTv.visibility = View.VISIBLE
                         binding.itemFooterTv.text = getString(R.string.item_x_vendors, item!!.vendors!!.size.toString(), item!!.name)
                         binding.itemRecyclerView.adapter = vendorsAdapter
-
                     }
                     2 -> {
                         tableMode = 2
@@ -152,8 +143,8 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                         binding.noLocationsTv.visibility = View.INVISIBLE
                         binding.itemRecyclerView.visibility = View.VISIBLE
                         binding.itemRecyclerView.adapter = workOrdersAdapter
-
-                        binding.itemFooterTv.text = getString(R.string.item_x_work_orders, item!!.workOrders!!.size.toString(), remainingQty.toString(), item!!.unit)
+                        binding.itemFooterTv.visibility = View.VISIBLE
+                        binding.itemFooterTv.text = getString(R.string.item_x_work_orders, item!!.workOrders!!.size.toString(), remainingQty.toString(), item!!.unitName)
                     }
                 }
             }
@@ -261,9 +252,6 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
     private fun getItem() {
         showProgressView()
 
-        // get/item.php is bugged and doesn't store the item ID, so this is a band aid fix for now
-        val storedItemID = item!!.ID
-
         var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/get/item.php"
 
         val currentTimestamp = System.currentTimeMillis()
@@ -295,7 +283,6 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
                         val itemArray = gson.fromJson(items.toString(), Array<Item>::class.java).toMutableList()
                         item = itemArray[0]
-                        item!!.ID = storedItemID
 
                         if (item!!.unit == null) {
                             item!!.unit = ""
@@ -359,6 +346,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
                 params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["itemID"] = item!!.ID
+                params["view"] = "main"
 
                 println("params = $params")
                 return params

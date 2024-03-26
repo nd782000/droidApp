@@ -60,6 +60,7 @@ class GlobalVars: Application() {
         var defaultFields:DefaultFields? = null
         var salesTaxTypes:Array<SalesTaxType>? = null
         var depositTypes:Array<DepositType>? = null
+        var unitTypes:Array<UnitType>? = null
 
         // Flagged when you get a server error and are kicked to the bug log view
         var shouldLogOut:Boolean = false
@@ -490,6 +491,15 @@ class GlobalVars: Application() {
         }
         catch (e:JSONException) {
             println("Did not find depositTypes array")
+        }
+
+        try {
+            val unitTypes: JSONArray = parentObject.getJSONArray("units")
+            GlobalVars.unitTypes = gson.fromJson(unitTypes.toString(), Array<UnitType>::class.java)
+        }
+        catch (e:JSONException) {
+            println("Did not find units array")
+            println(e.message)
         }
     }
 

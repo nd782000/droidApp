@@ -402,6 +402,7 @@ class MainMenuFragment : Fragment() {
                 params["templates"] = "1"
                 params["depositTypes"] = "1"
                 params["defaults"] = "1"
+                params["units"] = "1"
                 println("params = $params")
                 return params
             }

@@ -630,8 +630,9 @@ data class Item(
     @field:SerializedName("name", alternate= ["item"])
     val name: String,
     val fullname: String,
-    var typeID:String?,
-    val type:String?,
+    var typeName:String?,
+    var unitName: String? = "",
+    var type:String?,
     val remQty:String?,
     val price:String?,
     var unit:String?,
@@ -643,6 +644,17 @@ data class Item(
 ): Parcelable{
     override fun toString(): String {
         return name
+    }
+}
+
+@Parcelize
+data class UnitType(
+    var unitID: String,
+    val unitName: String,
+    val unitShort: String,
+): Parcelable{
+    override fun toString(): String {
+        return unitName
     }
 }
 

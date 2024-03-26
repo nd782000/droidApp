@@ -1275,7 +1275,10 @@
 
     <!-- Items stuff -->
     <string name="no_locations_saved">No Locations Saved</string>
-
+    <string name="unit">Unit</string>
+    <string name="item_num">Item #%1$s</string>
+    <string name="new_item">New Item</string>
+    <string name="edit_item">Edit Item #%1$s</string>
 
 
     <!--

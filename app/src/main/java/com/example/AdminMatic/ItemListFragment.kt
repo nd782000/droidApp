@@ -132,6 +132,20 @@ class ItemListFragment : Fragment(), ItemCellClickListener {
                         val gson = GsonBuilder().create()
                         val itemsList = gson.fromJson(items.toString(), Array<Item>::class.java).toMutableList()
 
+                        // Fill in unit names
+                        for (item in itemsList) {
+                            if (!item.unit.isNullOrBlank()) {
+                                for (unit in GlobalVars.unitTypes!!) {
+                                    if (unit.unitID == item.unit) {
+                                        item.unitName = unit.unitName
+                                        break
+                                    }
+                                }
+                            }
+                            else {
+                                item.unitName = getString(R.string.unit)
+                            }
+                        }
 
                         binding.listRecyclerView.apply {
                             layoutManager = LinearLayoutManager(activity)

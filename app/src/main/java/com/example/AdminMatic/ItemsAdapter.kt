@@ -166,13 +166,17 @@ class ItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         }
         else {
             if (item.unit != null) {
-                mPriceView?.text = context.getString(R.string.item_price_each, item.price, item.unit)
+                mPriceView?.text = context.getString(R.string.item_price_each, item.price, item.unitName)
             } else {
                 mPriceView?.text = "---"
             }
 
             if (GlobalVars.permissions!!.itemsMoney == "0") {
                 mPriceView?.visibility = View.GONE
+            }
+
+            if (item.typeName!= null) {
+                mTypeView?.text = item.typeName
             }
         }
 
