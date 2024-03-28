@@ -1169,7 +1169,7 @@
     <string name="item_type_non_inventory_part">Non-inventory Part</string>
     <string name="item_type_inventory_part">Inventory Part</string>
     <string name="item_type_other_charge">Other Charge</string>
-    <string name="is_this_item_subcontractor">Is this service performed by a subcontractor or partner?</string>
+    <string name="is_this_item_subcontractor">Is this service performed by a subcontractor?</string>
     <string name="is_this_item_specific_customer_job">Is this item purchased for a specific customer job?</string>
     <string name="is_this_item_reimbursable">Is this a reimbursable charge?</string>
     <string name="sales_price_label">Sales Price:</string>
@@ -1261,7 +1261,7 @@
     <string name="unit">Unit</string>
     <string name="item_num">Item #%1$s</string>
     <string name="new_item">New Item</string>
-    <string name="edit_item">Edit Item #%1$s</string>
+    <string name="edit_item_num">Edit Item #%1$s</string>
     <string name="sales_unit_label">Sales Unit:</string>
     <string name="purchase_unit_label">Purchase Unit:</string>
     <string name="estimate_unit_label">Estimate Unit:</string>
@@ -1270,8 +1270,9 @@
     <string name="advanced_settings">Advanced Settings</string>
     <string name="hide_advanced_settings">Hide Advanced Settings</string>
     <string name="item_name_label">Item Name:</string>
-    <string name="parent_item_name_label">Parent Item Name:</string>
-    <string name="item_full_name_label">Item Full Name:</string>
+    <string name="parent_item_label">Parent Item:</string>
+    <string name="select_parent_item">Select Parent Item</string>
+    <string name="full_name_label">Full Name:</string>
     <string name="tax_rate_label">Tax Rate:</string>
     <string name="rate_label">Rate:</string>
     <string name="purchase_info">Purchase Info</string>
@@ -1289,6 +1290,10 @@
     <string name="suggested_min_qty_label">Suggested Min Qty:</string>
     <string name="terms_label">Terms:</string>
     <string name="active_label">Active:</string>
+    <string name="x_percent">%1$s\%</string>
+    <string name="enter_an_item_name">Enter an item name.</string>
+    <string name="enter_a_reorder_min">Enter a reorder minimum value.</string>
+    <string name="edit_item">Edit Item</string>
 
 
     <!--

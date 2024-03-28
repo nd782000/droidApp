@@ -25,8 +25,6 @@ import com.squareup.picasso.Picasso
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.Timer
-import kotlin.concurrent.schedule
 
 
 interface TaskCellClickListener {
@@ -1221,7 +1219,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener, ItemCellClickListener,
             woItem!!.price = data.price!!
             woItem!!.total = "0.00"
             woItem!!.type = data.type!!
-            woItem!!.tax = data.tax
+            woItem!!.tax = data.taxable
             woItem!!.subcontractor = data.subcontractor
             woItem!!.hideUnits = "0"
 
@@ -1231,7 +1229,7 @@ class WoItemFragment : Fragment(), TaskCellClickListener, ItemCellClickListener,
             woItem!!.item = data.name
             woItem!!.type = data.type!!
             woItem!!.price = data.price!!
-            woItem!!.tax = data.tax
+            woItem!!.tax = data.taxable
             woItem!!.subcontractor = data.subcontractor
 
             if (woItem!!.est == "0" || woItem!!.est == "0.00" || woItem!!.est == "" || woItem!!.price == "0" || woItem!!.price == "0.00" || woItem!!.price == "") {

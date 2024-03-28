@@ -3,6 +3,9 @@ package com.example.AdminMatic
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -99,7 +102,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
         //itemTypeTv.text = item!!.type
 
-        if (item!!.tax == "1") {
+        if (item!!.taxable == "1") {
             binding.itemTaxTv.text = getString(R.string.taxable_yes)
         }
         else {
@@ -108,6 +111,7 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
 
         mapFragment!!.getMapAsync(this)
 
+        setHasOptionsMenu(true)
 
         tabLayout = view.findViewById(R.id.item_tab_layout)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -160,6 +164,28 @@ class ItemFragment : Fragment(), OnMapReadyCallback, VendorCellClickListener, Wo
     override fun onStop() {
         super.onStop()
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("item")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.item_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = menuItem.itemId
+
+        if (id == R.id.edit_item) {
+            if (GlobalVars.permissions!!.itemsEdit == "1") {
+                val directions = ItemFragmentDirections.navigateItemToNewEditItem(item!!)
+                myView.findNavController().navigate(directions)
+            }
+            else {
+                globalVars.simpleAlert(com.example.AdminMatic.myView.context,getString(R.string.access_denied),getString(R.string.no_permission_items_edit))
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(menuItem)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

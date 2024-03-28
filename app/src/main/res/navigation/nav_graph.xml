@@ -309,6 +309,11 @@
             android:name="item"
             app:argType="com.example.AdminMatic.Item"
             app:nullable="true" />
+        <action
+            android:id="@+id/navigateToItem"
+            app:destination="@id/itemFragment"
+            app:popUpTo="@id/itemListFragment"
+            app:popUpToInclusive="false"/>
     </fragment>
     <fragment
         android:id="@+id/leadListFragment"
@@ -902,6 +907,9 @@
         <action
             android:id="@+id/navigateItemToWorkOrder"
             app:destination="@id/workOrderFragment" />
+        <action
+            android:id="@+id/navigateItemToNewEditItem"
+            app:destination="@id/newEditItemFragment" />
     </fragment>
     <fragment
         android:id="@+id/leadFragment"
