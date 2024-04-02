@@ -691,37 +691,23 @@
     <string name="caption_hint">Subtítulo…</string>
     <string name="dialogue_only_one_image">Sólo se puede seleccionar una foto. Si desea cambiar la foto, presione el botón \"X\" en la foto existente antes de seleccionar una nueva.</string>
     <string name="item_type_label">Tipo de artículo:</string>
-    <string name="new_edit_item_switch_label_service">¿Este servicio lo realiza un subcontratista o socio?</string>
-    <string name="new_edit_item_switch_label_non_inventory">¿Este artículo se compra para un trabajo de cliente específico?</string>
     <string name="new_edit_item_switch_label_other">¿Es este un cargo reembolsable?</string>
     <string name="item_name_label">Nombre del artículo:</string>
-    <string name="parent_item_name_label">Nombre del elemento principal:</string>
-    <string name="item_full_name_label">Nombre completo del artículo:</string>
-    <string name="purchase_units_label">Unidad(es) de compra:</string>
-    <string name="manufacturer_part_number_label">Número de pieza del fabricante:</string>
     <string name="vendors_label">Proveedores:</string>
     <string name="add_vendor">Añadir proveedore</string>
-    <string name="description_on_purchase_transactions_label">Descripción de las transacciones de compra:</string>
-    <string name="description_on_sales_transactions_label">Descripción de las transacciones de venta:</string>
     <string name="rate_label">Tarifa:</string>
-    <string name="tax_code_label">Código de impuestos:</string>
     <string name="purchase_info">Informacion de compra</string>
     <string name="sales_info">Informacion sobre ventas</string>
     <string name="inventory_info">Información de inventario</string>
     <string name="estimate_info">Información de estimación</string>
     <string name="markup_and_margin">Marcado y margen</string>
     <string name="reorder_point_label">Punto de reorden (mínimo):</string>
-    <string name="max_label">Máximo:</string>
     <string name="on_hand_label">En mano:</string>
-    <string name="total_value_label">Valor total:</string>
     <string name="as_of_label">A partir:</string>
-    <string name="estimate_units_label">Unidad(es) de estimación:</string>
-    <string name="min_sales_qty_label">Cantidad mínima de ventas:</string>
     <string name="estimate_notes_label">Notas de estimación:</string>
     <string name="markup_label">Sobreprecio:</string>
     <string name="margin_label">Margen:</string>
     <string name="add_new_item">Añadir proveedore</string>
-    <string name="item_type_select">Agregar artículo nuevo:</string>
     <string name="item_type_service">Servicio</string>
     <string name="item_type_non_inventory_part">Parte no inventariada</string>
     <string name="item_type_inventory_part">Parte del inventario</string>
@@ -729,9 +715,6 @@
     <string name="is_this_item_subcontractor">¿Este servicio lo realiza un subcontratista o socio?</string>
     <string name="is_this_item_specific_customer_job">¿Este artículo se compra para un trabajo de cliente específico?</string>
     <string name="is_this_item_reimbursable">¿Es este un cargo reembolsable?</string>
-    <string name="sales_price_label">Precio de venta:</string>
-    <string name="price_label">Precio:</string>
-    <string name="charge_amount_label">Precio a cobrar:</string>
     <string name="all">Todo</string>
     <string name="enter_a_title">Añade un titulo.</string>
     <string name="no_crews">Sin personales.</string>
@@ -1062,6 +1045,5 @@
     <string name="login_username">Nombre de usuario</string>
     <string name="login_password">Contraseña</string>
     <string name="no_locations_saved">No hay ubicaciones guardadas</string>
-    <string name="assign_lead_tasks">Asignar tareas de la pista</string>
 
 </resources>

@@ -27,6 +27,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.Timer
 import kotlin.concurrent.schedule
@@ -34,9 +35,7 @@ import kotlin.concurrent.schedule
 
 class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, ItemCellClickListener {
 
-    //todo: add "select X" option to most spinners
-    //todo: probably hide tax spinner while tax checkbox is off
-    //todo: double check all things that should flag editsMade on
+    //todo: investigate purchase and est unit not setting on new
     //todo: clean up strings from old section
 
     private var editsMade = false
@@ -47,7 +46,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
     private var editMode = false
 
     private var parentName = ""
-    private var asOfValue: LocalDate = LocalDate.now(ZoneOffset.UTC)
+    private var asOfValue: LocalDate = LocalDate.now()
 
     private var originalNameValue = ""
 
@@ -76,7 +75,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
             editMode = true
         }
         else {
-            item = Item("0", "", "", "","", "", "", "", "", "0", "0")
+            item = Item("0", "", "", "","", "", "", "", "", "", "")
         }
 
         originalNameValue = item!!.name
@@ -231,6 +230,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
             else {
                 item!!.subcontractor = "0"
             }
+            editsMade = true
 
             hideShowFields()
         }
@@ -254,7 +254,12 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
 
         // Sales Unit Spinner
         GlobalVars.unitTypes!!.forEach {
-            unitTypesList.add(it.unitName)
+            if (it.unitID == "0") {
+                unitTypesList.add(getString(R.string.select_unit))
+            }
+            else {
+                unitTypesList.add(it.unitName)
+            }
         }
 
         salesUnitAdapter = ArrayAdapter<String>(
@@ -358,6 +363,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
                 myView.hideKeyboard()
                 binding.parentSearch.clearFocus()
                 binding.parentSearchRv.visibility = View.INVISIBLE
+                editsMade = true
             }
 
             binding.parentSearch.setOnQueryTextFocusChangeListener { _, isFocused ->
@@ -378,11 +384,13 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
 
             if (isChecked) {
                 item!!.taxable = "1"
-                binding.taxRateSpinner.isEnabled = true
+                binding.taxRateTv.visibility = View.VISIBLE
+                binding.taxRateSpinner.visibility = View.VISIBLE
             }
             else {
                 item!!.taxable = "0"
-                binding.taxRateSpinner.isEnabled = false
+                binding.taxRateTv.visibility = View.INVISIBLE
+                binding.taxRateSpinner.visibility = View.INVISIBLE
             }
         }
 
@@ -504,7 +512,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
 
         // As Of
         binding.asOfEt.setOnClickListener {
-            val datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
+            val datePicker = DatePickerHelper(myView.context, true)
 
             datePicker.showDialog(asOfValue.year, asOfValue.monthValue-1, asOfValue.dayOfMonth, object : DatePickerHelper.Callback {
                 override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
@@ -636,6 +644,8 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
                 if (item!!.parentID == i.ID) {
                     binding.parentSearch.setQuery(i.name, false)
                     parentName = i.name
+                    binding.parentSearch.clearFocus()
+                    binding.parentSearchRv.visibility = View.INVISIBLE
                     break
                 }
             }
@@ -645,22 +655,30 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
             binding.fullNameEt.setText(item!!.fullName)
         }
 
+        println("taxable: ${item!!.taxable}")
+
         if (!item!!.taxable.isNullOrBlank()) {
             if (item!!.taxable == "1") {
                 binding.taxableSwitch.isChecked = true
-                binding.taxRateSpinner.isEnabled = true
             }
             else {
+                println("SETTING CHECKED FALSE")
                 binding.taxableSwitch.isChecked = false
-                binding.taxRateSpinner.isEnabled = false
             }
         }
         else {
             item!!.taxable = "0"
             binding.taxableSwitch.isChecked = false
-            binding.taxRateSpinner.isEnabled = false
         }
         binding.taxableSwitch.jumpDrawablesToCurrentState()
+        if (item!!.taxable!! == "1") {
+            binding.taxRateTv.visibility = View.VISIBLE
+            binding.taxRateSpinner.visibility = View.VISIBLE
+        }
+        else {
+            binding.taxRateTv.visibility = View.INVISIBLE
+            binding.taxRateSpinner.visibility = View.INVISIBLE
+        }
 
 
         if (item!!.salesTaxID == "") {
@@ -850,7 +868,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
             item!!.fullName = parentName + ":" + item!!.name
         }
         else {
-            item!!.fullName = ""
+            item!!.fullName = item!!.name
         }
         binding.fullNameEt.setText(item!!.fullName)
     }
@@ -870,9 +888,8 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
                 markup = price/ cost * 100 - 100
                 binding.markupValueTv.text = getString(R.string.x_percent, String.format("%.2f", markup))
 
-                margin = 1 - (cost/price) * 100
+                margin = (1 - (cost/price)) * 100
                 binding.marginValueTv.text = getString(R.string.x_percent, String.format("%.2f", margin))
-
             }
             else {
                 binding.markupValueTv.text = "---"
@@ -933,6 +950,8 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
                         println("Unique false")
                         item!!.name = ""
                         binding.nameEt.setText("")
+                        item!!.fullName = ""
+                        binding.fullNameEt.setText("")
                     }
 
                 } catch (e: JSONException) {
@@ -970,6 +989,13 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
             return
         }
 
+        /*
+        if (item!!.partNum == null) {
+            item!!.partNum = ""
+        }
+
+         */
+
         if (item!!.type == "2") {
 
             if (item!!.reorderMin == null) {
@@ -1004,6 +1030,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
                     val gson = GsonBuilder().create()
                     val newItemID: String = gson.fromJson(parentObject["itemID"].toString(), String::class.java)
                     item!!.ID = newItemID
+                    editsMade = false
 
                     if (editMode) {
                         myView.findNavController().navigateUp()
@@ -1032,29 +1059,29 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
                 params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                 params["ID"] = item!!.ID
                 params["item"] = item!!.name
-                params["type"] = item!!.type!!
+                params["type"] = item!!.type?:""
                 params["subcontractor"] = item!!.subcontractor
-                params["parentID"] = item!!.parentID!!
+                params["parentID"] = item!!.parentID?:""
                 params["fullname"] = item!!.fullName
-                params["unit"] = item!!.unit!!
-                params["partNum"] = item!!.partNum!!
-                params["cost"] = item!!.cost!!
-                params["purchaseDescription"] = item!!.purchaseDescription!!
-                params["purchaseUnit"] = item!!.purchaseUnit!!
-                params["price"] = item!!.price!!
-                params["tax"] = item!!.taxable!!
-                params["salesTaxID"] = item!!.salesTaxID!!
-                params["salesDescription"] = item!!.salesDescription!!
-                params["reorderMin"] = item!!.reorderMin!!
-                params["reorderMax"] = item!!.reorderMax!!
-                params["onHand"] = item!!.onHand!!
-                params["totalValue"] = item!!.totalValue!!
-                params["asOf"] = item!!.asOf!!
-                params["estUnit"] = item!!.estUnit!!
-                params["minQty"] = item!!.minQty!!
-                params["estNotes"] = item!!.estNotes!!
-                params["depID"] = item!!.depID!!
-                params["itemTerms"] = item!!.itemTerms!!
+                params["unit"] = item!!.unit?:""
+                params["partNum"] = item!!.partNum?:""
+                params["cost"] = item!!.cost?:""
+                params["purchaseDescription"] = item!!.purchaseDescription?:""
+                params["purchaseUnit"] = item!!.purchaseUnit?:""
+                params["price"] = item!!.price?:""
+                params["tax"] = item!!.taxable?:""
+                params["salesTaxID"] = item!!.salesTaxID?:""
+                params["salesDescription"] = item!!.salesDescription?:""
+                params["reorderMin"] = item!!.reorderMin?:""
+                params["reorderMax"] = item!!.reorderMax?:""
+                params["onHand"] = item!!.onHand?:""
+                params["totalValue"] = item!!.totalValue?:""
+                params["asOf"] = item!!.asOf?:""
+                params["estUnit"] = item!!.estUnit?:""
+                params["minQty"] = item!!.minQty?:""
+                params["estNotes"] = item!!.estNotes?:""
+                params["depID"] = item!!.depID?:""
+                params["itemTerms"] = item!!.itemTerms?:""
                 params["active"] = item!!.active
                 params["synced"] = item!!.synced
 
@@ -1077,27 +1104,31 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
 
         when (parent!!.id) {
             R.id.type_spinner -> {
-                item!!.type = position.toString() + 1
+                if (!editMode) {
+                    item!!.type = (position + 1).toString()
 
-                when (item!!.type) {
-                    "1" -> {
-                        binding.taxableSwitch.isChecked = false
-                        binding.taxableSwitch.jumpDrawablesToCurrentState()
-                        item!!.taxable = "0"
-                    }
-                    "2" -> {
-                        binding.taxableSwitch.isChecked = true
-                        binding.taxableSwitch.jumpDrawablesToCurrentState()
-                        item!!.taxable = "1"
+                    when (item!!.type) {
+                        "1" -> {
+                            binding.taxableSwitch.isChecked = false
+                            binding.taxableSwitch.jumpDrawablesToCurrentState()
+                            item!!.taxable = "0"
+                        }
 
-                        binding.yesNoSwitch.isChecked = false
-                        binding.yesNoSwitch.jumpDrawablesToCurrentState()
-                        item!!.subcontractor = "0"
-                    }
-                    "3" -> {
-                        binding.taxableSwitch.isChecked = true
-                        binding.taxableSwitch.jumpDrawablesToCurrentState()
-                        item!!.taxable = "1"
+                        "2" -> {
+                            binding.taxableSwitch.isChecked = true
+                            binding.taxableSwitch.jumpDrawablesToCurrentState()
+                            item!!.taxable = "1"
+
+                            binding.yesNoSwitch.isChecked = false
+                            binding.yesNoSwitch.jumpDrawablesToCurrentState()
+                            item!!.subcontractor = "0"
+                        }
+
+                        "3" -> {
+                            binding.taxableSwitch.isChecked = true
+                            binding.taxableSwitch.jumpDrawablesToCurrentState()
+                            item!!.taxable = "1"
+                        }
                     }
                 }
 

@@ -496,6 +496,10 @@ class GlobalVars: Application() {
         try {
             val unitTypes: JSONArray = parentObject.getJSONArray("units")
             GlobalVars.unitTypes = gson.fromJson(unitTypes.toString(), Array<UnitType>::class.java)
+            val noUnit = UnitType("0", myView.context.getString(R.string.unit), myView.context.getString(R.string.unit))
+            val tempMLUnits = GlobalVars.unitTypes!!.toMutableList()
+            tempMLUnits.add(0, noUnit)
+            GlobalVars.unitTypes = tempMLUnits.toTypedArray()
         }
         catch (e:JSONException) {
             println("Did not find units array")
