@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edit_item_vendor_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal">
+
+
+    <TextView
+        android:id="@+id/name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="12dp"
+        android:text="@string/vendor"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+
+    <TextView
+        android:id="@+id/cost_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="12dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="@string/cost_label"
+
+        app:layout_constraintLeft_toLeftOf="@id/name_tv"
+        app:layout_constraintRight_toLeftOf="@id/delete_btn"
+        app:layout_constraintTop_toBottomOf="@id/name_tv"
+        app:layout_constraintBottom_toTopOf="@id/suggested_price_tv"
+        />
+
+    <TextView
+        android:id="@+id/suggested_price_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="12dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="@string/woPriceLbl"
+
+        app:layout_constraintLeft_toLeftOf="@id/name_tv"
+        app:layout_constraintRight_toLeftOf="@id/delete_btn"
+        app:layout_constraintBottom_toBottomOf="@id/preferred_tv" />
+
+    <Button
+        android:id="@+id/delete_btn"
+        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="5dp"
+        android:text=""
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/delete_iv"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="4dp"
+        android:src="@drawable/ic_trash"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toTopOf="@+id/delete_btn"
+        app:layout_constraintLeft_toLeftOf="@+id/delete_btn"
+        app:layout_constraintRight_toRightOf="@+id/delete_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/delete_btn"
+        android:elevation="10dp"
+        />
+
+    <TextView
+        android:id="@+id/preferred_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/preferred"
+        android:textSize="14sp"
+        app:layout_constraintTop_toTopOf="@+id/preferred_switch"
+        app:layout_constraintBottom_toBottomOf="@+id/preferred_switch"
+        app:layout_constraintRight_toLeftOf="@+id/preferred_switch" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/preferred_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="3dp"
+        android:checked="false"
+        app:layout_constraintTop_toBottomOf="@id/delete_btn"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+
+
+

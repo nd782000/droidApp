@@ -302,7 +302,6 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
         }
 
         // Advanced Settings Toggle
-        binding.advancedSettingsCl.visibility = View.GONE
         binding.advancedSettingsText.setOnClickListener {
             if (showingAdvanced) {
                 binding.advancedSettingsText.text = getString(R.string.advanced_settings)
@@ -425,6 +424,22 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
         }
 
         // Vendors
+        binding.vendorsBtn.setOnClickListener {
+            if (editMode) {
+
+                if (!item!!.vendors.isNullOrEmpty()) {
+                    val directions = NewEditItemFragmentDirections.navigateToEditItemVendorList(item!!)
+                    myView.findNavController().navigate(directions)
+                }
+                else {
+                    val directions = NewEditItemFragmentDirections.navigateToEditItemVendor(item!!, null)
+                    myView.findNavController().navigate(directions)
+                }
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.submit_item_first_title), getString(R.string.submit_first_item_vendors_body))
+            }
+        }
 
         // Part Number
         binding.partNumberEt.setOnEditorActionListener(MainActivity.DoneOnEditorActionListener())
@@ -602,7 +617,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
         // Populate Fields
 
         if (!item!!.type.isNullOrBlank()) {
-            binding.typeSpinner.setSelection(item!!.type!!.toInt()-1)
+            binding.typeSpinner.setSelection(item!!.type!!.toInt()-1, false)
         }
 
         if (item!!.subcontractor == "1") {
@@ -626,7 +641,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
         if (!item!!.unit.isNullOrBlank()) {
             GlobalVars.unitTypes!!.forEachIndexed { i, e ->
                 if (e.unitID == item!!.unit) {
-                    binding.salesUnitSpinner.setSelection(i)
+                    binding.salesUnitSpinner.setSelection(i, false)
                 }
             }
         }
@@ -687,12 +702,19 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
 
         GlobalVars.salesTaxTypes!!.forEachIndexed { i, e ->
             if (e.ID == item!!.salesTaxID) {
-                binding.taxRateSpinner.setSelection(i)
+                binding.taxRateSpinner.setSelection(i, false)
             }
         }
 
         if (!item!!.cost.isNullOrBlank()) {
             binding.costEt.setText(item!!.cost)
+        }
+
+        if (item!!.vendors.isNullOrEmpty()) {
+            binding.vendorsBtn.text = getString(R.string.add_vendor)
+        }
+        else {
+            binding.vendorsBtn.text = getString(R.string.edit_vendors)
         }
 
         if (!item!!.partNum.isNullOrBlank()) {
@@ -702,7 +724,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
         if (!item!!.purchaseUnit.isNullOrBlank()) {
             GlobalVars.unitTypes!!.forEachIndexed { i, e ->
                 if (e.unitID == item!!.purchaseUnit) {
-                    binding.purchaseUnitSpinner.setSelection(i)
+                    binding.purchaseUnitSpinner.setSelection(i, false)
                 }
             }
         }
@@ -736,7 +758,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
         if (!item!!.estUnit.isNullOrBlank()) {
             GlobalVars.unitTypes!!.forEachIndexed { i, e ->
                 if (e.unitID == item!!.estUnit) {
-                    binding.estimateUnitSpinner.setSelection(i)
+                    binding.estimateUnitSpinner.setSelection(i, false)
                 }
             }
         }
@@ -752,12 +774,12 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
         if (item!!.depID != "") {
             GlobalVars.departments!!.forEachIndexed { i, e ->
                 if (e.ID == item!!.depID) {
-                    binding.departmentSpinner.setSelection(i)
+                    binding.departmentSpinner.setSelection(i, false)
                 }
             }
         }
         else {
-            binding.departmentSpinner.setSelection(0)
+            binding.departmentSpinner.setSelection(0, false)
         }
 
         if (!item!!.itemTerms.isNullOrBlank()) {
@@ -773,17 +795,13 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
         binding.activeSwitch.jumpDrawablesToCurrentState()
 
         updateMarkupAndMargin()
-
-
         hideShowFields()
-
+        binding.advancedSettingsCl.visibility = View.GONE
         hideProgressView()
 
     }
 
     private fun hideShowFields() {
-
-        println("when: ${binding.typeSpinner.selectedItemPosition}")
 
         when (binding.typeSpinner.selectedItemPosition) {
 
@@ -1100,6 +1118,7 @@ class NewEditItemFragment : Fragment(), AdapterView.OnItemSelectedListener, Item
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
+        println("editsMade onItemSelected")
         editsMade = true
 
         when (parent!!.id) {

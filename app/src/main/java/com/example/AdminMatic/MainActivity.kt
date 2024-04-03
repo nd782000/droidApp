@@ -1132,6 +1132,7 @@ data class Vendor(
             var website: String? = "",
 
             var balance: String? = "",
+            var minQty: String? = "",
 
             var cost: String? = "",
             var price: String? = "",

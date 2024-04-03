@@ -314,6 +314,39 @@
             app:destination="@id/itemFragment"
             app:popUpTo="@id/itemListFragment"
             app:popUpToInclusive="false"/>
+        <action
+            android:id="@+id/navigateToEditItemVendorList"
+            app:destination="@id/editItemVendorListFragment" />
+        <action
+            android:id="@+id/navigateToEditItemVendor"
+            app:destination="@id/editItemVendorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editItemVendorListFragment"
+        android:name="com.example.AdminMatic.EditItemVendorListFragment"
+        android:label="fragment_edit_item_vendor_list"
+        tools:layout="@layout/fragment_edit_item_vendor_list" >
+        <argument
+            android:name="item"
+            app:argType="com.example.AdminMatic.Item"
+            app:nullable="false" />
+        <action
+            android:id="@+id/navigateToEditItemVendorFragment"
+            app:destination="@id/editItemVendorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editItemVendorFragment"
+        android:name="com.example.AdminMatic.EditItemVendorFragment"
+        android:label="fragment_edit_item_vendor"
+        tools:layout="@layout/fragment_edit_item_vendor" >
+        <argument
+            android:name="item"
+            app:argType="com.example.AdminMatic.Item"
+            app:nullable="false" />
+        <argument
+            android:name="vendor"
+            app:argType="com.example.AdminMatic.Vendor"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/leadListFragment"

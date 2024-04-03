@@ -1282,7 +1282,16 @@
     <string name="enter_a_reorder_min">Enter a reorder minimum value.</string>
     <string name="edit_item">Edit Item</string>
     <string name="select_unit">Select Unit</string>
-
+    <string name="submit_first_item_vendors_body">Submit the new item before adding vendors.</string>
+    <string name="preferred">Preferred</string>
+    <string name="cost_per_x_label">Cost Per %1$s:</string>
+    <string name="suggested_price_per_x_label">Sug. Price Per %1$s:</string>
+    <string name="vendors_for_x">Vendors For %1$s</string>
+    <string name="edit_vendor_for_x">Edit Vendor For %1$s</string>
+    <string name="new_vendor_for_x">New Vendor For %1$s</string>
+    <string name="cost_x">Cost Per: $%1$s</string>
+    <string name="suggested_price_x">Suggested Price Per: $%1$s</string>
+    <string name="edit_vendors">Edit Vendors</string>
 
     <!--
     <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>
@@ -1293,6 +1302,7 @@
     <string name="dialogue_update_wo_item_in_progress_body">Would you also like to set the work order and item statuses to in progress?</string>
     <string name="dialogue_update_wo_item_finished_title">Update Work Order Statuses?</string>
     <string name="dialogue_update_wo_item_finished_body">Would you also like to set the work order and item statuses to finished?</string>
+
     -->
 
     <!--<string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>-->
