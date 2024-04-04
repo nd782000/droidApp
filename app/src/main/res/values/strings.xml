@@ -2,7 +2,7 @@
     <string name="app_name" translatable="false">AdminMatic</string>
     <string name="version">Version %1$s (PHP %2$s)</string>
     <string name="menu_dots" translatable="false">&#8942;</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="update">Update</string>
     <string name="Welcome">Welcome, User!</string>
     <string name="welcome_name">Welcome %1$s!</string>
@@ -137,7 +137,7 @@
     <string name="tab_text_2" translatable="false">Tab 2</string>
     <string name="tab_text_3" translatable="false">Tab 3</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_vendor__main">Map</string>
+    <string name="title_activity_vendor_main">Map</string>
     <string name="title_activity_maps">Map</string>
     <string name="work_order_list"># Work Order(s) List</string>
     <string name="item_name" translatable="false">Pine Bark Mulch</string>
@@ -1277,7 +1277,7 @@
     <string name="suggested_min_qty_label">Suggested Min Qty:</string>
     <string name="terms_label">Terms:</string>
     <string name="active_label">Active:</string>
-    <string name="x_percent">%1$s%%</string>
+    <string name="x_percent" translatable="false">%1$s%%</string>
     <string name="enter_an_item_name">Enter an item name.</string>
     <string name="enter_a_reorder_min">Enter a reorder minimum value.</string>
     <string name="edit_item">Edit Item</string>
@@ -1293,32 +1293,34 @@
     <string name="suggested_price_x">Suggested Price Per: $%1$s</string>
     <string name="edit_vendors">Edit Vendors</string>
 
-    <!--
-    <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>
-    <string name="dialogue_update_wo_in_progress_body">Would you also like to set the work order status to in progress?</string>
-    <string name="dialogue_update_wo_finished_title">Update Work Order Status?</string>
-    <string name="dialogue_update_wo_finished_body">Would you also like to set the work order status to finished?</string>
-    <string name="dialogue_update_wo_item_in_progress_title">Update Work Order Statuses?</string>
-    <string name="dialogue_update_wo_item_in_progress_body">Would you also like to set the work order and item statuses to in progress?</string>
-    <string name="dialogue_update_wo_item_finished_title">Update Work Order Statuses?</string>
-    <string name="dialogue_update_wo_item_finished_body">Would you also like to set the work order and item statuses to finished?</string>
 
-    -->
-
-    <!--<string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>-->
 
     <string name="pick_single">Please select your image</string>
     <string name="logout">Log Out</string>
     <string name="website_label">Website:</string>
 
     <plurals name="pick_multi">
-        <item quantity="one">One image selected</item>
+        <item quantity="one">%d image selected</item>
         <item quantity="other">%1$d images selected</item>
     </plurals>
     <plurals name="pick_multi_more">
-        <item quantity="one">Please select one more image…</item>
+        <item quantity="one">Please select %d more image…</item>
         <item quantity="other">Please select %1$d more images…</item>
     </plurals>
-    <string name="pick_multi_limit">You have more than %1$d images selected…</string>
+    <string name="pick_multi_limit">You have more than %1$d images selected.</string>
 
 </resources>
+
+    <!--
+        <string name="dialogue_update_wo_in_progress_title">Update Work Order Status?</string>
+        <string name="dialogue_update_wo_in_progress_body">Would you also like to set the work order status to in progress?</string>
+        <string name="dialogue_update_wo_finished_title">Update Work Order Status?</string>
+        <string name="dialogue_update_wo_finished_body">Would you also like to set the work order status to finished?</string>
+        <string name="dialogue_update_wo_item_in_progress_title">Update Work Order Statuses?</string>
+        <string name="dialogue_update_wo_item_in_progress_body">Would you also like to set the work order and item statuses to in progress?</string>
+        <string name="dialogue_update_wo_item_finished_title">Update Work Order Statuses?</string>
+        <string name="dialogue_update_wo_item_finished_body">Would you also like to set the work order and item statuses to finished?</string>
+
+        -->
+
+    <!--<string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>-->

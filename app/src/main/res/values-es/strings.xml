@@ -63,7 +63,7 @@
     <string name="items_search">Buscar artículos</string>
     <string name="vendors_search">Buscar proveedores</string>
     <string name="action_settings">Configuraciónes</string>
-    <string name="title_activity_vendor__main">Mapa</string>
+    <string name="title_activity_vendor_main">Mapa</string>
     <string name="title_activity_maps">Mapa</string>
     <string name="work_order_list"># Lista de orden de trabajos</string>
     <string name="locate">Localizar</string>
@@ -1045,5 +1045,43 @@
     <string name="login_username">Nombre de usuario</string>
     <string name="login_password">Contraseña</string>
     <string name="no_locations_saved">No hay ubicaciones guardadas</string>
+
+    <string name="suggested_min_qty_label">Cantidad mínima sugerida:</string>
+    <string name="terms_label">Términos:</string>
+    <string name="active_label">Activo:</string>
+    <string name="enter_an_item_name">Ingrese un nombre de artículo.</string>
+    <string name="enter_a_reorder_min">Ingrese un valor mínimo de reorden.</string>
+    <string name="edit_item">Editar artículo</string>
+    <string name="select_unit">Seleccionar unidad</string>
+    <string name="submit_first_item_vendors_body">Envíe el nuevo artículo antes de agregar proveedores.</string>
+    <string name="preferred">Preferido</string>
+    <string name="cost_per_x_label">Costo por %1$s:</string>
+    <string name="suggested_price_per_x_label">Precio sug. por %1$s:</string>
+    <string name="vendors_for_x">Proveedores para %1$s</string>
+    <string name="edit_vendor_for_x">Editar proveedor para %1$s</string>
+    <string name="new_vendor_for_x">Nuevo proveedor para %1$s</string>
+    <string name="cost_x">Costo por: $%1$s</string>
+    <string name="suggested_price_x">Precio sugerido por: $%1$s</string>
+    <string name="edit_vendors">Editar proveedores</string>
+    <string name="total_label">Total:</string>
+    <string name="max_quantity_label">Cantidad máxima:</string>
+    <string name="other_info">Otra información</string>
+    <string name="cost_label">Costo:</string>
+    <string name="part_number_label">Número de parte:</string>
+    <string name="unit">Unidad</string>
+    <string name="item_num">Artículo #%1$s</string>
+    <string name="new_item">Nuevo artículo</string>
+    <string name="edit_item_num">Editar artículo #%1$s</string>
+    <string name="sales_unit_label">Unidad de venta:</string>
+    <string name="purchase_unit_label">Unidad de compra:</string>
+    <string name="estimate_unit_label">Unidad de estimación:</string>
+    <string name="sales_description_label">Descripción de ventas:</string>
+    <string name="purchase_description_label">Descripción de compra:</string>
+    <string name="advanced_settings">Configuración avanzada</string>
+    <string name="hide_advanced_settings">Ocultar configuración avanzada</string>
+    <string name="parent_item_label">Artículo padre:</string>
+    <string name="select_parent_item">Seleccionar artículo padre</string>
+    <string name="full_name_label">Nombre completo:</string>
+    <string name="tax_rate_label">Tasa de impuestos:</string>
 
 </resources>
