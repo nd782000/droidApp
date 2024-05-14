@@ -291,11 +291,7 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
                         val newEntryArray = myScheduleEntryArray.entries
                         val newEntryArrayFiltered = mutableListOf<MyScheduleEntry>()
 
-                        var currentDaySort = 1
-
                         newEntryArray!!.forEach {
-                            it.daySort = currentDaySort.toString()
-                            currentDaySort += 1
 
                             if (it.type == "work") {
                                 it.entryType = MyScheduleEntryType.workOrder

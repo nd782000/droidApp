@@ -1,6 +1,7 @@
 package com.example.AdminMatic
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
@@ -154,7 +155,12 @@ class MyScheduleRowViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         mNameText!!.text = myScheduleEntry.name
 
         // Day sort
-        mDaySortText!!.text = myView.context.getString(R.string.num, myScheduleEntry.daySort)
+        if (myScheduleEntry.daySort != "0") {
+            mDaySortText!!.text = myView.context.getString(R.string.num, myScheduleEntry.daySort)
+        }
+        else {
+            mDaySortText!!.text = ""
+        }
 
         // Time
         if (!myScheduleEntry.startTime.isNullOrBlank() && !myScheduleEntry.endTime.isNullOrBlank()) {
