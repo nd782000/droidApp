@@ -853,6 +853,7 @@
     <string name="equipment_details_weight_x">Peso: %1$s</string>
     <string name="equipment_details_purchase_price_x">Preço de Compra: %1$s</string>
     <string name="equipment_details_purchased_x">Comprado: %1$s</string>
+    <string name="equipment_details_engine_x">Motor: %1$s</string>
     <string name="equipment_details_fuel_x">Combustível: %1$s</string>
     <string name="equipment_details_serial_x">Serial/VIN: %1$s</string>
     <string name="equipment_details_model_x">Modelo: %1$s</string>

@@ -56,7 +56,7 @@
     <string name="usage_total_cost">Coût total : $</string>
     <string name="receipt">Reçu</string>
     <string name="home">Accueil</string>
-    <string name="today">Aujourd\\'hui</string>
+    <string name="today">Aujourd\'hui</string>
     <string name="yesterday">Hier</string>
     <string name="x_days">%1$s Jours</string>
     <string name="todays_payroll">Paie d\'aujourd\'hui :</string>
