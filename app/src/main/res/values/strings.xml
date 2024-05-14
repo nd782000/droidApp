@@ -1081,6 +1081,7 @@
     <string name="unplottable_my_schedule_title">Unplottable Items</string>
     <string name="unplottable_my_schedule_body">There were %1$d entries on %2$s\'s schedule that were unable to be plotted.</string>
     <string name="unplottable_my_schedule_body_one">There was one entry on %1$s\'s schedule that was unable to be plotted.</string>
+    <string name="refresh_my_schedule">Refresh My Schedule</string>
 
     <!-- Send Email -->
     <string name="email_x">Email %1$s</string>

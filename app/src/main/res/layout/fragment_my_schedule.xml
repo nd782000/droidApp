@@ -82,18 +82,42 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/no_work_scheduled_tv"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/no_work_scheduled_cl"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/no_work_scheduled"
-            android:textSize="24sp"
-            android:visibility="invisible"
-            app:layout_constraintTop_toTopOf="@+id/swipeContainer"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="@+id/swipeContainer">
+
+            <TextView
+                android:id="@+id/no_work_scheduled_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/no_work_scheduled"
+                android:textSize="24sp"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+
+            <Button
+                android:id="@+id/refresh_button"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="5dp"
+                android:text="@string/refresh_my_schedule"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+
+                app:layout_constraintTop_toBottomOf="@+id/no_work_scheduled_tv"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeContainer"
