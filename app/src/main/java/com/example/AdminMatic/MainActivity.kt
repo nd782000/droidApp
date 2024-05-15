@@ -1351,7 +1351,8 @@ data class MyScheduleEntry(var refID: String = "0",
                            var usage: String? = "0",
                            var usageType: String? = "0",
                            var serviceType: String? = "0",
-                           var equipmentID: String? = "0"
+                           var equipmentID: String? = "0",
+                           var firm: String? = "0"
 
     ) : Parcelable {
     @IgnoredOnParcel

@@ -39,11 +39,14 @@ interface UsageEditListener {
     fun deleteUsage(row:Int)
     fun editStart(row:Int)
     fun editStop(row:Int)
-    fun editBreak(row:Int,lunch:String, actionID:Int)
+    fun editBreak(row:Int, lunch:String, actionID:Int)
+    fun editTotal(row:Int, total:String, actionID:Int)
     fun editQty(row:Int, qty:String, actionID:Int)
     fun editVendor(row:Int,vendor:String)
     fun editCost(row: Int, cost:String, actionID:Int, updateUsageTable:Boolean)
     fun showHistory()
+    fun toggleTotalOnly(row:Int)
+    fun setEditsMade(row:Int)
 }
 
 
@@ -65,7 +68,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     var usageToLog:MutableList<Usage> = mutableListOf()
 
-    private var dateValue: LocalDate = LocalDate.now(ZoneOffset.UTC)
+    private var dateValue: LocalDate = LocalDate.now()
     private lateinit var datePicker: DatePickerHelper
 
     private lateinit var timePicker: TimePickerHelper
@@ -248,6 +251,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     override fun onPrepareOptionsMenu(menu: Menu) {
         val item = menu.findItem(R.id.history_item)
 
+
+
         if ((woItem?.extraUsage ?: "0") == "1") {
             item.isEnabled = true
         }
@@ -283,20 +288,27 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         val dateValueShort = dateValue.format(GlobalVars.dateFormatterShort)
         for (usage in woItem!!.usage!!) {
 
+            println("iterating through a usage item on woItem")
+            println("total only: ${usage.total_only}")
+
+
             var startShort = ""
 
-            if (usage.start != null && usage.start != "0000-00-00 00:00:00") {
-
+            if ((usage.start != null && usage.start != "0000-00-00 00:00:00") || usage.total_only == "1") {
                 val dateFromStart = LocalDate.parse(usage.start!!, GlobalVars.dateFormatterPHP)
                 startShort = dateFromStart.format(GlobalVars.dateFormatterShort)
-
             }
+
+            println(usage.start!!)
+            println(startShort)
+            println(dateValueShort)
 
             if (startShort == dateValueShort) {
                 if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID) {
                     usage.locked = true
                 }
 
+                println("adding usage")
                 usageToLog.add(usage)
 
             }
@@ -305,7 +317,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         println("usageToLog.count = ${usageToLog.count()}")
 
-        //add rows for emps on work order
+        //add rows for emps on work order, only if no existing usage has been logged
         if (woItem!!.type == "1") {
 
             for (emp in workOrder.emps) {
@@ -454,8 +466,10 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             }
 
 
-            (adapter as UsageAdapter).notifyDataSetChanged()
+
         }
+
+        binding.usageEntryRv.adapter?.notifyDataSetChanged()
 
     }
 
@@ -536,6 +550,29 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
     }
 
 
+    private fun insertTotalValue(usage: Usage, totalMinutes: String) : Boolean {
+
+        if (usage.total_only == "0") {
+            usage.total_only = "1"
+            usage.start = null
+            usage.startDateTime = null
+            usage.stop = null
+            usage.stopDateTime = null
+            usage.lunch = null
+
+        }
+
+        usage.qty = "%.2f".format(totalMinutes.toDouble()/60)
+
+        println("Setting qty to ${"%.2f".format(totalMinutes.toDouble()/60)}")
+
+        usage.editsMade = true
+
+        updateUsageTable()
+        return true
+    }
+
+
     //methods for button taps
     private fun startBtnPressed() {
         println("startBtnPressed")
@@ -544,7 +581,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         val currentDateTime = LocalDateTime.of(dateValue.year, dateValue.month, dateValue.dayOfMonth, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
 
         for (usage in usageToLog) {
-            if (usage.startDateTime == null) {
+            if (usage.startDateTime == null && usage.total_only != "1") {
                 insertStartValue(usage, currentDateTime)
             }
         }
@@ -661,6 +698,15 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         }
     }
 
+    override fun editTotal(row: Int, total: String, actionID:Int) {
+        if (actionID == EditorInfo.IME_ACTION_DONE) {
+            println("done btn hit")
+            if (insertTotalValue(usageToLog[row], total)) {
+                editOthersTotal(total)
+            }
+        }
+    }
+
 
     fun editOthersStart(row:Int) {
         println("editOthersStart")
@@ -750,7 +796,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 builder.setTitle("Update Everyone's Break Time?")
                 builder.setPositiveButton(getString(R.string.dialogue_yes)) { _, _ ->
                     for (usage in usageToLog) {
-                        if (!usage.locked) {
+                        if (!usage.locked && usage.total_only != "1") {
                             insertBreakValue(usage, usageToLog[row].lunch!!)
                         }
                     }
@@ -771,11 +817,42 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     }
 
+
+    private fun editOthersTotal(total:String) {
+
+        var locked = true
+        if (usageToLog.count() > 1){
+            for (usage in usageToLog) {
+                if (!usage.locked) {
+                    locked = false
+                }
+            }
+            if (!locked) {
+
+                val builder = AlertDialog.Builder(myView.context)
+                builder.setTitle(getString(R.string.edit_everyones_total_time))
+                builder.setPositiveButton(getString(R.string.dialogue_yes)) { _, _ ->
+                    for (usage in usageToLog) {
+                        if (!usage.locked) {
+                            insertTotalValue(usage, total)
+                        }
+                    }
+                }
+                builder.setNegativeButton(getString(R.string.dialogue_no)) { _, _ ->
+
+                }
+                builder.show()
+            }
+        }
+    }
+
+
+
     private fun setQty(){
         println("setQty")
 
         for (usage in usageToLog) {
-            if (usage.startDateTime == null && usage.stopDateTime == null) {
+            if ((usage.startDateTime == null && usage.stopDateTime == null) || usage.total_only == "1") {
                 println("blank row")
             }
             else {
@@ -845,6 +922,9 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                     }
                     else {
                         usageToLog[row].del = "1"
+                        usageToLog[row].editsMade = true
+                        println("Setting .del to '1' and .editsMade to true for row $row")
+                        //usageToLog.removeAt(row)
                         submitUsage()
 
                         //usageToLog.removeAt(row)
@@ -873,6 +953,10 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         var foundStartTime = false
         usageToLog.forEach {
             if (it.start != null) {
+                foundStartTime = true
+            }
+
+            if (it.total_only == "1" && it.qty != "0.0" && it.qty != "") {
                 foundStartTime = true
             }
         }
@@ -949,8 +1033,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
         if (usageWithEdits > 0) {
 
-            // Skip this cell if it's not flagged for edits made or if it has no start time
-            if (!usageToLog[submitIndex].editsMade || usageToLog[submitIndex].startDateTime == null) {
+            // Skip this cell if it's not flagged with edits made or if it has no start time unless it's in total only mode
+            if (!usageToLog[submitIndex].editsMade || (usageToLog[submitIndex].startDateTime == null && usageToLog[submitIndex].total_only == "0")) {
                 handleSaveComplete()
                 return
             }
@@ -967,12 +1051,22 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             if (usageToLog[submitIndex].totalCost == null) { usageToLog[submitIndex].totalCost = ""}
             if (usageToLog[submitIndex].chargeType == null) { usageToLog[submitIndex].chargeType = ""}
             if (usageToLog[submitIndex].del == null) { usageToLog[submitIndex].del = ""}
+
+
+
+            if (usageToLog[submitIndex].total_only == "1") {
+                val newDateValue = LocalDateTime.of(dateValue.year, dateValue.month, dateValue.dayOfMonth, 0, 0)
+                usageToLog[submitIndex].start = GlobalVars.dateFormatterPHP.format(newDateValue)
+                usageToLog[submitIndex].startDateTime = newDateValue
+                usageToLog[submitIndex].stop = GlobalVars.dateFormatterPHP.format(newDateValue)
+                usageToLog[submitIndex].stopDateTime = newDateValue
+
+            }
+
             
 
             usageToLog[submitIndex].progressViewVisible = true
-            println("before notifyitemchanged")
             binding.usageEntryRv.adapter?.notifyItemChanged(submitIndex)
-            println("after notifyitemchanged")
 
             var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/usage_single.php"
 
@@ -1051,7 +1145,14 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                     params["totalPrice"] = usageToLog[submitIndex].totalPrice!!
                     params["usageCharge"] = usageToLog[submitIndex].chargeType!!
                     params["del"] = usageToLog[submitIndex].del!!
-                    params["override"] = override
+
+                    if (usageToLog[submitIndex].total_only == "1") {
+                        params["total_only"] = "1"
+                        params["override"] = "1"
+                    }
+                    else {
+                        params["override"] = override
+                    }
 
                     if (usageToLog[submitIndex].startDateTime != null) {
                         params["start"] = GlobalVars.dateFormatterPHP.format(usageToLog[submitIndex].startDateTime!!)
@@ -1087,6 +1188,8 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             globalVars.playSaveSound(myView.context)
 
             submitIndex = 0
+
+            println("done submitting")
 
             getWoItem()
 
@@ -1304,6 +1407,28 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
 
     override fun showHistory() {
         TODO("Not yet implemented")
+    }
+
+    override fun toggleTotalOnly(row:Int) {
+        if (usageToLog[row].total_only == "1") {
+            usageToLog[row].total_only = "0"
+        }
+        else {
+            usageToLog[row].total_only = "1"
+        }
+        usageToLog[row].start = null
+        usageToLog[row].startDateTime = null
+        usageToLog[row].stop = null
+        usageToLog[row].stopDateTime = null
+        usageToLog[row].qty = "0"
+        usageToLog[row].lunch = null
+        usageToLog[row].editsMade = true
+
+        binding.usageEntryRv.adapter?.notifyItemChanged(row)
+    }
+
+    override fun setEditsMade(row:Int) {
+        usageToLog[row].editsMade = true
     }
 
 }

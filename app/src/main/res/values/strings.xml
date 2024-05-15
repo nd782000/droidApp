@@ -1082,6 +1082,7 @@
     <string name="unplottable_my_schedule_body">There were %1$d entries on %2$s\'s schedule that were unable to be plotted.</string>
     <string name="unplottable_my_schedule_body_one">There was one entry on %1$s\'s schedule that was unable to be plotted.</string>
     <string name="refresh_my_schedule">Refresh My Schedule</string>
+    <string name="locked_all_caps">LOCKED</string>
 
     <!-- Send Email -->
     <string name="email_x">Email %1$s</string>
@@ -1161,6 +1162,7 @@
     <string name="no_usage_edited">No Usage Edited</string>
     <string name="notice">Notice</string>
     <string name="usage_exceeds_estimated">Usage exceeds estimated quantity.</string>
+    <string name="usage_history">Usage History</string>
     <string name="full_usage_history">Full Usage History</string>
     <string name="receipt_question_mark">Receipt?</string>
     <string name="cost">Cost</string>
@@ -1170,6 +1172,13 @@
     <string name="overlapping_usage_title">Overlapping Usage</string>
     <string name="overlapping_usage_body">Do you want to save anyway?</string>
     <string name="units_x" translatable="false">%1$s(s)</string>
+    <string name="usage_edit_times">Edit Times</string>
+    <string name="usage_edit_total">Edit Total</string>
+    <string name="minutes">Minutes</string>
+    <string name="total_time_error_title">Time Error</string>
+    <string name="total_time_error_body">Total time must be a number of minutes.</string>
+    <string name="edit_everyones_total_time">Edit everyone\'s total time?</string>
+
 
     <!-- New login view stuff -->
     <string name="login_company_unique">Company Unique</string>
@@ -1247,6 +1256,7 @@
     <string name="item_type_label">Item Type:</string>
     <string name="no_locations_saved">No Locations Saved</string>
     <string name="unit">Unit</string>
+    <string name="hour">Hour</string>
     <string name="item_num">Item #%1$s</string>
     <string name="new_item">New Item</string>
     <string name="edit_item_num">Edit Item #%1$s</string>

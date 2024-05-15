@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
 import com.squareup.picasso.Picasso
@@ -79,6 +80,7 @@ class MyScheduleRowViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     private var mNameText: TextView? = null
     private var mDaySortText: TextView? = null
     private var mDateText: TextView? = null
+    private var mLockedCl: ConstraintLayout? = null
 
     init {
         mTypeIcon = itemView.findViewById(R.id.type_iv)
@@ -87,6 +89,8 @@ class MyScheduleRowViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         mNameText = itemView.findViewById(R.id.name_tv)
         mDaySortText = itemView.findViewById(R.id.sort_tv)
         mDateText = itemView.findViewById(R.id.time_tv)
+        mDateText = itemView.findViewById(R.id.time_tv)
+        mLockedCl = itemView.findViewById(R.id.locked_cl)
 
     }
 
@@ -160,6 +164,13 @@ class MyScheduleRowViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         }
         else {
             mDaySortText!!.text = ""
+        }
+
+        if (myScheduleEntry.firm == "1") {
+            mLockedCl?.visibility = View.VISIBLE
+        }
+        else {
+            mLockedCl?.visibility = View.GONE
         }
 
         // Time

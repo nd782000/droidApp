@@ -146,15 +146,27 @@ class WoItemFragment : Fragment(), TaskCellClickListener, ItemCellClickListener,
 
         println("Work Order Item Customer: ${workOrder.customer}")
         binding.woItemUsageBtn.setOnClickListener{
-            if (workOrder.invoiceID != "0") {
-                globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.invoiced_wo_cant_edit))
-            }
-            else {
+
+
+            if (workOrder.status == "3") { //finished
                 if (woItem != null) {
-                    val directions = WoItemFragmentDirections.navigateToUsageEntry(woItem!!, workOrder)
+                    val directions = WoItemFragmentDirections.navigateWoItemToUsageHistory(woItem!!)
                     myView.findNavController().navigate(directions)
                 }
             }
+            else {
+                if (workOrder.invoiceID != "0") {
+                    globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.invoiced_wo_cant_edit))
+                }
+                else {
+                    if (woItem != null) {
+                        val directions = WoItemFragmentDirections.navigateToUsageEntry(woItem!!, workOrder)
+                        myView.findNavController().navigate(directions)
+                    }
+                }
+            }
+
+
 
         }
         binding.statusBtn.setOnClickListener {
@@ -344,6 +356,11 @@ class WoItemFragment : Fragment(), TaskCellClickListener, ItemCellClickListener,
 
             updateWoItem()
 
+        }
+
+
+        if (workOrder.status == "3") { // finished
+            binding.woItemUsageBtn.text = getString(R.string.usage_history)
         }
 
         getItems()
@@ -772,6 +789,8 @@ class WoItemFragment : Fragment(), TaskCellClickListener, ItemCellClickListener,
                         }
                     }
                     hideProgressView()
+
+                    binding.woItemUsageBtn.text = getString(R.string.usage_history)
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {

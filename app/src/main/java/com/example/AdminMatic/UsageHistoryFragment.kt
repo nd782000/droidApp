@@ -26,7 +26,6 @@ import java.util.HashMap
 class UsageHistoryFragment : Fragment() {
 
     private lateinit var woItem:WoItem
-    private var type:String = ""
     private var unit:String = ""
 
     lateinit var globalVars:GlobalVars
@@ -72,10 +71,32 @@ class UsageHistoryFragment : Fragment() {
     }
 
     private fun layoutViews() {
+
         binding.usageRecyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
 
             val usageList = woItem.usage!!.toMutableList()
+
+            var totalHours = 0.0
+            usageList.forEach {
+                totalHours += it.qty.toDouble()
+            }
+
+            if (woItem.type == "1") {
+                binding.usageHeaderLaborLayout.visibility = View.VISIBLE
+                binding.usageHeaderMaterialLayout.visibility = View.INVISIBLE
+
+                unit = getString(R.string.hour)
+            }
+            else {
+                binding.usageHeaderLaborLayout.visibility = View.INVISIBLE
+                binding.usageHeaderMaterialLayout.visibility = View.VISIBLE
+
+                unit = getString(R.string.unit)
+            }
+
+            binding.usageFooterTv.text = getString(R.string.usage_history_footer_material, totalHours, unit)
+
 
             adapter = activity?.let {
                 UsageHistoryAdapter(usageList, myView.context, unit)
@@ -85,21 +106,9 @@ class UsageHistoryFragment : Fragment() {
                 DividerItemDecoration(myView.context, DividerItemDecoration.VERTICAL)
             binding.usageRecyclerView.addItemDecoration(itemDecoration)
 
-            var totalHours = 0.0
-            usageList.forEach {
-                totalHours += it.qty.toDouble()
-            }
 
-            if (type == "1") {
-                binding.usageHeaderLaborLayout.visibility = View.VISIBLE
-                binding.usageHeaderMaterialLayout.visibility = View.INVISIBLE
-                binding.usageFooterTv.text = getString(R.string.usage_footer_text, usageList.size, totalHours)
-            }
-            else {
-                binding.usageHeaderLaborLayout.visibility = View.INVISIBLE
-                binding.usageHeaderMaterialLayout.visibility = View.VISIBLE
-                binding.usageFooterTv.text = getString(R.string.usage_history_footer_material, totalHours, unit)
-            }
+
+
 
             (adapter as UsageHistoryAdapter).notifyDataSetChanged()
 
