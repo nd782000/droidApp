@@ -34,6 +34,11 @@
     <string name="images">Fotos</string>
     <string name="image">Foto</string>
     <string name="employee_name">Nombre de empleado</string>
+    <string name="equipment_name">Nombre del equipo</string>
+    <string name="equipment_type">Tipo de equipo</string>
+    <string name="equipment_crew">Personal de machina</string>
+    <string name="equipment_detail">Detalle de la machina</string>
+    <string name="equipment_details">Detalles de la machina</string>
     <string name="current_service_check">Actualizar kilometraje:</string>
     <string name="add_service">Servicio nuevo</string>
     <string name="menu_reload_company_data">Recargar datos de empresa</string>
@@ -731,6 +736,7 @@
     <string name="no_usage_edited">Sin uso editado</string>
     <string name="notice">Aviso</string>
     <string name="usage_exceeds_estimated">El uso excede la cantidad estimada.</string>
+    <string name="edit_everyones_total_time">¿Editar el tiempo total de todos?</string>
     <string name="full_usage_history">Historial de uso completo</string>
     <string name="receipt_question_mark">Recibo?</string>
     <string name="cost">Costo</string>
@@ -1012,6 +1018,8 @@
     <string name="xs_crews_for_today">Personales de %1$s para hoy</string>
     <string name="xs_crews_for_this_week">Personales de %1$s para esta semana</string>
     <string name="xs_crews_for_next_week">Personales de %1$s para la próxima semana</string>
+    <string name="refresh_my_schedule">Actualizar mi horario</string>
+    <string name="locked_all_caps">BLOQUEDO</string>
     <string name="email_x">Email a %1$s</string>
     <string name="send_to_the_following_label">Enviar a lo siguiente:</string>
     <string name="send">Enviar</string>
@@ -1041,6 +1049,11 @@
     <string name="service_reminder_warning_miles">Millas antes</string>
     <string name="service_reminder_warning_km">Kilómetros antes</string>
     <string name="service_reminder_warning_hours">Horas antes</string>
+    <string name="usage_edit_times">Editar tiempos</string>
+    <string name="usage_edit_total">Editar total</string>
+    <string name="minutes">minutos</string>
+    <string name="total_time_error_title">Error de hora</string>
+    <string name="total_time_error_body">El tiempo total debe ser una cantidad de minutos.</string>
     <string name="login_company_unique">Identificador de la empresa</string>
     <string name="login_username">Nombre de usuario</string>
     <string name="login_password">Contraseña</string>
@@ -1068,6 +1081,7 @@
     <string name="other_info">Otra información</string>
     <string name="cost_label">Costo:</string>
     <string name="part_number_label">Número de parte:</string>
+    <string name="usage_history">Historial de uso</string>
     <string name="unit">Unidad</string>
     <string name="item_num">Artículo #%1$s</string>
     <string name="new_item">Nuevo artículo</string>
@@ -1083,5 +1097,7 @@
     <string name="select_parent_item">Seleccionar artículo padre</string>
     <string name="full_name_label">Nombre completo:</string>
     <string name="tax_rate_label">Tasa de impuestos:</string>
+    <string name="hour">Hora</string>
+    <string name="assign_lead_tasks">Asignar tareas de pista</string>
 
 </resources>

@@ -85,11 +85,11 @@
     <string name="employee_ph_number" translatable="false">(401)863.2121</string>
     <string name="employee_email" translatable="false">john@atlantic...den.com</string>
 
-    <string name="equipment_name" translatable="false">Equipment Name</string>
-    <string name="equipment_type" translatable="false">Equipment Type</string>
-    <string name="equipment_crew" translatable="false">Equipment Crew</string>
-    <string name="equipment_detail" translatable="false">Equipment Detail</string>
-    <string name="equipment_details" translatable="false">Equipment Details</string>
+    <string name="equipment_name">Equipment Name</string>
+    <string name="equipment_type">Equipment Type</string>
+    <string name="equipment_crew">Equipment Crew</string>
+    <string name="equipment_detail">Equipment Detail</string>
+    <string name="equipment_details">Equipment Details</string>
     <string name="current_service_check">Update Mileage:</string>
     <string name="add_service">Add Service</string>
     <string name="equipment_usage_miles">Total %1$s Miles</string>

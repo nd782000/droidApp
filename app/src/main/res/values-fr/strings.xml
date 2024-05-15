@@ -75,6 +75,11 @@
     <string name="images">Images</string>
     <string name="image">Image</string>
     <string name="employee_name">Nom de l\'employé</string>
+    <string name="equipment_name">Nom de l\'équipement</string>
+    <string name="equipment_type">Type d\'équipement</string>
+    <string name="equipment_crew">Equipe d\'équipement</string>
+    <string name="equipment_detail">Détail de l\'équipement</string>
+    <string name="equipment_details">Détails de l\'équipement</string>
     <string name="current_service_check">Mettre à jour le kilométrage :</string>
     <string name="add_service">Ajouter un service</string>
     <string name="equipment_usage_miles">%1$s miles total</string>
@@ -875,6 +880,8 @@
     <string name="unplottable_my_schedule_title">Éléments non traçables</string>
     <string name="unplottable_my_schedule_body">Il y avait %1$d entrée(s) dans l\'horaire de %2$s qui n\'ont pas pu être tracée(s).</string>
     <string name="unplottable_my_schedule_body_one">Il y avait une entrée dans l\'horaire de %1$s qui n\'a pas pu être tracée.</string>
+    <string name="refresh_my_schedule">Actualiser mon horaire</string>
+    <string name="locked_all_caps">FERMÉ À CLÉ</string>
     <string name="email_x">Envoyer un courriel à %1$s</string>
     <string name="send_to_the_following_label">Envoyer aux suivants :</string>
     <string name="send">Envoyer</string>
@@ -944,6 +951,7 @@
     <string name="no_usage_edited">Aucune utilisation modifiée</string>
     <string name="notice">Avis</string>
     <string name="usage_exceeds_estimated">L\'utilisation dépasse la quantité estimée.</string>
+    <string name="edit_everyones_total_time">Modifier le temps total de chacun ?</string>
     <string name="full_usage_history">Historique complet d\'utilisation</string>
     <string name="receipt_question_mark">Reçu ?</string>
     <string name="cost">Coût</string>
@@ -951,6 +959,11 @@
     <string name="usage_history_footer_material">Total : %1$.2f %2$s</string>
     <string name="overlapping_usage_title">Utilisation chevauchante</string>
     <string name="overlapping_usage_body">Voulez-vous enregistrer quand même ?</string>
+    <string name="usage_edit_times">Modifier les heures</string>
+    <string name="usage_edit_total">Modifier le total</string>
+    <string name="minutes">minutes</string>
+    <string name="total_time_error_title">Erreur de temps</string>
+    <string name="total_time_error_body">La durée totale doit être de plusieurs minutes.</string>
     <string name="login_company_unique">Entreprise unique</string>
     <string name="login_username">Nom d\'utilisateur</string>
     <string name="login_password">Mot de passe</string>
@@ -1017,6 +1030,7 @@
     <string name="not_scheduled">Non planifié</string>
     <string name="item_type_label">Type d\'article :</string>
     <string name="no_locations_saved">Aucun emplacement enregistré</string>
+    <string name="usage_history">Historique d\'utilisation</string>
     <string name="unit">Unité</string>
     <string name="item_num">Article #%1$s</string>
     <string name="new_item">Nouvel article</string>
@@ -1082,9 +1096,8 @@
     </plurals>
 
     <string name="pick_multi_limit">Vous avez plus de %1$d images sélectionnées…</string>
-
-
-
+    <string name="hour">Huere</string>
+    <string name="assign_lead_tasks">Attribuer des tâches au prospect</string>
 
 
 </resources>
