@@ -1316,10 +1316,9 @@
     <string name="quick_complete_item_material">Add %1$s units?</string>
     <string name="quick_complete_already_complete">Work order item is already complete.</string>
 
+    <string name="work_order_set_end_to_today">Set work order end date to today?</string>
+    <string name="select_a_different_day">Select a different day</string>
 
-    "quick_complete_item_type_1_body_part_1" = "Add %@ hrs. ";
-    "quick_complete_item_type_1_body_part_2" = "for %@";
-    "quick_complete_item_type_2_body_part_1" = "Add %@ units ";
 
 
 

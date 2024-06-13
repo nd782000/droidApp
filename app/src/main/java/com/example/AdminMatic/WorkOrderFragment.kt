@@ -545,7 +545,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         }
 
                         setStatusIcon(workOrder!!.status)
-                        updateStatus()
+                        updateStatus(false)
 
                     }
                     builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
@@ -560,7 +560,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     }
 
                     setStatusIcon(workOrder!!.status)
-                    updateStatus()
+                    updateStatus(false)
                 }
 
 
@@ -575,7 +575,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     }
 
 
-    private fun updateStatus() {
+    private fun updateStatus(refreshWO: Boolean) {
         showProgressView()
 
         var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/workOrderStatus.php"
@@ -601,9 +601,63 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                     //setFragmentResult("refresh", bundleOf("refresh" to true))
 
+                    if (refreshWO) {
+                        getWorkOrder()
+                    }
+                    else {
+                        hideProgressView()
+                        var foundUsage = false
+                        workOrder!!.items?.forEach {
+                            if (it.usageQty != "" && it.usageQty != "0.00") {
+                                foundUsage = true
+                            }
+                        }
+
+                        if (!foundUsage && workOrder!!.status == "3") { // finished
+                            println("DID NOT FIND USAGE")
+
+                            val dateNow = LocalDate.now()
+                            val newDateValue = LocalDateTime.of(dateNow.year, dateNow.month, dateNow.dayOfMonth, 0, 0)
+                            setEndDate(newDateValue.format(GlobalVars.dateFormatterPHP))
+
+                            /*
+                            val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
+                            builder.setTitle(getString(R.string.work_order_set_end_to_today))
+
+                            val dateNow = LocalDate.now()
+                            val newDateValue = LocalDateTime.of(dateNow.year, dateNow.month, dateNow.dayOfMonth, 0, 0)
+
+                            builder.setPositiveButton(android.R.string.ok) { _, _ ->
+
+
+                                setEndDate(newDateValue.format(GlobalVars.dateFormatterPHP))
+
+                            }
+
+                            builder.setNegativeButton(getString(R.string.select_a_different_day)) { _, _ ->
+                                val datePicker = DatePickerHelper(com.example.AdminMatic.myView.context, true)
+                                datePicker.showDialog(newDateValue.year, newDateValue.monthValue-1, newDateValue.dayOfMonth, object : DatePickerHelper.Callback {
+                                    override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+                                        val selectedDate = LocalDateTime.of(year, month+1, dayOfMonth, 0, 0)
+                                        setEndDate(selectedDate.format(GlobalVars.dateFormatterPHP))
+                                    }
+                                })
+                            }
+
+                            builder.show()
+
+                             */
+
+                        }
+
+                    }
+
+
+
+
                     globalVars.updateGlobalMySchedule(workOrder!!.woID, MyScheduleEntryType.workOrder, workOrder!!.status)
 
-                    hideProgressView()
+
 
                     /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
@@ -625,6 +679,56 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 params["empName"] = GlobalVars.loggedInEmployee!!.name
                 params["skipped"] = workOrder!!.skipped.toString()
                 params["notes"] = workOrder!!.notes.toString()
+                println("params = $params")
+                return params
+            }
+        }
+        queue.add(postRequest1)
+    }
+
+    private fun setEndDate(dateString: String) {
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/workOrderEnd.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        globalVars.playSaveSound(com.example.AdminMatic.myView.context)
+                    }
+
+                    hideProgressView()
+
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["woID"] = workOrder!!.woID
+                params["endTime"] = dateString
                 println("params = $params")
                 return params
             }
@@ -1023,7 +1127,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
                         if (newWoStatus != workOrder!!.status) {
                             workOrder!!.status = newWoStatus
-                            updateStatus()
+                            updateStatus(true)
                         }
                         else {
                             hideProgressView()

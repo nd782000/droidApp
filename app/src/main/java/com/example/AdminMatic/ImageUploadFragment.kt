@@ -92,6 +92,8 @@ private var equipmentID: String = ""
 private var usageID: String = ""
 private var uncompressed = "0"
 
+private var disableCompressionSwitch = true
+
 private var customerAllowImages: Boolean = true
 private var queriedCustomer: Customer? = null
 
@@ -522,6 +524,10 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
             createImageCell(ImageCellData(null, img, false))
         }
 
+        if (disableCompressionSwitch) {
+            binding.uncompressedSwitch.visibility = View.GONE
+        }
+
     }
 
 
@@ -702,7 +708,12 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
 
                 val output = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
+                if (disableCompressionSwitch) {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, output)
+                }
+                else {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
+                }
 
                 filesToDelete.add(file)
 
@@ -1198,7 +1209,12 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
                     params["name"] = "$mode Image"
                     params["desc"] = et.text.trim().toString()
                     params["tags"] = ""
-                    params["noCompress"] = uncompressed
+                    if (disableCompressionSwitch) {
+                        params["noCompress"] = "0"
+                    }
+                    else {
+                        params["noCompress"] = uncompressed
+                    }
                     if (customerID != "") {
                         params["customer"] = customerID
                     }
