@@ -1,7 +1,6 @@
 package com.example.AdminMatic
 
 import android.content.Intent
-import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
@@ -29,14 +28,18 @@ import com.AdminMatic.databinding.FragmentWorkOrderBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONException
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 interface WoItemCellClickListener {
     fun onWoItemCellClickListener(data:WoItem)
+    fun onWoItemQuickComplete(data:WoItem)
     fun onAddNewItemClickListener()
 }
 
@@ -764,6 +767,302 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         }
 
     }
+
+    override fun onWoItemQuickComplete(data:WoItem) {
+        println("onWoItemQuickComplete")
+        println("woitem type: ${data.type}")
+
+        if (data.est == "0.0") {
+            globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.no_estimated_value_title), getString(R.string.no_estimated_value_title))
+            return
+        }
+
+        if (data.type == "1" && workOrder!!.emps.isEmpty()) {
+            globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.no_emps_on_wo_title), getString(R.string.no_emps_on_wo_body))
+            return
+        }
+
+        if (workOrder!!.invoiceID != "0") {
+            globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.invoiced_wo_cant_edit))
+            return
+        }
+
+        if (data.status == "3" || data.status == "4") {
+            globalVars.simpleAlert(com.example.AdminMatic.myView.context, getString(R.string.dialogue_error), getString(R.string.quick_complete_already_complete))
+            return
+        }
+
+        var alertStringEmps = ""
+        var dividedUsage = 0.0
+        var alertString = ""
+
+        if (data.type == "1") { // labor type
+            workOrder!!.emps.forEachIndexed{ i, emp ->
+                if (i == 0) {
+                    alertStringEmps = alertStringEmps.plus(emp.name)
+                }
+                else {
+                    alertStringEmps = alertStringEmps.plus(", ${emp.name}")
+                }
+            }
+            dividedUsage = data.est.toDouble() / workOrder!!.emps.size
+            alertString = getString(R.string.quick_complete_item_labor, dividedUsage.toString(), alertStringEmps)
+        }
+        else {
+            dividedUsage = data.est.toDouble()
+            alertString = getString(R.string.quick_complete_item_material, dividedUsage.toString())
+        }
+
+        val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
+        builder.setTitle(getString(R.string.quick_complete_item_title))
+        builder.setMessage(alertString)
+
+        builder.setPositiveButton(android.R.string.ok) { _, _ ->
+            val usageToLog:MutableList<Usage> = mutableListOf()
+            val dateNow = LocalDate.now()
+            val newDateValue = LocalDateTime.of(dateNow.year, dateNow.month, dateNow.dayOfMonth, 0, 0)
+
+
+
+            if (data.type == "1") {
+                println("labor type")
+                workOrder!!.emps.forEach {
+                    println("divided usage to string: $dividedUsage")
+                    val newUsage = Usage(
+                        ID = "0",
+                        woID = data.woID,
+                        itemID = data.ID,
+                        type = "1",
+                        addedBy = GlobalVars.loggedInEmployee!!.ID,
+                        qty = dividedUsage.toString(),
+                        total_only = "1",
+                        empID = it.ID,
+                        depID = it.depID,
+                        start = GlobalVars.dateFormatterPHP.format(newDateValue),
+                        stop = GlobalVars.dateFormatterPHP.format(newDateValue),
+                        lunch = null,
+                        empName = it.name,
+                        unitPrice = data.price,
+                        totalPrice = data.total,
+                        vendor = "",
+                        unitCost = "",
+                        totalCost = "",
+                        usageCharge = data.charge,
+                        override = "0",
+                        pic = it.pic,
+                        del = "",
+                        custName = null,
+                        woStatus = null,
+                        hasReceipt = "0",
+                        addedByName = GlobalVars.loggedInEmployee!!.name,
+                        addedNice = "",
+                        locked = false,
+                        receipt = null,
+                        editsMade = false,
+                        startDateTime = null,
+                        stopDateTime = null,
+                        progressViewVisible = false
+                    )
+                    newUsage.quick_complete = "1"
+                    usageToLog.add(newUsage)
+                }
+            }
+            else { // material
+                println("material type")
+                println("divided usage to string: $dividedUsage")
+                val newUsage = Usage(
+                    ID = "0",
+                    woID = data.woID,
+                    itemID = data.ID,
+                    type = "2",
+                    addedBy = GlobalVars.loggedInEmployee!!.ID,
+                    qty = data.est,
+                    total_only = "1",
+                    empID = null,
+                    depID = null,
+                    start = GlobalVars.dateFormatterPHP.format(newDateValue),
+                    stop = GlobalVars.dateFormatterPHP.format(newDateValue),
+                    lunch = null,
+                    empName = null,
+                    unitPrice = data.price,
+                    totalPrice = data.total,
+                    vendor = "",
+                    unitCost = "",
+                    totalCost = "",
+                    usageCharge = data.charge,
+                    override = "1",
+                    pic = null,
+                    del = "",
+                    custName = null,
+                    woStatus = null,
+                    hasReceipt = "0",
+                    addedByName = GlobalVars.loggedInEmployee!!.name,
+                    addedNice = "",
+                    locked = false,
+                    receipt = null,
+                    editsMade = false,
+                    startDateTime = null,
+                    stopDateTime = null,
+                    progressViewVisible = false
+                )
+                newUsage.quick_complete = "1"
+
+
+                if (!data.vendors.isNullOrEmpty()) {
+                    data.vendors!!.forEach {
+                        if (it.preferred == "1") {
+                            newUsage.vendor = it.ID
+                            if (it.cost != null) {
+                                newUsage.unitCost = it.cost
+                                val totalCost = it.cost!!.toDouble() * data.est.toDouble()
+                                newUsage.totalCost = totalCost.toString()
+                                println("total cost: ${newUsage.totalCost}")
+                            }
+                            else {
+                                newUsage.unitCost = null
+                                newUsage.totalCost = null
+                            }
+                        }
+                    }
+                }
+
+                usageToLog.add(newUsage)
+
+            }
+
+            println(usageToLog)
+
+            quickCompleteCallDB(data, usageToLog)
+
+        }
+
+        builder.setNegativeButton(android.R.string.cancel) { _, _ ->
+            println("canceled quick complete")
+        }
+
+        builder.show()
+
+    }
+
+    private fun quickCompleteCallDB(data:WoItem, usageToLog:MutableList<Usage>) {
+
+        val usageToLogJSONMutableList = mutableListOf<String>()
+        val gsonPretty: Gson = GsonBuilder().setPrettyPrinting().create()
+
+        usageToLog.forEach {
+            val jsonUsagePretty: String = gsonPretty.toJson(it)
+            usageToLogJSONMutableList.add(jsonUsagePretty)
+            println("jsonUsagePretty = $jsonUsagePretty")
+        }
+
+        showProgressView()
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/usage.php"
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                println("Response $response")
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        globalVars.playSaveSound(myView.context)
+                        updateWoItemComplete(data)
+                    }
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["usageToLog"] = usageToLogJSONMutableList.toString()
+                params["override"] = "0"
+                println("update usage params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "usageEntry"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+
+    }
+
+    private fun updateWoItemComplete(data:WoItem) {
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/workOrderItemStatus.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject update work order item = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        globalVars.playSaveSound(myView.context)
+
+                        data.status = "3"
+                        binding.workOrderItemsRv.adapter?.notifyDataSetChanged()
+
+                        val gson = GsonBuilder().create()
+                        val newWoStatus: String = gson.fromJson(parentObject["newWoStatus"].toString(), String::class.java)
+
+                        if (newWoStatus != workOrder!!.status) {
+                            workOrder!!.status = newWoStatus
+                            updateStatus()
+                        }
+                        else {
+                            hideProgressView()
+                        }
+                    }
+
+
+                    /* Here 'response' is a String containing the response you received from the website... */
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = java.util.HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["status"] = "3"
+                params["taskStatus"] = "3"
+                params["woID"] = workOrder!!.woID
+                params["woItemID"] = data.ID
+                params["empID"] = GlobalVars.loggedInEmployee!!.ID
+                println("params = $params")
+                return params
+
+            }
+        }
+        postRequest1.tag = "woItem"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+        true
+    }
+
+
+
+
 
 
     private fun setStatusIcon(status: String) {

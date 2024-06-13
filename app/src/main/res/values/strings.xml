@@ -1304,6 +1304,23 @@
     <string name="suggested_price_x">Suggested Price Per: $%1$s</string>
     <string name="edit_vendors">Edit Vendors</string>
 
+    <!-- Quick complete stuff -->
+    <string name="quick_complete">Quick Complete</string>
+    <string name="quick_complete_enabled">Quick Complete Enabled</string>
+    <string name="no_estimated_value_title">No Estimated Time</string>
+    <string name="no_estimated_value_body">The item must have an estimated quantity to Quick Complete.</string>
+    <string name="no_emps_on_wo_title">No Employees Assigned</string>
+    <string name="no_emps_on_wo_body">The work order must be assigned to a crew to Quick Complete.</string>
+    <string name="quick_complete_item_title">Quick Complete?</string>
+    <string name="quick_complete_item_labor">Add %1$s hours for %2$s?</string>
+    <string name="quick_complete_item_material">Add %1$s units?</string>
+    <string name="quick_complete_already_complete">Work order item is already complete.</string>
+
+
+    "quick_complete_item_type_1_body_part_1" = "Add %@ hrs. ";
+    "quick_complete_item_type_1_body_part_2" = "for %@";
+    "quick_complete_item_type_2_body_part_1" = "Add %@ units ";
+
 
 
     <string name="pick_single">Please select your image</string>

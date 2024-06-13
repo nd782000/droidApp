@@ -145,8 +145,10 @@ class WorkOrdersAdapter(
 
 
         val data = filterList[position]
+        val unfilteredPosition = list.indexOf(filterList[position])
+
         holder.itemView.setOnClickListener {
-            cellClickListener.onWorkOrderCellClickListener(data, position)
+            cellClickListener.onWorkOrderCellClickListener(data, unfilteredPosition)
         }
 
 

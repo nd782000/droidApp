@@ -30,7 +30,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.math.roundToInt
@@ -340,7 +339,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                     usage.depID = emp.depID
                     usage.unitPrice = woItem!!.price
                     usage.totalPrice = woItem!!.total
-                    usage.chargeType = woItem!!.charge
+                    usage.usageCharge = woItem!!.charge
                     usage.start = null
                     usage.stop = null
                     usage.lunch = ""
@@ -376,7 +375,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                 usage.depID = null
                 usage.unitPrice = woItem!!.price
                 usage.totalPrice = woItem!!.total
-                usage.chargeType = woItem!!.charge
+                usage.usageCharge = woItem!!.charge
                 usage.override = "1"
                 usage.locked = false
 
@@ -426,7 +425,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
         val usage = Usage("0", workOrder.woID,woItem!!.ID,woItem!!.type,GlobalVars.loggedInEmployee!!.ID,"0.00", "0")
         usage.unitPrice = woItem?.price
         usage.totalPrice = woItem?.total
-        usage.chargeType = woItem?.charge
+        usage.usageCharge = woItem?.charge
         usage.override = "0"
         usage.locked = false
 
@@ -1049,7 +1048,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
             if (usageToLog[submitIndex].unitCost == null) { usageToLog[submitIndex].unitCost = ""}
             if (usageToLog[submitIndex].unitCost == null) { usageToLog[submitIndex].unitCost = ""}
             if (usageToLog[submitIndex].totalCost == null) { usageToLog[submitIndex].totalCost = ""}
-            if (usageToLog[submitIndex].chargeType == null) { usageToLog[submitIndex].chargeType = ""}
+            if (usageToLog[submitIndex].usageCharge == null) { usageToLog[submitIndex].usageCharge = ""}
             if (usageToLog[submitIndex].del == null) { usageToLog[submitIndex].del = ""}
 
 
@@ -1130,7 +1129,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                     params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
                     params["ID"] = usageToLog[submitIndex].ID
                     params["woID"] = usageToLog[submitIndex].woID
-                    params["itemID"] = usageToLog[submitIndex].woItemID
+                    params["itemID"] = usageToLog[submitIndex].itemID
                     params["type"] = usageToLog[submitIndex].type
                     params["addedBy"] = GlobalVars.loggedInEmployee!!.ID
                     params["qty"] = usageToLog[submitIndex].qty
@@ -1143,7 +1142,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                     params["totalCost"] = usageToLog[submitIndex].totalCost!!
                     params["unitPrice"] = usageToLog[submitIndex].unitPrice!!
                     params["totalPrice"] = usageToLog[submitIndex].totalPrice!!
-                    params["usageCharge"] = usageToLog[submitIndex].chargeType!!
+                    params["usageCharge"] = usageToLog[submitIndex].usageCharge!!
                     params["del"] = usageToLog[submitIndex].del!!
 
                     if (usageToLog[submitIndex].total_only == "1") {
@@ -1332,7 +1331,7 @@ class UsageEntryFragment : Fragment(), UsageEditListener, AdapterView.OnItemSele
                             if (usage.stop != null && usage.stop != "0000-00-00 00:00:00") {
                                 usage.stopDateTime = LocalDateTime.parse(usage.stop, GlobalVars.dateFormatterPHP)
                             }
-                            usage.chargeType = woItem!!.charge
+                            usage.usageCharge = woItem!!.charge
                         }
 
                         dataLoaded = true

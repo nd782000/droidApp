@@ -1003,7 +1003,8 @@ data class Album(var ID:String,
 @Parcelize
 data class Usage(var ID:String,
                  var woID: String,
-                 var woItemID: String,
+                 @field:SerializedName("itemID", alternate= ["woItemID"])
+                 var itemID: String,
                  var type: String,
                  var addedBy: String,
                  var qty: String,
@@ -1020,8 +1021,8 @@ data class Usage(var ID:String,
                  var vendor: String? = "",
                  var unitCost: String? = "",
                  var totalCost: String? = "",
-                 @field:SerializedName("chargeType", alternate= ["charge"])
-                 var chargeType: String? = "",
+                 @field:SerializedName("usageCharge", alternate= ["charge, chargeType"])
+                 var usageCharge: String? = "",
                  var override: String? = "",
                  var pic: String? = "",
                  var del: String? = "",
@@ -1030,6 +1031,8 @@ data class Usage(var ID:String,
                  var hasReceipt: String? = "",
                  var addedByName: String? = "",
                  var addedNice: String? = "",
+                 //@field:SerializedName("quickComplete", alternate= ["quick_complete"])
+                 var quick_complete: String? = "",
 
                  var locked: Boolean = false,
                  var receipt:Image? = null,
@@ -1038,6 +1041,7 @@ data class Usage(var ID:String,
                  var stopDateTime: LocalDateTime? = null,
 
                  var progressViewVisible: Boolean = false
+
 ): Parcelable{
     override fun toString(): String {
         return  ID
@@ -1220,6 +1224,8 @@ data class WoItem(var ID:String,
                   var estNotes: String = "",
                   var minQty: String? = "",
                   var tax: String? = "",
+                  @field:SerializedName(value="autoUsage", alternate= ["auto_usage"])
+                  var autoUsage: String? = "0",
 
                   var tasks:Array<Task>? = arrayOf(),
                   var usage:Array<Usage>? = arrayOf(),
