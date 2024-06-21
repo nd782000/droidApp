@@ -707,13 +707,11 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
                     if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
-                        globalVars.playSaveSound(com.example.AdminMatic.myView.context)
+                        com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.work_order_end_date_title),getString(R.string.work_order_end_date_body))
                     }
 
                     hideProgressView()
 
-
-                    /* Here 'response' is a String containing the response you received from the website... */
                 } catch (e: JSONException) {
                     println("JSONException")
                     e.printStackTrace()

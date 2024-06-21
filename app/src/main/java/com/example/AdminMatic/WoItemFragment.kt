@@ -20,11 +20,14 @@ import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentWoItemBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 interface TaskCellClickListener {
@@ -787,6 +790,27 @@ class WoItemFragment : Fragment(), TaskCellClickListener, ItemCellClickListener,
                         if (listIndex >= 0) {
                             GlobalVars.globalWorkOrdersList?.set(listIndex, workOrder)
                         }
+
+                        var foundUsage = false
+                        if (woItem?.usageQty != "" && woItem?.usageQty != "0.00") {
+                            foundUsage = true
+                        }
+                        workOrder.items?.forEach {
+                            if (it.usageQty != "" && it.usageQty != "0.00") {
+                                foundUsage = true
+                            }
+                        }
+
+                        if (!foundUsage && workOrder.status == "3") { // finished
+                            println("DID NOT FIND USAGE")
+
+                            val dateNow = LocalDate.now()
+                            val newDateValue = LocalDateTime.of(dateNow.year, dateNow.month, dateNow.dayOfMonth, 0, 0)
+                            setEndDate(newDateValue.format(GlobalVars.dateFormatterPHP))
+
+
+                        }
+
                     }
                     hideProgressView()
 
@@ -815,6 +839,54 @@ class WoItemFragment : Fragment(), TaskCellClickListener, ItemCellClickListener,
         }
         postRequest1.tag = "woItem"
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
+    }
+
+    private fun setEndDate(dateString: String) {
+        showProgressView()
+
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/update/workOrderEnd.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+        val queue = Volley.newRequestQueue(com.example.AdminMatic.myView.context)
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+
+                println("Response $response")
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    if (globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)) {
+                        com.example.AdminMatic.globalVars.simpleAlert(myView.context,getString(R.string.work_order_end_date_title),getString(R.string.work_order_end_date_body))
+                    }
+
+                    hideProgressView()
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["woID"] = workOrder.woID
+                params["endTime"] = dateString
+                println("params = $params")
+                return params
+            }
+        }
+        queue.add(postRequest1)
     }
 
     private fun setStatus(status: String) {
