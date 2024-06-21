@@ -2,11 +2,16 @@ package com.example.AdminMatic
 
 //import android.R
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
@@ -19,6 +24,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.AdminMatic.R
@@ -61,33 +67,45 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             laborCl.visibility = View.VISIBLE
             materialCl.visibility = View.GONE
 
+            if (usage.total_only == "1") {
+                holder.itemView.findViewById<ConstraintLayout>(R.id.usage_times_cl).visibility = View.INVISIBLE
+                holder.itemView.findViewById<ConstraintLayout>(R.id.usage_total_cl).visibility = View.VISIBLE
+            }
+            else {
+                holder.itemView.findViewById<ConstraintLayout>(R.id.usage_times_cl).visibility = View.VISIBLE
+                holder.itemView.findViewById<ConstraintLayout>(R.id.usage_total_cl).visibility = View.INVISIBLE
+            }
+
 
             // Lock this cell if the values are already filled and it's a different person than the logged in employee
             usage.locked = false
-            if (usage.total_only == "1") {
-                usage.locked = true
+
+            if (usage.total_only == "0") {
+                if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID
+                    && usage.start != null
+                    && usage.start != "0000-00-00 00:00:00"
+                    && usage.stop != null
+                    && usage.stop != "0000-00-00 00:00:00"
+                ) {
+                    usage.locked = true
+                }
             }
-            if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID
-                && usage.start != null
-                && usage.start != "0000-00-00 00:00:00"
-                && usage.stop != null
-                && usage.stop!= "0000-00-00 00:00:00") {
-                usage.locked = true
+            else {
+                if (usage.addedBy != GlobalVars.loggedInEmployee!!.ID && usage.qty != "" && usage.qty != "0") {
+                    usage.locked = true
+                }
             }
 
             val lock:ImageView = holder.itemView.findViewById(R.id.imageViewLockedLabor)
-            val deleteBtn:Button = holder.itemView.findViewById(R.id.usage_delete_btn)
-            val deleteBtnIv:ImageView = holder.itemView.findViewById(R.id.delete_iv)
+            val menuBtn:TextView = holder.itemView.findViewById(R.id.textViewOptions)
 
             if (usage.locked) {
                 lock.visibility = View.VISIBLE
-                deleteBtn.visibility = View.GONE
-                deleteBtnIv.visibility = View.GONE
+                menuBtn.visibility = View.GONE
             }
             else {
                 lock.visibility = View.INVISIBLE
-                deleteBtn.visibility = View.VISIBLE
-                deleteBtnIv.visibility = View.VISIBLE
+                menuBtn.visibility = View.VISIBLE
             }
 
 
@@ -110,6 +128,9 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             if (usage.startDateTime != null) {
                 startTxt.text = usage.startDateTime!!.format(GlobalVars.dateFormatterHMMA)
             }
+            else {
+                startTxt.text = ""
+            }
             if (!usage.locked) {
                 startTxt.setOnClickListener {
                     // editStart()
@@ -121,15 +142,13 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 startTxt.isEnabled = false
             }
 
-            if (usage.total_only == "1") {
-                startTxt.text = "---"
-            }
-
-
             val stopTxt:TextView = holder.itemView.findViewById(R.id.usage_stop_edit_txt)
             stopTxt.setBackgroundResource(R.drawable.text_view_layout)
             if (usage.stopDateTime != null) {
                 stopTxt.text = usage.stopDateTime!!.format(GlobalVars.dateFormatterHMMA)
+            }
+            else {
+                stopTxt.text = ""
             }
             if (!usage.locked) {
                 stopTxt.setOnClickListener {
@@ -142,11 +161,6 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 stopTxt.isEnabled = false
             }
 
-            if (usage.total_only == "1") {
-                stopTxt.text = "---"
-            }
-
-
             val breakTxt:TextView = holder.itemView.findViewById(R.id.usage_break_edit_txt)
 
             //breakTxt.setRawInputType(Configuration.KEYBOARD_12KEY)
@@ -155,6 +169,9 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
             breakTxt.setBackgroundResource(R.drawable.text_view_layout)
             if (usage.lunch != null){
                 breakTxt.text = usage.lunch!!
+            }
+            else {
+                breakTxt.text = ""
             }
 
             if (!usage.locked) {
@@ -175,8 +192,30 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 breakTxt.isEnabled = false
             }
 
+            val totalEditTxt:TextView = holder.itemView.findViewById(R.id.usage_total_edit_txt)
             if (usage.total_only == "1") {
-                breakTxt.text = "---"
+                totalEditTxt.text = ((usage.qty.toDouble() * 60)+0.5).toInt().toString()
+            }
+
+            if (!usage.locked) {
+                totalEditTxt.setOnEditorActionListener { _, actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        if (totalEditTxt.text.isBlank()) {
+                            totalEditTxt.text = "0"
+                        }
+                        totalEditTxt.clearFocus()
+                        usageEditListener.editTotal(position, totalEditTxt.text.toString(), actionId)
+                        true
+                    }
+                    else {
+                        false
+                    }
+                }
+                totalEditTxt.isEnabled = true
+            }
+            else {
+                totalEditTxt.inputType = InputType.TYPE_NULL
+                totalEditTxt.isEnabled = false
             }
 
             val totalTxt:TextView = holder.itemView.findViewById(R.id.usage_total_tv)
@@ -190,11 +229,40 @@ class UsageAdapter(private val list: MutableList<Usage>, private val context: Co
                 byTxt.text = context.getString(R.string.usage_added_by_x, usage.addedByName + " " + usage.addedNice)
             }
 
-            //delete btn click
-            holder.itemView.findViewById<TextView>(R.id.usage_delete_btn).setOnClickListener {
-                println("delete click")
-                usageEditListener.deleteUsage(position)
+            menuBtn.setOnClickListener {
+                println("menu click")
+
+                val popUp = PopupMenu(myView.context, menuBtn)
+
+                popUp.inflate(R.menu.task_status_menu)
+
+                popUp.menu.add(0, 0, 1, context.getString(R.string.delete))
+                if (usage.total_only == "1") {
+                    popUp.menu.add(0, 1, 1, context.getString(R.string.usage_edit_times))
+                }
+                else {
+                    popUp.menu.add(0, 1, 1, context.getString(R.string.usage_edit_total))
+                }
+                popUp.gravity = Gravity.CENTER
+                popUp.setOnMenuItemClickListener { item: MenuItem? ->
+                    println("test")
+                    when (item?.itemId) {
+                        0 -> {
+                            println("delete click")
+                            usageEditListener.deleteUsage(position)
+                        }
+                        1 -> {
+                            println("toggle total only")
+                            usageEditListener.toggleTotalOnly(position)
+                        }
+                    }
+
+                    true
+
+                }
+                popUp.show()
             }
+
 
 
 

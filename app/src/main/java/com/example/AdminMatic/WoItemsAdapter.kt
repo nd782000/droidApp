@@ -139,6 +139,14 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
             cellClickListener.onWoItemCellClickListener(data)
         }
 
+        val autoUsageTv = holder.itemView.findViewById<TextView>(R.id.quick_complete_enabled_tv)
+        if ((data.autoUsage ?: "0") == "1") {
+            autoUsageTv.visibility = View.VISIBLE
+        }
+        else {
+            autoUsageTv.visibility = View.GONE
+        }
+
 
 
         //options btn click
@@ -148,11 +156,14 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
 
             val popUp = PopupMenu(myView.context,optionsTv)
             popUp.gravity = Gravity.CENTER
-            popUp.inflate(R.menu.delete_menu)
+            popUp.inflate(R.menu.wo_item_list_menu)
+            if ((data.autoUsage ?: "0") == "0") {
+                popUp.menu.removeItem(R.id.quick_complete)
+            }
             popUp.setOnMenuItemClickListener { item: MenuItem? ->
 
                 when (item!!.itemId) {
-                    R.id.menu1 -> {
+                    R.id.delete -> {
                         //Toast.makeText(myView.context, item.title, Toast.LENGTH_SHORT).show()
 
                         if (workOrder.invoiceID == "0") {
@@ -246,6 +257,9 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
                             globalVars.simpleAlert(myView.context, context.getString(R.string.dialogue_error), context.getString(R.string.invoiced_wo_cant_edit))
                         }
 
+                    }
+                    R.id.quick_complete -> {
+                        cellClickListener.onWoItemQuickComplete(data)
                     }
                 }
 

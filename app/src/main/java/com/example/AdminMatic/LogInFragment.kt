@@ -527,6 +527,8 @@ class LogInFragment : Fragment() {
 
 
 
+
+
                 try {
                     val parentObject = JSONObject(response)
                     println("parentObject = $parentObject")
@@ -648,6 +650,7 @@ class LogInFragment : Fragment() {
             }
         }
         postRequest1.tag = "logIn"
+        println("login request: ${postRequest1.url}")
         VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 

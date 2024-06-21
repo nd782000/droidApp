@@ -178,6 +178,10 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
             getMySchedule()
         }
 
+        binding.refreshButton.setOnClickListener {
+            getMySchedule()
+        }
+
         sectionAdapter = MyScheduleSectionAdapter(GlobalVars.globalMyScheduleSections, myView.context, this@MyScheduleFragment)
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(activity)
@@ -291,11 +295,7 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
                         val newEntryArray = myScheduleEntryArray.entries
                         val newEntryArrayFiltered = mutableListOf<MyScheduleEntry>()
 
-                        var currentDaySort = 1
-
                         newEntryArray!!.forEach {
-                            it.daySort = currentDaySort.toString()
-                            currentDaySort += 1
 
                             if (it.type == "work") {
                                 it.entryType = MyScheduleEntryType.workOrder
@@ -478,7 +478,7 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
 
         if (foundWork) {
             binding.swipeContainer.visibility = View.VISIBLE
-            binding.noWorkScheduledTv.visibility = View.INVISIBLE
+            binding.noWorkScheduledCl.visibility = View.INVISIBLE
 
             if (scheduleIsEmpty) {
                 binding.noWorkScheduledTv.text = getString(R.string.no_work_scheduled)
@@ -490,7 +490,7 @@ class MyScheduleFragment : Fragment(), MyScheduleCellClickListener, AdapterView.
         }
         else {
             binding.swipeContainer.visibility = View.INVISIBLE
-            binding.noWorkScheduledTv.visibility = View.VISIBLE
+            binding.noWorkScheduledCl.visibility = View.VISIBLE
             if (scheduleIsEmpty) {
                 binding.noWorkScheduledTv.text = getString(R.string.no_work_scheduled)
             }

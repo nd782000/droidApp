@@ -32,6 +32,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.children
@@ -91,6 +92,8 @@ private var employeeID: String = ""
 private var equipmentID: String = ""
 private var usageID: String = ""
 private var uncompressed = "0"
+
+private var disableCompressionSwitch = true
 
 private var customerAllowImages: Boolean = true
 private var queriedCustomer: Customer? = null
@@ -522,6 +525,10 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
             createImageCell(ImageCellData(null, img, false))
         }
 
+        if (disableCompressionSwitch) {
+            binding.uncompressedSwitch.visibility = View.GONE
+        }
+
     }
 
 
@@ -702,6 +709,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
 
                 val output = FileOutputStream(file)
+
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
 
                 filesToDelete.add(file)
@@ -789,7 +797,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
             ExifInterface.ORIENTATION_NORMAL
         )
 
-        val rotatedBitmap: Bitmap = when (orientation) {
+        var rotatedBitmap: Bitmap = when (orientation) {
             ExifInterface.ORIENTATION_NORMAL -> {
                 bMap
             }
@@ -829,6 +837,34 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
         }
 
         val outputStream = ByteArrayOutputStream()
+
+
+        if (disableCompressionSwitch) {
+            println("image dimensions: ${rotatedBitmap.width} x ${rotatedBitmap.height}")
+            // Scale bitmap
+            if (rotatedBitmap.height > 1000 || rotatedBitmap.width > 1000) {
+                println("bigger than 1000")
+                if (rotatedBitmap.height > rotatedBitmap.width) { // Portrait
+                    println("capping height to 1000")
+                    val ratio = rotatedBitmap.width.toDouble()/rotatedBitmap.height.toDouble()
+                    println("ratio: $ratio")
+                    rotatedBitmap = rotatedBitmap.scale((rotatedBitmap.width * ratio).toInt(), 1000)
+                }
+                else {
+                    println("capping width to 1000")
+                    val ratio = rotatedBitmap.height.toDouble()/rotatedBitmap.width.toDouble()
+                    rotatedBitmap = rotatedBitmap.scale(1000, (rotatedBitmap.height * ratio).toInt())
+                }
+            }
+
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream)
+
+            println("new image dimensions: ${rotatedBitmap.width} x ${rotatedBitmap.height}")
+        }
+        else {
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        }
+
         rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
         imageData = outputStream.toByteArray()
 
@@ -1129,6 +1165,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
         }
         else {
 
+            
+
             println("uploading an uri with index $index")
             //uri.path?.let { handleRotation(uri) }
             println("views = ${binding.imageUploadPrepSelectedImagesLl.childCount}")
@@ -1198,7 +1236,12 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
                     params["name"] = "$mode Image"
                     params["desc"] = et.text.trim().toString()
                     params["tags"] = ""
-                    params["noCompress"] = uncompressed
+                    if (disableCompressionSwitch) {
+                        params["noCompress"] = "0"
+                    }
+                    else {
+                        params["noCompress"] = uncompressed
+                    }
                     if (customerID != "") {
                         params["customer"] = customerID
                     }

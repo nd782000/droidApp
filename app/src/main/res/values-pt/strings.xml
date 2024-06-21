@@ -886,6 +886,8 @@
     <string name="unplottable_my_schedule_title">Itens Não Plotáveis</string>
     <string name="unplottable_my_schedule_body">Havia %1$d entradas na agenda de %2$s que não puderam ser plotadas.</string>
     <string name="unplottable_my_schedule_body_one">Havia uma entrada na agenda de %1$s que não pôde ser plotada.</string>
+    <string name="refresh_my_schedule">Atualizar minha agenda</string>
+    <string name="locked_all_caps">BLOQUEDO</string>
     <string name="email_x">Enviar email para %1$s</string>
     <string name="send_to_the_following_label">Enviar para os Seguintes:</string>
     <string name="send">Enviar</string>
@@ -955,6 +957,7 @@
     <string name="no_usage_edited">Nenhum Uso Editado</string>
     <string name="notice">Aviso</string>
     <string name="usage_exceeds_estimated">O uso excede a quantidade estimada.</string>
+    <string name="edit_everyones_total_time">Editar o tempo total de todos?</string>
     <string name="full_usage_history">Histórico Completo de Uso</string>
     <string name="receipt_question_mark">Recibo?</string>
     <string name="cost">Custo</string>
@@ -962,6 +965,11 @@
     <string name="usage_history_footer_material">Total: %1$.2f %2$s</string>
     <string name="overlapping_usage_title">Uso Sobreposto</string>
     <string name="overlapping_usage_body">Deseja salvar mesmo assim?</string>
+    <string name="usage_edit_times">Editar horários</string>
+    <string name="usage_edit_total">Editar total</string>
+    <string name="minutes">minutos</string>
+    <string name="total_time_error_title">Erro de tempo</string>
+    <string name="total_time_error_body">O tempo total deve ser de alguns minutos.</string>
     <string name="login_company_unique">Empresa Única</string>
     <string name="login_username">Nome de Usuário</string>
     <string name="login_password">Senha</string>
@@ -1028,6 +1036,7 @@
     <string name="not_scheduled">Não Agendado</string>
     <string name="item_type_label">Tipo de Item:</string>
     <string name="no_locations_saved">Nenhum Local Salvo</string>
+    <string name="usage_history">Histórico de uso</string>
     <string name="unit">Unidade</string>
     <string name="item_num">Item #%1$s</string>
     <string name="new_item">Novo Item</string>
@@ -1087,5 +1096,7 @@
         <item quantity="other">Por favor, selecione mais %1$d imagens…</item>
     </plurals>
     <string name="pick_multi_limit">Você tem mais de %1$d imagens selecionadas.</string>
+    <string name="hour">Hora</string>
+    <string name="assign_lead_tasks">Atribuir tarefas ao lead</string>
 
 </resources>
