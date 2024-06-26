@@ -950,7 +950,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         unitCost = "",
                         totalCost = "",
                         usageCharge = data.charge,
-                        override = "0",
+                        override = "1",
                         pic = it.pic,
                         del = "",
                         custName = null,
@@ -965,7 +965,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         stopDateTime = null,
                         progressViewVisible = false
                     )
-                    newUsage.quick_complete = "1"
+                    newUsage.auto_usage = "1"
                     usageToLog.add(newUsage)
                 }
             }
@@ -1007,7 +1007,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     stopDateTime = null,
                     progressViewVisible = false
                 )
-                newUsage.quick_complete = "1"
+                newUsage.auto_usage = "1"
 
 
                 if (!data.vendors.isNullOrEmpty()) {
@@ -1128,7 +1128,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                             updateStatus(true)
                         }
                         else {
-                            hideProgressView()
+                            getWorkOrder()
                         }
                     }
 

@@ -139,12 +139,12 @@ class WoItemsAdapter(list: MutableList<WoItem>, private val context: Context, pr
             cellClickListener.onWoItemCellClickListener(data)
         }
 
-        val autoUsageTv = holder.itemView.findViewById<TextView>(R.id.quick_complete_enabled_tv)
+        val autoUsageCl = holder.itemView.findViewById<ConstraintLayout>(R.id.quick_complete_enabled_cl)
         if ((data.autoUsage ?: "0") == "1") {
-            autoUsageTv.visibility = View.VISIBLE
+            autoUsageCl.visibility = View.VISIBLE
         }
         else {
-            autoUsageTv.visibility = View.GONE
+            autoUsageCl.visibility = View.GONE
         }
 
 
