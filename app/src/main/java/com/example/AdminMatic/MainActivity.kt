@@ -1031,8 +1031,7 @@ data class Usage(var ID:String,
                  var hasReceipt: String? = "",
                  var addedByName: String? = "",
                  var addedNice: String? = "",
-                 //@field:SerializedName("quickComplete", alternate= ["quick_complete"])
-                 var quick_complete: String? = "",
+                 var auto_usage: String? = "",
 
                  var locked: Boolean = false,
                  var receipt:Image? = null,

@@ -1321,7 +1321,7 @@
 
 
     <string name="work_order_end_date_title">Work Order End Date Set</string>
-    <string name="work_order_end_date_body">The newly completed work order\'s end date was automatically set to today.</string>
+    <string name="work_order_end_date_body">No usage was logged, so the work order\'s end date was automatically set to today.</string>
 
 
 
