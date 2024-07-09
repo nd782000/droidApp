@@ -3,9 +3,13 @@ package com.example.AdminMatic
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Context.CAMERA_SERVICE
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.hardware.camera2.CameraAccessException
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
@@ -13,13 +17,14 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.OrientationEventListener
+import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +37,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
@@ -93,6 +99,7 @@ private var equipmentID: String = ""
 private var usageID: String = ""
 private var uncompressed = "0"
 
+
 private var disableCompressionSwitch = true
 
 private var customerAllowImages: Boolean = true
@@ -143,6 +150,9 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
     var uploadedImageCount = 0
 
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var orientationEventListener:OrientationEventListener
+
+    private var rotationValue = Surface.ROTATION_90
 
 
     // var albumID: String = ""
@@ -236,6 +246,30 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
                 }
             }
         }
+
+
+        orientationEventListener = object : OrientationEventListener(context) {
+            override fun onOrientationChanged(orientation: Int) {
+
+                //rotationValue = orientation
+
+                // Monitors orientation values to determine the target rotation value
+                if (orientation in 45..134) {
+                    rotationValue = Surface.ROTATION_270;
+                } else if (orientation in 135..224) {
+                    rotationValue = Surface.ROTATION_180;
+                } else if (orientation in 225..314) {
+                    rotationValue = Surface.ROTATION_90;
+                } else {
+                    rotationValue = Surface.ROTATION_0;
+                }
+
+                println("orientationEventListener $rotationValue")
+            }
+        }
+
+
+
 
 
 
@@ -534,6 +568,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
     override fun onStop() {
         super.onStop()
+        orientationEventListener.disable()
         VolleyRequestQueue.getInstance(requireActivity().application).requestQueue.cancelAll("imageUpload")
     }
 
@@ -555,6 +590,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
     private fun startCamera() {
         println("Start Camera")
+
+        orientationEventListener.enable()
 
         if (cameraInitialed) {
             binding.cameraCl.visibility = View.VISIBLE
@@ -595,6 +632,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
             binding.cameraCl.visibility = View.VISIBLE
             cameraInitialed = true
+
         }
     }
 
@@ -691,6 +729,8 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
+        imageCapture.targetRotation = rotationValue
+
         imageCapture.takePicture(ContextCompat.getMainExecutor(myView.context), object :
             ImageCapture.OnImageCapturedCallback() {
             override fun onCaptureSuccess(image: ImageProxy) {
@@ -702,7 +742,10 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
                 buffer.get(bytes)
                 var bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 
+                println("rotation degrees: ${image.imageInfo.rotationDegrees}")
+
                 bitmap = rotate(bitmap, image.imageInfo.rotationDegrees.toFloat())
+
 
 
                 val file = File.createTempFile("tempImage", null, myView.context.cacheDir)
@@ -712,12 +755,18 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
 
+                val ei = ExifInterface(file)
+                val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+                println("orientation: ${orientation}")
+
                 filesToDelete.add(file)
 
                 createImageCell(ImageCellData(file.toUri(), null, true))
-
+                image.close()
                 super.onCaptureSuccess(image)
                 binding.cameraCl.visibility = View.GONE
+                orientationEventListener.disable()
+
             }
 
             override fun onError(exception: ImageCaptureException) {
@@ -726,6 +775,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
 
                 super.onError(exception)
                 binding.cameraCl.visibility = View.GONE
+                orientationEventListener.disable()
             }
 
         })
@@ -832,7 +882,7 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
                 println("Rotating 270 degrees")
             }
             else -> {
-                println("Undefined rotation")
+                println("Undefined rotation $orientation")
             }
         }
 
@@ -848,12 +898,12 @@ class ImageUploadFragment : Fragment(), CustomerCellClickListener {
                     println("capping height to 1000")
                     val ratio = rotatedBitmap.width.toDouble()/rotatedBitmap.height.toDouble()
                     println("ratio: $ratio")
-                    rotatedBitmap = rotatedBitmap.scale((rotatedBitmap.width * ratio).toInt(), 1000)
+                    rotatedBitmap = rotatedBitmap.scale((1000 * ratio).toInt(), 1000)
                 }
                 else {
                     println("capping width to 1000")
                     val ratio = rotatedBitmap.height.toDouble()/rotatedBitmap.width.toDouble()
-                    rotatedBitmap = rotatedBitmap.scale(1000, (rotatedBitmap.height * ratio).toInt())
+                    rotatedBitmap = rotatedBitmap.scale(1000, (1000 * ratio).toInt())
                 }
             }
 
