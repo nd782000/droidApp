@@ -247,6 +247,7 @@
     <string name="no_permission_crews">You don\'t have permission to access crews.</string>
     <string name="no_permission_departments">You don\'t have permission to access departments.</string>
     <string name="no_permission_crews_edit">You don\'t have permission to edit crews.</string>
+    <string name="no_permission_delete_files">You don\'t have permission to delete files.</string>
     <string name="invoice_not_done">An invoice can only be made from a finished work order.</string>
     <string name="invoice_type_wrong">An invoice can\'t be made from a batch or no invoice work order.</string>
     <string name="invoice_no_total">An invoice can\'t be made from a work order with no price.</string>
@@ -934,6 +935,10 @@
     <!-- Edit Image -->
     <string name="edit_image_num">Edit Image #%1$s</string>
     <string name="edit_image">Edit Image</string>
+    <string name="delete_image">Delete Image</string>
+    <string name="delete_image_title">Delete Image?</string>
+    <string name="delete_image_body">Are you sure you want to delete this image?</string>
+
     <string name="vendor_hint">Vendor…</string>
     <string name="tags_label">Tags:</string>
     <string name="tags_hint">Tags…</string>
@@ -942,6 +947,8 @@
     <string name="tag_already_in_system">Tag \'%1$s\' is already in the system, and has been added to the image.</string>
     <string name="edit_image_name_empty">An image\'s name cannot be blank.</string>
 
+
+fdsfsdfsd
     <!-- Bug Log -->
     <string name="report_a_bug">Report a Bug</string>
     <string name="bug_log_description">Please describe what occurred as well as what you did leading up to the error.</string>

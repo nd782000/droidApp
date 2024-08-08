@@ -3,7 +3,6 @@
     <string name="woItemEstLbl">Estimated:</string>
     <string name="woItemQtyLbl">Qty:</string>
     <string name="woItemTotalLbl">Total:</string>
-    <string name="assign_lead_tasks">Assign Lead Tasks</string>
     <string name="add_usage">Add Usage</string>
     <string name="woItemSubmitBtn">Submit</string>
 
@@ -11,7 +10,6 @@
 
 
 
-    <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
 
     <string name="pick_single">Please select your image</string>
 

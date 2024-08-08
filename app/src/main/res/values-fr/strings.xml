@@ -190,6 +190,8 @@
     <string name="no_permission_create_invoice">Vous n\'avez pas la permission de créer des factures.</string>
     <string name="no_permission_crews">Vous n\'avez pas la permission d\'accéder aux équipes.</string>
     <string name="no_permission_departments">Vous n\'avez pas la permission d\'accéder aux départements.</string>
+    <string name="delete_image_title">Supprimer l\'image ?</string>
+    <string name="delete_image_body">Êtes-vous sûr de vouloir supprimer cette image?</string>
     <string name="no_permission_crews_edit">Vous n\'avez pas la permission de modifier les équipes.</string>
     <string name="invoice_not_done">Une facture ne peut être créée qu\'à partir d\'un bon de travail terminé.</string>
     <string name="invoice_type_wrong">Une facture ne peut pas être créée à partir d\'un bon de travail en lot ou sans facture.</string>
@@ -748,6 +750,7 @@
     <string name="day_note_title">Note du jour :</string>
     <string name="edit_image_num">Modifier l\'image #%1$s</string>
     <string name="edit_image">Modifier l\'image</string>
+    <string name="delete_image">Supprimer l\'image</string>
     <string name="vendor_hint">Fournisseur…</string>
     <string name="tags_label">Balises :</string>
     <string name="tags_hint">Balises…</string>
@@ -1083,6 +1086,20 @@
     <string name="work_order_number">Bon de travail #%1$s</string>
     <string name="title_activity_vendor_main">Carte</string>
     <string name="title_activity_maps">Carte</string>
+    <string name="quick_complete">Rapide à compléter</string>
+    <string name="quick_complete_enabled">Complétion rapide activée</string>
+    <string name="no_estimated_value_title">Pas de temps estimé</string>
+    <string name="no_estimated_value_body">L\'article doit avoir une quantité estimée pour une réalisation rapide.</string>
+    <string name="no_emps_on_wo_title">Aucun employé affecté</string>
+    <string name="no_emps_on_wo_body">L\'ordre de travail doit être attribué à une équipe pour une exécution rapide.</string>
+    <string name="quick_complete_item_title">Rapide complet ?</string>
+    <string name="quick_complete_item_labor">Ajouter %1$s heures pour %2$s ?</string>
+    <string name="quick_complete_item_material">Ajouter %1$s unités ?</string>
+    <string name="quick_complete_already_complete">L\'élément de bon de travail est déjà terminé.</string>
+    <string name="work_order_set_end_to_today">Définir la date de fin du bon de travail sur aujourd\'hui ?</string>
+    <string name="select_a_different_day">Sélectionnez un autre jour</string>
+    <string name="work_order_end_date_title">Date de fin de l\'ordre de travail définie</string>
+    <string name="work_order_end_date_body">Aucune utilisation n\'a été enregistrée, donc la date de fin de l\'ordre de travail a été automatiquement définie sur aujourd\'hui.</string>
     <string name="pick_single">Veuillez sélectionner votre image</string>
     <string name="logout">Se déconnecter</string>
     <string name="website_label">Site Web :</string>
@@ -1097,7 +1114,7 @@
 
     <string name="pick_multi_limit">Vous avez plus de %1$d images sélectionnées…</string>
     <string name="hour">Huere</string>
-    <string name="assign_lead_tasks">Attribuer des tâches au prospect</string>
+    <string name="no_permission_delete_files">Vous n\'avez pas l\'autorisation de supprimer des fichiers.</string>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package com.example.AdminMatic
 
+import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
@@ -17,6 +18,7 @@ import com.AdminMatic.R
 import com.AdminMatic.databinding.FragmentImageBinding
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
+import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONException
 import org.json.JSONObject
@@ -59,6 +61,23 @@ class ImageFragment : Fragment() {
                 globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_vendors_edit))
             }
             return true
+        }
+        else if (id == R.id.delete_image_item) {
+            if (GlobalVars.permissions!!.filesEdit == "1") {
+                val builder = AlertDialog.Builder(com.example.AdminMatic.myView.context)
+                builder.setTitle(getString(R.string.delete_image_title))
+                builder.setMessage(getString(R.string.delete_image_body))
+                builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
+                    deleteImage()
+                }
+                builder.setNegativeButton(getString(R.string.no)) { _, _ ->
+
+                }
+                builder.show()
+            }
+            else {
+                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_delete_files))
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -297,6 +316,55 @@ class ImageFragment : Fragment() {
 
         val imageDate = LocalDate.parse(image!!.dateAdded, GlobalVars.dateFormatterPHP)
         binding.imageDetailsTv.text = getString(R.string.image_description, image!!.createdByName, imageDate.format(GlobalVars.dateFormatterShort), image!!.description)
+    }
+
+    private fun deleteImage() {
+        var urlString = "https://www.adminmatic.com/cp/app/" + GlobalVars.phpVersion + "/functions/delete/image.php"
+
+        val currentTimestamp = System.currentTimeMillis()
+        println("urlString = ${"$urlString?cb=$currentTimestamp"}")
+        urlString = "$urlString?cb=$currentTimestamp"
+
+
+        val postRequest1: StringRequest = object : StringRequest(
+            Method.POST, urlString,
+            Response.Listener { response -> // response
+                //Log.d("Response", response)
+
+                println("Response $response")
+
+                setFragmentResult("imageListSettings", bundleOf("shouldRefreshImages" to true))
+                myView.findNavController().navigateUp()
+
+
+
+                try {
+                    val parentObject = JSONObject(response)
+                    println("parentObject = $parentObject")
+                    globalVars.checkPHPWarningsAndErrors(parentObject, myView.context, myView)
+
+                } catch (e: JSONException) {
+                    println("JSONException")
+                    e.printStackTrace()
+                }
+
+            },
+            Response.ErrorListener { // error
+
+            }
+        ) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["companyUnique"] = GlobalVars.loggedInEmployee!!.companyUnique
+                params["sessionKey"] = GlobalVars.loggedInEmployee!!.sessionKey
+                params["ID"] = image!!.ID
+
+                println("params = $params")
+                return params
+            }
+        }
+        postRequest1.tag = "image"
+        VolleyRequestQueue.getInstance(requireActivity().application).addToRequestQueue(postRequest1)
     }
 
 }

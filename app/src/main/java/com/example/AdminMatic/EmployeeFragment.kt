@@ -378,7 +378,7 @@ class EmployeeFragment : Fragment(), ImageCellClickListener {
             Response.Listener { response -> // response
                 //Log.d("Response", response)
 
-                println("Response $response")
+                println("Get Images Response $response")
 
                 hideProgressView()
 
