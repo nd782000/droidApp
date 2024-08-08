@@ -75,11 +75,11 @@
     <string name="images">Imagens</string>
     <string name="image">Imagem</string>
     <string name="employee_name">Nome do Funcionário</string>
-    <string name="equipment_name" translatable="false">Nome do Equipamento</string>
-    <string name="equipment_type" translatable="false">Tipo de Equipamento</string>
-    <string name="equipment_crew" translatable="false">Equipe do Equipamento</string>
-    <string name="equipment_detail" translatable="false">Detalhe do Equipamento</string>
-    <string name="equipment_details" translatable="false">Detalhes do Equipamento</string>
+    <string name="equipment_name">Nome do Equipamento</string>
+    <string name="equipment_type">Tipo de Equipamento</string>
+    <string name="equipment_crew">Equipe do Equipamento</string>
+    <string name="equipment_detail">Detalhe do Equipamento</string>
+    <string name="equipment_details">Detalhes do Equipamento</string>
     <string name="current_service_check">Atualizar Quilometragem:</string>
     <string name="add_service">Adicionar Serviço</string>
     <string name="equipment_usage_miles">Total de %1$s Milhas</string>
@@ -196,6 +196,8 @@
     <string name="no_permission_create_invoice">Você não tem permissão para criar faturas.</string>
     <string name="no_permission_crews">Você não tem permissão para acessar equipes.</string>
     <string name="no_permission_departments">Você não tem permissão para acessar departamentos.</string>
+    <string name="delete_image_title">Excluir Imagem?</string>
+    <string name="delete_image_body">Tem certeza de que deseja apagar esta imagem?</string>
     <string name="no_permission_crews_edit">Você não tem permissão para editar equipes.</string>
     <string name="invoice_not_done">Uma fatura só pode ser feita a partir de uma ordem de serviço concluída.</string>
     <string name="invoice_type_wrong">Uma fatura não pode ser feita a partir de um lote ou ordem de serviço sem fatura.</string>
@@ -754,6 +756,7 @@
     <string name="day_note_title">Nota do Dia:</string>
     <string name="edit_image_num">Editar Imagem #%1$s</string>
     <string name="edit_image">Editar Imagem</string>
+    <string name="delete_image">Excluir Imagem</string>
     <string name="vendor_hint">Fornecedor…</string>
     <string name="tags_label">Tags:</string>
     <string name="tags_hint">Tags…</string>
@@ -1083,6 +1086,20 @@
     <string name="cost_x">Custo por: $%1$s</string>
     <string name="suggested_price_x">Preço Sugerido por: $%1$s</string>
     <string name="edit_vendors">Editar Fornecedores</string>
+    <string name="quick_complete">Conclusão rápida</string>
+    <string name="quick_complete_enabled">Conclusão Rápida Habilitada</string>
+    <string name="no_estimated_value_title">Sem tempo estimado</string>
+    <string name="no_estimated_value_body">O item deve ter uma quantidade estimada para Conclusão Rápida.</string>
+    <string name="no_emps_on_wo_title">Nenhum funcionário atribuído</string>
+    <string name="no_emps_on_wo_body">A ordem de serviço deve ser atribuída a uma equipe para Conclusão Rápida.</string>
+    <string name="quick_complete_item_title">Rápido completo?</string>
+    <string name="quick_complete_item_labor">Adicione %1$s horas para o %2$s?</string>
+    <string name="quick_complete_item_material">Adicionar %1$s unidades?</string>
+    <string name="quick_complete_already_complete">O item da ordem de serviço já está concluído.</string>
+    <string name="work_order_set_end_to_today">Definir a data de término da ordem de serviço para hoje?</string>
+    <string name="select_a_different_day">Selecione um dia diferente</string>
+    <string name="work_order_end_date_title">Data de término da ordem de serviço definida</string>
+    <string name="work_order_end_date_body">Nenhum uso foi registrado, então a data de término da ordem de serviço foi automaticamente definida para hoje.</string>
     <string name="pick_single">Por favor, selecione sua imagem</string>
     <string name="logout">Sair</string>
     <string name="website_label">Site:</string>
@@ -1097,6 +1114,6 @@
     </plurals>
     <string name="pick_multi_limit">Você tem mais de %1$d imagens selecionadas.</string>
     <string name="hour">Hora</string>
-    <string name="assign_lead_tasks">Atribuir tarefas ao lead</string>
+    <string name="no_permission_delete_files">Você não tem permissão para excluir arquivos.</string>
 
 </resources>

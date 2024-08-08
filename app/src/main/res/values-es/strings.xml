@@ -785,6 +785,20 @@
     <string name="images_label">Fotos:</string>
     <string name="edit_to_add_images_title">Editar para agregar fotos</string>
     <string name="edit_to_add_images_body">Seleccione la opción de edición para agregar o editar fotos.</string>
+    <string name="quick_complete">Rápido completo</string>
+    <string name="quick_complete_enabled">Completo rápido habilitado</string>
+    <string name="no_estimated_value_title">Sin tiempo estimado</string>
+    <string name="no_estimated_value_body">El artículo debe tener una cantidad estimada para completarlo rápidamente.</string>
+    <string name="no_emps_on_wo_title">No hay empleados asignados</string>
+    <string name="no_emps_on_wo_body">La orden de trabajo debe asignarse a una tripulación para completarla rápidamente.</string>
+    <string name="quick_complete_item_title">Rápido completo?</string>
+    <string name="quick_complete_item_labor">¿Añadir %1$s horas para %2$s?</string>
+    <string name="quick_complete_item_material">¿Añadir %1$s unidades?</string>
+    <string name="quick_complete_already_complete">El elemento de la orden de trabajo ya está completo.</string>
+    <string name="work_order_set_end_to_today">¿Establecer como fecha de finalización de la orden de trabajo el día de hoy?</string>
+    <string name="select_a_different_day">Seleccione un día diferente</string>
+    <string name="work_order_end_date_title">Fecha de finalización de la orden de trabajo establecida</string>
+    <string name="work_order_end_date_body">No se registró ningún uso, por lo que la fecha de finalización de la orden de trabajo se estableció automáticamente para hoy.</string>
     <string name="pick_single">Por favor, seleccione su imagen</string>
     <string name="logout">Cerrar sesión</string>
     <string name="pick_multi_limit">Tienes más de %1$d imágenes seleccionadas…</string>
@@ -833,6 +847,8 @@
     <string name="payroll_week_total">Total de la semana:</string>
     <string name="payroll_pending_shift">Turno pendiente:</string>
     <string name="no_permission_crews">No tienes permiso para acceder a los personales.</string>
+    <string name="delete_image_title">¿Eliminar foto?</string>
+    <string name="delete_image_body">¿Estás seguro de que quieres eliminar esta foto?</string>
     <string name="no_permission_crews_edit">No tienes permiso para editar a los personales.</string>
     <string name="home">Inicio</string>
     <string name="today">Hoy</string>
@@ -852,6 +868,7 @@
     <string name="day_note_title">Nota del día:</string>
     <string name="edit_image_num">Editar foto #%1$s</string>
     <string name="edit_image">Editar foto</string>
+    <string name="delete_image">Eliminar foto</string>
     <string name="vendor_hint">Proveedor…</string>
     <string name="tags_label">Etiquetas:</string>
     <string name="tags_hint">Etiquetas…</string>
@@ -1098,6 +1115,6 @@
     <string name="full_name_label">Nombre completo:</string>
     <string name="tax_rate_label">Tasa de impuestos:</string>
     <string name="hour">Hora</string>
-    <string name="assign_lead_tasks">Asignar tareas de pista</string>
+    <string name="no_permission_delete_files">No tienes permiso para eliminar archivos.</string>
 
 </resources>
