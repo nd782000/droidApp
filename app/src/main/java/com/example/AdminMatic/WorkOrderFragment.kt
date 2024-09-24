@@ -507,7 +507,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
         popUp.menu.add(0, 1, 1,globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_not_started)!!,myView.context), myView.context.getString(R.string.not_started)))
         popUp.menu.add(0, 2, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_in_progress)!!,myView.context), myView.context.getString(R.string.in_progress)))
         popUp.menu.add(0, 3, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_done)!!,myView.context), myView.context.getString(R.string.finished)))
-        if (workOrder!!.skipped != null) {
+        if (workOrder!!.skipped == null || workOrder!!.skipped != "1") {
             popUp.menu.add(0, 4, 1, globalVars.menuIconWithText(globalVars.resize(ContextCompat.getDrawable(myView.context, R.drawable.ic_canceled)!!,myView.context), myView.context.getString(R.string.skip_visit)))
         }
 
@@ -545,6 +545,7 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                         }
 
                         setStatusIcon(workOrder!!.status)
+                        workOrder!!.skipped = "1"
                         updateStatus(false)
 
                     }
@@ -1196,11 +1197,20 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
             }
             "4" -> {
                 println("4")
-                Picasso.with(context)
-                    .load(R.drawable.ic_canceled)
-                    .into(binding.statusIv)
-                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusRed))
-                binding.statusTv.text = getString(R.string.canceled)
+                if ((workOrder!!.skipped ?: "0") != "1") {
+                    Picasso.with(context)
+                        .load(R.drawable.ic_canceled)
+                        .into(binding.statusIv)
+                    binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusRed))
+                    binding.statusTv.text = getString(R.string.canceled)
+                }
+                else {
+                    Picasso.with(context)
+                        .load(R.drawable.ic_skipped)
+                        .into(binding.statusIv)
+                    binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusRed))
+                    binding.statusTv.text = getString(R.string.skipped)
+                }
             }
             "5" -> {
                 println("5")
@@ -1209,14 +1219,6 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     .into(binding.statusIv)
                 binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusBlue))
                 binding.statusTv.text = getString(R.string.waiting)
-            }
-            "6" -> {
-                println("6")
-                Picasso.with(context)
-                    .load(R.drawable.ic_skipped)
-                    .into(binding.statusIv)
-                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusRed))
-                binding.statusTv.text = getString(R.string.skipped)
             }
         }
     }
