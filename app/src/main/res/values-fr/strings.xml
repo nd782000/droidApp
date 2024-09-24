@@ -1115,6 +1115,7 @@
     <string name="pick_multi_limit">Vous avez plus de %1$d images sélectionnées…</string>
     <string name="hour">Huere</string>
     <string name="no_permission_delete_files">Vous n\'avez pas l\'autorisation de supprimer des fichiers.</string>
+    <string name="skipped">Sauté</string>
 
 
 </resources>

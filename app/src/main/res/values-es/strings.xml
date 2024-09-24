@@ -1116,5 +1116,6 @@
     <string name="tax_rate_label">Tasa de impuestos:</string>
     <string name="hour">Hora</string>
     <string name="no_permission_delete_files">No tienes permiso para eliminar archivos.</string>
+    <string name="skipped">Omitido</string>
 
 </resources>

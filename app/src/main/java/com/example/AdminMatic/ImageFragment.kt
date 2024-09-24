@@ -53,14 +53,8 @@ class ImageFragment : Fragment() {
         val id = item.itemId
 
         if (id == R.id.edit_image_item) {
-            if (GlobalVars.permissions!!.vendorsEdit == "1") {
-                val directions = ImageFragmentDirections.navigateToEditImage(imageList, imageListIndex)
-                myView.findNavController().navigate(directions)
-            }
-            else {
-                globalVars.simpleAlert(myView.context,getString(R.string.access_denied),getString(R.string.no_permission_vendors_edit))
-            }
-            return true
+            val directions = ImageFragmentDirections.navigateToEditImage(imageList, imageListIndex)
+            myView.findNavController().navigate(directions)
         }
         else if (id == R.id.delete_image_item) {
             if (GlobalVars.permissions!!.filesEdit == "1") {

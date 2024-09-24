@@ -19,8 +19,8 @@ android {
         applicationId "com.adminmatic"
         minSdk 30
         targetSdk 34
-        versionCode 67
-        versionName '1.5.5'
+        versionCode 68
+        versionName '1.5.6'
 
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

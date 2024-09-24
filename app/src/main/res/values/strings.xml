@@ -1310,6 +1310,7 @@ fdsfsdfsd
     <string name="cost_x">Cost Per: $%1$s</string>
     <string name="suggested_price_x">Suggested Price Per: $%1$s</string>
     <string name="edit_vendors">Edit Vendors</string>
+    <string name="skipped">Skipped</string>
 
     <!-- Quick complete stuff -->
     <string name="quick_complete">Quick Complete</string>

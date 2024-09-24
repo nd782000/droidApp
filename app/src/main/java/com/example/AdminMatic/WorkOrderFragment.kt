@@ -1210,6 +1210,14 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                 binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusBlue))
                 binding.statusTv.text = getString(R.string.waiting)
             }
+            "6" -> {
+                println("6")
+                Picasso.with(context)
+                    .load(R.drawable.ic_skipped)
+                    .into(binding.statusIv)
+                binding.statusBtn.setBackgroundColor(resources.getColor(R.color.statusRed))
+                binding.statusTv.text = getString(R.string.skipped)
+            }
         }
     }
 
