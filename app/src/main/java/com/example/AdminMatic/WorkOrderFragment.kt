@@ -51,6 +51,8 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
     lateinit var globalVars:GlobalVars
     lateinit var myView:View
 
+    private var notesToAdd: String = ""
+
     //lateinit var context: AppCompatActivity
 
     private lateinit var  stackFragment: StackFragment
@@ -537,7 +539,8 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
                     builder.setPositiveButton("OK") { _, _ ->
                         // Here you get get input text from the Edittext
                         workOrder!!.status = item.itemId.toString()
-                        workOrder!!.notes = et.text.toString()
+                        //workOrder!!.notes = et.text.toString()fdfds
+                        notesToAdd = et.text.toString()
                         workOrder!!.skipped = "1"
 
                         if (listIndex >= 0) {
@@ -657,6 +660,10 @@ class WorkOrderFragment : Fragment(), StackDelegate, WoItemCellClickListener{
 
 
                     globalVars.updateGlobalMySchedule(workOrder!!.woID, MyScheduleEntryType.workOrder, workOrder!!.status)
+                    if (notesToAdd.isNotBlank()) {
+                        addNote(notesToAdd)
+                        notesToAdd = ""
+                    }
 
 
 
